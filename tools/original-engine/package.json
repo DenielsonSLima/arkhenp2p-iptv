@@ -1,0 +1,16 @@
+{
+  "name": "arkhen-original-engine-debug",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "frida-compile agent.mjs -o agent.bundle.js",
+    "build:readiness": "frida-compile readiness-agent.mjs -o readiness-agent.bundle.js",
+    "test": "node --test engine.test.mjs native-idle.test.mjs"
+  },
+  "dependencies": {
+    "frida-java-bridge": "7.0.13"
+  },
+  "devDependencies": {
+    "frida-compile": "19.1.0"
+  }
+}

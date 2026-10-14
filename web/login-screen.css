@@ -1,0 +1,106 @@
+/* The owner's collage is preserved; only CSS adds the cinematic shade. */
+body.login-active{height:100vh;height:100dvh;overflow:hidden;overscroll-behavior:none}
+.cinema-login{
+  --login-header-height:72px;--login-footer-height:32px;--login-content-padding:28px;--login-gutter:clamp(24px,5vw,88px);
+  position:relative;isolation:isolate;display:flex;flex-direction:column;
+  height:100vh;height:100dvh;min-height:0;max-height:100dvh;
+  overflow:hidden;background:#080b0e;padding:0 var(--login-gutter);
+}
+.login-background,.login-gradient{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.login-background{background:#11151a url('/assets/brand/login-collage.jpg') center center/cover no-repeat;opacity:1}
+.login-gradient{background:linear-gradient(90deg,#000000f5 0%,#000000e0 25%,#000000a6 48%,#00000066 75%,#0000005c 100%),linear-gradient(0deg,#000000b3 0%,#00000000 56%,#0000004d 100%)}
+.cinema-login .connection-top{height:var(--login-header-height);flex:0 0 var(--login-header-height);width:calc(100% + 2 * var(--login-gutter));margin-inline:calc(-1 * var(--login-gutter));padding:0 var(--login-gutter);position:relative;display:flex;align-items:center;justify-content:space-between;gap:20px;background:#000;border-bottom:1px solid #ffffff12}
+.cinema-login .connection-label{display:flex;align-items:center;gap:10px;font-size:8px;letter-spacing:1.7px;color:#c3c4c1}
+.login-live-dot{width:5px;height:5px;border-radius:50%;background:#c4bba7;box-shadow:0 0 14px #e5cda450;flex-shrink:0}
+.cinema-login .connection-layout{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(330px,390px);align-items:center;gap:clamp(36px,7vw,110px);max-width:1360px;width:100%;margin:0 auto;padding:12px 0 16px}
+.cinema-login .connection-copy{position:relative;max-width:680px;min-width:0;padding:0}
+.login-brand-emblem{width:clamp(112px,12vw,180px);margin:0 0 28px}
+.login-brand-emblem img{display:block;width:100%;height:auto;aspect-ratio:86/93;object-fit:contain;opacity:.94}
+.cinema-login .connection-copy h1.login-factual-title{font-size:clamp(34px,4.2vw,60px);line-height:1.12;font-weight:500;letter-spacing:-1.8px;margin:0;color:#f4f1e9;text-shadow:0 4px 40px #0008}
+.cinema-login .connection-card{
+  width:100%;min-width:0;min-height:0;padding:25px 27px 22px;
+  max-height:min(600px,calc(100dvh - var(--login-header-height) - var(--login-footer-height) - var(--login-content-padding)));
+  overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#3b454d transparent;
+  background:#0b1119e8;border:1px solid #d2d7dd27;border-radius:11px;
+  box-shadow:0 24px 70px #0007;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.login-card-mark{display:none}
+.cinema-login .connection-card h2{font-size:26px;line-height:1.2;font-weight:600;letter-spacing:-.8px;color:#f0eee8;margin:0}
+.cinema-login .connection-caption{font-size:11px;color:#9ba3ac;line-height:1.6;margin:7px 0 21px}
+.cinema-login .field{display:block;font-size:11px;line-height:1.4;letter-spacing:.1px;color:#c9cdd2;margin:0 0 6px;font-weight:500}
+.cinema-login .login-input-wrap{height:44px;min-height:0;display:flex;align-items:center;gap:11px;background:#070c1285;border:1px solid #dce4ed26;border-radius:6px;padding:0 13px;margin:0 0 14px;transition:border-color .2s,background .2s}
+.cinema-login .login-input-wrap:focus-within{border-color:#c5d2df8a;background:#101821;box-shadow:0 0 0 3px #cbd6e809}
+.cinema-login .login-input-wrap>span svg{width:16px;height:16px;color:#7d8996}
+.cinema-login .login-input-wrap input{min-width:0;flex:1;width:100%;height:100%;padding:0;background:none;border:0;border-radius:0;color:#f0f1f3;font-size:13px;line-height:1.3;outline:none}
+.cinema-login input::placeholder{color:#77828e}
+.cinema-login input:autofill{-webkit-box-shadow:0 0 0 1000px #111821 inset;-webkit-text-fill-color:#f0f1f3;caret-color:#f0f1f3}
+.cinema-login .password-field button{position:static;transform:none;background:none;padding:6px;margin-right:-5px;color:#929ca7;display:flex;align-items:center;justify-content:center;flex-shrink:0;min-width:28px;min-height:30px}
+.cinema-login .password-field button svg{width:17px;height:17px}
+.login-remember{display:flex;align-items:center;gap:8px;color:#a7afb8;font-size:10px;line-height:1.4;margin:0 0 17px;cursor:pointer}
+.login-remember input{width:14px;height:14px;margin:0;accent-color:#ced4dc;cursor:pointer}
+.cinema-login .login-submit{height:44px;min-height:44px;background:#dde1e4;color:#101820;font-size:12px;border-radius:6px;position:relative;justify-content:center;box-shadow:0 3px 15px #d2dfec08}
+.cinema-login .login-submit:hover{background:#f1f3f4;transform:translateY(-1px)}
+.login-submit-arrow{position:absolute;right:16px}
+.login-submit-arrow svg{width:17px;height:17px}
+.login-submit-spinner{display:none;position:absolute;right:16px;border-color:#10213320;border-top-color:#102133}
+.is-loading .login-submit-spinner{display:block}.is-loading .login-submit-arrow{display:none}
+.cinema-login .form-error{min-height:0;margin:0;font-size:10px;line-height:1.55;color:#f1acac;overflow-wrap:anywhere}
+.cinema-login .form-error:not(:empty){padding:9px 10px;margin-top:11px;max-height:70px;overflow:auto;overscroll-behavior:contain;border:1px solid #ee898924;border-radius:6px;background:#ee898909}
+.login-options{margin-top:16px;border-top:1px solid #ffffff10;padding-top:12px;color:#a3adb7}
+.login-options summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:20px;font-size:10px;line-height:1.4;list-style:none;cursor:pointer}
+.login-options summary::-webkit-details-marker{display:none}
+.login-options summary svg{width:13px;height:13px;transition:transform .2s;flex-shrink:0}
+.login-options[open] summary svg{transform:rotate(180deg)}
+.login-options>div{padding-top:14px;max-height:min(180px,26dvh);overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#3b454d transparent}
+.login-options input,.login-options select{width:100%;max-width:100%;min-width:0;padding:11px 12px;background:#070c1285;border:1px solid #dce4ed26;border-radius:6px;color:#eee;font:inherit;font-size:12px;line-height:1.4;min-height:41px}
+.login-options input:focus-visible,.login-options select:focus-visible{outline:2px solid #c5d2df;outline-offset:-2px;border-color:#c5d2df8a}
+.login-options .field{margin:0 0 7px}
+.login-options .field:not(:first-child){margin-top:12px}
+.login-options #login-server-options:not([hidden]){margin-top:12px}
+.login-options p{font-size:9px;color:#85919c;line-height:1.6;margin:8px 0 0;overflow-wrap:anywhere}
+.login-options fieldset{min-width:0;padding:0;border:0;margin:0}
+.login-options .login-profile-grid,.login-options .login-device-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cinema-login .connection-footnote{display:flex;align-items:flex-start;gap:8px;margin-top:16px;padding-top:0;border-top:0}
+.cinema-login .connection-footnote svg{width:13px;height:13px;color:#89949f;margin-top:1px;flex-shrink:0}
+.cinema-login .connection-footnote p{font-size:9px;line-height:1.6;color:#89949f;margin:0}
+.cinema-login .connection-footer{height:var(--login-footer-height);min-height:0;max-height:var(--login-footer-height);flex:0 0 var(--login-footer-height);padding:0;display:flex;align-items:center;justify-content:space-between;font-size:7px;line-height:1.4;letter-spacing:1.2px;color:#9ba0a5;border-top:1px solid #ffffff10;margin:0;gap:15px}
+.connection-footer i{font-style:normal;color:#70777f;margin:0 8px}
+
+@media(min-width:1700px){.cinema-login .connection-layout{grid-template-columns:minmax(0,1fr) 410px;gap:9vw}}
+@media(max-width:1000px){.cinema-login .connection-layout{grid-template-columns:minmax(0,1fr) 355px;gap:35px}.cinema-login .connection-copy h1.login-factual-title{font-size:38px;letter-spacing:-1.2px}.cinema-login .connection-card{padding:24px}}
+@media(max-height:700px) and (min-width:761px){.cinema-login{--login-header-height:62px;--login-footer-height:28px;--login-content-padding:24px}.cinema-login .connection-layout{padding:10px 0 14px}.login-brand-emblem{width:72px;margin-bottom:20px}.cinema-login .connection-copy h1.login-factual-title{font-size:clamp(32px,3.6vw,46px);letter-spacing:-1.2px}.cinema-login .connection-card{padding:22px 25px 20px}.cinema-login .connection-caption{margin-bottom:17px}.cinema-login .connection-footnote{margin-top:13px}}
+@media(max-width:760px){
+  .cinema-login{--login-header-height:64px;--login-footer-height:28px;--login-gutter:22px}
+  .cinema-login .connection-label,.cinema-login .connection-copy{display:none}
+  .cinema-login .connection-layout{grid-template-columns:minmax(0,1fr);max-width:390px;gap:0;padding:12px 0 16px}
+  .cinema-login .connection-card{padding:25px 24px 22px;background:#0b1119ed}
+  .cinema-login .connection-card h2{font-size:25px}
+  .cinema-login .connection-caption{margin-bottom:22px;font-size:12px}
+  .cinema-login .login-input-wrap{height:46px;margin-bottom:16px}
+  .cinema-login .login-input-wrap input,.login-options input,.login-options select{font-size:16px}
+  .cinema-login .login-submit{height:46px;min-height:46px}
+  .cinema-login .connection-footer{font-size:6px;letter-spacing:.9px}
+  .cinema-login .connection-footer>span:last-child{display:none}
+  .login-background{background-position:48% center}
+  .login-gradient{background:linear-gradient(90deg,#000000c7,#0000007a 70%,#00000073),linear-gradient(180deg,#00000070,#00000040 35%,#000000b3)}
+  .login-options .login-profile-grid,.login-options .login-device-grid{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-height:560px){
+  .cinema-login{--login-header-height:52px;--login-footer-height:0px;--login-content-padding:22px;--login-gutter:22px}
+  .cinema-login .connection-copy,.cinema-login .connection-label,.cinema-login .connection-footer,.cinema-login .connection-footnote,.cinema-login .connection-caption{display:none}
+  .cinema-login .connection-layout{grid-template-columns:minmax(0,1fr);max-width:380px;gap:0;padding:8px 0 14px}
+  .cinema-login .connection-card{padding:19px 23px 18px}
+  .cinema-login .connection-card h2{font-size:22px;margin-bottom:16px}
+  .cinema-login .field{font-size:10px;margin-bottom:5px}
+  .cinema-login .login-input-wrap{height:40px;margin-bottom:12px}
+  .login-remember{font-size:9px;margin-bottom:14px}
+  .cinema-login .login-submit{height:40px;min-height:40px;font-size:11px}
+  .login-options{margin-top:12px;padding-top:9px}
+  .login-options summary{min-height:19px;font-size:9px}
+  .login-options>div{padding-top:10px;max-height:100px}
+  .cinema-login .form-error:not(:empty){padding:8px 9px;margin-top:9px;max-height:51px;font-size:9px}
+}
+@media(max-width:380px){.cinema-login{--login-gutter:18px}.cinema-login .connection-card{padding-left:21px;padding-right:21px}.cinema-login .connection-card h2{font-size:23px}}
+@media(max-height:420px){.cinema-login{--login-header-height:42px;--login-content-padding:16px}.cinema-login .connection-layout{padding:5px 0 11px}.cinema-login .connection-card{padding-top:14px;padding-bottom:14px}.cinema-login .connection-card h2{font-size:20px;margin-bottom:12px}.cinema-login .login-input-wrap{height:36px;margin-bottom:9px}.login-remember{margin-bottom:10px}.cinema-login .login-submit{height:36px;min-height:36px}.login-options{margin-top:9px;padding-top:7px}.cinema-login .form-error:not(:empty){max-height:40px}}
+@media(max-height:560px) and (min-width:761px){.cinema-login .connection-copy{display:block}.cinema-login .connection-layout{grid-template-columns:minmax(0,1fr) minmax(330px,380px);max-width:1200px;gap:32px}.login-brand-emblem{width:72px;margin-bottom:18px}.cinema-login .connection-copy h1.login-factual-title{font-size:34px;letter-spacing:-1px}}
+@media(prefers-reduced-motion:reduce){.cinema-login *{transition:none!important;animation:none!important}}

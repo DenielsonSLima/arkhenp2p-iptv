@@ -1,0 +1,7 @@
+/* Transparent vectors replace the old opaque, low resolution PNGs. */
+.brand-wordmark,.brand-symbol,.tiny-brand,.profile-button img,.footer-brand img,.brand-art img{mix-blend-mode:normal;filter:none;image-rendering:auto;background:transparent}
+.cinema-login .brand-wordmark{width:160px;height:auto;aspect-ratio:597/64}
+.cinema-login .brand-lockup{gap:7px}
+.cinema-login .brand-product{font-size:7px;letter-spacing:3px}
+@media(max-width:760px){.cinema-login .brand-wordmark{width:140px}.cinema-login .brand-product{font-size:6px}}
+@media(max-height:560px){.cinema-login .brand-wordmark{width:137px}.cinema-login .brand-lockup{gap:5px}.cinema-login .brand-product{font-size:6px}}

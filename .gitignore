@@ -1,0 +1,14 @@
+.local/
+.env
+.env.*
+node_modules/
+.DS_Store
+analysis/
+native-bridge/build/
+
+# Arquivos locais, binários de investigação e caches de ferramentas.
+*.apk
+*.log
+__pycache__/
+*.py[cod]
+.vercel/

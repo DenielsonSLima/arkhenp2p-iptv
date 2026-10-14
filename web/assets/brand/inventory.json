@@ -1,0 +1,125 @@
+[
+  {
+    "file": "apple-touch-icon.png",
+    "bytes": 15117,
+    "source": "vector geometry reconstructed from owner references",
+    "width": 180,
+    "height": 180,
+    "mode": "RGBA",
+    "alphaRange": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "favicon-16x16.png",
+    "bytes": 697,
+    "source": "vector geometry reconstructed from owner references",
+    "width": 16,
+    "height": 16,
+    "mode": "RGBA",
+    "alphaRange": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "favicon-192x192.png",
+    "bytes": 16261,
+    "source": "vector geometry reconstructed from owner references",
+    "width": 192,
+    "height": 192,
+    "mode": "RGBA",
+    "alphaRange": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "favicon-32x32.png",
+    "bytes": 1721,
+    "source": "vector geometry reconstructed from owner references",
+    "width": 32,
+    "height": 32,
+    "mode": "RGBA",
+    "alphaRange": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "favicon-48x48.png",
+    "bytes": 3014,
+    "source": "vector geometry reconstructed from owner references",
+    "width": 48,
+    "height": 48,
+    "mode": "RGBA",
+    "alphaRange": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "favicon-512x512.png",
+    "bytes": 48850,
+    "source": "vector geometry reconstructed from owner references",
+    "width": 512,
+    "height": 512,
+    "mode": "RGBA",
+    "alphaRange": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "favicon.ico",
+    "bytes": 43630,
+    "source": "vector geometry reconstructed from owner references",
+    "width": 256,
+    "height": 256,
+    "mode": "RGBA",
+    "alphaRange": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "favicon.svg",
+    "bytes": 1778,
+    "source": "vector geometry reconstructed from owner references"
+  },
+  {
+    "file": "symbol.png",
+    "bytes": 151470,
+    "source": "vector geometry reconstructed from owner references",
+    "width": 1024,
+    "height": 1107,
+    "mode": "RGBA",
+    "alphaRange": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "symbol.svg",
+    "bytes": 1779,
+    "source": "vector geometry reconstructed from owner references"
+  },
+  {
+    "file": "wordmark.png",
+    "bytes": 58074,
+    "source": "vector geometry reconstructed from owner references",
+    "width": 2388,
+    "height": 256,
+    "mode": "RGBA",
+    "alphaRange": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "wordmark.svg",
+    "bytes": 1551,
+    "source": "vector geometry reconstructed from owner references"
+  }
+]

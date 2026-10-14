@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:-1 group-title="Exemplo",Clipe de flores
+http://localhost:4173/assets/demo.mp4

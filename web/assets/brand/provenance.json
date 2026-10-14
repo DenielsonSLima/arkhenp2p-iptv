@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-13",
+  "method": "manual reconstruction of the owner reference geometry to SVG paths; PNG and ICO rendered from vector geometry",
+  "generativeImageModel": null,
+  "references": [
+    {
+      "file": "Camada 2.png",
+      "dimensions": [
+        115,
+        120
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        255,
+        255
+      ],
+      "sha256": "3741f0f7fc5f974ab2aa1d6a73241bc83094d45f33e05794ceb6d5525fd9d104",
+      "use": "primary isolated geometric reference"
+    },
+    {
+      "file": "fff.png",
+      "dimensions": [
+        709,
+        96
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        255,
+        255
+      ],
+      "sha256": "9b3be80095a9a54f3a980ad816cf2600a4328fe92fe56f489a4f9777c64be167",
+      "use": "primary isolated geometric reference"
+    },
+    {
+      "file": "Agrupar 1.png",
+      "dimensions": [
+        1500,
+        1023
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "sha256": "5c743faacded07d71171345e438da57b9f2b5d58d0c37866900e083d2fa8aa22",
+      "use": "visual context only"
+    },
+    {
+      "file": "ChatGPT Image 17 de jul. de 2026, 09_29_23.psd",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "alphaRange": null,
+      "sha256": "439faf860c7dfa832d995ef589f1a0305401a5449f68f66ce9f291e29c4f2a8b",
+      "use": "visual context only"
+    }
+  ]
+}

@@ -1,0 +1,390 @@
+/* Full viewport playback and its overlay controls. */
+body.player-page {
+  background: #08090b;
+}
+
+body.player-page #application {
+  display: none;
+}
+
+body.player-page {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+#player-dialog.player-page {
+  --player-gutter: clamp(16px, 2.8vw, 44px);
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: block;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: #000;
+  box-shadow: none;
+  animation: none;
+}
+
+.player-page .video-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  background: #000;
+}
+
+.player-page .video-stage video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Existing overlay controls replace the old dialog's heading and footer. */
+.player-page > .player-heading,
+.player-page > .player-program {
+  display: none;
+}
+
+.player-page > .player-bottom {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.player-page .ip-information {
+  top: max(25px, env(safe-area-inset-top));
+  right: max(var(--player-gutter), env(safe-area-inset-right));
+  width: min(440px, calc(100% - 112px));
+  padding: 18px 22px;
+  border-color: #ffffff13;
+  background: linear-gradient(125deg, #0e141de0, #070a0fd9);
+}
+
+.player-page .ip-kind {
+  margin-bottom: 7px;
+  color: #9baec3;
+  font-size: 9px;
+}
+
+.player-page .ip-title {
+  color: #e8eef7;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.player-page .ip-program-title {
+  font-size: 11px;
+}
+
+.player-page .ip-program-label,
+.player-page .ip-program-time {
+  color: #8c9cb1;
+  font-size: 10px;
+}
+
+.player-page .ip-program {
+  grid-template-columns: 54px minmax(0, 1fr) auto;
+}
+
+.player-page .ip-close {
+  top: max(25px, env(safe-area-inset-top));
+  left: max(var(--player-gutter), env(safe-area-inset-left));
+  background: #10151cbd;
+  border: 1px solid #ffffff1c;
+}
+
+.player-page .ip-button,
+.player-page .ip-controls-row #player-favorite {
+  width: 46px;
+  height: 46px;
+}
+
+.player-page .ip-button svg,
+.player-page .ip-controls-row #player-favorite svg {
+  width: 24px;
+  height: 24px;
+}
+
+.player-page .ip-controls-row #player-favorite {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  pointer-events: auto;
+  color: #d0dbe9;
+}
+
+.player-page .ip-controls {
+  padding: 70px max(var(--player-gutter), env(safe-area-inset-right)) max(25px, env(safe-area-inset-bottom)) max(var(--player-gutter), env(safe-area-inset-left));
+  background: linear-gradient(transparent, #000c 44%, #000e);
+}
+
+.player-page .ip-controls-row {
+  gap: 14px;
+  min-height: 46px;
+}
+
+.player-page .ip-time {
+  font-size: 13px;
+}
+
+.player-page .ip-live {
+  font-size: 11px;
+}
+
+.player-page .ip-volume {
+  width: 98px;
+}
+
+.player-page .ip-seek-row {
+  margin-bottom: 11px;
+}
+
+.player-page .ip-seek {
+  height: 20px;
+  border-radius: 0;
+  background: linear-gradient(to right, #d5e4f5 var(--ip-played), #8f9cac55 var(--ip-played)) center / 100% 4px no-repeat;
+}
+
+.player-page .ip-live-program-line {
+  font-size: 11px;
+}
+
+.player-page .ip-live-program-line span:last-child {
+  color: #99abc0;
+}
+
+.player-page .ip-tools-slot {
+  left: max(var(--player-gutter), env(safe-area-inset-left));
+  right: max(var(--player-gutter), env(safe-area-inset-right));
+  bottom: max(118px, calc(env(safe-area-inset-bottom) + 104px));
+  max-height: calc(100dvh - 194px);
+  padding: 12px;
+  overflow: auto;
+  border: 1px solid #ffffff18;
+  border-radius: 8px;
+  background: #111821ed;
+  backdrop-filter: blur(20px);
+  scrollbar-width: thin;
+  scrollbar-color: #536173 transparent;
+}
+
+.player-page .ip-tools-slot .player-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  backdrop-filter: none;
+}
+
+.player-page .ip-tools-slot .player-control {
+  min-width: 0;
+}
+
+.player-page .ip-tools-slot .player-control summary {
+  min-height: 52px;
+  font-size: 12px;
+}
+
+.player-page .ip-tools-slot .player-control summary > span:first-of-type {
+  font-size: 10px;
+  max-width: 100%;
+}
+
+/* Menus expand within the scrollable settings area, including short screens. */
+.player-page .ip-tools-slot .control-menu {
+  position: static;
+  width: 100%;
+  max-width: none;
+  max-height: min(300px, 35dvh);
+  margin-top: 7px;
+  box-shadow: none;
+}
+
+.player-page .ip-tools-slot .control-option {
+  min-height: 44px;
+  font-size: 12px;
+}
+
+.player-page .ip-tools-slot .player-test-button {
+  min-height: 44px;
+  font-size: 10px;
+}
+
+.player-page .ip-tools-slot .player-telemetry {
+  margin-top: 10px;
+  padding: 0 10px;
+  border: 0;
+  border-top: 1px solid #ffffff10;
+  background: transparent;
+}
+
+.player-page .ip-tools-slot .player-telemetry summary {
+  min-height: 44px;
+  gap: 10px;
+  font-size: 11px;
+}
+
+.player-page .ip-tools-slot #playback-overview {
+  color: #8a9bb0;
+  font-size: 10px;
+}
+
+.player-page .ip-tools-slot .telemetry-values span {
+  font-size: 10px;
+}
+
+.player-page .ip-tools-slot .telemetry-values strong {
+  font-size: 13px;
+}
+
+.player-page .ip-tools-slot .telemetry-note {
+  color: #8a9bb0;
+  font-size: 10px;
+}
+
+.player-page .ip-loading-symbol {
+  width: clamp(100px, 12vw, 180px);
+  height: auto;
+  aspect-ratio: 86 / 93;
+}
+
+.player-page .ip-loading-wordmark {
+  width: clamp(180px, 22vw, 280px);
+}
+
+.player-page .ip-loading-title {
+  max-width: 80%;
+  font-size: 14px;
+}
+
+.player-page .ip-loading-details {
+  font-size: 11px;
+}
+
+.player-page .ip-loading-estimate {
+  font-size: 10px;
+}
+
+.player-page .ip-error {
+  width: min(440px, calc(100% - 48px));
+  padding: 26px;
+}
+
+.player-page .ip-error-title {
+  font-size: 17px;
+}
+
+.player-page .ip-error-message {
+  font-size: 13px;
+}
+
+.player-page .ip-error .ip-retry {
+  width: 46px;
+  height: 46px;
+}
+
+@media (max-width: 900px) {
+  .player-page .ip-tools-slot .player-controls { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .player-page .ip-tools-slot .player-test-button { grid-column: 1 / -1; justify-content: flex-end; }
+}
+
+@media (max-width: 650px) {
+  .player-page { --player-gutter: 16px; }
+  .player-page .ip-information { top: max(16px, env(safe-area-inset-top)); width: calc(100% - 86px); right: max(16px, env(safe-area-inset-right)); padding: 12px 14px; }
+  .player-page .ip-title { font-size: 14px; }
+  .player-page .ip-kind { font-size: 8px; margin-bottom: 5px; }
+  .player-page .ip-close { top: max(16px, env(safe-area-inset-top)); }
+  .player-page .ip-button,
+  .player-page .ip-controls-row #player-favorite { width: 44px; height: 44px; }
+  .player-page .ip-button svg,
+  .player-page .ip-controls-row #player-favorite svg { width: 22px; height: 22px; }
+  .player-page .ip-program { grid-template-columns: 43px minmax(0, 1fr) auto; gap: 5px; }
+  .player-page .ip-program-title { font-size: 10px; }
+  .player-page .ip-program-label,
+  .player-page .ip-program-time { font-size: 8px; }
+  .player-page .ip-controls { padding: 48px max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+  .player-page .ip-controls-row { gap: 6px; min-height: 44px; }
+  .player-page .ip-volume-group { display: none; }
+  .player-page .ip-time { font-size: 10px; letter-spacing: 0; }
+  .player-page .ip-live { font-size: 9px; letter-spacing: 1px; }
+  .player-page .ip-live-program-line { font-size: 10px; gap: 10px; }
+  .player-page .ip-seek-row { margin-bottom: 6px; }
+  .player-page .ip-tools-slot { bottom: max(105px, calc(env(safe-area-inset-bottom) + 96px)); max-height: calc(100dvh - 181px); padding: 10px; }
+  .player-page .ip-tools-slot .player-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .player-page .ip-tools-slot .player-control summary { min-height: 50px; padding: 9px 10px; font-size: 11px; }
+  .player-page .ip-tools-slot .player-control summary > span:first-of-type { font-size: 9px; }
+  .player-page .ip-tools-slot .player-telemetry { padding-inline: 3px; }
+  .player-page .ip-tools-slot .player-telemetry summary { gap: 6px; font-size: 10px; flex-wrap: wrap; }
+  .player-page .ip-tools-slot #playback-overview { margin-left: 11px; margin-right: auto; font-size: 9px; }
+  .player-page .ip-loading-brand { margin-bottom: 24px; gap: 13px; }
+  .player-page .ip-loading-symbol { width: 104px; }
+  .player-page .ip-loading-wordmark { width: 183px; }
+  .player-page .ip-loading-product { font-size: 8px; }
+  .player-page .ip-loading-title { font-size: 12px; margin-bottom: 16px; }
+  .player-page .ip-loading-details { font-size: 10px; margin-top: 16px; gap: 5px; }
+  .player-page .ip-loading-estimate { font-size: 9px; }
+  .player-page .ip-error { padding: 22px; }
+  .player-page .ip-error-title { font-size: 15px; }
+  .player-page .ip-error-message { font-size: 12px; }
+}
+
+@media (max-width: 380px) {
+  .player-page .ip-controls-row .ip-button,
+  .player-page .ip-controls-row #player-favorite { width: 39px; height: 44px; }
+  .player-page .ip-controls-row { gap: 4px; }
+  .player-page .ip-time { font-size: 9px; }
+}
+
+@media (max-height: 560px) and (min-width: 651px) {
+  .player-page .ip-information { top: max(12px, env(safe-area-inset-top)); width: 340px; padding: 11px 15px; }
+  .player-page .ip-title { font-size: 15px; }
+  .player-page .ip-close { top: max(12px, env(safe-area-inset-top)); }
+  .player-page .ip-controls { padding-top: 40px; padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+  .player-page .ip-tools-slot { bottom: 103px; max-height: calc(100dvh - 164px); }
+  .player-page .ip-loading-symbol { width: 76px; }
+  .player-page .ip-loading-wordmark { width: 170px; }
+  .player-page .ip-loading-brand { gap: 10px; margin-bottom: 17px; }
+}
+
+@media (max-height: 500px) {
+  .player-page .ip-loading-title { margin-bottom: 10px; }
+  .player-page .ip-loading-details { margin-top: 10px; }
+  .player-page .ip-loading-product { display: none; }
+  .player-page .ip-loading-symbol { width: 70px; }
+  .player-page .ip-loading-wordmark { width: 154px; }
+  .player-page .ip-information .ip-schedule { gap: 5px; margin-top: 8px; padding-top: 8px; }
+  .player-page .ip-error { max-height: calc(100dvh - 110px); overflow: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player-page .ip-root * { scroll-behavior: auto; }
+}

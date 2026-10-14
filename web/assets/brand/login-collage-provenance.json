@@ -1,0 +1,14 @@
+{
+  "source": "60e91ea1-2c2d-4c65-a98d-aad1b2722b06.png",
+  "originalCopy": "login-collage.png",
+  "displayAsset": "login-collage.jpg",
+  "dimensions": [
+    1672,
+    941
+  ],
+  "sourceSha256": "ac7a0f643199455e17b52278895a8984f9c846f155f921b1b981114652f33478",
+  "displaySha256": "dae37bfb12bc4989b17c2428561443722ace906c0595610930e7daca1f487587",
+  "originalBytes": 3150727,
+  "displayBytes": 679346,
+  "method": "Exact original PNG copy plus same-dimension JPEG encoding; no generation, crop, resize or source modification"
+}

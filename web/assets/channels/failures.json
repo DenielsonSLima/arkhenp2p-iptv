@@ -1,0 +1,142 @@
+{
+  "version": 1,
+  "failures": [
+    {
+      "index": 8,
+      "ids": [
+        "3585"
+      ],
+      "names": [
+        "(ES) TV Galicia"
+      ],
+      "reason": "ABORT_ERR"
+    },
+    {
+      "index": 9,
+      "ids": [
+        "3586"
+      ],
+      "names": [
+        "(ES) Cuatro"
+      ],
+      "reason": "ECONNRESET"
+    },
+    {
+      "index": 10,
+      "ids": [
+        "3587"
+      ],
+      "names": [
+        "(ES) Antena 3"
+      ],
+      "reason": "ABORT_ERR"
+    },
+    {
+      "index": 12,
+      "ids": [
+        "3588"
+      ],
+      "names": [
+        "(ES) LA 2"
+      ],
+      "reason": "ABORT_ERR"
+    },
+    {
+      "index": 20,
+      "ids": [
+        "3592"
+      ],
+      "names": [
+        "(ES) TVE La 1"
+      ],
+      "reason": "Error"
+    },
+    {
+      "index": 13,
+      "ids": [
+        "3589"
+      ],
+      "names": [
+        "(ES) Telecinco"
+      ],
+      "reason": "ABORT_ERR"
+    },
+    {
+      "index": 14,
+      "ids": [
+        "3590"
+      ],
+      "names": [
+        "(ES) Mega"
+      ],
+      "reason": "ABORT_ERR"
+    },
+    {
+      "index": 16,
+      "ids": [
+        "3591"
+      ],
+      "names": [
+        "(ES) DKiss"
+      ],
+      "reason": "ABORT_ERR"
+    },
+    {
+      "index": 65,
+      "ids": [
+        "1215",
+        "1180"
+      ],
+      "names": [
+        "TV PAMPA",
+        "Tv Pampa"
+      ],
+      "reason": "HTTP_ERROR",
+      "status": 404
+    },
+    {
+      "index": 133,
+      "ids": [
+        "3724"
+      ],
+      "names": [
+        "SBT News"
+      ],
+      "reason": "HTTP_ERROR",
+      "status": 404
+    },
+    {
+      "index": 153,
+      "ids": [
+        "3385"
+      ],
+      "names": [
+        "Vbtv HD"
+      ],
+      "reason": "HTTP_ERROR",
+      "status": 404
+    },
+    {
+      "index": 178,
+      "ids": [
+        "3470"
+      ],
+      "names": [
+        "SURF NOW TV"
+      ],
+      "reason": "HTTP_ERROR",
+      "status": 404
+    },
+    {
+      "index": 196,
+      "ids": [
+        "488"
+      ],
+      "names": [
+        "TV Gideoes"
+      ],
+      "reason": "HTTP_ERROR",
+      "status": 404
+    }
+  ]
+}
