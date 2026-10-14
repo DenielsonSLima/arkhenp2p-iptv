@@ -34,6 +34,7 @@ Para configurar um servidor Xtream, também aceita `IPTV_SERVER`, `IPTV_USERNAME
 
 ## Funcionalidades
 
+- A programação WPLAY é consultada pelo mesmo contrato do APK, associando o EPG ao canal ou à sua referência compartilhada. O servidor reutiliza a grade por cinco minutos; cards e player recalculam o programa atual a cada 15 segundos e consultam atualizações sem interromper o vídeo. Horários são exibidos no fuso local. Canais sem grade fornecida continuam identificados como programação não informada.
 - TV ao vivo com categorias, busca, logos locais compactas e programação quando fornecida pelo serviço. O índice em `web/assets/channels/manifest.json` cruza nomes e IDs, preserva afiliadas e canais numerados e compartilha o mesmo arquivo entre variantes SD/HD/FHD. Logos ausentes usam a imagem do provedor como alternativa.
 - Início com três filmes recentes no banner, canais favoritos/recentes, últimos filmes assistidos, lançamentos de filmes, últimas séries assistidas e lançamentos de séries. Datas disponíveis determinam a ordem; o aplicativo não inventa ano ou duração ausentes. Cards com histórico exibem progresso e temporada/episódio atual.
 - Filmes com capas, sinopse e página de prévia que ocupa a tela, com título, metadados e duração.

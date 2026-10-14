@@ -24,7 +24,9 @@ export function programWindow(list = [], now = Date.now()) {
 // Only the selected live channel is refreshed. Timers and late responses belong
 // to one selection, so a channel switch/logout cannot repaint the next session.
 export class LiveProgramFeed {
-  constructor({request, onUpdate, now = Date.now, schedule = setTimeout, cancel = clearTimeout}) {
+  constructor({request, onUpdate, now = Date.now,
+    schedule = (callback, delay) => globalThis.setTimeout(callback, delay),
+    cancel = timer => globalThis.clearTimeout(timer)}) {
     Object.assign(this, {request, onUpdate, now, schedule, cancel}); this.current = null;
   }
   start(id) {

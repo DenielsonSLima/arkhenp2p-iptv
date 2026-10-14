@@ -17,6 +17,17 @@ test('EPG interprets epoch units and explicit UTC offsets as the same instant',(
   for(const value of [null,undefined,'','invalid',0])assert.ok(Number.isNaN(parseProgramTime(value)));
 });
 
+test('default timers keep the browser global receiver required by Safari',async t=>{
+  const timers=new Map();let next=0;
+  t.mock.method(globalThis,'setTimeout',function(callback,delay){assert.equal(this,globalThis);const id=++next;timers.set(id,{callback,delay});return id;});
+  t.mock.method(globalThis,'clearTimeout',function(id){assert.equal(this,globalThis);timers.delete(id);});
+  const updates=[];
+  const feed=new LiveProgramFeed({request:async()=>({list:[program('Agora',-1000,60000)]}),onUpdate:data=>updates.push(data.list)});
+  feed.start('123');await flush();
+  assert.equal(updates.at(-1)[0].title,'Agora');assert.equal(timers.size,1);
+  feed.stop();assert.equal(timers.size,0);
+});
+
 test('EPG selects by the actual time, preserves descriptions and never labels an expired entry as current',()=>{
   const list=[program('Próximo',60000,120000),program('Anterior',-120000,-60000),program('Agora',-60000,60000),{title:'Inválido',start:'bad',end:'bad'}];
   const result=programWindow(list,NOW);
