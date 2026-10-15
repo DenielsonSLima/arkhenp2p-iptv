@@ -30,7 +30,9 @@ export function cloudHomeSections({catalogs,privateModel,history=new Map(),favor
     add(`home:${kind}-releases`,`Lançamentos de ${title}`,type,readHomeOrder(catalogs.get(type),'releases',{visible,limit})||[]);
   }
   const recommended=privateModel?.recommendations;
-  add('home:recommendations',recommended?.personalized?'Recomendados para você':'Filmes e séries bem avaliados','mixed',unique(recommended?.items||[]));
+  add('home:recommendations','Recomendados para você','mixed',unique(recommended?.items||[]));
+  const recommendations=sections.find(section=>section.key==='home:recommendations');
+  if(recommendations)recommendations.subtitle=recommended?.personalized?'Com base no que você assiste':'Filmes e séries bem avaliados';
   return sections;
 }
 

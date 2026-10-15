@@ -13,9 +13,9 @@ export function updateMovieDuration(tools,item,{previousDuration,historyEntry,du
   if(fact){fact.querySelector('.detail-fact-value').textContent=previewText(movie.duration)||'Não informada';fact.setAttribute('aria-busy',String(durationPending));}
   const summary=tools.root.querySelector('.detail-summary');if(summary)renderDetailProgress(summary,movie,historyEntry);
 }
-export function renderMoviePreview(tools,item,{continuing=false,previousDuration,historyEntry,durationPending=false,relatedItems=[],renderCards}={}){
+export function renderMoviePreview(tools,item,{continuing=false,previousDuration,historyEntry,durationPending=false,relatedItems=[],renderCards,relatedSection=null}={}){
   const movie=movieWithPlaybackDuration(item,previousDuration),{showcase,summary}=tools.begin(movie,'FILME'),facts=previewNode('div','detail-facts'),duration=previewFact('Duração',previewText(movie.duration)||'Não informada','detail-fact-duration');
   duration.setAttribute('aria-busy',String(durationPending));facts.append(previewFact('Ano',previewYear(movie)),duration,previewFact('Avaliação',previewRating(movie)));summary.append(facts);
   tools.genre(summary,movie);tools.actions(summary,{continuing,enabled:!movie.unavailable});renderDetailProgress(summary,movie,historyEntry);tools.information(summary,movie);
-  const related=renderCards?renderRelatedMovies(tools.root,movie,relatedItems,{renderCards}):null;tools.finish(showcase,[related]);
+  const related=relatedSection||(renderCards?renderRelatedMovies(tools.root,movie,relatedItems,{renderCards}):null);tools.finish(showcase,[related]);
 }

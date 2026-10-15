@@ -1,0 +1,24 @@
+{
+  "migration": "20261015192346_arkhen_movie_recommendations",
+  "createdByCLI": true,
+  "sqlFixture": { "passed": true, "assertions": 89, "includesExistingHome": true },
+  "apiTests": { "passed": true, "tests": 9, "includesExistingSearchAndHome": true },
+  "independentReview": "passed",
+  "remote": {
+    "applied": null,
+    "readBackConfirmed": false,
+    "jwtVerified": false,
+    "latencyMeasured": false,
+    "healthObservedAt": "2026-10-15T19:32:20.2979963Z",
+    "health": { "db": "UNHEALTHY", "rest": "UNHEALTHY", "auth": "UNHEALTHY", "storage": "UNHEALTHY", "realtime": "UNHEALTHY" },
+    "controlQueryHttp": 201,
+    "migrationAttemptHttp": 400,
+    "wrapperCorrectedLocally": true,
+    "migrationResubmitted": false,
+    "verificationHttp": 544,
+    "finalVerificationHttp": null,
+    "finalVerificationBudgetMs": 15000,
+    "finalVerificationCode": "MANAGEMENT_SQL_FAILED",
+    "resourceCauseProved": false
+  }
+}

@@ -8,6 +8,9 @@ body.login-active{height:100vh;height:100dvh;overflow:hidden;overscroll-behavior
 }
 .login-background,.login-gradient{position:absolute;inset:0;z-index:-1;pointer-events:none}
 .login-background{background:#11151a url('/assets/brand/login-collage.jpg') center center/cover no-repeat;opacity:1}
+.cinema-login:not([hidden]) .login-background{animation:login-scene-enter 1.1s ease-out both}
+.cinema-login:not([hidden]) .connection-copy{animation:login-content-enter .7s .06s cubic-bezier(.16,1,.3,1) both}
+.cinema-login:not([hidden]) .connection-card{animation:login-content-enter .65s .12s cubic-bezier(.16,1,.3,1) both}
 .login-gradient{background:linear-gradient(90deg,#000000f5 0%,#000000e0 25%,#000000a6 48%,#00000066 75%,#0000005c 100%),linear-gradient(0deg,#000000b3 0%,#00000000 56%,#0000004d 100%)}
 .cinema-login .connection-top{height:var(--login-header-height);flex:0 0 var(--login-header-height);width:calc(100% + 2 * var(--login-gutter));margin-inline:calc(-1 * var(--login-gutter));padding:0 var(--login-gutter);position:relative;display:flex;align-items:center;justify-content:space-between;gap:20px;background:#000;border-bottom:1px solid #ffffff12}
 .cinema-login .connection-label{display:flex;align-items:center;gap:10px;font-size:8px;letter-spacing:1.7px;color:#c3c4c1}
@@ -16,6 +19,8 @@ body.login-active{height:100vh;height:100dvh;overflow:hidden;overscroll-behavior
 .cinema-login .connection-copy{position:relative;max-width:680px;min-width:0;padding:0}
 .login-brand-emblem{width:clamp(112px,12vw,180px);margin:0 0 28px}
 .login-brand-emblem img{display:block;width:100%;height:auto;aspect-ratio:86/93;object-fit:contain;opacity:.94}
+.login-brand-emblem{position:relative}
+.login-brand-emblem::after{content:'';position:absolute;inset:0;pointer-events:none;mask:url('/assets/brand/symbol.svg') center/contain no-repeat;-webkit-mask:url('/assets/brand/symbol.svg') center/contain no-repeat;background:linear-gradient(110deg,transparent 38%,#fff8 49%,transparent 60%) 150% 0/300% 100%;animation:login-emblem-shine 1.9s .25s ease-out both}
 .cinema-login .connection-copy h1.login-factual-title{font-size:clamp(34px,4.2vw,60px);line-height:1.12;font-weight:500;letter-spacing:-1.8px;margin:0;color:#f4f1e9;text-shadow:0 4px 40px #0008}
 .cinema-login .connection-card{
   width:100%;min-width:0;min-height:0;padding:25px 27px 22px;
@@ -103,4 +108,7 @@ body.login-active{height:100vh;height:100dvh;overflow:hidden;overscroll-behavior
 @media(max-width:380px){.cinema-login{--login-gutter:18px}.cinema-login .connection-card{padding-left:21px;padding-right:21px}.cinema-login .connection-card h2{font-size:23px}}
 @media(max-height:420px){.cinema-login{--login-header-height:42px;--login-content-padding:16px}.cinema-login .connection-layout{padding:5px 0 11px}.cinema-login .connection-card{padding-top:14px;padding-bottom:14px}.cinema-login .connection-card h2{font-size:20px;margin-bottom:12px}.cinema-login .login-input-wrap{height:36px;margin-bottom:9px}.login-remember{margin-bottom:10px}.cinema-login .login-submit{height:36px;min-height:36px}.login-options{margin-top:9px;padding-top:7px}.cinema-login .form-error:not(:empty){max-height:40px}}
 @media(max-height:560px) and (min-width:761px){.cinema-login .connection-copy{display:block}.cinema-login .connection-layout{grid-template-columns:minmax(0,1fr) minmax(330px,380px);max-width:1200px;gap:32px}.login-brand-emblem{width:72px;margin-bottom:18px}.cinema-login .connection-copy h1.login-factual-title{font-size:34px;letter-spacing:-1px}}
-@media(prefers-reduced-motion:reduce){.cinema-login *{transition:none!important;animation:none!important}}
+@keyframes login-scene-enter{from{opacity:.4}to{opacity:1}}
+@keyframes login-content-enter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes login-emblem-shine{from{background-position:150% 0}to{background-position:-50% 0}}
+@media(prefers-reduced-motion:reduce){.cinema-login *,.cinema-login *::before,.cinema-login *::after{transition:none!important;animation:none!important}.login-brand-emblem::after{display:none}}

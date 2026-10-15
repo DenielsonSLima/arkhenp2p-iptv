@@ -151,3 +151,11 @@ Três frentes revisaram transporte, cliente e EPG a partir das capturas de Megap
 Depois do congelamento dos três agentes, a suíte final passou com1.053 testes:1.052 aprovados, zero falhas e um skip de symlink no Windows. Bundle/licenças e79 imports da interface conferidos; Chromium isolado não teve exceções. Backend reiniciado uma vez às19:08:58 UTC, com módulosHTTP200/no-cache e acesso sem conta à mídia recusado401. O login local precisa ser refeito após esse reinício. Reprodução real prolongada continua sem certificação por essa prova sintética.
 
 A revisão de publicação inclui todas as atualizações de código/documentação e verifica ausência de credenciais reais nos arquivos selecionados. O [registro da versão](release-2026-10-15.md) separa as entregas das pendências: Supabase com serviçosUNHEALTHY no último health check, lote de1.387 referências sem readback e ausência de certificação audiovisual em massa. Processos temporários foram encerrados, e o servidor principal permanece na porta4173.
+
+## Entrada dinâmica e recomendações de filmes
+
+Solicitação seguinte dividida entre entrada/preparação, backend de recomendações e experiência de prévia/fim de filme, com integração principal da home e do cache. O cálculo privado já existente na home permanece no Supabase. A seção volta a ser explícita mesmo quando a nuvem falha; sugestões por filme usam uma nova RPC, sem varredura ou ranking no navegador.
+
+Suíte integrada: 1.070 testes, 1.069 passaram, zero falhas e um skip Windows. SQL/RLS89 e API9 aprovados; 82 imports compilados. Fixtures Chromium conferiram entrada em cinco tamanhos, prévia em andamento, fim real com até três sugestões, navegação, foco, ausência de autoplay e recuperação da home. [Contrato integrado e evidências](home-and-movie-recommendations.md).
+
+A migração `20261015192346` está preparada e revisada, mas sua instalação remota não foi comprovada. O último health check, às16:32 locais, apresentou todos os serviços Supabase UNHEALTHY, e a leitura administrativa limitada não respondeu. Nenhuma resposta sintética foi tratada como recomendação real da conta. Não reenviar DDL ou a antiga fila de marcadores sem conferir primeiro sua existência/estado.

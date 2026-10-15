@@ -1,0 +1,45 @@
+// Included by the isolated PostgreSQL home harness; never touches a real account.
+export async function movieRecommendationsFixture({q,as,load,check,rejected,media,progress,user,other,foreignUser,provider,scope,foreign,zero,candidate}){
+ await load('20261015192346_arkhen_movie_recommendations.sql');
+ const read=(source='rec-source',options={})=>as('authenticated',options.user||user,async()=>(await q('select public.arkhen_movie_recommendations($1,$2,$3,$4,$5,$6) data',[options.provider||provider,scope,source,options.limit??3,options.hidden||{},options.hiddenItems||{}])).rows[0].data);
+ check(await read()===null,'Missing prepared navigation returns unknown, not a false empty success.');
+ const source={kind:'movie',id:'rec-source',name:'Recommendation source',rating:8,categoryId:'action'};
+ const drama={kind:'movie',id:'rec-drama',name:'Related dramatic action',rating:7.1,genre:'Drama',categoryId:'action'};
+ const comedy={kind:'movie',id:'rec-comedy',name:'Related comic action',rating:8.8,genre:'Comedy',categoryId:'action'};
+ for(const item of [source,drama,comedy,{...source,id:'rec-source-hd',name:'Recommendation source HD'},{...drama,id:'rec-drama-hd',name:drama.name+' HD',rating:7},{...drama,id:'rec-positive-adult',name:'Positive metadata flag',isAdult:true},{kind:'movie',id:'rec-generic',name:'No taxonomy',rating:8,categoryId:'general'},{kind:'movie',id:'rec-category',name:'Provider collection',rating:8,categoryId:'collection'},{kind:'movie',id:'rec-category-other',name:'Another collection title',rating:6,categoryId:'collection'}])await media(item);
+ await q("insert into public.catalog_categories(provider_key,scope_hash,media_type,category_id,name,last_seen_snapshot) values($1,$2,'movies','collection','Festival Collection',$3)",[provider,scope,zero]);
+ await q("insert into public.catalog_categories(provider_key,scope_hash,media_type,category_id,name,is_adult,last_seen_snapshot) values($1,$2,'movies','rec-restricted','Restricted category',true,$3)",[provider,scope,zero]);
+ await media({...drama,id:'rec-category-adult',name:'Ordinary hidden label',categoryId:'rec-restricted'});
+ await media({...drama,id:'rec-future',name:'Unpublished recommendation'},{generation:candidate});
+ await media({...drama,id:'rec-foreign',name:'Foreign recommendation'},{p:foreign});
+ for(const type of ['movies','series','live'])await q("insert into public.provider_catalog_cache(provider_key,scope_hash,media_type,payload,expires_at,snapshot_id,index_generation,is_complete) values($1,$2,$3,'{}',now()+interval '1 day',$4,$4,true) on conflict(provider_key,scope_hash,media_type) do nothing",[provider,scope,type,zero]);
+ await as('service_role',null,()=>q("select public.arkhen_prepare_catalog_read_model($1,$2,'movies')",[provider,scope]));
+ let result=await read(source.id,{limit:12});
+ check(result.sourceId===source.id&&result.revision===zero&&result.schemaVersion===1,'The movie result carries the exact source and published revision.');
+ check(result.reason==='source_genre'&&result.personalized,'Source and private-history genre evidence are reported honestly.');
+ check(result.items.findIndex(x=>x.id===drama.id)<result.items.findIndex(x=>x.id===comedy.id),'Private drama affinity outranks a higher-rated equally related comedy.');
+ check(!result.items.some(x=>[source.id,'rec-source-hd','rec-drama-hd','rec-positive-adult','rec-category-adult','rec-future','rec-foreign','adult','category-adult'].includes(x.id)),'Origin variants, duplicate editions, metadata/category adults and noncurrent/foreign titles are excluded.');
+ check(result.items.every(x=>x.kind==='movie'&&x.isAdult===false)&&result.items.length<=12,'Only bounded safe movie metadata is returned.');
+ const stranger=await read(source.id,{user:other,limit:12});
+ check(!stranger.personalized&&stranger.items.findIndex(x=>x.id===comedy.id)<stranger.items.findIndex(x=>x.id===drama.id),'Another account cannot inherit viewing signals or their personalized order.');
+ result=await read('rec-generic',{user:other});
+ check(result.reason==='rating'&&!result.personalized&&result.items.length>0,'A generic category with no genre still receives honest rating fallback.');
+ result=await read('rec-category',{user:other});
+ check(result.reason==='source_category'&&result.items[0].id==='rec-category-other','A meaningful provider category participates without inventing a genre.');
+ await progress(user,comedy);
+ check(!(await read(source.id,{limit:12})).items.some(x=>x.id===comedy.id),'New private progress immediately removes a watched movie.');
+ check(!(await read(source.id,{limit:12,hiddenItems:{movies:[drama.id,'rec-drama-hd']}})).items.some(x=>x.id===drama.id),'Hidden native IDs are excluded before candidate selection.');
+ check((await read(source.id,{hidden:{movies:['action']}})).items.length===0,'A hidden source is not used to disclose related catalog data.');
+ check((await read('adult')).reason==='unavailable'&&(await read('rec-positive-adult')).items.length===0,'Adult origins never generate recommendation signals or results.');
+ check((await read('rec-category-adult')).reason==='unavailable','A trusted adult category blocks an unmarked source movie.');
+ check((await read('absent')).reason==='unavailable','An absent native ID is explicitly unavailable.');
+ const serialized=JSON.stringify(await read());check(!serialized.includes(user)&&!serialized.includes(other)&&!serialized.includes('user_id')&&!serialized.includes('watched_seconds'),'No private raw records or user identifiers leave the projection.');
+ await rejected(()=>read(source.id,{user:foreignUser}));await rejected(()=>read(source.id,{provider:foreign}));
+ await rejected(()=>as('anon',null,()=>q('select public.arkhen_movie_recommendations($1,$2,$3)',[provider,scope,source.id])));
+ for(const limit of [0,13,null])await rejected(()=>as('authenticated',user,()=>q('select public.arkhen_movie_recommendations($1,$2,$3,$4)',[provider,scope,source.id,limit])),'22023');
+ await rejected(()=>read('path/escape'),'22023');await rejected(()=>read(source.id,{hidden:{movies:'bad'}}),'22023');
+ check((await q("select prosecdef from pg_proc where oid='public.arkhen_movie_recommendations(text,text,text,integer,jsonb,jsonb)'::regprocedure")).rows[0].prosecdef===false,'Movie recommendations preserve SECURITY INVOKER and RLS.');
+ await q("update public.catalog_visible_generations set generation_id=$1 where provider_key=$2 and media_type='movies'",[candidate,provider]);
+ check(await read()===null,'A new publication never reuses the previous generation recommendations.');
+ await q("update public.catalog_visible_generations set generation_id=$1 where provider_key=$2 and media_type='movies'",[zero,provider]);
+}

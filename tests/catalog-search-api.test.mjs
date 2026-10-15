@@ -63,3 +63,37 @@ test('home projection uses the account JWT, private visibility filters and serve
   assert.equal((await fetch(f.base+'/api/home/library',{headers:f.headers})).status,405);
   f.cloud.request=async()=>{throw new Error('secret');};const failed=await fetch(f.base+'/api/home/library',{method:'POST',headers:f.headers,body:'{}'});assert.equal(failed.status,503);assert.equal((await failed.json()).code,'HOME_UNAVAILABLE');
 });
+
+test('movie recommendations use the account JWT and cannot accept caller ownership or adult overrides',async t=>{
+  const f=await fixture(t),value={schemaVersion:1,sourceId:'film',revision:'published',items:[{id:'related',kind:'movie',name:'Related',isAdult:false}],personalized:true,reason:'source_genre'};
+  f.cloud.request=async(path,options)=>{f.calls.push({path,options});return value;};
+  const response=await fetch(f.base+'/api/recommendations/movie',{method:'POST',headers:f.headers,body:JSON.stringify({id:'film',limit:3,userId:'other',providerKey:'foreign',includeAdult:true,hidden:{movies:['10']}})});
+  assert.equal(response.status,200);assert.deepEqual(await response.json(),value);assert.equal(response.headers.get('cache-control'),'no-store');
+  assert.equal(f.calls[0].path,'/rest/v1/rpc/arkhen_movie_recommendations');assert.deepEqual(f.calls[0].options.body,{p_provider_key:providerKey,p_scope_hash:scopeHash,p_source_id:'film',p_limit:3,p_hidden_categories:{movies:['10']},p_hidden_items:{}});
+  assert.equal(f.calls[0].options.accessToken,'scoped-user-token');assert.equal(f.calls[0].options.publicKey,true);
+  assert.equal((await fetch(f.base+'/api/recommendations/movie',{headers:f.headers})).status,405);
+  const prior=f.calls.length;
+  for(const body of [{id:'a/b'},{id:4},{id:'film',limit:13},{id:'film',hidden:{movies:'bad'}}])assert.equal((await fetch(f.base+'/api/recommendations/movie',{method:'POST',headers:f.headers,body:JSON.stringify(body)})).status,400);
+  assert.equal(f.calls.length,prior);
+  f.cloud.request=async()=>{throw new Error('private-password key');};
+  const failed=await fetch(f.base+'/api/recommendations/movie',{method:'POST',headers:f.headers,body:'{"id":"film"}'});assert.equal(failed.status,503);assert.deepEqual(await failed.json(),{error:'Não foi possível atualizar suas recomendações.',code:'MOVIE_RECOMMENDATIONS_UNAVAILABLE'});
+});
+
+test('movie recommendations require a scoped session and reject malformed or adult RPC results',async()=>{
+  let calls=0,result=null;const runtime=new CloudRuntime({cloud:{enabled:true,request:async()=>{calls++;return result;}},worker:{stop(){}}});
+  const state={cloud:{providerKey,scopeHash,session:{access_token:'user-token'}}};
+  try{
+    assert.equal(await runtime.movieRecommendations({cloud:{providerKey,scopeHash}},{id:'film'}),null);assert.equal(calls,0);
+    for(const value of [{schemaVersion:1,sourceId:'other',items:[]},{schemaVersion:1,sourceId:'film',items:[{id:'other',kind:'movie',isAdult:true}]},{schemaVersion:1,sourceId:'film',items:[{id:'film',kind:'movie',isAdult:false}]},{schemaVersion:1,sourceId:'film',items:[{id:'other',kind:'series',isAdult:false}]}]){
+      result=value;assert.equal(await runtime.movieRecommendations(state,{id:'film'}),null);
+    }
+    result={schemaVersion:1,sourceId:'film',items:[{id:'other',kind:'movie',isAdult:false}]};assert.deepEqual(await runtime.movieRecommendations(state,{id:'film'}),result);
+  }finally{runtime.close();}
+});
+
+test('a pending movie recommendation cannot cross logout',async t=>{
+  const f=await fixture(t);let release,entered;const gate=new Promise(resolve=>{release=resolve;}),started=new Promise(resolve=>{entered=resolve;});
+  f.cloud.request=async()=>{entered();await gate;return {schemaVersion:1,sourceId:'film',items:[]};};
+  const pending=fetch(f.base+'/api/recommendations/movie',{method:'POST',headers:f.headers,body:'{"id":"film"}'});await started;
+  assert.equal((await fetch(f.base+'/api/logout',{method:'POST',headers:f.headers})).status,200);release();assert.equal((await pending).status,401);
+});
