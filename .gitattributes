@@ -1,0 +1,6 @@
+# Keep generated vendor code and upstream license text byte-for-byte. Embedded
+# worker templates and upstream CRLF/trailing spaces are not source style edits.
+web/assets/vendor/cloud-client.js -whitespace linguist-vendored
+web/assets/vendor/CLOUD-LICENSES.txt -whitespace linguist-vendored
+web/series-markers/open-data/DATA-LICENSE -whitespace
+web/series-markers/open-data/ODbL-1.0.txt -whitespace
