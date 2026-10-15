@@ -3,7 +3,7 @@ const CATALOG=/^#(home|live|movies|series|favorites)$/;
 export function catalogView(hash){return CATALOG.exec(hash)?.[1]||null;}
 export function restoreCatalogPosition(hash,...candidates){
   const route=catalogView(hash),saved=candidates.find(position=>position&&catalogView('#'+position.view)&&(!route||position.view===route));
-  return {view:route||saved?.view||'home',category:saved?.category||'__all',query:saved?.query||'',visibleLimit:saved?.visibleLimit||48,scrollY:saved?.scrollY||0};
+  return {view:route||saved?.view||'home',category:saved?.category||'__all',genre:saved?.genre||'__all',query:saved?.query||'',visibleLimit:saved?.visibleLimit||48,scrollY:saved?.scrollY||0};
 }
 export function parseContentRoute(hash) {
   const match=/^#(preview|watch)\/(live|movie|series)\/(\d{1,12})(?:\/(\d{1,12}))?$/.exec(hash);

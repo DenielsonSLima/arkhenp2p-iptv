@@ -1,8 +1,33 @@
 import { artworkURL } from './channel-artwork.js';
 
-// Warm only the artwork used by the opening screen, without starting media.
-export async function preloadArtwork(values, {signal, concurrency = 4, timeoutMs = 4000, deadlineMs = 8000, createImage = () => new Image(), onProgress = () => {}} = {}) {
-  const urls = [...new Set(values.filter(artworkURL))].slice(0, 24);
+const list = value => Array.isArray(value) ? value : [];
+
+// Prioritize the banner, then give movies, series and channels equal turns.
+// Only current visible shelf items can contribute artwork to preparation.
+export function openingArtwork({hero = [], shelves = [], perType = 30, resolveArtwork = item => item.poster} = {}) {
+  const limit = Number.isInteger(perType) && perType >= 0 ? perType : 30;
+  const urls = [...new Set(list(hero).map(artworkURL).filter(Boolean))], seen = new Set(urls);
+  const queues = new Map(['movie', 'series', 'live'].map(kind => [kind, []]));
+  for (const shelf of list(shelves)) for (const item of list(shelf?.items)) {
+    const queue = queues.get(item?.kind);
+    if (!queue) continue;
+    const url = artworkURL(resolveArtwork(item));
+    if (url) queue.push(url);
+  }
+  const positions = new Map([...queues.keys()].map(kind => [kind, 0]));
+  for (let index = 0; index < limit; index++) for (const [kind, queue] of queues) {
+    let position = positions.get(kind);
+    while (position < queue.length && seen.has(queue[position])) position++;
+    if (position < queue.length) { const url = queue[position++]; seen.add(url); urls.push(url); }
+    positions.set(kind, position);
+  }
+  return urls;
+}
+
+// Warm opening artwork without starting media; deadlines keep login bounded.
+export async function preloadArtwork(values, {signal, maxItems = 96, concurrency = 4, timeoutMs = 4000, deadlineMs = 8000, createImage = () => new Image(), onProgress = () => {}} = {}) {
+  const limit = Number.isInteger(maxItems) && maxItems >= 0 ? maxItems : 96;
+  const urls = [...new Set(list(values).filter(artworkURL))].slice(0, limit);
   const externalSignal = signal, controller = new AbortController(), cancelAll = () => controller.abort();
   if (externalSignal?.aborted) controller.abort();
   else externalSignal?.addEventListener('abort', cancelAll, {once:true});

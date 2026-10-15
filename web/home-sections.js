@@ -1,3 +1,7 @@
+import {homeRecommendations} from './home-recommendations.js';
+
+export const HOME_SHELF_LIMIT = 30;
+
 // Home selections use the current visible catalog, never stale or hidden titles.
 const list = value => Array.isArray(value) ? value : [];
 const values = value => value instanceof Map ? [...value.values()] : list(value);
@@ -23,7 +27,7 @@ function titleIdentity(item) {
   return text(item.name).replace(/(?:\s+(?:sd|hd|fhd|uhd|4k|leg|dub|dual))+\s*$/, '')
     .replace(/\s*\((?:19|20)\d{2}\)\s*$/, '').replace(/[^a-z0-9]+/g, ' ').trim() + ':' + releaseYear(item);
 }
-export function latestReleases(items, limit = 16) {
+export function latestReleases(items, limit = HOME_SHELF_LIMIT) {
   const ordered = list(items).filter(item => item && item.name && item.id !== undefined).map((item, index) => ({item, index}));
   ordered.sort((first, second) => releaseYear(second.item) - releaseYear(first.item) ||
     Number(launchCategory(second.item)) - Number(launchCategory(first.item)) || addedTime(second.item) - addedTime(first.item) || first.index - second.index);
@@ -32,14 +36,25 @@ export function latestReleases(items, limit = 16) {
     const identity = titleIdentity(item); if (seen.has(identity)) return false; seen.add(identity); return true;
   }).slice(0, Math.max(0, limit));
 }
-export function featuredMovies(items, limit = 3) {
-  const recent = latestReleases(list(items).filter(item => item.kind === 'movie'), Math.max(limit, 36));
+function featuredByKind(items, kind, limit) {
+  const recent = latestReleases(list(items).filter(item => item?.kind === kind), Math.max(limit, 36));
   const newestYear = releaseYear(recent[0]);
   const ready = recent.filter(item => releaseYear(item) >= newestYear - 1 && item.backdrop && item.poster && Number(item.rating) > 0);
   // Within the current release window, prefer titles with real artwork and
-  // metadata over entries that only have a name. Keep three distinct movies.
+  // metadata over entries that only have a name. Keep distinct real titles.
   const selected = new Set();
   return [...ready, ...recent].filter(item => {const id = key(item);if (selected.has(id)) return false;selected.add(id);return true;}).slice(0, limit);
+}
+export function featuredMovies(items, limit = 3) {return featuredByKind(items,'movie',limit);}
+
+export function featuredTitles(movies = [], series = [], {perType = 3} = {}) {
+  const limit=Number.isFinite(Number(perType))?Math.max(0,Math.floor(Number(perType))):3;
+  const films=featuredByKind(movies,'movie',limit), shows=featuredByKind(series,'series',limit), selected=[];
+  for (let index=0;index<Math.max(films.length,shows.length);index++) {
+    if (films[index]) selected.push(films[index]);
+    if (shows[index]) selected.push(shows[index]);
+  }
+  return selected;
 }
 
 export function playbackProgress(entry) {
@@ -66,7 +81,7 @@ function channelIdentity(item) {
   return text(item.name).replace(/[^a-z0-9+]+/g, ' ').trim()
     .replace(/(?:\s+(?:sd|hd|fhd|uhd|4k|hevc|h ?265))+$/, '').replace(/\s*\+\s*/g, '+');
 }
-export function homeShelves({movies = [], series = [], live = [], favorites, history, limit = 16} = {}) {
+export function homeShelves({movies = [], series = [], live = [], favorites, history, movieCatalog, seriesCatalog, limit = HOME_SHELF_LIMIT} = {}) {
   const sections = [], add = (shelfKey, title, type, items) => {
     if (items.length) sections.push({key:shelfKey, title, type, items});
   };
@@ -83,5 +98,7 @@ export function homeShelves({movies = [], series = [], live = [], favorites, his
   add('home:movie-releases', 'Lançamentos de filmes', 'movies', latestReleases(movies, limit));
   add('home:series-history', 'Últimas séries assistidas', 'series', watched(series, history, 'series', limit));
   add('home:series-releases', 'Lançamentos de séries', 'series', latestReleases(series, limit));
+  const recommendations = homeRecommendations({movies, series, history, movieCatalog, seriesCatalog, limit});
+  add('home:recommendations', recommendations.personalized ? 'Recomendados para você' : 'Filmes e séries bem avaliados', 'mixed', recommendations.items);
   return sections;
 }

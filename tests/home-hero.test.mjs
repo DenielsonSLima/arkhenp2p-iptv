@@ -47,3 +47,11 @@ test('banner facts display measured duration and honest missing metadata',()=>{
   assert.equal(heroFacts({},{durationPending:true})[1].value,'Consultando…');
   assert.equal(heroFacts({},{previousDuration:3600})[1].value,'1 h');
 });
+
+test('series highlights show their format or real seasons without inventing a movie duration',()=>{
+  const unknown=heroFacts({kind:'series',name:'Série (2026)',rating:8},{previousDuration:3600,durationPending:true});
+  assert.deepEqual(unknown.map(fact=>fact.value),['2026','Série','8,0 / 10']);
+  assert.equal(unknown[1].label,'Formato');assert.equal(Boolean(unknown[1].pending),false);
+  const known=heroFacts({kind:'series',seasons:[{number:1},{number:2}]});
+  assert.deepEqual(known[1],{label:'Temporadas',value:'2'});
+});

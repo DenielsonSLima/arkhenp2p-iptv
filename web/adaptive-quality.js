@@ -1,4 +1,4 @@
-import { findChannelVariants } from './player-tools.js';
+import { findChannelVariants, channelQualityRank, channelCodec, declaredSourceBitrate } from './channel-variants.js';
 
 const STALL_WINDOW_MS = 30_000;
 const SWITCH_COOLDOWN_MS = 60_000;
@@ -7,18 +7,6 @@ const MIN_PLAYBACK_MS = 2_000;
 const MAX_HIGHER_ATTEMPTS = 2;
 const finite = value => typeof value === 'number' && Number.isFinite(value);
 const idOf = item => String(item?.id ?? '');
-const familyItem = item => ({ ...item, name: String(item?.name || '').replace(/\b(480|720|1080|2160)p?\b/gi, (_, pixels) => ({ 480: 'SD', 720: 'HD', 1080: 'FHD', 2160: '4K' })[pixels]) });
-
-function qualityRank(name) {
-  const ranks = new Set();
-  const quality = /(?:^|[\s\[\]()._|-])(sd|hd|fhd|uhd|4k|480p?|720p?|1080p?|2160p?)(?=$|[\s\[\]()._|-])/gi;
-  for (const match of String(name || '').matchAll(quality)) {
-    const value = match[1].toLowerCase();
-    ranks.add(/^(?:4k|uhd|2160p?)$/.test(value) ? 2160 : /^(?:fhd|1080p?)$/.test(value) ? 1080 : /^(?:hd|720p?)$/.test(value) ? 720 : 480);
-  }
-  // Ambiguous names cannot establish a reliable next quality step.
-  return ranks.size === 1 ? [...ranks][0] : null;
-}
 
 export function createAdaptiveState({ now = 0, currentId = '' } = {}) {
   const time = finite(now) ? now : 0;
@@ -35,7 +23,7 @@ export function createAdaptiveState({ now = 0, currentId = '' } = {}) {
   };
 }
 
-export function decideAdaptiveSource({ state, now, enabled, bufferSeconds, stalls, bandwidthBps, currentBitrateBps, variants = [], currentItem } = {}) {
+export function decideAdaptiveSource({ state, now, enabled, bufferSeconds, stalls, bandwidthBps, currentBitrateBps, variants = [], currentItem, sourceCapabilities=new Map() } = {}) {
   const next = state ? { ...state, stallTimes: [...(state.stallTimes || [])] } : createAdaptiveState({ now, currentId: idOf(currentItem) });
   const result = (reason, target = null) => ({ target, reason, state: next });
   if (!finite(now)) return result('clock-unavailable');
@@ -90,12 +78,14 @@ export function decideAdaptiveSource({ state, now, enabled, bufferSeconds, stall
 
   if (now - next.startedAt < MIN_PLAYBACK_MS) return result('starting');
   if (next.lastSwitchAt !== null && now - next.lastSwitchAt < SWITCH_COOLDOWN_MS) return result('cooldown');
-  const rank = qualityRank(currentItem.name);
+  const rank = channelQualityRank(currentItem);
   if (rank === null) return result('quality-unknown');
-  const familyIds = new Set(findChannelVariants(familyItem(currentItem), variants.map(familyItem)).map(idOf));
+  const familyIds = new Set(findChannelVariants(currentItem, variants).map(idOf));
+  const currentCodec=channelCodec(currentItem),supported=item=>sourceCapabilities instanceof Map ? sourceCapabilities.get(idOf(item)) : sourceCapabilities?.[idOf(item)];
   const offered = variants.filter(item => familyIds.has(idOf(item)))
-    .map(item => ({ item, rank: qualityRank(item.name) }))
-    .filter(option => option.rank !== null && idOf(option.item) !== currentId);
+    .map(item => ({ item, rank: channelQualityRank(item), codec:channelCodec(item) }))
+    .filter(option => option.rank !== null && idOf(option.item) !== currentId && supported(option.item)!==false &&
+      (!(option.codec==='hevc' && currentCodec!=='hevc' || option.codec && currentCodec && option.codec!==currentCodec) || supported(option.item)===true));
   const lower = offered.filter(option => option.rank < rank).sort((a, b) => b.rank - a.rank)[0]?.item;
   const higher = offered.filter(option => option.rank > rank).sort((a, b) => a.rank - b.rank)[0]?.item;
   let target = null;
@@ -103,7 +93,9 @@ export function decideAdaptiveSource({ state, now, enabled, bufferSeconds, stall
   if (bufferSeconds < 2 && next.stallTimes.length >= 2 && lower) {
     target = lower;
     reason = 'repeated-stalls';
-  } else if (higher && next.higherAttempts < MAX_HIGHER_ATTEMPTS && next.healthySince !== null && now - next.healthySince >= HEALTHY_PERIOD_MS && finite(bandwidthBps) && bandwidthBps > 0 && finite(currentBitrateBps) && currentBitrateBps > 0 && bandwidthBps >= 2.5 * currentBitrateBps) {
+  } else if (higher && next.higherAttempts < MAX_HIGHER_ATTEMPTS && next.healthySince !== null && now - next.healthySince >= HEALTHY_PERIOD_MS && finite(bandwidthBps) && bandwidthBps > 0 && finite(currentBitrateBps) && currentBitrateBps > 0 && bandwidthBps >= 2.5 * currentBitrateBps &&
+      (!declaredSourceBitrate(higher) || bandwidthBps>=1.5*declaredSourceBitrate(higher)) &&
+      (channelQualityRank(higher)<2160 || supported(higher)===true && declaredSourceBitrate(higher))) {
     target = higher;
     reason = 'measured-headroom';
     next.higherAttempts++;

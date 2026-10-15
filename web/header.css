@@ -1,0 +1,283 @@
+/* Persistent catalogue navigation. Keep this after the legacy page styles. */
+#application > .topbar {
+  --header-space: clamp(14px, 1.25vw, 26px);
+  display: grid;
+  grid-template-columns: max-content max-content minmax(210px, 1fr) max-content;
+  grid-template-areas: "brand navigation search account";
+  align-items: center;
+  gap: var(--header-space);
+  min-height: 94px;
+  height: auto;
+  padding: 16px var(--gutter);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: linear-gradient(110deg, #0b0c0ff5, #0a0b0df5);
+  border-bottom: 1px solid #dce2eb0c;
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+}
+
+.topbar > .brand {
+  grid-area: brand;
+  min-height: 44px;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.topbar .brand-wordmark { width: 128px; height: 27px; }
+.topbar .brand-product { font-size: 7px; letter-spacing: 3px; }
+
+.topbar #navigation {
+  grid-area: navigation;
+  position: static;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: auto;
+  height: auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  backdrop-filter: none;
+}
+
+.topbar .nav-item {
+  min-height: 44px;
+  padding: 0 12px;
+  display: inline-flex;
+  justify-content: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .045em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #aeb3bc;
+  border-radius: 6px;
+  transition: color .18s ease, background .18s ease;
+}
+
+.topbar .nav-item:hover { color: #f2f4f6; background: #ffffff07; }
+.topbar .nav-item.active { color: #f1f3f6; background: #e0e7f010; }
+.topbar .live-nav-dot { flex: 0 0 5px; }
+
+.topbar #search-panel {
+  grid-area: search;
+  position: static;
+  top: auto;
+  z-index: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 430px;
+  min-width: 0;
+  min-height: 46px;
+  justify-self: center;
+  padding: 0 0 0 14px;
+  background: #d7deeb06;
+  border: 1px solid #d7deeb19;
+  border-radius: 7px;
+  backdrop-filter: none;
+  transition: border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+
+.topbar #search-panel:focus-within {
+  background: #d7deeb0b;
+  border-color: #dbe6f18c;
+  box-shadow: 0 0 0 2px #dbe6f118;
+}
+
+.topbar #search-panel > span { display: flex; color: #9da9b9; flex-shrink: 0; }
+.topbar #search-panel > span svg { width: 17px; height: 17px; }
+.topbar #search-input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #edf1f6;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+}
+
+.topbar #search-input::placeholder { color: #87909e; opacity: 1; }
+.topbar #search-input::-webkit-search-cancel-button { display: none; }
+.topbar #search-input:focus { outline: none; }
+.topbar #search-panel kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 21px;
+  height: 23px;
+  flex: 0 0 auto;
+  margin-right: -4px;
+  padding: 0;
+  color: #748091;
+  background: #ffffff03;
+  border-color: #ffffff12;
+  font-size: 11px;
+}
+
+.topbar #close-search {
+  width: 44px;
+  height: 44px;
+  border-radius: 0 6px 6px 0;
+  color: #8f9bab;
+}
+
+.topbar #close-search svg { width: 15px; height: 15px; }
+.topbar #close-search:disabled { visibility: hidden; }
+
+.topbar .header-actions {
+  grid-area: account;
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: 8px !important;
+  min-width: 0;
+  margin: 0;
+}
+
+.topbar .access-validity {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 94px;
+  margin-right: 6px;
+  padding-right: 14px;
+  border-right: 1px solid #ffffff14;
+  line-height: 1.2;
+}
+
+#access-validity-label {
+  color: #85909e;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+#access-validity-date {
+  color: #d8e0ea;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.topbar #open-settings,
+.topbar #account-button {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+}
+
+.topbar #open-settings { color: #b3bdca; }
+.topbar #open-settings svg { width: 20px; height: 20px; }
+.topbar #account-button { background: #151a21; outline: 1px solid #ffffff19; }
+.topbar #account-button img { width: 20px; height: 24px; }
+
+.topbar :is(button, a):focus-visible {
+  outline: 2px solid #e0ebf9;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 5px #dbe6f112;
+}
+
+/* The expanded header participates in layout instead of covering content. */
+#application > main > .hero { margin-top: 0; padding-top: 0; }
+#application > main > .hero .hero-content { top: clamp(76px, 8vw, 140px); }
+#application > main > .browse .page-heading:not(.home-heading) { margin-top: 20px; }
+#application > main { scroll-margin-top: 110px; }
+
+@media (min-width: 1700px) {
+  #application > .topbar { min-height: 102px; gap: 30px; }
+  .topbar .brand-wordmark { width: 148px; height: 30px; }
+  .topbar .nav-item { font-size: 15px; padding-inline: 16px; min-height: 48px; }
+  .topbar #search-input { font-size: 14px; }
+  .topbar #search-panel { max-width: 460px; min-height: 48px; }
+  #access-validity-label { font-size: 10px; }
+  #access-validity-date { font-size: 14px; }
+}
+
+@media (max-width: 1250px) {
+  #application > .topbar {
+    grid-template-columns: max-content minmax(200px, 1fr) max-content;
+    grid-template-areas: "brand search account" "navigation navigation navigation";
+    gap: 8px 24px;
+    padding-block: 12px 10px;
+  }
+  .topbar #navigation { justify-self: center; gap: 12px; }
+  .topbar .nav-item { padding-inline: 18px; font-size: 14px; }
+  .topbar #search-panel { max-width: 480px; }
+  #application > main { scroll-margin-top: 144px; }
+}
+
+@media (max-width: 850px) {
+  #application > .topbar { gap: 8px 16px; }
+  .topbar .brand-wordmark { width: 108px; height: 25px; }
+  .topbar .brand-product { font-size: 6px; letter-spacing: 2.7px; }
+  .topbar .access-validity { margin-right: 2px; padding-right: 10px; min-width: 88px; }
+  .topbar .header-actions { gap: 5px !important; }
+  .topbar #navigation { gap: 6px; }
+  .topbar .nav-item { padding-inline: 17px; font-size: 13px; }
+  .topbar #search-panel { gap: 8px; padding-left: 12px; }
+  .topbar #search-panel kbd { display: none; }
+}
+
+@media (max-width: 650px) {
+  #application > .topbar {
+    grid-template-columns: minmax(0, 1fr) max-content;
+    grid-template-areas: "brand account" "search search" "navigation navigation";
+    gap: 10px 10px;
+    padding: 12px var(--gutter) 8px;
+  }
+  .topbar #search-panel { max-width: none; }
+  .topbar #search-input { font-size: 16px; }
+  .topbar #navigation {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    justify-self: stretch;
+    gap: 2px;
+    width: 100%;
+  }
+  .topbar .nav-item {
+    min-height: 44px;
+    padding: 0 2px;
+    gap: 4px;
+    font-size: 11px;
+    letter-spacing: .02em;
+  }
+  .topbar .live-nav-dot { width: 4px; height: 4px; flex-basis: 4px; }
+  .topbar .access-validity { gap: 4px; padding-right: 9px; min-width: 85px; }
+  #access-validity-label { font-size: 8px; letter-spacing: .04em; }
+  #access-validity-date { font-size: 11px; }
+  #application > main > .hero { height: 540px; }
+  #application > main > .hero .hero-content { top: auto; }
+  #application > main { scroll-margin-top: 192px; }
+}
+
+@media (max-width: 380px) {
+  #application > .topbar { column-gap: 6px; }
+  .topbar .brand-wordmark { width: 91px; height: 23px; }
+  .topbar .header-actions { gap: 3px !important; }
+  .topbar .access-validity { margin-right: 0; padding-right: 7px; min-width: 82px; }
+  .topbar .nav-item { font-size: 10px; letter-spacing: .01em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topbar .nav-item, .topbar #search-panel { transition: none; }
+}
+#catalog-load-sentinel{height:1px;min-height:1px;width:100%;pointer-events:none}
+#page-progress{text-align:center;line-height:1.6;max-width:52rem}
+.sort-controls{max-width:100%;flex-wrap:wrap}
+.sort-choice{min-height:36px}

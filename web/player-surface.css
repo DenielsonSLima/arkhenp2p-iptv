@@ -1,0 +1,21 @@
+/* The playback surface receives focus for TV keyboard shortcuts. Its old
+   :focus-visible outline framed the video and the black letterbox bars.
+   Keep focus indicators on the actual buttons, menus and range controls. */
+:is(.video-stage, .immersive-stage),
+:is(.video-stage, .immersive-stage):is(:focus, :focus-visible),
+:is(.video-stage, .immersive-stage) > video,
+:is(.video-stage, .immersive-stage) > video:is(:focus, :focus-visible) {
+  outline: none;
+  outline-offset: 0;
+  border: 0;
+  box-shadow: none;
+}
+
+/* Standard and WebKit fullscreen keep the same surface elements and selectors
+   above. Only their backdrop also needs an explicit black canvas. */
+.video-stage::backdrop,
+.immersive-stage::backdrop,
+.video-stage > video::backdrop,
+.immersive-stage > video::backdrop {
+  background: #000;
+}

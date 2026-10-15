@@ -16,17 +16,34 @@ test('live playback returns to the catalog and never creates a movie preview for
 test('a catalog URL wins over a stale home snapshot when closing live playback',()=>{
   const home={view:'home',category:'outros',query:'antiga',visibleLimit:96,scrollY:900};
   assert.equal(catalogView('#live'),'live');
-  assert.deepEqual(restoreCatalogPosition('#live',home,home),{view:'live',category:'__all',query:'',visibleLimit:48,scrollY:0});
+  assert.deepEqual(restoreCatalogPosition('#live',home,home),{view:'live',category:'__all',genre:'__all',query:'',visibleLimit:48,scrollY:0});
   assert.equal(catalogView('#watch/live/3797'),null);
   assert.equal(catalogView('#live?invalid'),null);
 });
 
 test('returning to the same catalog retains its filters and scroll, not another section state',()=>{
-  const movies={view:'movies',category:'acao',query:'',visibleLimit:96,scrollY:600};
+  const movies={view:'movies',category:'lancamentos',genre:'acao',query:'',visibleLimit:96,scrollY:600};
   assert.deepEqual(restoreCatalogPosition('#movies',movies),movies);
   assert.deepEqual(restoreCatalogPosition('#movies',{view:'home',scrollY:500},movies),movies);
   assert.equal(restoreCatalogPosition('#home',movies).view,'home');
   assert.equal(restoreCatalogPosition('',null,{view:'series'}).view,'series');
+});
+
+test('movie and series returns preserve the genre intersecting the selected category',()=>{
+  for(const view of ['movies','series']){
+    const saved={view,category:'__favorites',genre:'drama',query:'',visibleLimit:144,scrollY:780};
+    assert.deepEqual(restoreCatalogPosition('#'+view,saved),saved);
+    assert.deepEqual(restoreCatalogPosition('',saved),saved);
+    assert.equal(saved.genre,'drama');
+  }
+});
+
+test('older history without a genre restores all genres and never borrows another catalog filter',()=>{
+  const legacy={view:'movies',category:'lancamentos',query:'',visibleLimit:96,scrollY:640};
+  const unrelated={view:'series',category:'__favorites',genre:'terror',query:'',visibleLimit:48,scrollY:200};
+  assert.deepEqual(restoreCatalogPosition('#movies',unrelated,legacy),{...legacy,genre:'__all'});
+  assert.equal(restoreCatalogPosition('#live',unrelated).genre,'__all');
+  assert.equal(restoreCatalogPosition('#movies',{...legacy,genre:''}).genre,'__all');
 });
 
 test('deep links reject invalid identifiers and episodes attached to the wrong content kind',()=>{

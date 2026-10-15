@@ -1,4 +1,7 @@
 import { createAdaptiveState, decideAdaptiveSource } from './adaptive-quality.js';
+import { channelQualityRank, findChannelVariants, measuredQualityLabel, sourceDecodingConfiguration } from './channel-variants.js';
+import { SubtitleLayout } from './subtitle-layout.js';
+export { channelFamily, findChannelVariants } from './channel-variants.js';
 
 export const BUFFER_MODES = {
   balanced: {label:'Equilibrada',description:'Equilíbrio entre estabilidade e atraso.',maxBufferLength:30,maxMaxBufferLength:60,liveSyncDurationCount:4,lowLatencyMode:false},
@@ -18,16 +21,10 @@ export function bufferConfig(mode='balanced') {
   const selected=BUFFER_MODES[mode] || BUFFER_MODES.balanced;
   return {...fastLoadPolicies(),maxBufferLength:selected.maxBufferLength,maxMaxBufferLength:selected.maxMaxBufferLength,liveSyncDurationCount:selected.liveSyncDurationCount,lowLatencyMode:selected.lowLatencyMode,maxBufferSize:48*1024*1024};
 }
-export function channelFamily(name) {
-  return String(name || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()
-    .replace(/(?:\s*[-|([]?\s*(?:sd|hd|fhd|uhd|4k|hevc|h[ .-]?26[45])\s*[)\]]?)+\s*$/i,'')
-    .replace(/[^a-z0-9]+/g,' ').trim();
-}
-export function findChannelVariants(item,items=[]) {
-  if(item?.kind!=='live')return [];
-  const family=channelFamily(item.name);if(!family)return [];
-  const seen=new Set();
-  return items.filter(candidate=>candidate.kind==='live'&&channelFamily(candidate.name)===family&&!seen.has(String(candidate.id))&&seen.add(String(candidate.id))).slice(0,10);
+export function fragmentBitrateBps(data) {
+  if (data?.frag?.type && data.frag.type!=='main') return null;
+  const bytes=Number(data?.payload?.byteLength ?? data?.stats?.loaded ?? data?.frag?.stats?.total),duration=Number(data?.frag?.duration);
+  return Number.isFinite(bytes) && bytes>0 && Number.isFinite(duration) && duration>0 ? bytes*8/duration : null;
 }
 export function bufferedAhead(video) {
   const time=Number(video.currentTime) || 0;
@@ -60,13 +57,14 @@ function tracks(list){try{return Array.from(list || []);}catch{return [];}}
 export class PlayerTools {
   constructor(options){
     this.options=options;this.video=options.video;this.current=null;this.listeners=[];this.localTracks=[];this.timers=new Set();this.interval=null;this.diagnosticRequest=0;
+    this.subtitleLayout=new SubtitleLayout({video:this.video});
     try{this.bufferMode=localStorage.getItem('arkehn.buffer.v1') || 'balanced';}catch{this.bufferMode='balanced';}
     if(!BUFFER_MODES[this.bufferMode])this.bufferMode='balanced';
     try{this.autoQuality=localStorage.getItem('arkehn.autoQuality.v1')!=='false';}catch{this.autoQuality=true;}
     this.adaptiveState=null;
     try{const saved=JSON.parse(localStorage.getItem('arkehn.playbackProfiles.v1') || '{}');this.profiles={live:BUFFER_MODES[saved.live]?saved.live:this.bufferMode,vod:['balanced','stable'].includes(saved.vod)?saved.vod:'balanced'};}catch{this.profiles={live:this.bufferMode,vod:'balanced'};}
     this.$=selector=>document.querySelector(selector);
-    for(const id of ['connection-test-header','connection-test-account','connection-test-player','diagnostics-repeat'])this.$(`#${id}`).addEventListener('click',()=>this.diagnostics());
+    this.$('#diagnostics-repeat').addEventListener('click',()=>this.diagnostics());
     this.$('#subtitle-file').addEventListener('change',event=>this.addSubtitle(event.target));
     this.$('#diagnostics-dialog').addEventListener('close',()=>{this.diagnosticRequest++;});
     for(const detail of this.$('#player-dialog').querySelectorAll('.player-control'))detail.addEventListener('toggle',()=>{if(detail.open)for(const other of this.$('#player-dialog').querySelectorAll('.player-control'))if(other!==detail)other.open=false;});
@@ -75,6 +73,7 @@ export class PlayerTools {
   listen(target,event,listener){target?.addEventListener?.(event,listener);this.listeners.push(()=>target?.removeEventListener?.(event,listener));}
   listenHls(event,listener){const hls=this.current?.hls;if(event&&hls){hls.on(event,listener);this.listeners.push(()=>hls.off(event,listener));}}
   reset(){
+    this.subtitleLayout?.stop();
     if(this.interval)clearInterval(this.interval);this.interval=null;
     for(const timer of this.timers)clearTimeout(timer);this.timers.clear();
     this.listeners.forEach(remove=>remove());this.listeners=[];
@@ -83,10 +82,11 @@ export class PlayerTools {
     for(const id of ['metric-resolution','metric-buffer','metric-bandwidth'])this.$('#'+id).textContent='—';this.$('#metric-stalls').textContent='0';this.$('#metric-latency').textContent='Não disponível';this.$('#metric-error-row').hidden=true;this.$('#playback-health').textContent='Preparando reprodução';this.$('#playback-overview').textContent='Dados disponíveis ao iniciar';this.$('#player-telemetry').dataset.health='pending';
     for(const detail of this.$('#player-dialog').querySelectorAll('.player-control'))detail.open=false;
   }
-  attach({item,hls=null,variants=[],automatic=false,adaptiveState=null,errorEvents=[]}){
-    this.reset();this.bufferMode=this.profiles[item.kind==='live'?'live':'vod'];this.current={item,hls,variants,started:false,buffering:false,stalls:0,lastStall:0,segments:0,networkRetries:0,mediaRetries:0,failed:false,measuredBitrateBps:null,forcedLevel:null,intentionalSeekUntil:0,errorEvents:[...errorEvents].slice(-6)};
+  attach({item,hls=null,variants=[],automatic=false,adaptiveState=null,errorEvents=[],qualityMode='auto',qualityHeight=null}){
+    this.reset();this.bufferMode=this.profiles[item.kind==='live'?'live':'vod'];this.current={item,hls,variants:findChannelVariants(item,variants),qualityMode:qualityMode==='manual'?'manual':'auto',manualHeight:Number.isSafeInteger(qualityHeight)&&qualityHeight>0?qualityHeight:null,sourceCapabilities:new Map(),started:false,buffering:false,stalls:0,lastStall:0,segments:0,networkRetries:0,mediaRetries:0,failed:false,measuredBitrateBps:null,forcedLevel:null,intentionalSeekUntil:0,errorEvents:[...errorEvents].slice(-6)};
     this.adaptiveState=automatic&&adaptiveState?adaptiveState:createAdaptiveState({now:Date.now(),currentId:item.id});
     const current=this.current;
+    this.subtitleLayout?.attach();
     this.listen(this.video,'playing',()=>{if(this.current!==current)return;current.started=true;current.buffering=false;this.updateMetrics();});
     const waiting=()=>{if(this.current!==current||this.video.paused||!current.started||current.buffering||Date.now()<current.intentionalSeekUntil)return;current.buffering=true;current.stalls++;current.lastStall=Date.now();this.updateMetrics();};
     this.listen(this.video,'waiting',waiting);
@@ -96,36 +96,42 @@ export class PlayerTools {
     if(hls){
       const events=window.Hls.Events;
       for(const event of ['MANIFEST_PARSED','LEVELS_UPDATED','LEVEL_SWITCHED','AUDIO_TRACKS_UPDATED','AUDIO_TRACK_SWITCHED','SUBTITLE_TRACKS_UPDATED','SUBTITLE_TRACK_SWITCH'])this.listenHls(events[event],()=>{this.applyAutoQuality();this.renderMenus();});
-      this.listenHls(events.FRAG_LOADED,(_,data)=>{if(this.current===current){current.segments++;const bytes=data.payload?.byteLength || data.stats?.loaded || data.frag?.stats?.total,duration=data.frag?.duration;if(Number(bytes)>0&&Number(duration)>0){const measured=bytes*8/duration;current.measuredBitrateBps=current.measuredBitrateBps?current.measuredBitrateBps*.7+measured*.3:measured;}this.updateMetrics();}});
+      for(const event of ['SUBTITLE_TRACKS_UPDATED','SUBTITLE_TRACK_SWITCH','SUBTITLE_TRACK_LOADED'])this.listenHls(events[event],()=>{if(this.current===current)this.subtitleLayout?.refresh();});
+      this.listenHls(events.CUES_PARSED,(_,data)=>{if(this.current===current&&['subtitles','captions'].includes(data?.type))this.subtitleLayout?.refresh(data.cues);});
+      this.listenHls(events.FRAG_LOADED,(_,data)=>{if(this.current===current){current.segments++;const measured=fragmentBitrateBps(data);if(measured!==null)current.measuredBitrateBps=current.measuredBitrateBps?current.measuredBitrateBps*.7+measured*.3:measured;this.updateMetrics();}});
     }
+    void this.inspectSourceCapabilities(current);
     this.interval=setInterval(()=>this.updateMetrics(),1000);this.applyAutoQuality();this.renderMenus();this.updateMetrics();
   }
   choice(menu,label,selected,action,detail,disabled=false){
     const option=element('button',`control-option${selected?' selected':''}`);option.type='button';option.disabled=disabled;option.setAttribute('aria-pressed',String(selected));
     option.append(element('span','',label));if(detail)option.append(element('small','',detail));
-    option.addEventListener('click',()=>{action?.();option.closest('details').open=false;});menu.append(option);return option;
+    option.addEventListener('click',()=>{const detail=option.closest('details');action?.();if(detail)detail.open=false;});menu.append(option);return option;
   }
   note(menu,text){menu.append(element('p','control-note',text));}
   renderMenus(){this.renderQuality();this.renderSubtitles();this.renderAudio();this.renderBuffer();}
   renderQuality(){
     const menu=this.$('#quality-menu');menu.replaceChildren();const current=this.current,hls=current?.hls,levels=hls?.levels || [];
-    const measured=this.video.videoHeight>0?`${this.video.videoHeight}p`:'';
+    const measured=measuredQualityLabel(this.video.videoHeight,this.video.videoWidth),automatic=this.autoQuality && current?.qualityMode!=='manual';
     if(levels.length>1){
-      const auto=hls.autoLevelEnabled;this.$('#quality-label').textContent=auto?`Automática${measured?' · '+measured:''}`:(measured || 'Selecionada');
-      this.choice(menu,'Automática',auto,()=>{this.setAutoQuality(true);this.renderQuality();},'Ajuste entre as fontes oferecidas.');
+      const auto=automatic;this.$('#quality-label').textContent=auto?`Automática${measured?' · '+measured:''}`:`Manual${measured?' · '+measured:''}`;
+      this.choice(menu,'Automática',auto,()=>this.setAutoQuality(true),'Ajusta os níveis oferecidos nesta transmissão.');
       levels.map((level,index)=>({level,index})).sort((a,b)=>(b.level.height||0)-(a.level.height||0)).forEach(({level,index})=>{
-        const label=level.height?`${level.height}p`:level.name || `Fonte ${index+1}`;
-        this.choice(menu,label,!auto&&hls.currentLevel===index,()=>{this.setAutoQuality(false,index);this.$('#quality-label').textContent=label;},level.bitrate?`${number(level.bitrate/1e6)} Mb/s`:'');
+        const label=measuredQualityLabel(level.height,level.width)||level.name || `Fonte ${index+1}`;
+        this.choice(menu,label,!auto&&(current.forcedLevel===index || current.forcedLevel===null&&hls.currentLevel===index),()=>this.setAutoQuality(false,index),`Resolução anunciada${level.bitrate?' · '+number(level.bitrate/1e6)+' Mb/s':''}`);
       });
     }else{
-      this.$('#quality-label').textContent=`${this.autoQuality&&current?.variants.length>1?'Automática':'Original'}${measured?' · '+measured:''}`;
+      this.$('#quality-label').textContent=`${current?.variants.length>1 ? automatic?'Automática':'Manual' : 'Original'}${measured?' · '+measured:''}`;
+      if(current?.variants.length>1)this.choice(menu,'Automática',automatic,()=>this.setAutoQuality(true),'Ajusta fontes do mesmo canal após medir a reprodução.');
       this.choice(menu,`Original${measured?' · '+measured:''}`,true,null,'Resolução fornecida pela fonte atual.',true);
     }
     if(current?.variants.length>1){
       menu.append(element('span','control-group-label','FONTES DESTE CANAL'));
-      for(const variant of current.variants)this.choice(menu,variant.name,String(variant.id)===String(current.item.id),()=>this.options.switchChannel(variant,{automatic:false}));
-      this.note(menu,'HD, FHD e SD são identificações informadas pelo serviço.');
+      for(const variant of current.variants)this.choice(menu,variant.name,String(variant.id)===String(current.item.id),()=>this.selectSourceVariant(variant),'Identificação informada pelo serviço.');
+      this.note(menu,'SD, HD, FHD e 4K são nomes do serviço. A resolução medida aparece acima. Uma escolha manual é mantida até você ativar Automática.');
     }else if(current)this.note(menu,levels.length>1?'As opções pertencem à transmissão atual.':'Esta fonte não oferece outras resoluções selecionáveis.');
+    const width=this.video.videoWidth,height=this.video.videoHeight;
+    if(current&&width>0&&height>0){this.note(menu,`Em reprodução: ${width} × ${height}${width>=3840&&height>=2160?' · 4K':''}.`);if(channelQualityRank(current.item)>=2160&&!(width>=3840&&height>=2160))this.note(menu,`Fonte anunciada como 4K; resolução recebida: ${width} × ${height}.`);}
   }
   disableSubtitles(){
     if(this.current?.hls){this.current.hls.subtitleTrack=-1;this.current.hls.subtitleDisplay=false;}
@@ -137,12 +143,12 @@ export class PlayerTools {
     const active=provided.some((_,index)=>hls.subtitleDisplay&&hls.subtitleTrack===index)||native.some(track=>track.mode==='showing');
     this.choice(menu,'Desativadas',!active,()=>{this.subtitleSelection=null;this.disableSubtitles();this.renderSubtitles();});
     let selectedName='Desativadas';
-    provided.forEach((track,index)=>{const selected=hls.subtitleDisplay&&hls.subtitleTrack===index,label=trackName(track,index);if(selected)selectedName=label;this.choice(menu,label,selected,()=>{this.disableSubtitles();hls.subtitleTrack=index;hls.subtitleDisplay=true;this.subtitleSelection={type:'hls',index};this.$('#subtitle-label').textContent=label;});});
+    provided.forEach((track,index)=>{const selected=hls.subtitleDisplay&&hls.subtitleTrack===index,label=trackName(track,index);if(selected)selectedName=label;this.choice(menu,label,selected,()=>{this.disableSubtitles();hls.subtitleTrack=index;hls.subtitleDisplay=true;this.subtitleSelection={type:'hls',index};this.$('#subtitle-label').textContent=label;this.subtitleLayout?.refresh();});});
     native.forEach((track,index)=>{
       const local=this.localTracks.find(entry=>entry.element.track===track);
       if(!local&&provided.some(providedTrack=>(providedTrack.name || providedTrack.lang)===(track.label || track.language)))return;
       const selected=track.mode==='showing',label=local?local.name:trackName(track,index);if(selected)selectedName=label;
-      this.choice(menu,label,selected,()=>{this.disableSubtitles();track.mode='showing';this.subtitleSelection={type:'native',track};this.$('#subtitle-label').textContent=label;});
+      this.choice(menu,label,selected,()=>{this.disableSubtitles();track.mode='showing';this.subtitleSelection={type:'native',track};this.$('#subtitle-label').textContent=label;this.subtitleLayout?.refresh();});
     });
     if(!provided.length&&!native.length)this.note(menu,'A fonte não disponibilizou legendas. Você pode adicionar um arquivo.');
     this.$('#subtitle-label').textContent=selectedName;
@@ -155,7 +161,7 @@ export class PlayerTools {
       const extension=file.name.split('.').pop().toLowerCase(),vtt=subtitleToVtt(await file.text(),extension);if(this.current!==current)return;
       const url=URL.createObjectURL(new Blob([vtt],{type:'text/vtt'})),track=element('track');track.kind='subtitles';track.label=file.name;track.srclang='pt-BR';track.src=url;
       this.localTracks.push({element:track,url,name:file.name});
-      track.addEventListener('load',()=>{if(this.current!==current)return;this.disableSubtitles();track.track.mode='showing';this.subtitleSelection={type:'native',track:track.track};this.renderSubtitles();this.options.toast('Legenda adicionada');},{once:true});
+      track.addEventListener('load',()=>{if(this.current!==current)return;this.disableSubtitles();track.track.mode='showing';this.subtitleSelection={type:'native',track:track.track};this.subtitleLayout?.refresh();this.renderSubtitles();this.options.toast('Legenda adicionada');},{once:true});
       track.addEventListener('error',()=>{if(this.current===current)this.options.toast('Não foi possível ler esta legenda. Confira o arquivo.');},{once:true});
       this.video.append(track);track.track.mode='hidden';this.renderSubtitles();
     }catch(error){this.options.toast(error.message);}
@@ -178,13 +184,38 @@ export class PlayerTools {
   }
   applyAutoQuality(){
     const current=this.current,hls=current?.hls;if(!hls||hls.levels.length<2)return;
-    if(this.autoQuality){hls.nextLevel=-1;current.forcedLevel=null;return;}
-    if(current.forcedLevel===null&&hls.currentLevel>=0)current.forcedLevel=hls.currentLevel;
-    if(current.forcedLevel!==null)hls.nextLevel=current.forcedLevel;
+    const automatic=this.autoQuality && current.qualityMode!=='manual';
+    if(hls.config)hls.config.preserveManualLevelOnError=!automatic;
+    if(automatic){if(current.appliedQualityMode!=='auto'||hls.autoLevelEnabled===false)hls.loadLevel=-1;current.forcedLevel=null;current.appliedQualityMode='auto';current.appliedManualLevel=null;return;}
+    if(current.forcedLevel===null || current.forcedLevel>=hls.levels.length){
+      const nominal=current.qualityMode==='manual'?(current.manualHeight??channelQualityRank(current.item)):null;
+      const offered=nominal===null?-1:hls.levels.findIndex(level=>level.height===nominal);
+      if(offered>=0)current.forcedLevel=offered;else if(hls.currentLevel>=0)current.forcedLevel=hls.currentLevel;
+    }
+    if(current.forcedLevel!==null && (current.appliedQualityMode!=='manual'||current.appliedManualLevel!==current.forcedLevel||hls.autoLevelEnabled===true)){
+      hls.loadLevel=current.forcedLevel;current.appliedQualityMode='manual';current.appliedManualLevel=current.forcedLevel;
+    }
   }
   setAutoQuality(enabled,level=null){
     this.autoQuality=Boolean(enabled);try{localStorage.setItem('arkehn.autoQuality.v1',String(this.autoQuality));}catch{}
-    if(this.current){this.current.forcedLevel=level;this.adaptiveState=createAdaptiveState({now:Date.now(),currentId:this.current.item.id});this.adaptiveState.lastStallCount=this.current.stalls;this.applyAutoQuality();this.renderQuality();}
+    if(this.current){const selected=Number.isInteger(level)&&level>=0?level:!enabled&&this.current.hls?.currentLevel>=0?this.current.hls.currentLevel:null;this.current.qualityMode=enabled?'auto':'manual';this.current.forcedLevel=enabled?null:selected;this.current.manualHeight=enabled?null:this.current.hls?.levels[selected]?.height??null;this.adaptiveState=createAdaptiveState({now:Date.now(),currentId:this.current.item.id});this.adaptiveState.lastStallCount=this.current.stalls;this.applyAutoQuality();this.renderQuality();}this.options?.onPreferencesChange?.();
+  }
+  getQualitySelection(){
+    const current=this.current,manual=!this.autoQuality||current?.qualityMode==='manual';
+    const height=current?.hls?.levels[current.forcedLevel]?.height??current?.manualHeight;
+    return {qualityMode:manual?'manual':'auto',qualityHeight:manual&&Number.isSafeInteger(height)&&height>0?height:null};
+  }
+  selectSourceVariant(variant){
+    const current=this.current,target=current?.variants.find(item=>String(item.id)===String(variant?.id));if(!target)return;
+    current.qualityMode='manual';this.options.switchChannel(target,{automatic:false,qualityMode:'manual'});
+  }
+  async inspectSourceCapabilities(current){
+    const capabilities=globalThis.navigator?.mediaCapabilities;if(!capabilities?.decodingInfo || current.item.kind!=='live')return;
+    await Promise.allSettled(current.variants.slice(0,64).map(async item=>{
+      const configuration=sourceDecodingConfiguration(item,current.hls?'media-source':'file');if(!configuration)return;
+      const result=await capabilities.decodingInfo(configuration);if(this.current!==current)return;
+      current.sourceCapabilities.set(String(item.id),result.supported===true&&result.smooth===true);this.updateMetrics();
+    }));
   }
   syncToProfile(){
     const current=this.current,position=current?.hls?.liveSyncPosition;
@@ -192,11 +223,12 @@ export class PlayerTools {
     if(Math.abs(this.video.currentTime-position)>1){current.intentionalSeekUntil=Date.now()+4000;this.video.currentTime=position;this.options.toast('Perfil aplicado. A posição ao vivo foi ajustada.');}
     return true;
   }
-  configFor(kind){return {...bufferConfig(this.profiles[kind==='live'?'live':'vod']),backBufferLength:kind==='live'?30:60};}
+  configFor(kind){return {...bufferConfig(this.profiles[kind==='live'?'live':'vod']),backBufferLength:kind==='live'?30:60,startLevel:-1,abrMaxWithRealBitrate:true,preserveManualLevelOnError:false};}
   setProfile(profile,key){
     if(!BUFFER_MODES[key]||(profile==='vod'&&key==='low'))return;
     this.profiles[profile]=key;try{localStorage.setItem('arkehn.playbackProfiles.v1',JSON.stringify(this.profiles));}catch{}
     if(this.current&&profile===(this.current.item.kind==='live'?'live':'vod')){this.bufferMode=key;if(this.current.hls){Object.assign(this.current.hls.config,bufferConfig(key));if(profile==='live')this.syncToProfile();}this.renderBuffer();}
+    this.options?.onPreferencesChange?.();
   }
   renderPreferences(container){
     container.replaceChildren();const auto=element('label','settings-auto-quality');const check=element('input');check.type='checkbox';check.checked=this.autoQuality;const copy=element('span');copy.append(element('strong','','Ajustar qualidade automaticamente'),element('small','','Usa as resoluções e fontes disponíveis, com base na reprodução e na conexão medida.'));check.addEventListener('change',()=>{this.setAutoQuality(check.checked);});auto.append(check,copy);container.append(auto);container.append(element('p','settings-description','Escolha um perfil para TV ao vivo e outro para filmes e séries. Cada fonte mantém sua qualidade original.'));
@@ -213,7 +245,7 @@ export class PlayerTools {
   }
   diagnose(){return this.diagnostics();}
   updateMetrics(){
-    const current=this.current;if(!current)return;const buffer=bufferedAhead(this.video),resolution=this.video.videoWidth&&this.video.videoHeight?`${this.video.videoWidth} × ${this.video.videoHeight}`:'Aguardando vídeo';
+    const current=this.current;if(!current)return;const buffer=bufferedAhead(this.video),resolution=this.video.videoWidth&&this.video.videoHeight?`${this.video.videoWidth} × ${this.video.videoHeight}${this.video.videoWidth>=3840&&this.video.videoHeight>=2160?' · 4K':''}`:'Aguardando vídeo';
     const bandwidth=current.hls&&current.segments>0&&Number.isFinite(current.hls.bandwidthEstimate)?current.hls.bandwidthEstimate/1e6:null;
     this.$('#metric-resolution').textContent=resolution;this.$('#metric-buffer').textContent=`${number(buffer)} s`;this.$('#metric-stalls').textContent=String(current.stalls);this.$('#metric-bandwidth').textContent=bandwidth===null?'Não disponível':`≈ ${number(bandwidth)} Mb/s`;
     const lastError=current.errorEvents.at(-1);this.$('#metric-error-row').hidden=!lastError;this.$('#metric-last-error').textContent=lastError?.detail || '—';
@@ -228,12 +260,12 @@ export class PlayerTools {
       else{health='Reprodução estável';state='good';}
     }
     this.$('#playback-health').textContent=health;this.$('#player-telemetry').dataset.health=state;
-    this.$('#playback-overview').textContent=`${this.video.videoHeight?this.video.videoHeight+'p · ':''}${number(buffer)} s de vídeo disponível`;
+    this.$('#playback-overview').textContent=`${measuredQualityLabel(this.video.videoHeight,this.video.videoWidth)?measuredQualityLabel(this.video.videoHeight,this.video.videoWidth)+' · ':''}${number(buffer)} s de vídeo disponível`;
     if(current.started&&!current.failed&&!this.video.paused&&!this.video.ended&&current.item.kind==='live'&&(current.hls?.levels.length || 0)<=1){
-      const level=current.hls?.levels[current.hls.currentLevel],bitrate=Number(level?.bitrate)>0?Number(level.bitrate):current.measuredBitrateBps;
-      const decision=decideAdaptiveSource({state:this.adaptiveState,now:Date.now(),enabled:this.autoQuality,bufferSeconds:buffer,stalls:current.stalls,bandwidthBps:bandwidth===null?null:bandwidth*1e6,currentBitrateBps:bitrate,variants:current.variants,currentItem:current.item});
+      const level=current.hls?.levels[current.hls.currentLevel],rates=[Number(level?.bitrate),current.measuredBitrateBps].filter(value=>Number.isFinite(value)&&value>0),bitrate=rates.length?Math.max(...rates):null;
+      const decision=decideAdaptiveSource({state:this.adaptiveState,now:Date.now(),enabled:this.autoQuality&&current.qualityMode!=='manual',bufferSeconds:buffer,stalls:current.stalls,bandwidthBps:bandwidth===null?null:bandwidth*1e6,currentBitrateBps:bitrate,variants:current.variants,currentItem:current.item,sourceCapabilities:current.sourceCapabilities});
       this.adaptiveState=decision.state;
-      if(decision.target){this.options.toast(decision.reason==='repeated-stalls'?'Fonte ajustada para recuperar a estabilidade.':'Fonte ajustada após medir folga na conexão.');this.options.switchChannel(decision.target,{automatic:true,adaptiveState:decision.state,reason:decision.reason});}
+      if(decision.target){this.options.toast(decision.reason==='repeated-stalls'?'Fonte ajustada para recuperar a estabilidade.':'Fonte ajustada após medir folga na conexão.');this.options.switchChannel(decision.target,{automatic:true,qualityMode:'auto',adaptiveState:decision.state,reason:decision.reason});}
     }
 
   }

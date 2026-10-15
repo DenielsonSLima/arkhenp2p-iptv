@@ -16,8 +16,19 @@
 .episode-skip-action:hover{background:#26313fe8;border-color:#eef4ff}
 .episode-skip-actions[hidden],.episode-skip-panel[hidden],.episode-skip-action[hidden]{display:none!important}
 .episode-skip-panel button:focus-visible,.episode-skip-action:focus-visible{outline:2px solid #e0ebfa;outline-offset:3px}
-.ip-root:has(.ip-tools-slot:not([hidden])) .episode-skip-actions{display:none}
+.ip-root:has(.ip-tools-slot:not([hidden])) .episode-skip-actions>.episode-skip-action{display:none}
+.episode-skip-actions{align-items:flex-end;flex-wrap:wrap;max-width:calc(100% - 48px)}
+.episode-next-countdown{min-width:280px;max-width:360px;padding:18px;border:1px solid #d9e3ef38;border-radius:7px;background:#111820f2;backdrop-filter:blur(12px);box-shadow:0 9px 38px #0006}
+.episode-next-title{display:block;color:#eef3fa;font-size:16px;font-weight:600;line-height:1.45;letter-spacing:-.15px}
+.episode-next-detail{display:block;margin-top:6px;color:#a3b2c5;font-size:11px;line-height:1.6}
+.episode-next-buttons{display:flex;gap:8px;margin-top:15px}
+.episode-next-buttons .episode-skip-action{padding-inline:14px;font-size:11px;min-height:44px;box-shadow:none;backdrop-filter:none}
+.episode-next-now{background:#d4deea;color:#111820;border-color:#d4deea}
+.episode-next-now:hover{background:#eef3fa;color:#111820}
+.episode-next-cancel{background:transparent;border-color:#d4deea25;color:#cad6e5}
+.episode-next-countdown[hidden]{display:none!important}
 @media(max-width:900px){.episode-skip-markers{grid-template-columns:1fr;gap:0}.episode-skip-marker{padding:7px 0}.episode-skip-marker-copy{flex-direction:row;align-items:center;gap:14px}.episode-skip-marker-copy>span{min-width:112px}}
 @media(max-width:650px){.episode-skip-panel{padding:13px 3px 3px}.episode-skip-description{font-size:10px}.episode-skip-marker-copy{gap:8px}.episode-skip-marker-copy>span{min-width:105px;font-size:9px}.episode-skip-value{font-size:10px}.episode-skip-mark{padding-inline:9px;font-size:10px}.episode-skip-action{min-height:44px;padding-inline:17px;font-size:12px}.episode-skip-actions{right:max(16px,env(safe-area-inset-right));bottom:max(126px,calc(env(safe-area-inset-bottom) + 112px));gap:8px}}
 @media(max-width:380px){.episode-skip-marker-copy{flex-direction:column;align-items:flex-start;gap:3px}.episode-skip-marker-copy>span{min-width:0}}
 @media(max-height:500px){.episode-skip-actions{bottom:max(114px,calc(env(safe-area-inset-bottom) + 104px))}}
+@media(max-width:650px){.episode-skip-actions{max-width:calc(100% - 32px)}.episode-next-countdown{min-width:0;width:min(320px,calc(100vw - 32px));padding:15px}.episode-next-title{font-size:15px}.episode-next-detail{font-size:11px}}

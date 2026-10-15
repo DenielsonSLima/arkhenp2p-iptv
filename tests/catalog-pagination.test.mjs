@@ -29,6 +29,21 @@ test('out of order snapshots retain titles, category memberships and completed p
   assert.equal(merged.categories.length,2);
 });
 
+test('an explicitly complete shared snapshot replaces partial titles and ignores stale category pages',()=>{
+  const incoming={catalogComplete:true,categories:[{id:'3',name:'Novidades'}],items:[{id:'30',name:'Título atual',categoryId:'3'}]};
+  const complete=mergeCatalogPage(catalog(),incoming);
+  assert.deepEqual(complete.items,incoming.items);assert.deepEqual(complete.categories,incoming.categories);
+  assert.equal(complete.pagination.mode,'complete');assert.deepEqual(pageChoices(complete),[]);
+  assert.deepEqual(complete.pagination.byCategory,{'3':{loaded:true,nextPage:1,hasMore:false}});
+  const stale=mergeCatalogPage(complete,{categories:[{id:'1',name:'Ação'}],items:[{id:'10',name:'Removido'}],pagination:catalog().pagination});
+  assert.equal(stale,complete);assert.deepEqual(stale.items.map(item=>item.id),['30']);
+  const prepared={...complete,sourceCategories:complete.categories,categories:[{id:'novidades',ids:new Set(['3']),name:'Novidades'}]};
+  const preserved=mergeCatalogPage(prepared,{categories:[],items:[{id:'10',name:'Removido'}]});
+  assert.deepEqual(preserved.categories,incoming.categories,'The app receives original source IDs when it normalizes a preserved snapshot again.');
+  assert.deepEqual(preserved.items,incoming.items);
+  assert.equal(mergeCatalogPage(complete,{...incoming,items:[]}).items.length,0,'An explicitly complete empty replacement also removes old titles.');
+});
+
 test('page failures retain a retryable error and overlapping requests are deduplicated',async()=>{
   const request=deferred();let calls=0;const pager=new CatalogPager({getCatalog:catalog,request:()=>{calls++;return request.promise;},onData:()=>assert.fail('Failed page cannot replace catalog'),onChange:()=>{}});
   const first=pager.load('movies','drama'),second=pager.load('movies','drama');await Promise.resolve();assert.equal(calls,1);assert.equal(pager.pendingFor('movies','drama'),true);

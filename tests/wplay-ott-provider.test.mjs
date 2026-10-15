@@ -27,7 +27,7 @@ async function fixture({member=false,artworkFailure=false,legacyUnavailable=fals
       if(emptyRows)for(const row of result.rows)row.items=[];
       if(moviesOnly)result.rows=result.rows.filter(row=>row.kind==='Filme');
     } else if(id===WPLAY_OTT_RPC.artwork){if(artworkFailure){res.writeHead(502).end();return;}result={artwork:{image:'/poster?key=private-artwork',backdrop:'/backdrop',description:'Enredo',score:80,year:2026}};}
-    else if(id===WPLAY_OTT_RPC.episodes)result={episodes:[{id:'episode:uuid',title:'Piloto',season:1,episode:1,playbackUrl:'/episode/raw.mp4?token=private-episode'}]};
+    else if(id===WPLAY_OTT_RPC.episodes)result={episodes:[{id:'episode:uuid',title:'Piloto',season:1,episode:1,thumbnail:'/episode-still?key=private-episode-image',playbackUrl:'/episode/raw.mp4?token=private-episode'}]};
     else if(id===WPLAY_OTT_RPC.logout)result={success:true};
     else if(url.pathname==='/live/raw.m3u8'&&req.method==='POST'){res.writeHead(204).end();return;}
     else if(url.pathname==='/live/raw.m3u8'&&req.method==='GET'){res.writeHead(200,{'Content-Type':'application/vnd.apple.mpegurl'}).end('#EXTM3U\n#EXTINF:4,\nsegment.ts\n');return;}
@@ -105,6 +105,7 @@ test('OTT details register only actual episode URLs, resolving relative artwork 
   const mock=await fixture();try {
     const series=(await mock.client.catalog('series')).items[0],details=await mock.client.details('series',series.id),episode=details.seasons[0].episodes[0];
     assert.equal(details.plot,'Enredo');assert.equal(details.rating,8);assert.equal(details.seasons[0].number,1);assert.equal(episode.title,'Piloto');assert.equal((await mock.client.playbackURL('series',episode.id)).href,mock.origin+'/episode/raw.mp4?token=private-episode');
+    assert.match(episode.thumbnail,/^\/api\/image\?ref=/);assert.ok(!JSON.stringify(details).includes('private-episode-image'));
     const movie=(await mock.client.catalog('movies')).items[0];assert.equal((await mock.client.playbackURL('movie',movie.id)).href,mock.origin+'/film/raw.mp4?token=private-film');
     assert.ok(!JSON.stringify(details).includes('private-episode'));await assert.rejects(mock.client.playbackURL('series','999'),error=>error.code==='EPISODE_NOT_REGISTERED');
   } finally {await mock.close();}

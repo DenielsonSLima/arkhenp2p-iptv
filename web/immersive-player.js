@@ -1,5 +1,7 @@
 import { EpisodeSkipController } from './episode-skip.js';
 import { programWindow } from './program-guide.js';
+import { NeighborProgramFeeds } from './neighbor-program-feeds.js';
+import { renderPlayerChannelLogo } from './player-channel-logos.js';
 export { parseProgramTime, programWindow } from './program-guide.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -9,6 +11,7 @@ const ICONS = {
   muted: ['M11 5L6 9H3v6h3l5 4V5', 'M16 9l5 6M16 15l5-6'],
   expand: ['M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5'],
   next: ['M5 5l10 7-10 7V5M19 5v14'],
+  'chevron-left': ['M15 5l-7 7 7 7'], 'chevron-right': ['M9 5l7 7-7 7'],
   settings: ['M9 3l-.7 2.1-2 .9-2-.5-2 3.5 1.4 1.6v2.3L2.3 14.5l2 3.5 2-.5 2 .9L9 21h4l.7-2.1 2-.9 2 .5 2-3.5-1.4-1.6v-2.3l1.4-1.6-2-3.5-2 .5-2-.9L13 3H9', 'M14 12a3 3 0 11-6 0 3 3 0 016 0']
 };
 const text = value => String(value ?? '').trim();
@@ -34,12 +37,25 @@ export function formatMediaTime(value) {
   return `${hours ? hours + ':' : ''}${String(minutes).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
 }
 export function numberedChannels(entries = []) {
-  const seen = new Set();
+  const seen = new Set(), identities = new Set();
   return (Array.isArray(entries) ? entries : []).filter(entry => {
-    const number = Number(entry?.number);
-    if (!entry?.item || entry.item.kind !== 'live' || !Number.isSafeInteger(number) || number < 1 || number > 999999 || seen.has(number)) return false;
-    seen.add(number); return true;
+    const number = Number(entry?.number), id = String(entry?.item?.id ?? '').trim();
+    if (!entry?.item || entry.item.kind !== 'live' || !id || !Number.isSafeInteger(number) || number < 1 || number > 999999 || seen.has(number) || identities.has(id)) return false;
+    seen.add(number); identities.add(id); return true;
   }).map(entry => ({ item: entry.item, number: Number(entry.number) }));
+}
+export function channelNeighbors(entries, current) {
+  const channels = numberedChannels(entries);
+  const identity = String(current?.item?.id ?? '');
+  let index = channels.findIndex(entry => String(entry.item.id) === identity);
+  if (index < 0) index = channels.findIndex(entry => entry.number === Number(current?.channelNumber));
+  const selected = channels[index] || null;
+  if (!channels.length || channels.length===1 && selected) return {previous:null, current:selected, next:null};
+  return {
+    previous:channels[index < 0 ? channels.length-1 : (index-1+channels.length)%channels.length],
+    current:selected,
+    next:channels[index < 0 ? 0 : (index+1)%channels.length]
+  };
 }
 export function loadingEstimate(samples = []) {
   const usable = samples.filter(value => Number.isFinite(value) && value > 0 && value <= 120000).slice(-8).sort((a, b) => a - b);
@@ -53,15 +69,23 @@ export class ImmersivePlayer {
     this.options = options; this.video = options.video; this.stage = options.stage;
     if (!this.video || !this.stage) throw new Error('O player precisa do vídeo e de sua área de reprodução.');
     this.current = null; this.channels = null; this.programs = []; this.disposers = [];
+    this.neighborPrograms = {previous:null,next:null};
     this.hideTimer = null; this.digitTimer = null; this.tickTimer = null; this.digits = ''; this.hovering = false; this.seeking = false; this.keyboardMode = false;
     this.samples = {live: [], vod: []};
     try { const saved = JSON.parse(localStorage.getItem('arkehn.player-startup.v1') || '{}'); for (const key of ['live', 'vod']) if (Array.isArray(saved?.[key])) this.samples[key] = saved[key].filter(value => Number.isFinite(value) && value > 0 && value <= 120000).slice(-8); } catch {}
     this.video.controls = false; this.video.removeAttribute('controls');
     this.stage.classList.add('immersive-stage'); this.stage.tabIndex = 0; this.stage.setAttribute('aria-label', 'Área de reprodução');
     this.build();
+    this.neighborFeeds = typeof options.api==='function' ? new NeighborProgramFeeds({request:options.api,
+      getNamespace:()=>this.options.getProgramNamespace?.() ?? this.options.getSourceNamespace?.() ?? '',
+      onUpdate:data=>this.setNeighborProgram(data)}) : null;
     this.episodeSkip = new EpisodeSkipController({
-      video:this.video, onNextEpisode:() => this.options.onNextEpisode?.(),
+      video:this.video, onNextEpisode:options => this.options.onNextEpisode?.(options),
       hasNextEpisode:() => Boolean(this.options.getPlayer?.()?.next),
+      preferences:this.options.seriesPlaybackPreferences,
+      getNamespace:this.options.getAccountNamespace || (()=>''),
+      getEpisodeMarkers:context=>this.options.getEpisodeMarkers?.(context),
+      onSeek:(target,options)=>this.requestSeek(target,options),
       notify:message => this.options.toast?.(message), onAction:() => this.reveal()
     });
     this.root.append(this.episodeSkip.overlay);
@@ -92,7 +116,25 @@ export class ImmersivePlayer {
       const row = element('div', `ip-program ip-program-${key}`), name = element('strong', 'ip-program-title', 'Não informada'), time = element('span', 'ip-program-time');
       row.append(element('span', 'ip-program-label', label), name, time); this.programNodes[key] = {name, time}; this.schedule.append(row);
     }
-    this.info.append(heading, this.schedule);
+    this.channelLogo=element('span','ip-channel-logo ip-channel-logo-current');this.channelLogo.hidden=true;
+    this.channelCurrent = element('div', 'ip-channel-current'); this.channelCurrent.append(this.channelLogo,heading, this.schedule);
+    this.channelNeighborNodes = {};
+    for (const [key, label, step] of [['previous', 'Canal anterior', -1], ['next', 'Próximo canal', 1]]) {
+      const button = element('button', `ip-channel-neighbor ip-channel-${key}`);button.type = 'button';button.hidden = true;button.disabled = true;
+      const labelNode = element('span', 'ip-neighbor-label', label), number = element('span', 'ip-neighbor-number'), name = element('span', 'ip-neighbor-name');
+      const logo=element('span','ip-channel-logo ip-channel-logo-neighbor');logo.hidden=true;
+      const arrow = icon(key === 'previous' ? 'chevron-left' : 'chevron-right');arrow.classList.add('ip-neighbor-arrow');
+      const schedule = element('div', 'ip-neighbor-schedule'), status = element('span', 'ip-neighbor-schedule-status', 'Programação não informada'), programs = {};
+      schedule.id = `ip-neighbor-schedule-${key}`;schedule.setAttribute('aria-label',`Programação do ${label.toLowerCase()}`);
+      button.setAttribute('aria-describedby',schedule.id);schedule.append(status);
+      for (const [period,caption] of [['previous','Anterior'],['current','Agora'],['next','Próximo']]) {
+        const row = element('div', `ip-program ip-neighbor-program ip-neighbor-program-${period}`), title = element('strong', 'ip-program-title'), time = element('span', 'ip-program-time');
+        row.hidden = true;row.append(element('span', 'ip-program-label', caption),title,time);schedule.append(row);programs[period] = {row,name:title,time};
+      }
+      button.append(logo,labelNode, number, name, arrow, schedule);button.addEventListener('click', () => this.navigateChannel(step));
+      this.channelNeighborNodes[key] = {button, number, name, label, logo, schedule, status, programs, id:null};
+    }
+    this.info.append(this.channelNeighborNodes.previous.button, this.channelCurrent, this.channelNeighborNodes.next.button);
     this.closeButton = control('Fechar reprodução', 'close', () => this.close()); this.closeButton.classList.add('ip-close');
     this.typed = element('div', 'ip-number-entry'); this.typed.hidden = true; this.typed.setAttribute('role', 'status');
     this.typed.append(element('span', '', 'CANAL')); this.typedNumber = element('strong'); this.typed.append(this.typedNumber);
@@ -128,16 +170,16 @@ export class ImmersivePlayer {
     this.listen(this.video, 'error', () => this.setFailure('Leitura do vídeo indisponível. Tente novamente ou escolha outra fonte.'));
     this.listen(this.stage, 'pointermove', () => this.reveal()); this.listen(this.stage, 'pointerdown', event => { this.keyboardMode = false; if (event.target === this.stage || event.target === this.video) this.stage.focus({preventScroll: true}); this.reveal(); });
     this.listen(this.stage, 'focusin', () => this.reveal()); this.listen(this.stage, 'focusout', () => this.scheduleHide());
-    for (const node of [this.controls, this.closeButton, this.tools]) {
+    for (const node of [this.controls, this.closeButton, this.tools, this.info]) {
       this.listen(node, 'pointerenter', () => { this.hovering = true; this.reveal(); });
       this.listen(node, 'pointerleave', () => { this.hovering = false; this.scheduleHide(); });
     }
     this.listen(this.seek, 'pointerdown', () => { this.seeking = true; });
     this.listen(this.seek, 'input', () => { this.seeking = true; this.time.textContent = `${formatMediaTime(this.seek.value)} / ${formatMediaTime(this.video.duration)}`; this.reveal(); });
-    const commitSeek = () => { if (this.seeking && this.current?.item.kind !== 'live' && Number.isFinite(this.video.duration)) this.video.currentTime = Number(this.seek.value); this.seeking = false; this.updateControls(); this.scheduleHide(); };
+    const commitSeek = () => { if (this.seeking && this.current?.item.kind !== 'live' && Number.isFinite(this.video.duration)) this.requestSeek(Number(this.seek.value),{reason:'user'}); this.seeking = false; this.updateControls(); this.scheduleHide(); };
     this.listen(this.seek, 'change', commitSeek); this.listen(this.seek, 'pointerup', commitSeek);
     this.listen(this.seek, 'pointercancel', () => { this.seeking = false; this.updateControls(); });
-    this.listen(this.volume, 'input', () => { try { this.video.volume = Number(this.volume.value); this.video.muted = false; } catch { this.options.toast?.('O navegador gerencia o volume deste dispositivo.'); } this.updateVolume(); this.reveal(); });
+    this.listen(this.volume, 'input', () => { try { this.video.volume = Number(this.volume.value); this.video.muted = false; this.options.onVolumeChange?.(this.video.volume); } catch { this.options.toast?.('O navegador gerencia o volume deste dispositivo.'); } this.updateVolume(); this.reveal(); });
     this.listen(document, 'keydown', event => this.keydown(event));
     for (const event of ['fullscreenchange', 'webkitfullscreenchange']) this.listen(document, event, () => this.updateFullscreen());
   }
@@ -153,23 +195,66 @@ export class ImmersivePlayer {
     this.title.textContent = episode ? `${text(item.name)} · ${text(episode.title) || 'Episódio'}` : text(item.name);
     this.number.hidden = item.kind !== 'live' || !Number.isSafeInteger(Number(this.current.channelNumber)) || Number(this.current.channelNumber) < 1;
     this.number.textContent = this.number.hidden ? '' : String(this.current.channelNumber).padStart(3, '0');
-    this.schedule.hidden = item.kind !== 'live'; this.renderProgram(); this.updateControls(); this.setLoading(true, 'Preparando sua sessão');
+    this.schedule.hidden = item.kind !== 'live'; this.renderChannelNeighbors(); this.renderProgram(); this.updateControls(); this.setLoading(true, 'Preparando sua sessão');
     this.tickTimer = setInterval(() => { if (!this.current) return; this.updateLoading(); this.renderProgram(); this.updateControls(); }, 1000);
     this.reveal();
   }
   reset() {
     this.episodeSkip?.reset();
+    this.neighborFeeds?.stop();this.neighborPrograms = {previous:null,next:null};
     clearTimeout(this.hideTimer); clearTimeout(this.digitTimer); clearInterval(this.tickTimer);
     this.hideTimer = this.digitTimer = this.tickTimer = null; this.current = null; this.programs = []; this.digits = ''; this.hovering = false; this.seeking = false; this.keyboardMode = false;
     if (this.root) { this.root.hidden = true; this.root.classList.remove('ip-hidden'); this.typed.hidden = true; this.error.hidden = true; this.tools.hidden = true; this.settingsButton.setAttribute('aria-expanded', 'false'); this.settingsButton.setAttribute('aria-label', 'Abrir ajustes de reprodução'); this.stage.classList.remove('ip-active', 'ip-loading-active'); }
+    if (this.info) this.renderChannelNeighbors();
   }
   setChannels(channels) {
     this.channels = numberedChannels(channels);
     if (this.current?.item.kind === 'live') { const found = this.channels.find(entry => String(entry.item.id) === String(this.current.item.id)); if (found) { this.current.channelNumber = found.number; this.number.textContent = String(found.number).padStart(3, '0'); this.number.hidden = false; } }
+    this.renderChannelNeighbors();
   }
   setTools(node) { this.tools.replaceChildren(); if (node) this.tools.append(node); this.tools.append(this.episodeSkip.panel); this.tools.hidden = true; this.settingsButton.hidden = !node && !this.current?.episode; this.settingsButton.setAttribute('aria-expanded', 'false'); }
   channelEntries() { try { return numberedChannels(this.options.getChannels ? this.options.getChannels() : this.channels || []); } catch { return this.channels || []; } }
+  renderChannelNeighbors() {
+    const live = this.current?.item.kind === 'live';this.info.classList.toggle('ip-live-information', live);
+    renderPlayerChannelLogo(this.channelLogo,live?this.current.item:null);
+    const neighbors = live ? channelNeighbors(this.channelEntries(), this.current) : {previous:null, next:null};
+    for (const [key, nodes] of Object.entries(this.channelNeighborNodes)) {
+      const entry = neighbors[key];nodes.button.hidden = !live;nodes.button.disabled = !entry;
+      nodes.id = entry ? String(entry.item.id) : null;
+      renderPlayerChannelLogo(nodes.logo,entry?.item);
+      nodes.number.hidden = !entry;nodes.number.textContent = entry ? String(entry.number).padStart(3, '0') : '';
+      nodes.name.textContent = entry ? text(entry.item.name) : 'Sem outro canal';
+      const label = entry ? `${nodes.label}: ${String(entry.number).padStart(3, '0')}, ${text(entry.item.name)}` : `${nodes.label} indisponível`;
+      nodes.button.setAttribute('aria-label', label);nodes.button.title = label;
+    }
+    this.neighborFeeds?.select({previous:neighbors.previous?.item.id,next:neighbors.next?.item.id});
+    this.renderNeighborPrograms?.();
+  }
+  navigateChannel(step) {
+    if (this.current?.item.kind !== 'live') return;
+    const neighbors = channelNeighbors(this.channelEntries(), this.current), entry = step > 0 ? neighbors.next : neighbors.previous;
+    this.reveal();if (entry) this.switchChannel(entry);
+  }
   setProgram(data = {}) { this.programs = Array.isArray(data.list) ? data.list : []; this.renderProgram(); }
+  setNeighborProgram(data) {
+    if (this.current?.item.kind!=='live' || this.channelNeighborNodes[data.slot]?.id!==data.id) return;
+    this.neighborPrograms[data.slot]=data;this.renderNeighborPrograms();
+  }
+  renderNeighborPrograms() {
+    for (const [slot,nodes] of Object.entries(this.channelNeighborNodes)) {
+      if (!nodes.schedule) continue;
+      const data=this.neighborPrograms[slot],matching=Boolean(nodes.id && data?.id===nodes.id),programs=programWindow(matching ? data.list : []);
+      const hasPrograms=Object.values(programs).some(Boolean);
+      nodes.schedule.hidden=!nodes.id;nodes.status.hidden=hasPrograms;
+      const loading=matching && data.status==='loading' || nodes.id && !matching && Boolean(this.neighborFeeds);
+      nodes.status.textContent=loading ? 'Carregando programação…' : 'Programação não informada';
+      for (const [key,period] of Object.entries(nodes.programs)) {
+        const program=programs[key];period.row.hidden=!hasPrograms;period.name.textContent=program?.title || 'Não informada';
+        period.name.title=program?.title || '';
+        period.time.textContent=program ? new Date(program.start).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) : '';
+      }
+    }
+  }
   renderProgram() {
     if (!this.current) return; const programs = programWindow(this.programs);
     for (const [key, nodes] of Object.entries(this.programNodes)) {
@@ -178,6 +263,7 @@ export class ImmersivePlayer {
     }
     const program = this.current.item.kind === 'live' ? programs.current : null; this.liveTimeline.hidden = !program;
     if (program) { const time = value => new Date(value).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}); this.liveProgramName.textContent = program.title; this.liveProgramTime.textContent = `${time(program.start)} — ${time(program.end)}`; this.liveProgress.value = Math.max(0, Math.min(100, (Date.now() - program.start) / (program.end - program.start) * 100)); }
+    this.renderNeighborPrograms();
   }
   setLoading(loading, title) {
     if (!this.current) return;
@@ -240,23 +326,29 @@ export class ImmersivePlayer {
     if (match) this.switchChannel(match); else this.options.toast?.(`Canal ${digits} não encontrado na sua lista numerada.`); this.reveal();
   }
   blockedByDialog() { const playerDialog = this.stage.closest('dialog'); return [...document.querySelectorAll('dialog[open]')].some(dialog => dialog !== playerDialog && !dialog.contains(this.stage)); }
+  requestSeek(target,options={}) {
+    if(!this.current || this.current.item.kind==='live' || !Number.isFinite(target))return false;
+    if(typeof this.options.onSeek==='function')return this.options.onSeek(target,options);
+    try{this.video.currentTime=Math.max(0,Math.min(this.video.duration || target,target));return true;}
+    catch{this.options.toast?.('Não foi possível avançar este vídeo agora.');return false;}
+  }
   keydown(event) {
     if (!this.current) return; this.keyboardMode = true;
     if (this.blockedByDialog()) return;
-    if (event.altKey || event.ctrlKey || event.metaKey || event.target?.closest?.('input, textarea, select, [contenteditable], details[open]')) return;
+    if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey ||
+        event.target?.closest?.('input, textarea, select, [contenteditable], details[open], [role="menu"], [role="menuitem"], [role="listbox"], [role="option"], [role="combobox"]') ||
+        !this.tools.hidden && this.tools.contains(event.target)) return;
     const live = this.current.item.kind === 'live';
     if (live && /^\d$/.test(event.key)) { event.preventDefault(); this.digits = (this.digits + event.key).slice(-6); this.typedNumber.textContent = this.digits; this.typed.hidden = false; clearTimeout(this.digitTimer); this.digitTimer = setTimeout(() => this.commitDigits(), 1000); this.reveal(); return; }
-    if (live && ['ArrowUp', 'ArrowDown'].includes(event.key)) {
-      const channels = this.channelEntries(); if (!channels.length) return; event.preventDefault();
-      const index = channels.findIndex(entry => String(entry.item.id) === String(this.current.item.id) || entry.number === Number(this.current.channelNumber)), step = event.key === 'ArrowUp' ? 1 : -1;
-      const next = index < 0 ? (step > 0 ? 0 : channels.length - 1) : (index + step + channels.length) % channels.length;
-      this.reveal(); this.switchChannel(channels[next]); return;
+    if (live && ['ArrowUp', 'ArrowDown', 'ChannelUp', 'ChannelDown', 'PageUp', 'PageDown'].includes(event.key)) {
+      if (!this.tools.hidden) return;
+      event.preventDefault();this.navigateChannel(['ArrowUp', 'ChannelUp', 'PageUp'].includes(event.key) ? 1 : -1);return;
     }
     if (event.key === ' ' && !event.target?.closest?.('button, summary, a')) { event.preventDefault(); this.togglePlayback(); }
     else if (event.key.toLowerCase() === 'f') { event.preventDefault(); this.toggleFullscreen(); }
     else if (event.key.toLowerCase() === 'm') { event.preventDefault(); this.video.muted = !this.video.muted; this.reveal(); }
-    else if (!live && ['ArrowLeft', 'ArrowRight'].includes(event.key) && Number.isFinite(this.video.duration)) { event.preventDefault(); this.video.currentTime = Math.max(0, Math.min(this.video.duration, this.video.currentTime + (event.key === 'ArrowLeft' ? -10 : 10))); this.reveal(); }
+    else if (!live && ['ArrowLeft', 'ArrowRight'].includes(event.key) && Number.isFinite(this.video.duration)) { event.preventDefault(); this.requestSeek(Math.max(0, Math.min(this.video.duration, this.video.currentTime + (event.key === 'ArrowLeft' ? -10 : 10))),{reason:'user'}); this.reveal(); }
     else this.reveal();
   }
-  destroy() { this.reset(); this.episodeSkip.destroy(); this.disposers.forEach(dispose => dispose()); this.disposers = []; this.root.remove(); this.stage.classList.remove('immersive-stage'); }
+  destroy() { this.reset(); this.neighborFeeds?.destroy(); this.episodeSkip.destroy(); this.disposers.forEach(dispose => dispose()); this.disposers = []; this.root.remove(); this.stage.classList.remove('immersive-stage'); }
 }

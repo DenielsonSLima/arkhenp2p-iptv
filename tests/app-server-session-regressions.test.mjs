@@ -98,6 +98,21 @@ async function fixture(t, { logoutFailure = false } = {}) {
   };
 }
 
+test('public session keeps account library identities stable and separates accounts with the same masked username', async t => {
+  const mock = await fixture(t);
+  try {
+    const first = await mock.browser('first1234'), second = await mock.browser('other1234');
+    const a = await (await first.get('/api/session')).json(), b = await (await second.get('/api/session')).json();
+    assert.equal(a.account.usernameMasked,b.account.usernameMasked);
+    assert.match(a.account.libraryId,/^[a-f0-9]{64}$/);
+    assert.deepEqual(a.capabilities,{games:true,accountLibrary:true,cloud:false});
+    assert.notEqual(a.account.libraryId,b.account.libraryId);
+    assert.equal((await (await first.get('/api/session')).json()).account.libraryId,a.account.libraryId);
+    assert.equal(JSON.stringify(a).includes('first1234'),false);
+    assert.equal(JSON.stringify(a).includes('synthetic-secret'),false);
+  } finally { await mock.close(); }
+});
+
 test('local logout succeeds and blocks catalog/media even when remote OTT logout fails', async t => {
   const mock = await fixture(t, { logoutFailure: true });
   try {

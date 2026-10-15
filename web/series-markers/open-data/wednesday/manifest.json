@@ -1,0 +1,419 @@
+{
+  "schemaVersion": 1,
+  "dataVersion": "skipdb.20261014T101752600Z",
+  "series": {
+    "slug": "wednesday",
+    "title": "Wednesday",
+    "tmdbId": 119051,
+    "imdbId": "tt13443470"
+  },
+  "status": "community-reference",
+  "records": [
+    {
+      "season": 1,
+      "episode": 1,
+      "edition": {
+        "id": "skipdb-6918e98328e4107c0729d331",
+        "durationSeconds": 3647,
+        "toleranceSeconds": 2
+      },
+      "verification": {
+        "status": "community-reference",
+        "notes": [
+          "Community timestamps; matching duration does not prove the WPLAY edition."
+        ]
+      },
+      "markers": {
+        "creditsStart": 3313
+      },
+      "sources": [
+        {
+          "title": "SkipDB",
+          "url": "https://skipdb.tv/api/segments?imdb_id=tt13443470&season=1&episode=1&duration=3647&adjust=none",
+          "retrievedAt": "2026-10-15T09:38:39.437Z"
+        }
+      ]
+    },
+    {
+      "season": 1,
+      "episode": 2,
+      "edition": {
+        "id": "skipdb-1282a71f8ddbf2bc20d792db",
+        "durationSeconds": 2998,
+        "toleranceSeconds": 2
+      },
+      "verification": {
+        "status": "community-reference",
+        "notes": [
+          "Community timestamps; matching duration does not prove the WPLAY edition."
+        ]
+      },
+      "markers": {
+        "creditsStart": 2629
+      },
+      "sources": [
+        {
+          "title": "SkipDB",
+          "url": "https://skipdb.tv/api/segments?imdb_id=tt13443470&season=1&episode=2&duration=2998&adjust=none",
+          "retrievedAt": "2026-10-15T09:38:39.437Z"
+        }
+      ]
+    },
+    {
+      "season": 1,
+      "episode": 3,
+      "edition": {
+        "id": "skipdb-429fcf41f1c8f2c264b61dd3",
+        "durationSeconds": 2985,
+        "toleranceSeconds": 2
+      },
+      "verification": {
+        "status": "community-reference",
+        "notes": [
+          "Community timestamps; matching duration does not prove the WPLAY edition."
+        ]
+      },
+      "markers": {
+        "creditsStart": 2593
+      },
+      "sources": [
+        {
+          "title": "SkipDB",
+          "url": "https://skipdb.tv/api/segments?imdb_id=tt13443470&season=1&episode=3&duration=2985&adjust=none",
+          "retrievedAt": "2026-10-15T09:38:39.437Z"
+        }
+      ]
+    },
+    {
+      "season": 1,
+      "episode": 4,
+      "edition": {
+        "id": "skipdb-3f5243f54a7eeb33b41acc64",
+        "durationSeconds": 3061,
+        "toleranceSeconds": 2
+      },
+      "verification": {
+        "status": "community-reference",
+        "notes": [
+          "Community timestamps; matching duration does not prove the WPLAY edition."
+        ]
+      },
+      "markers": {
+        "creditsStart": 2675
+      },
+      "sources": [
+        {
+          "title": "SkipDB",
+          "url": "https://skipdb.tv/api/segments?imdb_id=tt13443470&season=1&episode=4&duration=3061&adjust=none",
+          "retrievedAt": "2026-10-15T09:38:39.437Z"
+        }
+      ]
+    },
+    {
+      "season": 1,
+      "episode": 5,
+      "edition": {
+        "id": "skipdb-bac3b3b6a15de6b650387106",
+        "durationSeconds": 3204,
+        "toleranceSeconds": 2
+      },
+      "verification": {
+        "status": "community-reference",
+        "notes": [
+          "Community timestamps; matching duration does not prove the WPLAY edition."
+        ]
+      },
+      "markers": {
+        "creditsStart": 2815
+      },
+      "sources": [
+        {
+          "title": "SkipDB",
+          "url": "https://skipdb.tv/api/segments?imdb_id=tt13443470&season=1&episode=5&duration=3204&adjust=none",
+          "retrievedAt": "2026-10-15T09:38:39.437Z"
+        }
+      ]
+    },
+    {
+      "season": 1,
+      "episode": 6,
+      "edition": {
+        "id": "skipdb-eb855e5302a3f0a5382f8011",
+        "durationSeconds": 3085,
+        "toleranceSeconds": 2
+      },
+      "verification": {
+        "status": "community-reference",
+        "notes": [
+          "Community timestamps; matching duration does not prove the WPLAY edition."
+        ]
+      },
+      "markers": {
+        "creditsStart": 2711
+      },
+      "sources": [
+        {
+          "title": "SkipDB",
+          "url": "https://skipdb.tv/api/segments?imdb_id=tt13443470&season=1&episode=6&duration=3085&adjust=none",
+          "retrievedAt": "2026-10-15T09:38:39.437Z"
+        }
+      ]
+    },
+    {
+      "season": 1,
+      "episode": 7,
+      "edition": {
+        "id": "skipdb-c11ced3418db0aaf5f2a82ec",
+        "durationSeconds": 2914,
+        "toleranceSeconds": 2
+      },
+      "verification": {
+        "status": "community-reference",
+        "notes": [
+          "Community timestamps; matching duration does not prove the WPLAY edition."
+        ]
+      },
+      "markers": {
+        "creditsStart": 2556
+      },
+      "sources": [
+        {
+          "title": "SkipDB",
+          "url": "https://skipdb.tv/api/segments?imdb_id=tt13443470&season=1&episode=7&duration=2914&adjust=none",
+          "retrievedAt": "2026-10-15T09:38:39.437Z"
+        }
+      ]
+    },
+    {
+      "season": 1,
+      "episode": 8,
+      "edition": {
+        "id": "skipdb-101fbd64980a8e8db60323d2",
+        "durationSeconds": 3209,
+        "toleranceSeconds": 2
+      },
+      "verification": {
+        "status": "community-reference",
+        "notes": [
+          "Community timestamps; matching duration does not prove the WPLAY edition."
+        ]
+      },
+      "markers": {
+        "openingStart": 285.2,
+        "openingEnd": 347,
+        "creditsStart": 2888
+      },
+      "sources": [
+        {
+          "title": "SkipDB",
+          "url": "https://skipdb.tv/api/segments?imdb_id=tt13443470&season=1&episode=8&duration=3209&adjust=none",
+          "retrievedAt": "2026-10-15T09:38:39.437Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 1,
+      "edition": {
+        "id": "skipdb-8a5ed3e2959e768ca0f75151",
+        "durationSeconds": 3640,
+        "toleranceSeconds": 2
+      },
+      "verification": {
+        "status": "community-reference",
+        "notes": [
+          "Community timestamps; matching duration does not prove the WPLAY edition."
+        ]
+      },
+      "markers": {
+        "creditsStart": 3257
+      },
+      "sources": [
+        {
+          "title": "SkipDB",
+          "url": "https://skipdb.tv/api/segments?imdb_id=tt13443470&season=2&episode=1&duration=3640&adjust=none",
+          "retrievedAt": "2026-10-15T09:38:39.437Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 2,
+      "edition": {
+        "id": "skipdb-7572b3edff2fa99f59c109b7",
+        "durationSeconds": 3689,
+        "toleranceSeconds": 2
+      },
+      "verification": {
+        "status": "community-reference",
+        "notes": [
+          "Community timestamps; matching duration does not prove the WPLAY edition."
+        ]
+      },
+      "markers": {
+        "creditsStart": 3252
+      },
+      "sources": [
+        {
+          "title": "SkipDB",
+          "url": "https://skipdb.tv/api/segments?imdb_id=tt13443470&season=2&episode=2&duration=3689&adjust=none",
+          "retrievedAt": "2026-10-15T09:38:39.437Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 3,
+      "edition": {
+        "id": "skipdb-a0ff94f966d084a04f46ea8c",
+        "durationSeconds": 3601,
+        "toleranceSeconds": 2
+      },
+      "verification": {
+        "status": "community-reference",
+        "notes": [
+          "Community timestamps; matching duration does not prove the WPLAY edition."
+        ]
+      },
+      "markers": {
+        "creditsStart": 3165
+      },
+      "sources": [
+        {
+          "title": "SkipDB",
+          "url": "https://skipdb.tv/api/segments?imdb_id=tt13443470&season=2&episode=3&duration=3601&adjust=none",
+          "retrievedAt": "2026-10-15T09:38:39.437Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 4,
+      "edition": {
+        "id": "skipdb-970eca4a545d7551302f124c",
+        "durationSeconds": 3637,
+        "toleranceSeconds": 2
+      },
+      "verification": {
+        "status": "community-reference",
+        "notes": [
+          "Community timestamps; matching duration does not prove the WPLAY edition."
+        ]
+      },
+      "markers": {
+        "creditsStart": 3255
+      },
+      "sources": [
+        {
+          "title": "SkipDB",
+          "url": "https://skipdb.tv/api/segments?imdb_id=tt13443470&season=2&episode=4&duration=3637&adjust=none",
+          "retrievedAt": "2026-10-15T09:38:39.437Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 5,
+      "edition": {
+        "id": "skipdb-fb86fa30dc7f63604a31c4da",
+        "durationSeconds": 3110,
+        "toleranceSeconds": 2
+      },
+      "verification": {
+        "status": "community-reference",
+        "notes": [
+          "Community timestamps; matching duration does not prove the WPLAY edition."
+        ]
+      },
+      "markers": {
+        "openingStart": 201.5,
+        "openingEnd": 263.4,
+        "creditsStart": 2732
+      },
+      "sources": [
+        {
+          "title": "SkipDB",
+          "url": "https://skipdb.tv/api/segments?imdb_id=tt13443470&season=2&episode=5&duration=3110&adjust=none",
+          "retrievedAt": "2026-10-15T09:38:39.437Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 6,
+      "edition": {
+        "id": "skipdb-2a2a45c73abd45ca2f6c151c",
+        "durationSeconds": 4172,
+        "toleranceSeconds": 2
+      },
+      "verification": {
+        "status": "community-reference",
+        "notes": [
+          "Community timestamps; matching duration does not prove the WPLAY edition."
+        ]
+      },
+      "markers": {
+        "creditsStart": 3798
+      },
+      "sources": [
+        {
+          "title": "SkipDB",
+          "url": "https://skipdb.tv/api/segments?imdb_id=tt13443470&season=2&episode=6&duration=4172&adjust=none",
+          "retrievedAt": "2026-10-15T09:38:39.437Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 7,
+      "edition": {
+        "id": "skipdb-171a54ba1e41e5e996b3fd4b",
+        "durationSeconds": 3355,
+        "toleranceSeconds": 2
+      },
+      "verification": {
+        "status": "community-reference",
+        "notes": [
+          "Community timestamps; matching duration does not prove the WPLAY edition."
+        ]
+      },
+      "markers": {
+        "creditsStart": 2917
+      },
+      "sources": [
+        {
+          "title": "SkipDB",
+          "url": "https://skipdb.tv/api/segments?imdb_id=tt13443470&season=2&episode=7&duration=3355&adjust=none",
+          "retrievedAt": "2026-10-15T09:38:39.437Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 8,
+      "edition": {
+        "id": "skipdb-81efd0b0b86a022ec9a2da7b",
+        "durationSeconds": 2918,
+        "toleranceSeconds": 2
+      },
+      "verification": {
+        "status": "community-reference",
+        "notes": [
+          "Community timestamps; matching duration does not prove the WPLAY edition."
+        ]
+      },
+      "markers": {
+        "openingStart": 213.6,
+        "openingEnd": 275.5,
+        "creditsStart": 2542
+      },
+      "sources": [
+        {
+          "title": "SkipDB",
+          "url": "https://skipdb.tv/api/segments?imdb_id=tt13443470&season=2&episode=8&duration=2918&adjust=none",
+          "retrievedAt": "2026-10-15T09:38:39.437Z"
+        }
+      ]
+    }
+  ]
+}

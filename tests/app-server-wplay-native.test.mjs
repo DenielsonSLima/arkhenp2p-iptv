@@ -18,7 +18,7 @@ test('the application defaults to native WPlay and dispatches its registered cat
   const base=`http://127.0.0.1:${app.address().port}`;
   try{
     const fresh=await fetch(base+'/api/session');
-    assert.deepEqual(await fresh.json(),{connected:false,login:{configuredServer:true,defaultProvider:'wplay'}});
+    assert.deepEqual(await fresh.json(),{connected:false,capabilities:{games:true,accountLibrary:true,cloud:false},login:{configuredServer:true,defaultProvider:'wplay'},cloud:null,cloudStatus:{state:'disabled'}});
     const login=await fetch(base+'/api/login',{method:'POST',headers:{Origin:base,'Content-Type':'application/json'},body:JSON.stringify({username:'native-fixture',password:'synthetic-private-password'})});
     assert.equal(login.status,200);const account=await login.json();assert.equal(account.connected,true);assert.equal(account.account.provider,'wplay');
     const headers={Cookie:login.headers.get('set-cookie').split(';')[0]};

@@ -34,11 +34,13 @@ export function setHeroArtwork(element, item, createImage = () => document.creat
   next(0);
 }
 
-export function heroFacts(item, {previousDuration, durationPending = false} = {}) {
-  const movie = movieWithPlaybackDuration(item, previousDuration);
+export function heroFacts(item = {}, {previousDuration, durationPending = false} = {}) {
+  const series=item.kind==='series', movie=series?item:movieWithPlaybackDuration(item, previousDuration);
+  const seasons=series&&Array.isArray(item.seasons)?item.seasons.length:0;
   return [
     {label:'Ano', value:previewYear(movie)},
-    {label:'Duração', value:previewText(movie.duration) || (durationPending ? 'Consultando…' : 'Não informada'), pending:durationPending && !previewText(movie.duration)},
+    series ? {label:seasons?'Temporadas':'Formato',value:seasons?String(seasons):'Série'}
+      : {label:'Duração', value:previewText(movie.duration) || (durationPending ? 'Consultando…' : 'Não informada'), pending:durationPending && !previewText(movie.duration)},
     {label:'Avaliação', value:previewRating(movie)}
   ];
 }

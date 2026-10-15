@@ -5,3 +5,49 @@
 @media(max-width:850px){.settings-page{grid-template-columns:165px minmax(0,1fr);gap:25px}.settings-sidebar{padding-right:15px}.settings-sidebar-identity{padding-left:7px;gap:9px}.settings-sidebar-identity small{font-size:6px;letter-spacing:1px}.settings-sidebar-identity strong{font-size:14px}.settings-sidebar-identity>img{width:26px;height:30px}.settings-sidebar-link{font-size:9px;gap:9px;padding:13px 9px}.settings-sidebar-link>svg{width:16px;height:16px}.settings-page .settings-columns{grid-template-columns:1fr;gap:12px}.settings-shortcuts{grid-template-columns:1fr}.settings-shortcut{min-height:84px}.settings-profile-card{padding:21px;gap:16px}.settings-profile-card h3{font-size:22px}.settings-profile-avatar{width:50px;height:50px}.settings-account-details>div{padding:17px}.settings-account-details dd{font-size:12px}.settings-workspace>.settings-heading>div{display:none}.settings-workspace>.settings-heading{justify-content:flex-end;margin-bottom:21px}.settings-welcome h3{font-size:21px}}
 @media(max-width:650px){.settings-page{display:block;padding-top:72px}.settings-sidebar{position:static;min-height:0;border:0;padding:0;margin-bottom:27px}.settings-sidebar-identity,.settings-sidebar-account{display:none}.settings-sidebar-nav{display:flex;flex-direction:row;gap:6px;overflow:auto;padding:0 20px 12px 0;margin-right:-20px;scrollbar-width:none;border-bottom:1px solid #ffffff0a}.settings-sidebar-link{width:auto;min-height:39px;flex-shrink:0;white-space:nowrap;padding:10px 12px;border:1px solid #ffffff0a;background:#121a1e;font-size:9px;gap:8px}.settings-sidebar-link.active{border-color:#c7e2d324;background:#d0e3dc0f}.settings-sidebar-link>svg{width:14px;height:14px}.settings-workspace>.settings-heading{margin-bottom:20px;justify-content:space-between}.settings-workspace>.settings-heading>div{display:block;font-size:6px;letter-spacing:1px}.settings-workspace>h2{font-size:34px}.settings-section-description{font-size:11px;margin-bottom:24px}.settings-welcome{padding:22px 20px}.settings-welcome h3{font-size:22px}.settings-welcome .settings-note{font-size:10px}.settings-shortcut{padding:18px;gap:14px;min-height:91px}.settings-shortcut strong{font-size:12px}.settings-shortcut small{font-size:10px}.settings-profile-card{padding:22px 18px;gap:15px}.settings-profile-card h3{font-size:21px}.settings-profile-card .settings-note{font-size:10px}.settings-account-details>div{padding:19px 17px}.settings-account-details dt{font-size:8px}.settings-account-details dd{font-size:11px}.settings-profile-actions{margin-top:22px;gap:8px}.settings-startup-option{padding:19px 18px}.settings-startup-option small{font-size:9px}.account-menu{width:235px;top:calc(100% + 14px)}.account-menu-item{padding:14px 12px;min-height:44px;font-size:11px}.account-menu-summary strong{font-size:13px}}
 @media(prefers-reduced-motion:reduce){.settings-sidebar-link,.settings-shortcut,.settings-startup-option{transition:none}}
+/* Audio preferences share the cinematic settings palette. */
+.settings-audio { max-width: 850px; }
+.settings-audio > h3 { font-size: 23px; font-weight: 500; color: #d5dfe8; line-height: 1.35; letter-spacing: -.5px; }
+.settings-audio-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding: 0; margin: 24px 0 20px; border: 0; min-width: 0; }
+.settings-audio-option { display: flex; align-items: flex-start; gap: 13px; min-width: 0; min-height: 146px; padding: 22px 18px; border: 1px solid #d9e5f018; border-radius: 8px; background: #121a20; cursor: pointer; transition: border-color .18s, background .18s; }
+.settings-audio-option:hover { background: #172129; border-color: #d9e5f02e; }
+.settings-audio-option.selected { background: #c5d9ed0b; border-color: #c5d9ed66; }
+.settings-audio-option:focus-within { outline: 2px solid #dce8f5; outline-offset: 4px; }
+.settings-audio-option input { flex: 0 0 18px; width: 18px; height: 18px; margin: 0; accent-color: #c8daeb; cursor: pointer; }
+.settings-audio-option-copy { display: flex; flex-direction: column; gap: 11px; min-width: 0; }
+.settings-audio-option strong { color: #dce6ef; font-size: 14px; font-weight: 600; line-height: 1.3; }
+.settings-audio-option small { color: #90a0ae; font-size: 11px; line-height: 1.8; }
+.settings-audio-status { padding: 17px 19px; background: #d0dfec06; border: 1px solid #d0dfec14; border-radius: 7px; color: #c2d0df; font-size: 12px; line-height: 1.8; }
+.settings-audio-status[data-state=active] { border-color: #bfd9cd2b; color: #c5dbd1; }
+.settings-audio-note { margin: 17px 0 0; max-width: 720px; color: #8093a3; font-size: 11px; line-height: 1.9; }
+.settings-audio-memory { display: flex; align-items: center; gap: 15px; min-height: 92px; padding: 20px; margin-bottom: 20px; border: 1px solid #d9e5f018; border-radius: 8px; background: #121a20; cursor: pointer; }
+.settings-audio-memory:focus-within { outline: 2px solid #dce8f5; outline-offset: 4px; }
+.settings-audio-memory input { flex: 0 0 19px; width: 19px; height: 19px; margin: 0; accent-color: #c8daeb; cursor: pointer; }
+.settings-audio-memory strong { color: #dce6ef; font-size: 14px; font-weight: 600; line-height: 1.4; }
+.settings-audio-memory small { color: #90a0ae; font-size: 11px; line-height: 1.8; }
+@media(max-width:1000px) { .settings-audio-options { grid-template-columns: 1fr; gap: 10px; } .settings-audio-option { min-height: 96px; padding: 20px; } .settings-audio-option-copy { gap: 8px; } }
+@media(max-width:650px) { .settings-audio > h3 { font-size: 22px; } .settings-audio-option { padding: 20px 17px; gap: 14px; } .settings-audio-option small { font-size: 12px; } .settings-audio-status { padding: 17px; } }
+@media(prefers-reduced-motion:reduce) { .settings-audio-option { transition: none; } }
+/* Series automation keeps approximate timing distinct from saved scene marks. */
+.settings-series-playback{max-width:850px}
+.settings-series-playback>h3{color:#d8e1ea;font-size:23px;font-weight:500;letter-spacing:-.45px;line-height:1.4}
+.settings-series-toggle{display:flex;align-items:flex-start;gap:16px;min-height:96px;margin:13px 0;padding:21px;border:1px solid #d8e3ef17;border-radius:7px;background:#121a20;cursor:pointer}
+.settings-series-toggle>input,.settings-series-option>input{flex-shrink:0;width:18px;height:18px;margin:2px 0 0;accent-color:#c9dae9;cursor:pointer}
+.settings-series-toggle>span,.settings-series-option>span,.settings-series-offset>span:first-child{display:flex;flex-direction:column;gap:8px;min-width:0}
+.settings-series-toggle strong,.settings-series-option strong,.settings-series-offset strong{color:#dbe5ef;font-size:13px;line-height:1.5;font-weight:600}
+.settings-series-toggle small,.settings-series-option small,.settings-series-offset small{color:#91a1b3;font-size:11px;line-height:1.8}
+.settings-series-options{min-width:0;border:0;padding:0;margin:29px 0 15px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.settings-series-options>legend{color:#b8c7d8;font-size:12px;line-height:1.6;font-weight:600;margin-bottom:14px}
+.settings-series-option{display:flex;align-items:flex-start;gap:12px;min-width:0;padding:21px 17px;border:1px solid #d6e2ee18;border-radius:7px;background:#121a20;cursor:pointer}
+.settings-series-option.selected{border-color:#ceddec66;background:#cadbeb0b}
+.settings-series-toggle:focus-within,.settings-series-option:focus-within{outline:2px solid #d7e5f4;outline-offset:3px}
+.settings-series-offset{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-top:18px;padding:20px;border:1px solid #d6e2ee17;border-radius:7px;background:#121a2080}
+.settings-series-offset>span:first-child{max-width:550px}
+.settings-series-offset-field{display:flex;align-items:center;gap:9px;color:#98a9bd;font-size:11px;white-space:nowrap}
+.settings-series-offset input{width:78px;min-height:44px;padding:9px 10px;border:1px solid #c3d5e635;border-radius:4px;background:#0b1118;color:#e1ebf6;font:inherit;font-size:14px;font-variant-numeric:tabular-nums}
+.settings-series-offset input:focus-visible{outline:2px solid #d7e5f4;outline-offset:3px}
+.settings-series-playback input:disabled{opacity:.45;cursor:default}
+.settings-series-summary{margin:20px 0 0;padding:18px 20px;border:1px solid #d6e2ee1c;border-radius:7px;background:#d6e2ee06;color:#bfcede;font-size:12px;line-height:1.9}
+.settings-series-explainer{margin:17px 0 0;color:#8295a9;font-size:11px;line-height:1.9;max-width:780px}
+@media(max-width:1000px){.settings-series-options{grid-template-columns:1fr}.settings-series-option{padding:19px 20px}.settings-series-offset{align-items:flex-start;gap:18px}}
+@media(max-width:650px){.settings-series-playback>h3{font-size:22px}.settings-series-toggle{padding:19px 17px}.settings-series-toggle small,.settings-series-option small{font-size:12px}.settings-series-offset{flex-direction:column;padding:19px 17px}.settings-series-offset-field{align-self:flex-start}.settings-series-summary{padding:17px}.settings-series-explainer{font-size:11px}}

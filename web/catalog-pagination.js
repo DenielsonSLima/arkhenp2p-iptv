@@ -2,9 +2,14 @@ import { withoutSessionArtwork } from './stored-artwork.js';
 
 const entries = value => value && typeof value === 'object' ? Object.entries(value) : [];
 export const isPagedCatalog = catalog => catalog?.pagination?.mode === 'category';
+export const isCompleteCatalog = catalog => catalog?.catalogComplete === true && Array.isArray(catalog.categories) && Array.isArray(catalog.items);
 
 // Responses are snapshots. Merge them because separate category pages can finish out of order.
 export function mergeCatalogPage(previous, incoming) {
+  if(isCompleteCatalog(incoming))return {...incoming,pagination:{mode:'complete',byCategory:Object.fromEntries(incoming.categories.map(category=>[String(category.id),{loaded:true,nextPage:1,hasMore:false}]))}};
+  // A late first-page response must not reintroduce a title omitted from the
+  // authoritative shared snapshot that completed this catalog generation.
+  if(isCompleteCatalog(previous))return previous.sourceCategories?{...previous,categories:previous.sourceCategories}:previous;
   const categories = new Map((previous?.sourceCategories || []).map(item => [String(item.id), item]));
   for (const item of incoming.categories || []) categories.set(String(item.id), item);
   const items = new Map((previous?.items || []).map(item => [String(item.id), item]));
@@ -19,7 +24,7 @@ export function mergeCatalogPage(previous, incoming) {
     if (!old || Number(incomingPage.nextPage) >= Number(old.nextPage)) byCategory[id] = {...incomingPage};
     if (old?.loaded && old.hasMore === false) byCategory[id] = {...old};
   }
-  return {...incoming, categories:[...categories.values()], items:[...items.values()], pagination:{...incoming.pagination, byCategory}};
+  return {...incoming, categories:[...categories.values()], items:[...items.values()], pagination:{...previous?.pagination, ...incoming.pagination, byCategory}};
 }
 
 export function pageChoices(catalog, category = '__all', initialOnly = false) {
@@ -41,17 +46,49 @@ export function rememberedTitles(catalogFor, favorites, history, limit = 16) {
   }).slice(0, limit);
 }
 
-// Fetch at most four category pages per action. Unvisited categories stay visible and load on demand.
+const abortError = () => new DOMException('Carregamento do catálogo cancelado.', 'AbortError');
+const bounded = (value, fallback) => Math.max(1, Math.min(4, Math.floor(Number(value) || fallback)));
+
+// A shared task stays alive while another view or completion still needs it.
+function subscribe(task, signal, cancelledValue) {
+  const token = {};
+  task.consumers.add(token);
+  return new Promise((resolve, reject) => {
+    let finished = false;
+    const finish = (settle, value) => {
+      if (finished) return;
+      finished = true;
+      signal?.removeEventListener('abort', cancel);
+      task.consumers.delete(token);
+      if (!task.settled && !task.consumers.size) task.controller.abort();
+      settle(value);
+    };
+    const cancel = () => cancelledValue ? finish(resolve, cancelledValue()) : finish(reject, abortError());
+    task.promise.then(value => finish(resolve, value), error => finish(reject, error));
+    signal?.addEventListener('abort', cancel, {once:true});
+    if (signal?.aborted) cancel();
+  });
+}
+
+// Interactive pages and background completion share requests and one concurrency budget.
 export class CatalogPager {
-  constructor({request, getCatalog, onData, onChange, isCategoryAllowed = () => true, limit = 4}) {
-    Object.assign(this, {request, getCatalog, onData, onChange, isCategoryAllowed, limit});
+  constructor({request, getCatalog, onData, onChange = () => {}, onProgress = () => {}, isCategoryAllowed = () => true, limit = 4}) {
+    Object.assign(this, {request, getCatalog, onData, onChange, onProgress, isCategoryAllowed, limit:bounded(limit,4)});
     this.pending = new Map(); this.errors = new Map(); this.epochs = new Map();
+    this.completions = new Map(); this.progress = new Map();
+    this.metadataPending = new Set();
+    this.activeRequests = 0; this.requestQueue = [];
   }
   reset(type) {
     const types = type ? [type] : ['movies', 'series', 'live'];
     for (const name of types) this.epochs.set(name, (this.epochs.get(name) || 0) + 1);
-    for (const key of this.pending.keys()) if (types.some(name => key.startsWith(`${name}:`))) this.pending.delete(key);
+    for (const [key, task] of this.pending) if (types.some(name => key.startsWith(`${name}:`))) {task.controller.abort(); this.pending.delete(key);}
     for (const key of this.errors.keys()) if (types.some(name => key.startsWith(`${name}:`))) this.errors.delete(key);
+    for (const task of this.metadataPending) if (types.includes(task.type)) task.controller.abort();
+    for (const name of types) {
+      this.completions.get(name)?.controller.abort();
+      this.completions.delete(name); this.progress.delete(name);
+    }
   }
   choices(type, category, initialOnly = false) {
     return pageChoices(this.getCatalog(type), category, initialOnly).filter(state => this.isCategoryAllowed(type,state.id));
@@ -66,27 +103,131 @@ export class CatalogPager {
     }
     return '';
   }
-  async load(type, category = '__all', {initialOnly = false} = {}) {
-    const epoch = this.epochs.get(type) || 0;
+  async load(type, category = '__all', {initialOnly = false, signal} = {}) {
     const choices = this.choices(type, category, initialOnly).slice(0, this.limit);
-    const results = await Promise.allSettled(choices.map(state => {
-      const key = `${type}:${state.id}`;
-      if (this.pending.has(key)) return this.pending.get(key);
-      this.errors.delete(key);
-      const pending = Promise.resolve().then(async () => {
-        const response = await this.request(`/api/catalog?type=${encodeURIComponent(type)}&category=${encodeURIComponent(state.id)}&page=${Math.max(1, Number(state.nextPage) || 1)}`);
-        if ((this.epochs.get(type) || 0) === epoch) this.onData(type, mergeCatalogPage(this.getCatalog(type), response));
+    return Promise.allSettled(choices.map(state => this.#page(type, state, signal)));
+  }
+  #acquire(signal) {
+    if (signal.aborted) throw abortError();
+    if (this.activeRequests < this.limit) {this.activeRequests++; return;}
+    return new Promise((resolve, reject) => {
+      const entry = {signal, resolve:() => {signal.removeEventListener('abort', cancel); resolve();}};
+      const cancel = () => {
+        const index = this.requestQueue.indexOf(entry);
+        if (index >= 0) this.requestQueue.splice(index,1);
+        reject(abortError());
+      };
+      signal.addEventListener('abort', cancel, {once:true});
+      this.requestQueue.push(entry);
+    });
+  }
+  #release() {
+    this.activeRequests--;
+    while (this.requestQueue.length) {
+      const entry = this.requestQueue.shift();
+      if (entry.signal.aborted) continue;
+      this.activeRequests++; entry.resolve(); break;
+    }
+  }
+  #page(type, state, signal) {
+    if (signal?.aborted) return Promise.reject(abortError());
+    const epoch = this.epochs.get(type) || 0;
+    const key = `${type}:${state.id}`;
+    let task = this.pending.get(key);
+    if (task && !task.controller.signal.aborted) return subscribe(task, signal);
+    // A different request may have completed while this choice was waiting.
+    const current = this.getCatalog(type)?.pagination?.byCategory?.[state.id];
+    if (!current || current.hasMore === false) return Promise.resolve(this.getCatalog(type));
+    const page = Math.max(1, Number(current.nextPage) || 1);
+    task = {controller:new AbortController(), consumers:new Set(), settled:false};
+    this.errors.delete(key);
+    task.promise = Promise.resolve().then(async () => {
+      const activeSignal = task.controller.signal;
+      const queued = this.#acquire(activeSignal);
+      if (queued) await queued;
+      try {
+        if (activeSignal.aborted) throw abortError();
+        if(isCompleteCatalog(this.getCatalog(type)))return this.getCatalog(type);
+        const response = await this.request(`/api/catalog?type=${encodeURIComponent(type)}&category=${encodeURIComponent(state.id)}&page=${page}`, {signal:activeSignal});
+        if ((this.epochs.get(type) || 0) === epoch && !activeSignal.aborted) this.onData(type, mergeCatalogPage(this.getCatalog(type), response));
         return response;
-      }).catch(error => {
-        if ((this.epochs.get(type) || 0) === epoch) this.errors.set(key, error.message || 'Não foi possível carregar os próximos títulos.');
-        throw error;
-      }).finally(() => {
-        if (this.pending.get(key) === pending) this.pending.delete(key);
-        if ((this.epochs.get(type) || 0) === epoch) this.onChange(type);
-      });
-      this.pending.set(key, pending); return pending;
-    }));
-    return results;
+      } finally {this.#release();}
+    }).catch(error => {
+      if((this.epochs.get(type)||0)===epoch&&!task.controller.signal.aborted&&isCompleteCatalog(this.getCatalog(type)))return this.getCatalog(type);
+      if ((this.epochs.get(type) || 0) === epoch && !task.controller.signal.aborted) this.errors.set(key, error.message || 'Não foi possível carregar os próximos títulos.');
+      throw error;
+    }).finally(() => {
+      task.settled = true;
+      if (this.pending.get(key) === task) this.pending.delete(key);
+      if ((this.epochs.get(type) || 0) === epoch) this.onChange(type);
+    });
+    this.pending.set(key,task);
+    return subscribe(task,signal);
+  }
+  progressFor(type) {return this.progress.get(type) || null;}
+  #report(type, task, status) {
+    const catalog = this.getCatalog(type), states = Object.values(catalog?.pagination?.byCategory || {});
+    const failedCategories = [...task.failures].map(([id,error]) => ({id,error}));
+    const value = {
+      status, categoriesTotal:states.length,
+      categoriesComplete:states.filter(state => state.loaded && state.hasMore === false).length,
+      pagesLoaded:states.reduce((sum,state) => sum + (state.loaded ? Math.max(0,(Number(state.nextPage) || 1)-1) : 0),0),
+      itemsLoaded:catalog?.items?.length || 0, failedCategories,
+      error:!catalog ? 'O catálogo ainda não foi carregado.' : failedCategories[0]?.error || ''
+    };
+    task.latest = value;
+    if ((this.epochs.get(type) || 0) === task.epoch && this.completions.get(type) === task) {
+      this.progress.set(type,value); this.onProgress(type,value);
+    }
+    return value;
+  }
+  /** Complete metadata for every source category, including categories hidden in the UI. */
+  complete(type, {signal, retries = 1, concurrency = 3} = {}) {
+    let task = this.completions.get(type);
+    if (task && !task.controller.signal.aborted) return subscribe(task,signal,() => ({...task.latest,status:'cancelled'}));
+    task = {controller:new AbortController(), consumers:new Set(), settled:false, epoch:this.epochs.get(type) || 0, failures:new Map(), latest:null};
+    this.completions.set(type,task);
+    this.#report(type,task,'loading');
+    task.promise = Promise.resolve().then(async () => {
+      const working = new Set(), activeSignal = task.controller.signal;
+      const active = () => !activeSignal.aborted && (this.epochs.get(type) || 0) === task.epoch;
+      const maxRetries = Math.max(0,Math.min(2,Math.floor(Number(retries) || 0)));
+      const worker = async () => {
+        while (active()) {
+          const state = pageChoices(this.getCatalog(type)).find(state => !working.has(state.id) && !task.failures.has(state.id));
+          if (!state) return;
+          working.add(state.id);
+          try {
+            for (let attempt=0; active(); attempt++) {
+              try {
+                await this.#page(type,state,activeSignal);
+                if (!active()) return;
+                if(isCompleteCatalog(this.getCatalog(type)))break;
+                const current = this.getCatalog(type)?.pagination?.byCategory?.[state.id];
+                if (!current || current.hasMore !== false && Number(current.nextPage || 1) <= Number(state.nextPage || 1)) throw new Error('O serviço não avançou a página do catálogo.');
+                break;
+              } catch (error) {
+                if (!active()) return;
+                if (attempt < maxRetries) continue;
+                const message = error.message || 'Não foi possível carregar os próximos títulos.';
+                task.failures.set(state.id,message); this.errors.set(`${type}:${state.id}`,message); break;
+              }
+            }
+          } finally {
+            working.delete(state.id);
+            if (active()) this.#report(type,task,'loading');
+          }
+        }
+      };
+      await Promise.all(Array.from({length:bounded(concurrency,3)},worker));
+      if(active()&&isCompleteCatalog(this.getCatalog(type))){task.failures.clear();for(const key of this.errors.keys())if(key.startsWith(`${type}:`))this.errors.delete(key);}
+      const incomplete = !this.getCatalog(type) || task.failures.size > 0 || pageChoices(this.getCatalog(type)).length > 0;
+      return this.#report(type,task,!active() ? 'cancelled' : incomplete ? 'partial' : 'complete');
+    }).finally(() => {
+      task.settled = true;
+      if (this.completions.get(type) === task) this.completions.delete(type);
+    });
+    return subscribe(task,signal,() => ({...task.latest,status:'cancelled'}));
   }
   async hydrateRemembered(favorites, history) {
     const items = rememberedTitles(this.getCatalog, favorites, history);
@@ -96,13 +237,25 @@ export class CatalogPager {
       while (items.length && !controller.signal.aborted) {
         const item = items.shift(), type = item.kind === 'movie' ? 'movies' : 'series';
         if ((this.epochs.get(type) || 0) !== (epochs.get(type) || 0)) continue;
+        const task = {type,controller:new AbortController()}, cancel = () => task.controller.abort();
+        controller.signal.addEventListener('abort',cancel,{once:true});
+        this.metadataPending.add(task);
+        let acquired = false;
         try {
-          const details = await this.request(`/api/details?type=${item.kind}&id=${encodeURIComponent(item.id)}`, {signal:controller.signal});
+          const queued = this.#acquire(task.controller.signal);
+          if (queued) await queued;
+          acquired = true;
+          if (task.controller.signal.aborted) throw abortError();
+          const details = await this.request(`/api/details?type=${item.kind}&id=${encodeURIComponent(item.id)}`, {signal:task.controller.signal});
           if (!details?.name || (this.epochs.get(type) || 0) !== (epochs.get(type) || 0)) continue;
           const catalog = this.getCatalog(type);
           this.onData(type, mergeCatalogPage(catalog, {categories:[], items:[{...withoutSessionArtwork(item),...details,id:item.id,kind:item.kind}],pagination:catalog.pagination}));
           this.onChange(type);
         } catch { /* A removed title must not prevent the rest of the account from opening. */ }
+        finally {
+          controller.signal.removeEventListener('abort',cancel); this.metadataPending.delete(task);
+          if (acquired) this.#release();
+        }
       }
     };
     try { await Promise.all(Array.from({length:Math.min(this.limit,items.length)}, worker)); }

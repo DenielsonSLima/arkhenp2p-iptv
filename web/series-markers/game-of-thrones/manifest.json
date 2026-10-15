@@ -1,0 +1,3337 @@
+{
+  "schemaVersion": 1,
+  "dataVersion": "2026-10-15.community.1",
+  "series": {
+    "slug": "game-of-thrones",
+    "title": "Game of Thrones",
+    "imdbId": "tt0944947",
+    "tmdbId": 1399
+  },
+  "status": "community-reference",
+  "records": [
+    {
+      "season": 1,
+      "episode": 1,
+      "edition": {
+        "id": "introdb-community-s01e01",
+        "durationSeconds": 3699.5,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 437.0,
+        "openingEnd": 531.0,
+        "creditsStart": 3631.5
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=1&episode=1",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:47:48.652317Z",
+          "confidence": 1,
+          "submissionCount": 2,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 2,
+              "updatedAt": "2026-06-16T02:49:39.823Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 2,
+              "updatedAt": "2026-04-08T18:48:22.562Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=1&episode=1&duration_ms=3699500",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:47:50.755607Z"
+        }
+      ]
+    },
+    {
+      "season": 1,
+      "episode": 2,
+      "edition": {
+        "id": "introdb-community-s01e02",
+        "durationSeconds": 3320.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Reference duration differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 106.0,
+        "creditsStart": 3252.488
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=1&episode=2",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:47:49.704802Z",
+          "confidence": 1,
+          "submissionCount": 2,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 2,
+              "updatedAt": "2026-07-12T19:34:40.828Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:22.737Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=1&episode=2&duration_ms=3320000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:47:51.805776Z"
+        }
+      ]
+    },
+    {
+      "season": 1,
+      "episode": 3,
+      "edition": {
+        "id": "introdb-community-s01e03",
+        "durationSeconds": 3437.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Reference duration differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 102.0,
+        "creditsStart": 3367.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=1&episode=3",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:47:52.860813Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:07.942Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:22.892Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=1&episode=3&duration_ms=3437000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:47:54.970821Z"
+        }
+      ]
+    },
+    {
+      "season": 1,
+      "episode": 4,
+      "edition": {
+        "id": "introdb-community-s01e04",
+        "durationSeconds": 3337.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 102.0,
+        "creditsStart": 3274.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=1&episode=4",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:47:53.915843Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:08.127Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:23.077Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=1&episode=4&duration_ms=3340000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:47:56.025859Z"
+        }
+      ]
+    },
+    {
+      "season": 1,
+      "episode": 5,
+      "edition": {
+        "id": "introdb-community-s01e05",
+        "durationSeconds": 3259.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Reference duration differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 107.0,
+        "creditsStart": 3189.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=1&episode=5",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:47:57.076141Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:08.327Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:23.277Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=1&episode=5&duration_ms=3259000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:47:59.180549Z"
+        }
+      ]
+    },
+    {
+      "season": 1,
+      "episode": 6,
+      "edition": {
+        "id": "introdb-community-s01e06",
+        "durationSeconds": 3156.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 112.0,
+        "creditsStart": 3093.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=1&episode=6",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:47:58.126976Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:08.522Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:23.442Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=1&episode=6&duration_ms=3159000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:00.235295Z"
+        }
+      ]
+    },
+    {
+      "season": 1,
+      "episode": 7,
+      "edition": {
+        "id": "introdb-community-s01e07",
+        "durationSeconds": 3470.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Reference duration differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 111.0,
+        "creditsStart": 3406.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=1&episode=7",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:01.285812Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:08.717Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:23.647Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=1&episode=7&duration_ms=3470000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:03.395837Z"
+        }
+      ]
+    },
+    {
+      "season": 1,
+      "episode": 8,
+      "edition": {
+        "id": "introdb-community-s01e08",
+        "durationSeconds": 3491.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Reference duration differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 112.0,
+        "creditsStart": 3421.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=1&episode=8",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:02.340823Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:08.922Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:23.817Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=1&episode=8&duration_ms=3491000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:04.449469Z"
+        }
+      ]
+    },
+    {
+      "season": 1,
+      "episode": 9,
+      "edition": {
+        "id": "introdb-community-s01e09",
+        "durationSeconds": 3374.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 110.0,
+        "creditsStart": 3308.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=1&episode=9",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:05.504519Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:09.117Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:23.977Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=1&episode=9&duration_ms=3374000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:07.613455Z"
+        }
+      ]
+    },
+    {
+      "season": 1,
+      "episode": 10,
+      "edition": {
+        "id": "introdb-community-s01e10",
+        "durationSeconds": 3160.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 5.0,
+        "openingEnd": 101.0,
+        "creditsStart": 3089.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=1&episode=10",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:06.558411Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:09.317Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:24.121Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=1&episode=10&duration_ms=3160000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:08.665979Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 1,
+      "edition": {
+        "id": "introdb-community-s02e01",
+        "durationSeconds": 3164.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Reference duration differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 109.0,
+        "creditsStart": 3082.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=2&episode=1",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:09.717644Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:09.562Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:24.272Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=2&episode=1&duration_ms=3164000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:11.823599Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 2,
+      "edition": {
+        "id": "introdb-community-s02e02",
+        "durationSeconds": 3212.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Reference duration differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 109.0,
+        "creditsStart": 3130.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=2&episode=2",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:10.768558Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:09.762Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:24.411Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=2&episode=2&duration_ms=3212000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:12.874576Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 3,
+      "edition": {
+        "id": "introdb-community-s02e03",
+        "durationSeconds": 3167.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Reference duration differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 109.0,
+        "creditsStart": 3085.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=2&episode=3",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:13.926362Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:09.937Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:24.597Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=2&episode=3&duration_ms=3167000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:16.035894Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 4,
+      "edition": {
+        "id": "introdb-community-s02e04",
+        "durationSeconds": 3043.55,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 109.0,
+        "creditsStart": 2963.2
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=2&episode=4",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:14.980851Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:10.141Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:24.757Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=2&episode=4&duration_ms=3043000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:17.088070Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 5,
+      "edition": {
+        "id": "introdb-community-s02e05",
+        "durationSeconds": 3253.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Reference duration differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 109.0,
+        "creditsStart": 3171.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=2&episode=5",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:18.138932Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:10.336Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:24.932Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=2&episode=5&duration_ms=3253000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:20.241913Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 6,
+      "edition": {
+        "id": "introdb-community-s02e06",
+        "durationSeconds": 3242.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Reference duration differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 109.0,
+        "creditsStart": 3160.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=2&episode=6",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:19.190994Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:10.537Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:25.067Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=2&episode=6&duration_ms=3242000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:21.295204Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 7,
+      "edition": {
+        "id": "introdb-community-s02e07",
+        "durationSeconds": 3314.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 109.0,
+        "creditsStart": 3228.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=2&episode=7",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:22.350257Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:10.742Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:25.237Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=2&episode=7&duration_ms=3314000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:24.453004Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 8,
+      "edition": {
+        "id": "introdb-community-s02e08",
+        "durationSeconds": 3204.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 109.0,
+        "creditsStart": 3123.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=2&episode=8",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:23.401988Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:10.942Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:25.397Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=2&episode=8&duration_ms=3204000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:25.508050Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 9,
+      "edition": {
+        "id": "introdb-community-s02e09",
+        "durationSeconds": 3270.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 109.0,
+        "creditsStart": 3183.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=2&episode=9",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:26.563071Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:11.157Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:25.552Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=2&episode=9&duration_ms=3270000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:28.670889Z"
+        }
+      ]
+    },
+    {
+      "season": 2,
+      "episode": 10,
+      "edition": {
+        "id": "introdb-community-s02e10",
+        "durationSeconds": 3806.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 109.0,
+        "creditsStart": 3728.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=2&episode=10",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:27.616422Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:11.362Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:25.757Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=2&episode=10&duration_ms=3809000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:29.721151Z"
+        }
+      ]
+    },
+    {
+      "season": 3,
+      "episode": 1,
+      "edition": {
+        "id": "introdb-community-s03e01",
+        "durationSeconds": 3273.6,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 197.0,
+        "openingEnd": 304.0,
+        "creditsStart": 3188.9
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=3&episode=1",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:30.776029Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:11.561Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:25.917Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=3&episode=1&duration_ms=3274000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:32.886109Z"
+        }
+      ]
+    },
+    {
+      "season": 3,
+      "episode": 2,
+      "edition": {
+        "id": "introdb-community-s03e02",
+        "durationSeconds": 3427.95,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 3347.8
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=3&episode=2",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:31.831066Z",
+          "confidence": 1,
+          "submissionCount": 2,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 2,
+              "updatedAt": "2026-04-08T18:48:11.797Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:26.087Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=3&episode=2&duration_ms=3428000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:33.939039Z"
+        }
+      ]
+    },
+    {
+      "season": 3,
+      "episode": 3,
+      "edition": {
+        "id": "introdb-community-s03e03",
+        "durationSeconds": 3171.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 114.0,
+        "creditsStart": 3090.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=3&episode=3",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:34.993836Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:12.002Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:26.257Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=3&episode=3&duration_ms=3171000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:37.102386Z"
+        }
+      ]
+    },
+    {
+      "season": 3,
+      "episode": 4,
+      "edition": {
+        "id": "introdb-community-s03e04",
+        "durationSeconds": 3206.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.815,
+        "creditsStart": 3121.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=3&episode=4",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:36.047520Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:12.202Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:26.437Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=3&episode=4&duration_ms=3206000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:38.154683Z"
+        }
+      ]
+    },
+    {
+      "season": 3,
+      "episode": 5,
+      "edition": {
+        "id": "introdb-community-s03e05",
+        "durationSeconds": 3448.3,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.739,
+        "creditsStart": 3367.8
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=3&episode=5",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:39.207224Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:12.391Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:26.627Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=3&episode=5&duration_ms=3448000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:41.315131Z"
+        }
+      ]
+    },
+    {
+      "season": 3,
+      "episode": 6,
+      "edition": {
+        "id": "introdb-community-s03e06",
+        "durationSeconds": 3205.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 114.0,
+        "creditsStart": 3119.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=3&episode=6",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:40.260092Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:12.681Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:26.782Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=3&episode=6&duration_ms=3205000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:42.366028Z"
+        }
+      ]
+    },
+    {
+      "season": 3,
+      "episode": 7,
+      "edition": {
+        "id": "introdb-community-s03e07",
+        "durationSeconds": 3460.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 3376.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=3&episode=7",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:43.421063Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:12.876Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:27.002Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=3&episode=7&duration_ms=3460000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:45.530327Z"
+        }
+      ]
+    },
+    {
+      "season": 3,
+      "episode": 8,
+      "edition": {
+        "id": "introdb-community-s03e08",
+        "durationSeconds": 3384.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 3300.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=3&episode=8",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:44.476099Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:13.081Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:27.177Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=3&episode=8&duration_ms=3384000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:46.582388Z"
+        }
+      ]
+    },
+    {
+      "season": 3,
+      "episode": 9,
+      "edition": {
+        "id": "introdb-community-s03e09",
+        "durationSeconds": 3051.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 2968.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=3&episode=9",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:47.637437Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:13.282Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:27.347Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=3&episode=9&duration_ms=3051000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:49.743664Z"
+        }
+      ]
+    },
+    {
+      "season": 3,
+      "episode": 10,
+      "edition": {
+        "id": "introdb-community-s03e10",
+        "durationSeconds": 3766.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 114.0,
+        "creditsStart": 3682.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=3&episode=10",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:48.688567Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:13.482Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:27.496Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=3&episode=10&duration_ms=3766000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:50.795934Z"
+        }
+      ]
+    },
+    {
+      "season": 4,
+      "episode": 1,
+      "edition": {
+        "id": "introdb-community-s04e01",
+        "durationSeconds": 3495.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 111.0,
+        "openingEnd": 220.8,
+        "creditsStart": 3410.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=4&episode=1",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:51.851221Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:13.737Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:27.677Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=4&episode=1&duration_ms=3495000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:53.960987Z"
+        }
+      ]
+    },
+    {
+      "season": 4,
+      "episode": 2,
+      "edition": {
+        "id": "introdb-community-s04e02",
+        "durationSeconds": 3157.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 112.4,
+        "creditsStart": 3072.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=4&episode=2",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:52.905942Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:13.942Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:27.841Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=4&episode=2&duration_ms=3157000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:55.015874Z"
+        }
+      ]
+    },
+    {
+      "season": 4,
+      "episode": 3,
+      "edition": {
+        "id": "introdb-community-s04e03",
+        "durationSeconds": 3416.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 3330.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=4&episode=3",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:56.066770Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:14.136Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:28.002Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=4&episode=3&duration_ms=3416000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:58.172340Z"
+        }
+      ]
+    },
+    {
+      "season": 4,
+      "episode": 4,
+      "edition": {
+        "id": "introdb-community-s04e04",
+        "durationSeconds": 3307.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 3223.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=4&episode=4",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:48:57.119967Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:14.336Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:28.157Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=4&episode=4&duration_ms=3307000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:48:59.227360Z"
+        }
+      ]
+    },
+    {
+      "season": 4,
+      "episode": 5,
+      "edition": {
+        "id": "introdb-community-s04e05",
+        "durationSeconds": 3194.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 114.6,
+        "creditsStart": 3110.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=4&episode=5",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:00.282398Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:14.542Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:28.317Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=4&episode=5&duration_ms=3194000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:02.383858Z"
+        }
+      ]
+    },
+    {
+      "season": 4,
+      "episode": 6,
+      "edition": {
+        "id": "introdb-community-s04e06",
+        "durationSeconds": 3043.75,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 2963.8
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=4&episode=6",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:01.332501Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:14.736Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:28.482Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=4&episode=6&duration_ms=3044000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:03.435860Z"
+        }
+      ]
+    },
+    {
+      "season": 4,
+      "episode": 7,
+      "edition": {
+        "id": "introdb-community-s04e07",
+        "durationSeconds": 3068.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 2982.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=4&episode=7",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:04.487910Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:14.957Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:28.697Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=4&episode=7&duration_ms=3068000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:06.595756Z"
+        }
+      ]
+    },
+    {
+      "season": 4,
+      "episode": 8,
+      "edition": {
+        "id": "introdb-community-s04e08",
+        "durationSeconds": 3145.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.4,
+        "creditsStart": 3060.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=4&episode=8",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:05.542961Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:15.162Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:28.857Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=4&episode=8&duration_ms=3145000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:07.650797Z"
+        }
+      ]
+    },
+    {
+      "season": 4,
+      "episode": 9,
+      "edition": {
+        "id": "introdb-community-s04e09",
+        "durationSeconds": 3032.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 2953.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=4&episode=9",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:08.705834Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:15.356Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:29.021Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=4&episode=9&duration_ms=3032000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:10.815897Z"
+        }
+      ]
+    },
+    {
+      "season": 4,
+      "episode": 10,
+      "edition": {
+        "id": "introdb-community-s04e10",
+        "durationSeconds": 3922.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 3833.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=4&episode=10",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:09.760855Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:15.602Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:29.182Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=4&episode=10&duration_ms=3922000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:11.870936Z"
+        }
+      ]
+    },
+    {
+      "season": 5,
+      "episode": 1,
+      "edition": {
+        "id": "introdb-community-s05e01",
+        "durationSeconds": 3131.6,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 3050.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=5&episode=1",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:12.921047Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:15.817Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:29.342Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=5&episode=1&duration_ms=3131000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:15.026427Z"
+        }
+      ]
+    },
+    {
+      "season": 5,
+      "episode": 2,
+      "edition": {
+        "id": "introdb-community-s05e02",
+        "durationSeconds": 3334.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 3252.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=5&episode=2",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:13.975890Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:16.017Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:29.487Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=5&episode=2&duration_ms=3334000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:16.081496Z"
+        }
+      ]
+    },
+    {
+      "season": 5,
+      "episode": 3,
+      "edition": {
+        "id": "introdb-community-s05e03",
+        "durationSeconds": 3596.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 3515.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=5&episode=3",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:17.134160Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:16.237Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:29.657Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=5&episode=3&duration_ms=3596000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:19.240230Z"
+        }
+      ]
+    },
+    {
+      "season": 5,
+      "episode": 4,
+      "edition": {
+        "id": "introdb-community-s05e04",
+        "durationSeconds": 3022.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 2939.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=5&episode=4",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:18.187273Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:16.437Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:29.821Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=5&episode=4&duration_ms=3022000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:20.292302Z"
+        }
+      ]
+    },
+    {
+      "season": 5,
+      "episode": 5,
+      "edition": {
+        "id": "introdb-community-s05e05",
+        "durationSeconds": 3398.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 3319.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=5&episode=5",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:21.345400Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:16.642Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:29.977Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=5&episode=5&duration_ms=3398000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:23.453355Z"
+        }
+      ]
+    },
+    {
+      "season": 5,
+      "episode": 6,
+      "edition": {
+        "id": "introdb-community-s05e06",
+        "durationSeconds": 3222.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 3139.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=5&episode=6",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:22.399891Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:16.857Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:30.137Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=5&episode=6&duration_ms=3222000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:24.508406Z"
+        }
+      ]
+    },
+    {
+      "season": 5,
+      "episode": 7,
+      "edition": {
+        "id": "introdb-community-s05e07",
+        "durationSeconds": 3531.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 3451.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=5&episode=7",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:25.558845Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:17.056Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:30.322Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=5&episode=7&duration_ms=3531000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:27.666456Z"
+        }
+      ]
+    },
+    {
+      "season": 5,
+      "episode": 8,
+      "edition": {
+        "id": "introdb-community-s05e08",
+        "durationSeconds": 3603.6,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 3519.7
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=5&episode=8",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:26.613881Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:17.282Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:30.472Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=5&episode=8&duration_ms=3604000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:28.721493Z"
+        }
+      ]
+    },
+    {
+      "season": 5,
+      "episode": 9,
+      "edition": {
+        "id": "introdb-community-s05e09",
+        "durationSeconds": 3139.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 3058.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=5&episode=9",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:29.776041Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:17.477Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:30.642Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=5&episode=9&duration_ms=3139000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:31.882939Z"
+        }
+      ]
+    },
+    {
+      "season": 5,
+      "episode": 10,
+      "edition": {
+        "id": "introdb-community-s05e10",
+        "durationSeconds": 3611.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Reference duration differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.089,
+        "creditsStart": 3528.7
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=5&episode=10",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:30.827898Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:17.702Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:30.827Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=5&episode=10&duration_ms=3611000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:32.937390Z"
+        }
+      ]
+    },
+    {
+      "season": 6,
+      "episode": 1,
+      "edition": {
+        "id": "introdb-community-s06e01",
+        "durationSeconds": 2998.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 2916.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=6&episode=1",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:47:28.630255Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:17.887Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:31.002Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=6&episode=1&duration_ms=2998000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:47:30.738360Z"
+        }
+      ]
+    },
+    {
+      "season": 6,
+      "episode": 2,
+      "edition": {
+        "id": "introdb-community-s06e02",
+        "durationSeconds": 3219.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 3140.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=6&episode=2",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:47:31.792950Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:18.087Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:31.162Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=6&episode=2&duration_ms=3219000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:47:33.903027Z"
+        }
+      ]
+    },
+    {
+      "season": 6,
+      "episode": 3,
+      "edition": {
+        "id": "introdb-community-s06e03",
+        "durationSeconds": 3133.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 114.036,
+        "creditsStart": 3050.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=6&episode=3",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:47:32.847973Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:18.277Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:31.317Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=6&episode=3&duration_ms=3133000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:47:34.956522Z"
+        }
+      ]
+    },
+    {
+      "season": 6,
+      "episode": 4,
+      "edition": {
+        "id": "introdb-community-s06e04",
+        "durationSeconds": 3521.7,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.458,
+        "creditsStart": 3442.6
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=6&episode=4",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:47:27.575202Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:18.442Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:31.477Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=6&episode=4&duration_ms=3522000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:47:29.685295Z"
+        }
+      ]
+    },
+    {
+      "season": 6,
+      "episode": 5,
+      "edition": {
+        "id": "introdb-community-s06e05",
+        "durationSeconds": 3409.2,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.15,
+        "creditsStart": 3328.6
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=6&episode=5",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:47:36.009474Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:18.636Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:31.647Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=6&episode=5&duration_ms=3409000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:47:38.117084Z"
+        }
+      ]
+    },
+    {
+      "season": 6,
+      "episode": 6,
+      "edition": {
+        "id": "introdb-community-s06e06",
+        "durationSeconds": 3084.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 3001.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=6&episode=6",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:47:37.064520Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:18.822Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:31.802Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=6&episode=6&duration_ms=3084000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:47:39.171497Z"
+        }
+      ]
+    },
+    {
+      "season": 6,
+      "episode": 7,
+      "edition": {
+        "id": "introdb-community-s06e07",
+        "durationSeconds": 3017.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 110.0,
+        "openingEnd": 217.0,
+        "creditsStart": 2936.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=6&episode=7",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:47:40.226563Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:19.022Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:31.957Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=6&episode=7&duration_ms=3017000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:47:42.332030Z"
+        }
+      ]
+    },
+    {
+      "season": 6,
+      "episode": 8,
+      "edition": {
+        "id": "introdb-community-s06e08",
+        "durationSeconds": 3497.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 114.331,
+        "creditsStart": 3418.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=6&episode=8",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:47:41.281598Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:19.217Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:32.117Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=6&episode=8&duration_ms=3497000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:47:43.384740Z"
+        }
+      ]
+    },
+    {
+      "season": 6,
+      "episode": 9,
+      "edition": {
+        "id": "introdb-community-s06e09",
+        "durationSeconds": 3554.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 3473.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=6&episode=9",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:47:44.439802Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:19.401Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:32.282Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=6&episode=9&duration_ms=3554000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:47:46.545977Z"
+        }
+      ]
+    },
+    {
+      "season": 6,
+      "episode": 10,
+      "edition": {
+        "id": "introdb-community-s06e10",
+        "durationSeconds": 4077.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 115.843,
+        "creditsStart": 3997.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=6&episode=10",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:47:45.494130Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:19.627Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:32.437Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=6&episode=10&duration_ms=4077000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:47:47.600840Z"
+        }
+      ]
+    },
+    {
+      "season": 7,
+      "episode": 1,
+      "edition": {
+        "id": "introdb-community-s07e01",
+        "durationSeconds": 3516.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 230.0,
+        "openingEnd": 331.0,
+        "creditsStart": 3437.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=7&episode=1",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:33.992453Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:19.822Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:32.602Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=7&episode=1&duration_ms=3516000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:36.101273Z"
+        }
+      ]
+    },
+    {
+      "season": 7,
+      "episode": 2,
+      "edition": {
+        "id": "introdb-community-s07e02",
+        "durationSeconds": 3482.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 110.0,
+        "creditsStart": 3401.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=7&episode=2",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:35.046859Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:20.072Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:32.762Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=7&episode=2&duration_ms=3482000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:37.156313Z"
+        }
+      ]
+    },
+    {
+      "season": 7,
+      "episode": 3,
+      "edition": {
+        "id": "introdb-community-s07e03",
+        "durationSeconds": 3745.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 112.0,
+        "creditsStart": 3659.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=7&episode=3",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:38.211355Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:20.276Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-14T16:08:25.984Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=7&episode=3&duration_ms=3745000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:40.321173Z"
+        }
+      ]
+    },
+    {
+      "season": 7,
+      "episode": 4,
+      "edition": {
+        "id": "introdb-community-s07e04",
+        "durationSeconds": 2966.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 9.0,
+        "openingEnd": 115.0,
+        "creditsStart": 2878.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=7&episode=4",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:39.266413Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:20.467Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-14T16:08:59.400Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=7&episode=4&duration_ms=2966000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:41.375406Z"
+        }
+      ]
+    },
+    {
+      "season": 7,
+      "episode": 5,
+      "edition": {
+        "id": "introdb-community-s07e05",
+        "durationSeconds": 3511.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 112.0,
+        "creditsStart": 3427.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=7&episode=5",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:42.430439Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:20.667Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-14T16:09:40.289Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=7&episode=5&duration_ms=3511000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:44.536582Z"
+        }
+      ]
+    },
+    {
+      "season": 7,
+      "episode": 6,
+      "edition": {
+        "id": "introdb-community-s07e06",
+        "durationSeconds": 4204.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 110.0,
+        "creditsStart": 4120.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=7&episode=6",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:43.485499Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:20.877Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-14T16:10:21.002Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=7&episode=6&duration_ms=4204000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:45.591499Z"
+        }
+      ]
+    },
+    {
+      "season": 7,
+      "episode": 7,
+      "edition": {
+        "id": "introdb-community-s07e07",
+        "durationSeconds": 4791.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 109.0,
+        "creditsStart": 4709.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=7&episode=7",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:46.646547Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:21.101Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-14T16:13:18.617Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=7&episode=7&duration_ms=4791000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:48.748728Z"
+        }
+      ]
+    },
+    {
+      "season": 8,
+      "episode": 1,
+      "edition": {
+        "id": "introdb-community-s08e01",
+        "durationSeconds": 3187.9,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 108.0,
+        "creditsStart": 3108.7
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=8&episode=1",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:47.697890Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:21.287Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-14T16:14:30.220Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=8&episode=1&duration_ms=3187000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:49.799781Z"
+        }
+      ]
+    },
+    {
+      "season": 8,
+      "episode": 2,
+      "edition": {
+        "id": "introdb-community-s08e02",
+        "durationSeconds": 3480.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 108.0,
+        "creditsStart": 3391.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=8&episode=2",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:50.850879Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:21.477Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-14T16:15:11.217Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=8&episode=2&duration_ms=3480000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:52.957602Z"
+        }
+      ]
+    },
+    {
+      "season": 8,
+      "episode": 3,
+      "edition": {
+        "id": "introdb-community-s08e03",
+        "durationSeconds": 4881.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 108.0,
+        "creditsStart": 4793.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=8&episode=3",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:51.902554Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:21.732Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-14T16:15:56.575Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=8&episode=3&duration_ms=4881000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:54.010510Z"
+        }
+      ]
+    },
+    {
+      "season": 8,
+      "episode": 4,
+      "edition": {
+        "id": "introdb-community-s08e04",
+        "durationSeconds": 4625.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases",
+          "Credits start differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 108.0,
+        "creditsStart": 4539.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=8&episode=4",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:55.062782Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:21.937Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-14T16:16:46.839Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=8&episode=4&duration_ms=4625000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:57.166483Z"
+        }
+      ]
+    },
+    {
+      "season": 8,
+      "episode": 5,
+      "edition": {
+        "id": "introdb-community-s08e05",
+        "durationSeconds": 4680.0,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "community-reference"
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 113.0,
+        "creditsStart": 4591.0
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=8&episode=5",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:56.113390Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:22.162Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-14T16:17:29.887Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=8&episode=5&duration_ms=4680000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:49:58.219257Z"
+        }
+      ]
+    },
+    {
+      "season": 8,
+      "episode": 6,
+      "edition": {
+        "id": "introdb-community-s08e06",
+        "durationSeconds": 4716.9,
+        "toleranceSeconds": 3
+      },
+      "verification": {
+        "status": "unverified",
+        "notes": [
+          "Opening end differs by more than three seconds between databases"
+        ]
+      },
+      "markers": {
+        "openingStart": 6.0,
+        "openingEnd": 108.0,
+        "creditsStart": 4633.1
+      },
+      "sources": [
+        {
+          "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=8&episode=6",
+          "title": "IntroDB.app",
+          "retrievedAt": "2026-10-15T03:49:59.271126Z",
+          "confidence": 1,
+          "submissionCount": 1,
+          "segmentEvidence": {
+            "opening": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-08T18:48:22.362Z"
+            },
+            "credits": {
+              "confidence": 1,
+              "submissionCount": 1,
+              "updatedAt": "2026-04-14T16:18:29.671Z"
+            }
+          }
+        },
+        {
+          "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=8&episode=6&duration_ms=4716000",
+          "title": "TheIntroDB",
+          "retrievedAt": "2026-10-15T03:50:00.421311Z"
+        }
+      ]
+    }
+  ],
+  "notes": "Referências comunitárias por episódio, sem hash da edição do provedor. Ativação de teste limitada a duração compatível em até três segundos; divergências entre as bases não são ativadas. Não são medições do vídeo atual.",
+  "research": {
+    "retrievedAt": "2026-10-15T03:50:00.872123Z",
+    "episodesConsulted": 73,
+    "primaryDatabases": [
+      "https://api.introdb.app/",
+      "https://api.theintrodb.org/v3/media"
+    ],
+    "communityReferenceCount": 21,
+    "conflictingCount": 52
+  }
+}

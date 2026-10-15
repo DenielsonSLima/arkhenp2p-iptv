@@ -1,14 +1,16 @@
 import { SETTINGS_SECTIONS, STARTUP_VIEWS, settingsIcon, renderGeneral, renderProfile, renderStartup } from './settings-views.js';
+import {renderAudioPreferences} from './audio-preferences.js';
+import {renderSeriesPlaybackPreferences} from './series-playback-preferences-view.js';
 const STORAGE='arkehn.catalog-settings.v1';
 const TYPES={live:'TV ao vivo',movies:'Filmes',series:'Séries'};
 const normalize=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const itemKey=item=>`${item.kind}:${item.id}`;
 function node(tag,className='',text){const element=document.createElement(tag);element.className=className;if(text!==undefined)element.textContent=text;return element;}
 function button(text,action,className='button secondary'){const element=node('button',className,text);element.type='button';element.addEventListener('click',action);return element;}
-function read(){try{const value=JSON.parse(localStorage.getItem(STORAGE));return value&&typeof value==='object'?value:{};}catch{return {};}}
+function read(key=STORAGE){try{const value=JSON.parse(localStorage.getItem(key));return value&&typeof value==='object'?value:{};}catch{return {};}}
 export class SettingsTools {
   constructor(options){
-    this.options=options;const stored=read();this.hidden={};this.hiddenItems={};
+    this.options=options;this.storageKey=STORAGE;const stored=read();this.hidden={};this.hiddenItems={};
     for(const type of Object.keys(TYPES)){
       this.hidden[type]=new Set(Array.isArray(stored.hidden?.[type])?stored.hidden[type].filter(id=>typeof id==='string'):[]);
       this.hiddenItems[type]=new Set(Array.isArray(stored.hiddenItems?.[type])?stored.hiddenItems[type].filter(id=>typeof id==='string'):[]);
@@ -28,7 +30,25 @@ export class SettingsTools {
     window.addEventListener('popstate',()=>{if(location.hash.startsWith('#settings/'))this.restoreRoute();else this.close(false);});
   }
   catalog(type){const catalogs=this.options.getCatalogs();return catalogs instanceof Map?catalogs.get(type):catalogs?.[type];}
-  store(){try{localStorage.setItem(STORAGE,JSON.stringify({hidden:Object.fromEntries(Object.entries(this.hidden).map(([type,ids])=>[type,[...ids]])),hiddenItems:Object.fromEntries(Object.entries(this.hiddenItems||{}).map(([type,ids])=>[type,[...ids]])),groups:this.groups,channelNumbers:Object.fromEntries(this.channelNumbers),startupView:this.getStartupView()}));}catch{this.options.toast('Não foi possível salvar estas preferências no navegador.');}}
+  getPreferences(){return {hidden:Object.fromEntries(Object.entries(this.hidden).map(([type,ids])=>[type,[...ids]])),hiddenItems:Object.fromEntries(Object.entries(this.hiddenItems||{}).map(([type,ids])=>[type,[...ids]])),groups:this.getCustomGroups(),channelNumbers:Object.fromEntries(this.channelNumbers),startupView:this.getStartupView()};}
+  store({notify=true}={}){try{localStorage.setItem(this.storageKey,JSON.stringify(this.getPreferences()));}catch{this.options.toast('Não foi possível salvar estas preferências no navegador.');}if(notify)this.options.onStore?.();}
+  activateAccount(id){
+    this.storageKey=/^[a-f0-9]{64}$/i.test(id||'')?`${STORAGE}.account.${id}`:STORAGE;
+    this.applyPreferences(read(this.storageKey),{includeGroups:true});
+  }
+  applyPreferences(value={}, {includeGroups=false}={}){
+    for(const type of Object.keys(TYPES)){
+      this.hidden[type]=new Set((Array.isArray(value.hidden?.[type])?value.hidden[type]:[]).filter(id=>typeof id==='string'));
+      this.hiddenItems[type]=new Set((Array.isArray(value.hiddenItems?.[type])?value.hiddenItems[type]:[]).filter(id=>typeof id==='string'));
+    }
+    this.channelNumbers=new Map();const used=new Set();for(const [id,number]of Object.entries(value.channelNumbers||{}))if(/^\d{1,12}$/.test(id)&&Number.isInteger(number)&&number>0&&number<=9999&&!used.has(number)){used.add(number);this.channelNumbers.set(id,number);}
+    this.startupView=STARTUP_VIEWS.some(([id])=>id===value.startupView)?value.startupView:'home';
+    if(includeGroups)this.setCustomGroups(value.groups||[],{store:false});this.store({notify:false});
+  }
+  setCustomGroups(groups,{store=true}={}){
+    this.groups=(Array.isArray(groups)?groups:[]).filter(group=>group&&typeof group.id==='string'&&/^[\w-]{1,160}$/.test(group.id)&&typeof group.name==='string'&&TYPES[group.type]&&Array.isArray(group.itemKeys)).map(group=>({id:group.id,name:group.name.slice(0,60),type:group.type,itemKeys:group.itemKeys.filter(key=>/^(live|movie|series):\d{1,12}$/.test(key)).slice(0,500)}));
+    if(store)this.store({notify:false});
+  }
   getStartupView(){return STARTUP_VIEWS.some(([id])=>id===this.startupView)?this.startupView:'home';}
   setStartupView(value){if(!STARTUP_VIEWS.some(([id])=>id===value))return;this.startupView=value;this.store();this.options.toast('Tela de inicialização salva.');}
   persist(){this.store();this.options.onChange();if(this.isOpen)document.title='ARKHEN P2 IPTV · Configurações';}
@@ -69,7 +89,7 @@ export class SettingsTools {
     const list=node('div','settings-channel-number-list');for(const {item,number}of channels){const row=node('label','settings-channel-number'),input=node('input','settings-search');input.type='number';input.min='1';input.max='9999';input.value=String(number);input.setAttribute('aria-label',`Número do canal ${item.name}`);input.addEventListener('change',()=>{if(!this.setChannelNumber(item.id,input.value))input.value=String(this.getChannelNumber(item.id,number));});row.append(input,node('span','',item.name));list.append(row);}section.append(list);return section;
   }
   updateRoute(){const hash=`#settings/${this.tab}`;if(location.hash!==hash)history.pushState({settings:true},'',hash);}
-  restoreRoute(){const match=/^#settings\/(general|profile|live|movies|series|playback|startup|connection|catalog)(?:\/(live|movies|series))?$/.exec(location.hash);if(match)this.open(match[1],match[2],false);}
+  restoreRoute(){const match=/^#settings\/(general|profile|live|movies|series|series-playback|playback|audio|startup|connection|catalog)(?:\/(live|movies|series))?$/.exec(location.hash);if(match)this.open(match[1],match[2],false);}
   open(tab='general',type,route=true){
     if(!this.isOpen){this.previousTitle=document.title;this.previousHash=location.hash.startsWith('#settings/')?'#home':location.hash;this.options.onOpen?.();}
     const next=tab==='catalog'?(TYPES[type]?type:this.type):tab;
@@ -85,16 +105,20 @@ export class SettingsTools {
     const pending=Promise.resolve(this.options.loadCatalog(type)).then(data=>{if(!data)this.catalogLoadFailures.add(type);}).catch(()=>this.catalogLoadFailures.add(type)).finally(()=>{this.catalogLoads.delete(type);if(this.isOpen&&this.tab===type)this.render();});
     this.catalogLoads.set(type,pending);
   }
-  close(route=true){if(!this.isOpen)return;this.diagnosticRequest++;this.isOpen=false;this.dialog.hidden=true;document.querySelector('#main-content').hidden=false;document.title=this.previousTitle||'ARKHEN P2 IPTV';if(route)history.replaceState(null,'',this.previousHash||'#home');this.options.onClose?.();}
+  close(route=true){if(!this.isOpen)return;this.audioCleanup?.();this.audioCleanup=null;this.seriesPlaybackCleanup?.();this.seriesPlaybackCleanup=null;this.diagnosticRequest++;this.isOpen=false;this.dialog.hidden=true;document.querySelector('#main-content').hidden=false;document.title=this.previousTitle||'ARKHEN P2 IPTV';if(route)history.replaceState(null,'',this.previousHash||'#home');this.options.onClose?.();}
   render(){
+    this.audioCleanup?.();this.audioCleanup=null;
+    this.seriesPlaybackCleanup?.();this.seriesPlaybackCleanup=null;
     for(const tab of this.tabs.children){const active=tab.dataset.tab===this.tab||(this.tab==='connection'&&tab.dataset.tab==='general');tab.classList.toggle('active',active);active?tab.setAttribute('aria-current','page'):tab.removeAttribute('aria-current');}
     const section=SETTINGS_SECTIONS.find(item=>item.id===this.tab);this.title.textContent=section?.label||'Teste de conexão';this.description.textContent=section?.description||'Confira como está o seu serviço e a reprodução.';
     const account=this.options.getSession?.()?.account||{};this.sidebarAccount.replaceChildren(node('span','status-dot'),node('span','',account.usernameMasked||'Conta conectada'));
     this.body.replaceChildren();
-    const viewOptions={getSession:this.options.getSession,open:(tab,type)=>this.open(tab,type),logout:()=>this.options.onLogout?.(),refresh:()=>this.options.onRefresh?.()};
+    const viewOptions={getSession:this.options.getSession,getCloudStatus:this.options.getCloudStatus,mediaLibrary:this.options.mediaLibrary,onLibraryChange:()=>{this.options.onLibraryChange?.();this.options.onChange?.();},open:(tab,type)=>this.open(tab,type),logout:()=>this.options.onLogout?.(),refresh:()=>this.options.onRefresh?.()};
     if(this.tab==='general')renderGeneral(this.body,viewOptions);
     else if(this.tab==='profile')renderProfile(this.body,viewOptions);
     else if(this.tab==='startup')renderStartup(this.body,{value:this.getStartupView(),onChange:value=>this.setStartupView(value)});
+    else if(this.tab==='audio')this.audioCleanup=renderAudioPreferences(this.body,{controller:this.options.audioController,toast:this.options.toast});
+    else if(this.tab==='series-playback')this.seriesPlaybackCleanup=renderSeriesPlaybackPreferences(this.body,{controller:this.options.seriesPlaybackPreferences,toast:this.options.toast});
     else if(this.tab==='playback'){
       if(this.options.playerTools?.renderPreferences)this.options.playerTools.renderPreferences(this.body);
       else this.body.append(node('p','settings-note','Ajuste o buffer no menu do player durante a reprodução.'));

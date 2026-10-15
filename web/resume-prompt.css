@@ -1,0 +1,27 @@
+.immersive-stage .resume-prompt {
+  position: absolute;
+  left: max(var(--player-gutter, 24px), env(safe-area-inset-left));
+  bottom: max(145px, calc(env(safe-area-inset-bottom) + 130px));
+  z-index: 8;
+  pointer-events: auto;
+}
+.resume-prompt[hidden] { display: none !important; }
+.resume-prompt-button {
+  min-height: 46px;
+  padding: 12px 20px;
+  border: 1px solid #e1e9f266;
+  border-radius: 5px;
+  background: #111720ed;
+  color: #f0f4fa;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 20px #0005;
+  cursor: pointer;
+}
+.resume-prompt-button:hover { background: #26313ff5; }
+.resume-prompt-button:focus-visible { outline: 2px solid #e0ebfa; outline-offset: 3px; }
+.ip-root:has(.ip-tools-slot:not([hidden])) .resume-prompt { visibility: hidden; }
+@media(max-width:650px) {
+  .immersive-stage .resume-prompt { left: max(16px, env(safe-area-inset-left)); bottom: max(126px, calc(env(safe-area-inset-bottom) + 112px)); }
+  .resume-prompt-button { min-height: 44px; padding: 10px 15px; font-size: 12px; }
+}

@@ -132,3 +132,18 @@ test('policy decisions do not mutate the caller state or catalog items', () => {
   assert.deepEqual(state.stallTimes, []);
   assert.equal(state.pendingId, null);
 });
+
+test('nominal 4K and HEVC do not trigger blind upgrades; measured compatibility and target bandwidth are required',()=>{
+  const current=sources[2],target={...sources[3],name:'Canal Sergipe 4K HEVC',bitrateBps:20_000_000};
+  const healthy=options=>{const playback=session(current,{variants:[current,target],...options});let decision;for(const now of [0,15000,30000,45000,60000,75000,90000])decision=playback.tick(now);return decision;};
+  assert.equal(healthy({bandwidthBps:50_000_000}).target,null);
+  assert.equal(healthy({bandwidthBps:29_999_999,sourceCapabilities:new Map([[target.id,true]])}).target,null);
+  assert.equal(healthy({bandwidthBps:30_000_000,sourceCapabilities:new Map([[target.id,true]])}).target,target);
+  assert.equal(healthy({bandwidthBps:50_000_000,sourceCapabilities:new Map([[target.id,false]])}).target,null);
+});
+
+test('recovery never mixes time-shifted sources with otherwise matching names',()=>{
+  const current={id:'shifted',name:'Canal Sergipe +2 FHD',kind:'live'},variants=[current,...sources];
+  const playback=session(current,{variants});playback.tick(0,{bufferSeconds:1});playback.tick(1000,{bufferSeconds:1,stalls:1});
+  assert.equal(playback.tick(2100,{bufferSeconds:1,stalls:2}).target,null);
+});

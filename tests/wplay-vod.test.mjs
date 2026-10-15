@@ -29,7 +29,7 @@ function fixture({invalidPage=false}={}) {
     }
     if(url.pathname==='/search/@101')return {...movie(),description:'Sinopse detalhada',duration:'1h 32min',sources:[{_id:601,address:'https://video.example/full-film.mp4',duration:120}]};
     if(url.pathname==='/search/@201')return {...series,sources:[
-      {_id:701,subTitle:'S01E001',address:'https://video.example/full-episode.mp4',duration:120},
+      {_id:701,subTitle:'S01E001',address:'https://video.example/full-episode.mp4',duration:120,thumbnail:'https://art.example/episode-701.jpg'},
       {_id:702,subTitle:'S01E001',address:'https://video.example/duplicate-quality.mp4'},
       {_id:'opaque-episode-id',subTitle:'S02E003',address:'https://video.example/season-two.mp4',duration:'00:42:00'}
     ]};
@@ -95,6 +95,7 @@ test('native episode IDs handle numeric _id and opaque IDs, deduplicate quality 
   const {client}=fixture();const details=await client.details('series','201');
   assert.deepEqual(details.seasons.map(season=>[season.number,season.episodes.length]),[[1,1],[2,1]]);
   assert.equal(details.seasons[0].episodes[0].id,'701');assert.equal(details.seasons[0].episodes[0].number,1);
+  assert.match(details.seasons[0].episodes[0].thumbnail,/^\/api\/image\?ref=/);assert.equal(client.images.get(new URL(details.seasons[0].episodes[0].thumbnail,'http://local').searchParams.get('ref')),'https://art.example/episode-701.jpg');
   assert.equal(details.seasons[0].episodes[0].durationSeconds,null);
   const episode=details.seasons[1].episodes[0];assert.match(episode.id,/^\d{1,12}$/);assert.equal(episode.durationSeconds,2520);
   assert.equal(episode.id,nativeEpisodeID('201',{_id:'opaque-episode-id'}));

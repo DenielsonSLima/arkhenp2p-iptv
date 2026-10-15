@@ -12,3 +12,5 @@ native-bridge/build/
 __pycache__/
 *.py[cod]
 .vercel/
+supabase/.temp/
+supabase/.branches/

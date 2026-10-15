@@ -167,7 +167,7 @@ test('the local player authenticates, sanitizes catalog data, and proxies only r
     await t.test('a fresh browser requires credentials and login uses the configured server without exposing it', async () => {
       const initial = await fetch(`${mock.base}/api/session`);
       const initialCookie=sessionCookie(initial);
-      assert.deepEqual(await initial.json(),{connected:false,login:{configuredServer:true,defaultProvider:"wplay"}});
+      assert.deepEqual(await initial.json(),{connected:false,capabilities:{games:true,accountLibrary:true,cloud:false},login:{configuredServer:true,defaultProvider:"wplay"},cloud:null,cloudStatus:{state:'disabled'}});
       assert.equal(mock.requests.length,0,'Opening sign-in must not authenticate with stored credentials.');
       const locked=await fetch(`${mock.base}/api/catalog?type=movies`,{headers:{Cookie:initialCookie}});
       assert.equal(locked.status,401);

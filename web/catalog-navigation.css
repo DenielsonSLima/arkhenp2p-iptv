@@ -1,0 +1,78 @@
+/* Catalog pages begin directly below the persistent navigation. */
+#browse:is([data-catalog-view="live"], [data-catalog-view="movies"], [data-catalog-view="series"]) {
+  padding-top: 16px;
+}
+
+#application > main > #browse[data-catalog-view] > .page-heading:not(.home-heading) {
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin: 0 0 16px;
+}
+
+#browse[data-catalog-view] > .page-heading > div:first-child {
+  display: none;
+}
+
+#browse[data-catalog-view] .catalog-heading-tools {
+  min-width: 0;
+  margin-top: 0;
+  flex-direction: row;
+  align-items: center;
+}
+
+#browse[data-catalog-view] .catalog-sidebar {
+  top: 110px;
+}
+
+#browse[data-catalog-view] .catalog-sidebar .live-category {
+  min-height: 44px;
+  padding: 11px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .035em;
+  line-height: 1.45;
+}
+
+#browse[data-catalog-view] .catalog-sidebar .live-category > span:first-child {
+  text-transform: uppercase;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+#browse[data-catalog-view] .catalog-sidebar .live-category .category-total {
+  font-size: 10px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+#browse[data-catalog-view] .catalog-sidebar .live-category:focus-visible {
+  outline: 2px solid #d9e3ef;
+  outline-offset: -2px;
+}
+
+@media (min-width: 1700px) {
+  #browse[data-catalog-view] .catalog-sidebar { top: 118px; }
+}
+
+@media (max-width: 1250px) {
+  #browse[data-catalog-view] .catalog-sidebar { top: 136px; }
+  #browse[data-catalog-view] .category-sidebar-items { max-height: calc(100svh - 294px); }
+}
+
+@media (max-width: 650px) {
+  #browse:is([data-catalog-view="live"], [data-catalog-view="movies"], [data-catalog-view="series"]) {
+    padding-top: 12px;
+  }
+  #application > main > #browse[data-catalog-view] > .page-heading:not(.home-heading) {
+    margin-bottom: 12px;
+  }
+  #browse[data-catalog-view] .catalog-sidebar .live-category {
+    padding: 11px 12px;
+    font-size: 11px;
+    letter-spacing: .035em;
+  }
+  #browse[data-catalog-view] .catalog-sidebar .live-category .category-total { font-size: 10px; }
+  #browse[data-catalog-view] .catalog-sidebar.mobile-expanded .category-sidebar-items { max-height: 264px; }
+}

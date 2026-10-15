@@ -1,0 +1,53 @@
+/* Per-episode positions stay with each episode, below its title and season. */
+.detail-page .episode-button .episode-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.detail-page .episode-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  max-width: 640px;
+  margin-top: 12px;
+}
+.detail-page .episode-progress-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 5px 16px;
+  color: #8795a6;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.detail-page .episode-progress-state { font-weight: 500; }
+.detail-page .episode-progress-time {
+  color: #a8b6c7;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.detail-page .episode-progress-bar {
+  display: block;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 3px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 3px;
+  background: #e5edf518;
+  accent-color: #c7d8e9;
+}
+.detail-page .episode-progress-bar::-webkit-progress-bar { background: #e5edf518; border-radius: 3px; }
+.detail-page .episode-progress-bar::-webkit-progress-value { background: #c7d8e9; border-radius: 3px; }
+.detail-page .episode-progress-bar::-moz-progress-bar { background: #c7d8e9; border-radius: 3px; }
+.detail-page .episode-button[data-progress-state="in-progress"] .episode-progress-state,
+.detail-page .episode-button[data-progress-state="completed"] .episode-progress-state { color: #cbd9e8; }
+.detail-page .episode-button[data-progress-state="completed"] .episode-play { color: #d9e4f1; background: #c4d8ee15; }
+@media (max-width: 650px) {
+  .detail-page .episode-button { align-items: flex-start; }
+  .detail-page .episode-button .episode-number,
+  .detail-page .episode-button .episode-play { margin-top: 3px; }
+  .detail-page .episode-progress { gap: 8px; margin-top: 10px; }
+  .detail-page .episode-progress-caption { gap: 4px 10px; font-size: 10px; }
+}

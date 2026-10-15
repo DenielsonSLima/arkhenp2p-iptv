@@ -12,7 +12,9 @@ npm run start:p2p
 
 Abra **http://localhost:4173** e mantenha o terminal aberto. O iniciador prepara os componentes locais já instalados para a TV P2P e reutiliza a sessão do APK. Encerre o servidor anterior antes de iniciar outra instância. Use `Ctrl+C` para encerrar.
 
-O servidor web básico requer Node.js 20 ou superior e não exige instalação de dependências: `npm start` ou `npm run dev` executam somente essa parte. Esses comandos permitem autenticar, consultar o catálogo e reproduzir fontes HTTP, mas não preparam a engine Android necessária aos canais `tvbus://`. As pré-condições do modo P2P estão em [tools/original-engine/README.md](tools/original-engine/README.md#comando-único-neste-mac).
+O aplicativo requer Node.js 22 ou superior. O bundle do cliente Supabase/TanStack está versionado; para instalar as dependências fixadas e recompilá-lo, execute `npm ci` e `npm run build:cloud`. `npm start` ou `npm run dev` iniciam somente o servidor web: permitem autenticar, consultar o catálogo e reproduzir fontes HTTP, mas não preparam a engine Android necessária aos canais `tvbus://`. As pré-condições do modo P2P estão em [tools/original-engine/README.md](tools/original-engine/README.md#comando-único-neste-mac).
+
+Os avisos e licenças das dependências distribuídas estão em [CLOUD-LICENSES.txt](web/assets/vendor/CLOUD-LICENSES.txt), gerado junto com o bundle.
 
 ## Publicação e hospedagem
 
@@ -36,17 +38,17 @@ Para configurar um servidor Xtream, também aceita `IPTV_SERVER`, `IPTV_USERNAME
 
 - A programação WPLAY é consultada pelo mesmo contrato do APK, associando o EPG ao canal ou à sua referência compartilhada. O servidor reutiliza a grade por cinco minutos; cards e player recalculam o programa atual a cada 15 segundos e consultam atualizações sem interromper o vídeo. Horários são exibidos no fuso local. Canais sem grade fornecida continuam identificados como programação não informada.
 - TV ao vivo com categorias, busca, logos locais compactas e programação quando fornecida pelo serviço. O índice em `web/assets/channels/manifest.json` cruza nomes e IDs, preserva afiliadas e canais numerados e compartilha o mesmo arquivo entre variantes SD/HD/FHD. Logos ausentes usam a imagem do provedor como alternativa.
-- Início com três filmes recentes no banner, canais favoritos/recentes, últimos filmes assistidos, lançamentos de filmes, últimas séries assistidas e lançamentos de séries. Datas disponíveis determinam a ordem; o aplicativo não inventa ano ou duração ausentes. Cards com histórico exibem progresso e temporada/episódio atual.
+- Início com até seis destaques no banner (três filmes e três séries), trocados a cada cinco segundos, canais favoritos/recentes, últimos filmes assistidos, lançamentos de filmes, últimas séries assistidas e lançamentos de séries. Datas disponíveis determinam a ordem; o aplicativo não inventa ano ou duração ausentes. Cards com histórico exibem progresso e temporada/episódio atual.
 - Filmes com capas, sinopse e página de prévia que ocupa a tela, com título, metadados e duração.
-- Séries com prévia própria, contagem de temporadas e total de episódios, seleção de temporada e próximo episódio. A prévia da série não solicita duração do primeiro episódio como duração do título.
+- Séries com prévia própria, contagem de temporadas e total de episódios, seleção de temporada, progresso por episódio e próximo episódio. Miniaturas usam a imagem fornecida pelo episódio ou, quando ausente, a imagem da série identificada como alternativa. A prévia da série não solicita duração do primeiro episódio como duração do título.
 - Cards de filmes semelhantes abaixo da prévia, selecionados por gêneros em comum entre os títulos visíveis da conta. Grupos genéricos como Lançamentos ou HD não contam como similaridade. Voltar retorna ao título anterior; Início leva diretamente à home.
 - Player em página de tela inteira, com tentativa de fullscreen nativo ao tocar em Assistir. Voltar restaura a prévia e a posição anterior do catálogo.
-- Favoritos e posição de reprodução salvos neste navegador, separados por provedor. Registros antigos são preservados e migrados somente quando ID e título correspondem ao catálogo atual. Referências temporárias de imagem são renovadas pela sessão atual.
+- Favoritos, posição de reprodução, listas e preferências separados por conta, com cache neste navegador e sincronização Supabase quando a nuvem está conectada. O login WPLAY validado provisiona a identidade da biblioteca; não há segunda senha. Registros antigos sem proprietário comprovado exigem importação explícita em Perfil. Referências temporárias de imagem são renovadas pela sessão atual.
 - Reprodução HLS pelo Safari ou por HLS.js nos navegadores compatíveis.
 - Proxy local para imagens, playlists HLS, segmentos, chaves e vídeos, incluindo requisições de intervalo para navegação no vídeo.
 - Uma reprodução ativa por conexão; a anterior é encerrada ao trocar de conteúdo.
 - Identidade em preto e prata, com símbolo e wordmark reconstruídos em SVG e PNG transparente de alta resolução, além do favicon.
-- Configurações de reprodução, teste de conexão e organização do catálogo neste navegador.
+- Configurações de reprodução, teste de conexão e organização do catálogo, com preferências da conta sincronizadas quando a nuvem está disponível.
 - Configurações em página própria, com rota e navegação de volta ao catálogo.
 - Categorias que podem ser ocultadas/restauradas e grupos personalizados de canais, filmes ou séries.
 - Resolução, áudio e legendas conforme as variantes e faixas disponibilizadas pela fonte; importação local de legendas SRT/WebVTT.
@@ -56,7 +58,7 @@ Para configurar um servidor Xtream, também aceita `IPTV_SERVER`, `IPTV_USERNAME
 - Favoritos atualizados diretamente nos cards; categorias e carregamento adicional preservam imagens e controles já montados. Trocar a categoria retorna ao topo.
 - Indicadores do player para vídeo disponível no buffer, resolução, travamentos observados e estimativa de entrega quando disponível.
 - Qualidade automática que pode ser ativada/desativada e mantém a preferência neste navegador.
-- Abertura e créditos podem ser marcados por episódio nos ajustes do reprodutor. Os botões de pular aparecem somente nos intervalos marcados, com conferência da identidade e duração da mídia. Não há um tempo genérico aplicado à série nem detecção automática de cenas.
+- Abertura e créditos podem vir dos marcadores por episódio no Supabase, das referências locais de teste ou de marcações manuais nos ajustes do reprodutor. A identidade, duração e política da edição determinam quais dados podem ser usados. As contagens de abertura e próximo episódio duram cinco segundos e podem ser canceladas. Sem créditos marcados, o modo padrão oferece o próximo episódio pelo intervalo final configurado, explicitamente aproximado. Não há detecção automática de cenas; consulte [reprodução de séries](docs/series-playback.md).
 
 O catálogo inclui as categorias disponibilizadas pela conta no provedor, inclusive conteúdo adulto quando liberado na assinatura. Categorias podem ser ocultadas em Configurações. A disponibilidade de cada mídia, qualidade e codecs depende do serviço e do navegador. Conteúdos MKV/AVI não são convertidos para outro formato pelo app.
 
@@ -96,7 +98,7 @@ O servidor mantém em memória até 32 MB de segmentos já solicitados, com vali
 
 Se os segmentos chegam continuamente mais devagar do que o vídeo os consome, um buffer maior apenas adia o próximo travamento. Se chegam com folga mas há quadros perdidos, é preciso investigar codec, navegador e aparelho. Essas hipóteses precisam ser confirmadas pela telemetria da sessão.
 
-Ocultar categorias e reduzir capas simultâneas alivia a interface. No acesso WPLAY nativo, filmes e séries carregam inicialmente um conjunto limitado de páginas; selecionar uma categoria ou usar Carregar mais consulta as próximas páginas. As categorias continuam disponíveis para seleção. Os conectores OTT e Xtream mantêm seus próprios contratos de catálogo. A interface limita os cards exibidos e carrega imagens conforme a necessidade; ocultar grupos não altera o bitrate nem a capacidade do provedor.
+Ocultar categorias e reduzir capas simultâneas alivia a interface. No acesso WPLAY nativo, filmes e séries carregam suas páginas automaticamente em segundo plano, em todas as categorias visíveis. A busca considera os títulos já recebidos e atualiza os resultados enquanto a carga completa termina. Não há botão Carregar mais. Os conectores OTT e Xtream mantêm seus próprios contratos de catálogo. Cards e imagens são montados conforme a navegação; isso não limita a busca aos cards exibidos. Ocultar grupos não altera o bitrate nem a capacidade do provedor.
 
 ### Qualidade automática
 
@@ -116,9 +118,11 @@ Conclusão conjunta: medir a entrega, comparar um ajuste de cada vez, separar pe
 
 ### Firebase e Supabase
 
+O Supabase do ARKHEN já está configurado para biblioteca por usuário, Realtime, metadados compartilhados e marcadores de episódios. A configuração aplicada, os módulos e os limites do worker estão em [Supabase do ARKHEN](docs/supabase-setup.md).
+
 A conta de Firebase ou Supabase, sozinha, não muda o caminho do vídeo, que continua vindo do provedor. Essa é uma inferência da arquitetura documentada dos serviços. Eles podem armazenar favoritos, progresso, grupos, preferências e um catálogo paginado. O cache offline de dados facilita reabrir a interface, sem ser um buffer de vídeo.
 
-Guardar mídia temporária em uma nuvem exigiria uma camada de ingestão/entrega, controle de acesso, expiração e tráfego próprios. Também acrescentaria uma etapa ao caminho da transmissão, que deve ser medida antes de concluir que melhora a experiência. Nenhum projeto de nuvem foi criado ou vinculado nesta etapa.
+Guardar mídia temporária em uma nuvem exigiria uma camada de ingestão/entrega, controle de acesso, expiração e tráfego próprios. Também acrescentaria uma etapa ao caminho da transmissão, que deve ser medida antes de concluir que melhora a experiência. A configuração atual do Supabase armazena dados da biblioteca e metadados; não armazena nem retransmite os vídeos.
 
 Referências primárias: [buffer HLS.js](https://github.com/video-dev/hls.js/blob/master/docs/API.md#maxbufferlength), [margem ao vivo HLS.js](https://github.com/video-dev/hls.js/blob/master/docs/API.md#livesyncdurationcount), [MDN buffered](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/buffered), [MDN preload](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/preload), [Firestore offline](https://firebase.google.com/docs/firestore/manage-data/enable-offline), [Firebase Hosting cache](https://firebase.google.com/docs/hosting/manage-cache), [Supabase paginação](https://supabase.com/docs/reference/javascript/range), [Supabase Storage CDN](https://supabase.com/docs/guides/storage/cdn/smart-cdn).
 
@@ -129,6 +133,8 @@ A pesquisa pública não encontrou um benchmark confiável que compare os servid
 Para futebol, comparar o mesmo jogo, qualidade semelhante, navegador e perfil de buffer, durante 20–30 minutos no horário de maior audiência. Registrar tempo até iniciar, quantidade e duração das interrupções, entrega dos segmentos, resolução real e atraso contra uma referência da transmissão. A distância até a borda HLS mede somente parte do atraso; ela não revela todo o tempo que a origem introduziu. Fazer uma comparação separada para filmes e séries, pois as prioridades são diferentes. O servidor atual permanece como referência até haver evidência suficiente de uma alternativa melhor.
 
 ## Estrutura
+
+O [mapa de manutenção do player](docs/player-modules.md) relaciona os módulos de progresso por episódio, retomada, recuperação ao avançar, reprodução automática, logos, legendas, áudio e qualidade, com seus contratos e pontos de integração.
 
 `web/` contém a interface e o player. O login fica em `login-screen.js` / `login-screen.css` e a preparação em `session-loader.js` / `session-loader.css`; o menu de conta em `account-menu.js`; as configurações em `settings-tools.js`, `settings-views.js` e `settings.css`; a preservação dos cards em `catalog-renderer.js`; as rotas em `page-routes.js`. Filmes ficam em `movie-preview.js` / `related-movies.js`, séries em `series-preview.js` e TV ao vivo em `live-view.js`; `preview-tools.js` compartilha capa, fatos e ações. `title-preview.css` e `playback-page.css` separam o visual das prévias e do player, importados pelo pequeno `immersive-pages.css`. A reprodução fica em `player-tools.js` e `immersive-player.js`. `lib/wplay-ott-provider.mjs` integra o player web WPLAY e `lib/ott-rpc.mjs` implementa a serialização RPC observada; `lib/media-duration.mjs` normaliza durações e `lib/mp4-duration.mjs` lê o cabeçalho de mídia selecionada; `lib/provider.mjs` integra Xtream; `lib/upstream.mjs` faz as conexões ao provedor; `lib/diagnostics.mjs` analisa as medições; `lib/app-server.mjs` atende arquivos e endpoints locais; `server.mjs` inicia o processo.
 

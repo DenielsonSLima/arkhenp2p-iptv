@@ -1,5 +1,6 @@
 const CHANNEL_ID = /^\d{1,12}$/;
 const LOCAL_LOGO = /^\/assets\/channels\/([a-z0-9]+(?:-[a-z0-9]+)*)-([a-f0-9]{8,64})\.webp$/;
+const SHARED_IMAGE = /^\/api\/(?:shared|sports)-image\/[a-f0-9]{64}$/;
 const QUALITY_SUFFIX = /(?:^|\s)(?:sd|hd|fhd|uhd|4k|hevc|h\s?265)$/;
 // Explicit spellings observed in the OTT and APK catalogs; no partial matching.
 const CHANNEL_ALIASES = new Map([['redetv', 'rede tv'], ['sportv 1', 'sportv']]);
@@ -28,10 +29,16 @@ function localArtworkURL(value) {
   return match && match[1].length <= 70 && !/\s/.test(value) ? value : '';
 }
 
-// Artwork remains on the authenticated image proxy or the local logo directory.
+// Both image proxies enforce the active account on the backend. Shared hashes
+// are opaque identifiers, never the original provider URL or its credentials.
 export function artworkURL(value) {
   if (typeof value !== 'string' || value.length > 2048 || /[\s\\#\u0000-\u001f\u007f]/u.test(value)) return '';
-  return localArtworkURL(value) || (value.startsWith('/api/image?') && value.length > 11 ? value : '');
+  return localArtworkURL(value) || (SHARED_IMAGE.test(value) || value.startsWith('/api/image?') && value.length > 11 ? value : '');
+}
+
+export function fallbackArtworkURL(source, fallback) {
+  const current=artworkURL(source),next=artworkURL(fallback);
+  return current.startsWith('/assets/channels/')&&next.startsWith('/api/')&&next!==current?next:'';
 }
 
 function channelName(value) {

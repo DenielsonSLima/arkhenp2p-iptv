@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { EpisodeSkipStore, EpisodeSkipController, validateSkipMarkers, activeSkipActions } from '../web/episode-skip.js';
 
-const context = (seriesId = '100', episodeId = '200', sourceFingerprint = '/api/play/series/200.mp4') => ({seriesId, episodeId, sourceFingerprint});
+const context = (seriesId = '100', episodeId = '200', sourceFingerprint = '/api/play/series/200.mp4') => ({seriesId, episodeId, sourceFingerprint,namespace:'a'.repeat(64)});
 const memoryStorage = () => {
   const values = new Map();
   return {getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value), values};
@@ -85,7 +85,7 @@ class Element extends EventTarget {
 const document = {createElement: tag => new Element(tag)};
 function controllerFixture(options = {}) {
   const video = new EventTarget(); Object.assign(video, {duration: 600, currentTime: 0, error: null});
-  const controller = new EpisodeSkipController({video, document, storage: memoryStorage(), ...options});
+  const controller = new EpisodeSkipController({video, document, storage: memoryStorage(), preferences:{getPreferences:()=>({autoSkipOpening:false})}, ...options});
   return {video, controller, attach: () => controller.attach({item: {kind: 'series', id: '100'}, episode: {id: '200'}, sourceFingerprint: '/api/play/series/200.mp4'})};
 }
 
