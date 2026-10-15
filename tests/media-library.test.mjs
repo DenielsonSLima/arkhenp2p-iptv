@@ -97,6 +97,15 @@ test('explicit import copies only real matching titles and follows later pages w
   for(const [name,value] of Object.entries(initial))assert.deepEqual(storage.get(name),value);
 });
 
+test('matching titles imported from later catalog pages notify cloud sync after local persistence',()=>{
+  const late={id:'2',kind:'series',name:'Série'},f=fixture({'orbit.library.v2.wplay.favorites':[film,late]});
+  const notifications=[];f.library.onMigrate=value=>notifications.push({value,saved:f.storage.get(`orbit.library.v3.wplay.${accountA}.favorites`)});
+  f.library.activate('wplay',accountA);f.library.migrate({items:[film]});assert.equal(notifications.length,0);
+  f.library.importLegacy();assert.equal(notifications.length,1);assert.deepEqual(notifications[0].saved.map(item=>item.id),['1']);
+  f.library.migrate({items:[late]});assert.equal(notifications.length,2);assert.deepEqual(notifications[1].saved.map(item=>item.id),['1','2']);
+  f.library.migrate({items:[late]});assert.equal(notifications.length,2);
+});
+
 test('scoped import excludes history proven to belong to another account and preserves newer scoped records',()=>{
   const {library,favorites,history}=fixture({'orbit.library.v2.wplay.favorites':[film],
     'orbit.library.v2.wplay.history':[{item:film,time:300,libraryId:accountB}],

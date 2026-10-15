@@ -1,3 +1,5 @@
+import {isAdultItem} from './parental-classification.js';
+
 const seconds=value=>typeof value==='number'&&Number.isFinite(value)&&value>=0?value:null;
 const userSeekReasons=new Set(['user','opening','credits','restart']);
 
@@ -29,10 +31,13 @@ export class PlaybackPositionGuard {
 }
 
 /** Resolve an exact episode before falling back to the last title-level entry. */
-export function resumePlaybackPosition({item,episode,episodeEntry,historyEntry,accountLibraryId,options={}}={}) {
+export function resumePlaybackPosition({item,episode,episodeEntry,historyEntry,accountLibraryId,options={},categories=[]}={}) {
   if(!['movie','series'].includes(item?.kind))return 0;
   if(options.startFromBeginning)return 0;
   const explicit=seconds(options.resumeTime);if(explicit!==null)return explicit;
+  // Explicit recovery targets above belong to the running player in RAM.
+  // Private playback never resumes persisted title or episode history.
+  if(isAdultItem(item,categories)||isAdultItem(episode,categories)||isAdultItem(episodeEntry,categories)||isAdultItem(episodeEntry?.item,categories)||isAdultItem(historyEntry,categories)||isAdultItem(historyEntry?.item,categories)||isAdultItem(historyEntry?.episode,categories))return 0;
   let saved=null;
   if(item.kind==='series'&&episode&&episodeEntry?.itemId===String(item.id)&&episodeEntry.episodeId===String(episode.id))saved=episodeEntry;
   else if((historyEntry?.libraryId===undefined||historyEntry.libraryId===accountLibraryId)&&

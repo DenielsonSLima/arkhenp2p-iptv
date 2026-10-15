@@ -2,6 +2,8 @@
 
 Projeto: `wnicimkmzswksaqdtgdv` (ArkhenP2IPTV). Configuração inicial aplicada em 15/10/2026.
 
+Nesta instalação, o backend usa a Edge Function `arkhen-backend` para as operações privilegiadas. A chave administrativa fica no ambiente do Supabase; `.local/supabase.json` guarda URL, chave pública e somente a credencial HMAC restrita da função. Login da CLI e `supabase link` dão acesso de administração ao agente, mas não ativam sozinhos a configuração do aplicativo. O navegador usa a sessão própria da conta para lista, progresso e Realtime.
+
 ## O que está no banco
 
 - `profiles` e mapeamento privado de identidade: o backend valida a conta no WPLAY antes de criar ou reaproveitar o usuário Supabase Auth. A senha WPLAY não vai ao banco.
@@ -24,9 +26,10 @@ O Cron enfileira os trabalhos vencidos: catálogo a cada 24 horas, programação
 
 | Arquivo | Função |
 | --- | --- |
-| `.local/supabase.json` | URL, publishable key e segredo usados pelo backend; ignorado pelo Git |
-| `.local/supabase-access-token` | Credencial temporária de administração; modo 600; ignorada pelo Git |
-| `tools/supabase-project.mjs` | Administração HTTPS restrita ao identificador deste projeto |
+| `.local/supabase.json` | URL, publishable key e credencial HMAC do gateway; sem chave administrativa nesta instalação; ignorado pelo Git |
+| `supabase/functions/arkhen-backend/` | Operações administrativas restritas e assinadas; chave de serviço somente no ambiente Supabase |
+| `.local/bin/supabase.exe` | CLI autenticada e vinculada ao projeto nesta máquina Windows |
+| `tools/supabase-project.mjs` | Alternativa antiga de administração HTTPS, exige PAT próprio em `.local/supabase-access-token` |
 | `supabase/migrations/` | Alterações versionadas do banco |
 | `lib/supabase-cloud.mjs`, `lib/cloud-runtime.mjs` | Identidade, sessão e integração das APIs locais |
 | `lib/shared-cache-worker.mjs` | Coleta global e publicação de snapshots |
@@ -35,7 +38,7 @@ O Cron enfileira os trabalhos vencidos: catálogo a cada 24 horas, programação
 
 Recompile o cliente após atualizar suas dependências com `npm run build:cloud`. O aplicativo exige Node 22 ou posterior. Inicie com `npm run start:p2p` e faça login WPLAY; o perfil Supabase é provisionado sem uma segunda tela de cadastro.
 
-Verificação administrativa: `npm run supabase:project -- status`. Inventário: `npm run supabase:project -- query --file supabase/tests/inventory.sql`. A checagem `supabase/tests/rls-verification.sql` testa acesso permitido e negado numa transação com rollback, sem deixar contas fictícias permanentes.
+Inventário nesta máquina: `.\.local\bin\supabase.exe db query --linked --file supabase/tests/inventory.sql`. A checagem `supabase/tests/rls-verification.sql` testa acesso permitido e negado numa transação com rollback, sem deixar contas fictícias permanentes.
 
 ## Evidência desta configuração
 
@@ -44,5 +47,7 @@ O projeto respondeu `ACTIVE_HEALTHY`; inventário confirmou 15 tabelas com RLS, 
 A entrada WPLAY válida provisionou o perfil real. A consulta remota confirmou 1 perfil, 760 canais, 50.209 registros de programação e uma agenda de jogos compartilhada. Filmes e séries ainda estavam em coleta nessa checagem. Não foi criado perfil fictício nem reaproveitada uma sessão APK como autenticação web.
 
 O teste explícito `node tools/verify-cloud-live.mjs` confirmou conexão, gravação e entrega Realtime entre dois clientes com sessões independentes, além de preservar a segunda sessão após logout da primeira. O registro temporário foi removido ao final. O comando opera somente um perfil já validado e fica fora da suíte automática.
+
+A correção desta instalação também restaurou 37 favoritos e 6 históricos em dois contextos isolados do Chrome. Favorito, remoção e posição de episódio chegaram por Realtime; a posição persistiu depois de recarregar. A consulta final confirmou zero registros temporários. No modo gateway, a ferramenta de verificação usa a CLI autenticada exclusivamente para remover sua preferência aleatória de teste, pois a Edge Function não oferece exclusão administrativa dos dados privados.
 
 Referências do serviço: [Management API](https://supabase.com/docs/reference/api/introduction), [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security), [Realtime](https://supabase.com/docs/guides/realtime/postgres-changes).

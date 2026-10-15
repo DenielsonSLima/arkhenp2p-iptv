@@ -4,18 +4,20 @@ import {Readable} from 'node:stream';
 import {createApp} from '../lib/app-server.mjs';
 import {ProviderClient,ProviderError} from '../lib/provider.mjs';
 
-async function fixture(t,{upstreamStatus=404,selectionError,onError}={}){
+async function fixture(t,{upstreamStatus=404,selectionError,onError,liveManifest=false}={}){
   const events=[],requests=[];
   const app=createApp({nativeBridge:null,connection:{server:'https://fixture.example'},onPlaybackError:event=>{events.push(event);onError?.(event);},providerFactory:({config})=>{
     const client=new ProviderClient({...config,server:'https://fixture.example'});
     client.connect=async()=>client.session={connected:true,account:{provider:'wplay',status:'Active'}};
-    client.playbackURL=async()=>{if(selectionError)throw selectionError;return new URL('https://private-media.example/video.mp4?token=private-token');};
-    client.upstreamRequest=async(value,options)=>{requests.push({method:options.method,range:options.headers.Range});return {status:upstreamStatus,url:String(value),headers:{'content-type':'video/mp4'},body:Readable.from(['synthetic'])};};
+    client.catalog=async()=>({categories:[{id:'safe',name:'Séries'}],items:[{id:'9',kind:'series',name:'Série de teste',categoryId:'safe'},...(liveManifest?[{id:'405',kind:'live',name:'Canal de teste',categoryId:'safe'}]:[])]});
+    client.details=async()=>({id:'9',name:'Série de teste',seasons:[{number:1,episodes:[{id:'12644159'},{id:'12644164'},{id:'1'}]}]});
+    client.playbackURL=async()=>{if(selectionError)throw selectionError;return new URL('https://private-media.example/'+(liveManifest?'index.m3u8':'video.mp4')+'?token=private-token');};
+    client.upstreamRequest=async(value,options)=>{requests.push({method:options.method,range:options.headers.Range});if(liveManifest&&new URL(value).pathname==='/index.m3u8')return {status:200,url:String(value),headers:{'content-type':'application/vnd.apple.mpegurl'},body:Readable.from([Buffer.from('#EXTM3U\n#EXTINF:4,\nsegment.ts?token=private-token\n')])};return {status:upstreamStatus,url:String(value),headers:{'content-type':'video/mp4'},body:Readable.from(['synthetic'])};};
     return client;
   }});
   await new Promise((resolve,reject)=>{app.once('error',reject);app.listen(0,'127.0.0.1',resolve);});t.after(async()=>{app.closeAllConnections?.();await app.shutdown();});
   const base='http://127.0.0.1:'+app.address().port,login=await fetch(base+'/api/login',{method:'POST',headers:{Origin:base,'Content-Type':'application/json'},body:JSON.stringify({username:'private-user',password:'private-password'})});
-  assert.equal(login.status,200);await login.json();return {app,base,events,requests,headers:{Cookie:login.headers.get('set-cookie').split(';')[0]}};
+  assert.equal(login.status,200);await login.json();const headers={Cookie:login.headers.get('set-cookie').split(';')[0]};assert.equal((await fetch(base+'/api/details?type=series&id=9',{headers})).status,200);return {app,base,events,requests,headers};
 }
 
 test('a registered episode with upstream 404 returns 502 and emits only sanitized playback diagnostics',async t=>{
@@ -35,4 +37,13 @@ test('transport errors use an allowed code and successful playback emits no fail
   const failed=await fixture(t,{selectionError:Object.assign(new Error('Synthetic connection failure'),{code:'ECONNRESET'})});
   assert.equal((await fetch(failed.base+'/api/play/series/1.mp4',{headers:failed.headers})).status,502);assert.equal(failed.events[0].code,'ECONNRESET');
   const healthy=await fixture(t,{upstreamStatus:200}),response=await fetch(healthy.base+'/api/play/series/1.mp4',{headers:healthy.headers});assert.equal(response.status,200);await response.text();assert.deepEqual(healthy.events,[]);
+});
+
+test('a live segment failure is observable without leaking its source or account',async t=>{
+  const f=await fixture(t,{upstreamStatus:503,liveManifest:true});
+  const manifest=await fetch(f.base+'/api/play/live/405/index.m3u8',{headers:f.headers});assert.equal(manifest.status,200);
+  const segment=(await manifest.text()).split('\n').find(line=>line.startsWith('/api/asset/'));assert.ok(segment);assert.equal(f.events.length,0);
+  const response=await fetch(f.base+segment,{headers:f.headers});assert.equal(response.status,502);await response.json();
+  assert.deepEqual(f.events,[{kind:'live',code:'PLAYBACK_SEGMENT_HTTP',status:502,upstreamStatus:503}]);
+  assert.doesNotMatch(JSON.stringify(f.events),/private|https:|405|token|Cookie|password|Range/);
 });

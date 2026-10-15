@@ -41,6 +41,15 @@ test('overlapping duration editions cannot select contradictory openings just by
   assert.equal(result.stats.ambiguousOpenings,2);
 });
 
+test('suppressed openings preserve source ranges for a conservative cross-source intersection',()=>{
+  const result=normalize([segment({start_ms:0,end_ms:118700,duration_ms:3131600}),segment({id:2,start_ms:0,end_ms:115800,duration_ms:3132400}),
+    segment({id:3,segment_type:'outro',start_ms:3047700,end_ms:3131600,duration_ms:3131600})]);
+  const record=result.manifests['test-series'].records.find(value=>value.edition.durationSeconds===3131.6);
+  assert.equal(record.markers.openingEnd,undefined,'The importer still does not choose an edition by sort order.');
+  assert.deepEqual(record.verification.openingCandidates,[{openingStart:0,openingEnd:118.7,durationSeconds:3131.6},{openingStart:0,openingEnd:115.8,durationSeconds:3132.4}]);
+  assert.equal(record.markers.creditsStart,3047.7);
+});
+
 test('mid-episode endings, previews, contradictory ordering and no-segment sentinels cannot skip narrative',()=>{
   const outro=segment({id:2,segment_type:'outro',start_ms:500000,end_ms:550000});
   assert.equal(normalize([outro]).rows[0].markers.creditsStart,undefined);

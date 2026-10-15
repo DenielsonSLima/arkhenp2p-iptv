@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "dataVersion": "skipdb.20261014T101752600Z",
+  "dataVersion": "skipdb.20261015T100056882Z",
   "series": {
     "slug": "the-rings-of-power",
     "title": "The Lord of the Rings: The Rings of Power",
@@ -30,7 +30,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt7631058&season=1&episode=1&duration=3947.5&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -57,7 +57,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt7631058&season=1&episode=2&duration=4022.4&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -84,7 +84,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt7631058&season=1&episode=3&duration=4162.7&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -111,7 +111,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt7631058&season=1&episode=4&duration=4303.5&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -138,7 +138,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt7631058&season=1&episode=5&duration=4330.8&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -165,7 +165,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt7631058&season=1&episode=6&duration=4169.2&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -192,7 +192,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt7631058&season=1&episode=7&duration=4333.5&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -219,7 +219,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt7631058&season=1&episode=8&duration=4347.1&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -244,7 +244,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt7631058&season=2&episode=1&duration=4567&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -271,7 +271,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt7631058&season=2&episode=2&duration=3779.4&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -298,7 +298,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt7631058&season=2&episode=3&duration=4003.1&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -325,7 +325,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt7631058&season=2&episode=4&duration=3914.2&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -352,7 +352,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt7631058&season=2&episode=5&duration=3666.9&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -379,7 +379,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt7631058&season=2&episode=6&duration=3786.7&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -404,7 +404,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt7631058&season=2&episode=7&duration=4336.6&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -429,7 +429,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt7631058&season=2&episode=8&duration=4431.5&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     }

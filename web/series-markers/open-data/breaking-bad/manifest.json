@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "dataVersion": "skipdb.20261014T101752600Z",
+  "dataVersion": "skipdb.20261015T100056882Z",
   "series": {
     "slug": "breaking-bad",
     "title": "Breaking Bad",
@@ -32,7 +32,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=1&episode=1&duration=3500&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -59,7 +59,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=1&episode=2&duration=2901&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -86,7 +86,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=1&episode=3&duration=2901&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -113,7 +113,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=1&episode=4&duration=2903&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -140,7 +140,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=1&episode=5&duration=2888&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -167,7 +167,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=1&episode=6&duration=2894&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -194,7 +194,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=1&episode=7&duration=2872&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -221,7 +221,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=2&episode=1&duration=2843&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -244,7 +244,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=2&episode=2&duration=2871&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -267,7 +267,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=2&episode=2&duration=2877.7&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -294,7 +294,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=2&episode=2&duration=2886&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -321,7 +321,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=2&episode=3&duration=2828&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -348,7 +348,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=2&episode=4&duration=2853&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -375,7 +375,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=2&episode=5&duration=2849&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -402,7 +402,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=2&episode=6&duration=2852&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -429,7 +429,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=2&episode=7&duration=2851&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -456,7 +456,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=2&episode=8&duration=2851&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -483,7 +483,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=2&episode=9&duration=2850&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -510,7 +510,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=2&episode=10&duration=2853&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -537,7 +537,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=2&episode=11&duration=2850&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -564,7 +564,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=2&episode=12&duration=2853&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -591,7 +591,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=2&episode=13&duration=2864&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -618,7 +618,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=3&episode=1&duration=2848&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -645,7 +645,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=3&episode=2&duration=2848&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -672,7 +672,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=3&episode=3&duration=2836&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -699,7 +699,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=3&episode=4&duration=2848&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -726,7 +726,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=3&episode=5&duration=2848&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -753,7 +753,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=3&episode=6&duration=2849&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -780,7 +780,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=3&episode=7&duration=2848&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -807,7 +807,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=3&episode=8&duration=2847&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -834,7 +834,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=3&episode=9&duration=2848&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -861,7 +861,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=3&episode=10&duration=2850&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -888,7 +888,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=3&episode=11&duration=2849&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -915,7 +915,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=3&episode=12&duration=2847&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -942,7 +942,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=3&episode=13&duration=2848&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -969,7 +969,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=4&episode=1&duration=2850&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -996,7 +996,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=4&episode=2&duration=2774&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1023,7 +1023,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=4&episode=3&duration=2786&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1046,7 +1046,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=4&episode=4&duration=2713.8&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1073,7 +1073,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=4&episode=4&duration=2726&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1100,7 +1100,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=4&episode=5&duration=2846&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1123,7 +1123,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=4&episode=6&duration=2832.9&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1150,7 +1150,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=4&episode=6&duration=2834&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1177,7 +1177,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=4&episode=7&duration=2845&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1204,7 +1204,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=4&episode=8&duration=2846&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1231,7 +1231,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=4&episode=9&duration=2845&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1258,7 +1258,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=4&episode=10&duration=2845&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1285,7 +1285,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=4&episode=11&duration=2830&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1312,7 +1312,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=4&episode=12&duration=2770&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1339,7 +1339,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=4&episode=13&duration=3040&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1366,7 +1366,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=5&episode=1&duration=2591&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1393,7 +1393,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=5&episode=2&duration=2846&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1420,7 +1420,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=5&episode=3&duration=2845&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1447,7 +1447,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=5&episode=4&duration=2855&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1474,7 +1474,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=5&episode=5&duration=2894&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1501,7 +1501,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=5&episode=6&duration=2856&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1528,7 +1528,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=5&episode=7&duration=2848&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1555,7 +1555,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=5&episode=8&duration=2853&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1578,7 +1578,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=5&episode=9&duration=2839.9&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1605,7 +1605,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=5&episode=9&duration=2856&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1632,7 +1632,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=5&episode=10&duration=2856&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1659,7 +1659,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=5&episode=11&duration=2855&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1686,7 +1686,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=5&episode=12&duration=2848&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1713,7 +1713,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=5&episode=13&duration=2786&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1740,7 +1740,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=5&episode=14&duration=2846&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1767,7 +1767,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=5&episode=15&duration=3217&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     },
@@ -1794,7 +1794,7 @@
         {
           "title": "SkipDB",
           "url": "https://skipdb.tv/api/segments?imdb_id=tt0903747&season=5&episode=16&duration=3327&adjust=none",
-          "retrievedAt": "2026-10-15T09:38:39.437Z"
+          "retrievedAt": "2026-10-15T11:25:21.704Z"
         }
       ]
     }

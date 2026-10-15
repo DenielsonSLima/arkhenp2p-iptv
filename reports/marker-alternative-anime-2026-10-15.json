@@ -1,0 +1,387 @@
+{
+  "retrievedAt": "2026-10-15T18:55:40.735Z",
+  "purpose": "Read-only anime marker alternative audit",
+  "credentialUsed": false,
+  "editionVerified": false,
+  "responses": [
+    {
+      "source": "AniSkip",
+      "url": "https://api.aniskip.com/v2/skip-times/21/1?types[]=op&types[]=ed&types[]=recap&types[]=mixed-op&types[]=mixed-ed&episodeLength=0",
+      "status": 200,
+      "rateLimit": {
+        "x-ratelimit-limit": "120",
+        "x-ratelimit-remaining": "119",
+        "x-ratelimit-reset": "1"
+      },
+      "payload": {
+        "found": true,
+        "statusCode": 200,
+        "message": "Successfully found skip times",
+        "results": [
+          {
+            "interval": {
+              "startTime": 28.783,
+              "endTime": 118.783
+            },
+            "skipType": "op",
+            "episodeLength": 1500.04
+          },
+          {
+            "interval": {
+              "startTime": 1387.996,
+              "endTime": 1500
+            },
+            "skipType": "ed",
+            "episodeLength": 1500.146
+          },
+          {
+            "interval": {
+              "startTime": 132.773,
+              "endTime": 201.296
+            },
+            "skipType": "recap",
+            "episodeLength": 1444
+          },
+          {
+            "interval": {
+              "startTime": 186.231,
+              "endTime": 276.231
+            },
+            "skipType": "mixed-op",
+            "episodeLength": 1439.98
+          },
+          {
+            "interval": {
+              "startTime": 1401,
+              "endTime": 1435
+            },
+            "skipType": "mixed-ed",
+            "episodeLength": 1435.06
+          }
+        ]
+      }
+    },
+    {
+      "source": "AniSkip",
+      "url": "https://api.aniskip.com/v2/skip-times/21/62?types[]=op&types[]=ed&types[]=recap&types[]=mixed-op&types[]=mixed-ed&episodeLength=0",
+      "status": 200,
+      "rateLimit": {
+        "x-ratelimit-limit": "120",
+        "x-ratelimit-remaining": "119",
+        "x-ratelimit-reset": "1"
+      },
+      "payload": {
+        "found": true,
+        "statusCode": 200,
+        "message": "Successfully found skip times",
+        "results": [
+          {
+            "interval": {
+              "startTime": 18.613,
+              "endTime": 123.613
+            },
+            "skipType": "op",
+            "episodeLength": 1501.194
+          },
+          {
+            "interval": {
+              "startTime": 1380,
+              "endTime": 1500
+            },
+            "skipType": "ed",
+            "episodeLength": 1501.125
+          }
+        ]
+      }
+    },
+    {
+      "source": "AnimeSkip",
+      "url": "https://anime-skip.com/api/graphql",
+      "status": 200,
+      "access": "documented shared public client ID; no user account/token",
+      "operation": "query { searchShows(search: \"One Piece\", limit: 5) { id name episodeCount externalLinks { service serviceId } } }",
+      "rateLimit": {},
+      "payload": {
+        "data": {
+          "searchShows": [
+            {
+              "id": "95cc425b-0d59-4824-859d-1a589c4ed92d",
+              "name": "One Piece",
+              "episodeCount": 1197,
+              "externalLinks": [
+                {
+                  "service": "anilist.co",
+                  "serviceId": "21"
+                }
+              ]
+            },
+            {
+              "id": "96c4e566-c11b-40c1-9b09-1096ff96a9db",
+              "name": "One Piece",
+              "episodeCount": 565,
+              "externalLinks": [
+                {
+                  "service": "anilist.co",
+                  "serviceId": "21"
+                }
+              ]
+            },
+            {
+              "id": "f65fbc47-dc40-49e2-bfe0-1efadb098e49",
+              "name": "One Piece ",
+              "episodeCount": 11,
+              "externalLinks": [
+                {
+                  "service": "anilist.co",
+                  "serviceId": "21"
+                }
+              ]
+            },
+            {
+              "id": "3e71a265-63a5-4436-9f15-2d650e68a0c0",
+              "name": "One Piece All Episode Skips",
+              "episodeCount": 32,
+              "externalLinks": []
+            },
+            {
+              "id": "ff9510bd-5348-470f-b758-4c061a00f849",
+              "name": "One Piece: Chivalry Remains! The Traitorous Zombie Protects Nami!",
+              "episodeCount": 2,
+              "externalLinks": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "source": "AnimeSkip",
+      "url": "https://anime-skip.com/api/graphql",
+      "status": 200,
+      "access": "documented shared public client ID; no user account/token",
+      "operation": "query { findEpisodesByShowId(showId:\"95cc425b-0d59-4824-859d-1a589c4ed92d\"){id season number absoluteNumber baseDuration name} }",
+      "totalEpisodes": 1197,
+      "payload": {
+        "matches": [
+          {
+            "id": "9d80c2a8-3eb4-4b91-b5df-117322ec67ba",
+            "season": "17",
+            "number": "665",
+            "absoluteNumber": "1",
+            "baseDuration": 1405,
+            "name": "A Burning Passion! Rebecca vs. Suleiman!"
+          },
+          {
+            "id": "44569721-0b7a-473a-b47b-7fd56f7689d6",
+            "season": "1",
+            "number": "1",
+            "absoluteNumber": "1",
+            "baseDuration": 1497.0613999999878,
+            "name": "I'm Luffy! The Man Who's Gonna Be King of the Pirates!"
+          },
+          {
+            "id": "c77235d6-6686-4c59-8468-cbcd9646e743",
+            "season": "1",
+            "number": "1",
+            "absoluteNumber": "1",
+            "baseDuration": 1500.125,
+            "name": "one piece"
+          }
+        ]
+      }
+    },
+    {
+      "source": "AnimeSkip",
+      "url": "https://anime-skip.com/api/graphql",
+      "status": 200,
+      "access": "documented shared public client ID; no user account/token",
+      "operation": "query { first:findEpisode(episodeId:\"44569721-0b7a-473a-b47b-7fd56f7689d6\"){id season number absoluteNumber baseDuration name timestamps { at source type {name} }} whale:searchEpisodes(showId:\"95cc425b-0d59-4824-859d-1a589c4ed92d\",search:\"Whale\",limit:5){id season number absoluteNumber baseDuration name timestamps {at source type{name}}}}",
+      "payload": {
+        "data": {
+          "first": {
+            "id": "44569721-0b7a-473a-b47b-7fd56f7689d6",
+            "season": "1",
+            "number": "1",
+            "absoluteNumber": "1",
+            "baseDuration": 1497.0613999999878,
+            "name": "I'm Luffy! The Man Who's Gonna Be King of the Pirates!",
+            "timestamps": [
+              {
+                "at": 22,
+                "source": "ANIME_SKIP",
+                "type": {
+                  "name": "Intro"
+                }
+              },
+              {
+                "at": 132.18472533333335,
+                "source": "ANIME_SKIP",
+                "type": {
+                  "name": "Canon"
+                }
+              },
+              {
+                "at": 1467.5,
+                "source": "ANIME_SKIP",
+                "type": {
+                  "name": "Preview"
+                }
+              }
+            ]
+          },
+          "whale": [
+            {
+              "id": "b39ac910-882a-40e5-b751-92078121f62f",
+              "season": "2",
+              "number": "63",
+              "absoluteNumber": null,
+              "baseDuration": 1496.8541999999893,
+              "name": "A Promise Between Men! Luffy and the Whale Vow to Meet Again!",
+              "timestamps": []
+            },
+            {
+              "id": "2107b6d2-460c-4382-9a2e-cc80b1c0e981",
+              "season": null,
+              "number": "62",
+              "absoluteNumber": null,
+              "baseDuration": 1477.9600000000034,
+              "name": "The First Line of Defense? The Giant Whale Laboon Appears!",
+              "timestamps": [
+                {
+                  "at": 0,
+                  "source": "ANIME_SKIP",
+                  "type": {
+                    "name": "Intro"
+                  }
+                },
+                {
+                  "at": 130.888783,
+                  "source": "ANIME_SKIP",
+                  "type": {
+                    "name": "Intro"
+                  }
+                },
+                {
+                  "at": 133.970671,
+                  "source": "ANIME_SKIP",
+                  "type": {
+                    "name": "Recap"
+                  }
+                },
+                {
+                  "at": 193.25522,
+                  "source": "ANIME_SKIP",
+                  "type": {
+                    "name": "Recap"
+                  }
+                },
+                {
+                  "at": 195.783152,
+                  "source": "ANIME_SKIP",
+                  "type": {
+                    "name": "Canon"
+                  }
+                },
+                {
+                  "at": 1334.360452,
+                  "source": "ANIME_SKIP",
+                  "type": {
+                    "name": "Canon"
+                  }
+                },
+                {
+                  "at": 1373.5559736666794,
+                  "source": "ANIME_SKIP",
+                  "type": {
+                    "name": "Credits"
+                  }
+                },
+                {
+                  "at": 1449.8106616666794,
+                  "source": "ANIME_SKIP",
+                  "type": {
+                    "name": "Preview"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "5a1c418a-4934-474f-a4dd-03a379ac8233",
+              "season": null,
+              "number": "5",
+              "absoluteNumber": null,
+              "baseDuration": 1440,
+              "name": "The Promise from a Distant Day! The Pirates' Song and a Small Whale!",
+              "timestamps": []
+            },
+            {
+              "id": "7045bfd7-b47e-4745-b2f9-66c9a07c11bd",
+              "season": "5",
+              "number": "378",
+              "absoluteNumber": null,
+              "baseDuration": 1440.136,
+              "name": "The Promise from a Distant Day! The Pirates' Song and a Small Whale!",
+              "timestamps": [
+                {
+                  "at": 223.58333533333334,
+                  "source": "ANIME_SKIP",
+                  "type": {
+                    "name": "Title Card"
+                  }
+                },
+                {
+                  "at": 232.58333533333334,
+                  "source": "ANIME_SKIP",
+                  "type": {
+                    "name": "Canon"
+                  }
+                },
+                {
+                  "at": 851.0833323333334,
+                  "source": "ANIME_SKIP",
+                  "type": {
+                    "name": "Transition"
+                  }
+                },
+                {
+                  "at": 865.5833333333334,
+                  "source": "ANIME_SKIP",
+                  "type": {
+                    "name": "Canon"
+                  }
+                },
+                {
+                  "at": 0,
+                  "source": "ANIME_SKIP",
+                  "type": {
+                    "name": "Branding"
+                  }
+                },
+                {
+                  "at": 15,
+                  "source": "ANIME_SKIP",
+                  "type": {
+                    "name": "Intro"
+                  }
+                },
+                {
+                  "at": 1400.0833293333333,
+                  "source": "ANIME_SKIP",
+                  "type": {
+                    "name": "Preview"
+                  }
+                },
+                {
+                  "at": 202.08333333333334,
+                  "source": "ANIME_SKIP",
+                  "type": {
+                    "name": "Recap"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

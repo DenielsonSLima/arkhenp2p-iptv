@@ -22,11 +22,13 @@ export class CloudOutbox {
       const encoded=this.storage?.getItem(this.key());if(!encoded||encoded.length>2*1024*1024)return;
       const saved=JSON.parse(encoded);if(saved?.url!==scope.url||saved?.provider!==scope.provider||saved?.userId!==scope.userId||!Array.isArray(saved.entries))return;
       for(const value of saved.entries.slice(-this.limit)){const row=validRow(value.table,value.row,scope);if(row)this.rows.set(`${value.table}:${recordIdentity(value.table,row)}`,{table:value.table,row});}
+      if(this.rows.size!==saved.entries.length)this.persist();
     }catch{/* The local media library still records progress when storage is unavailable. */}
   }
   persist(){if(!this.scope)return;try{this.storage?.setItem(this.key(),JSON.stringify({version:1,url:this.scope.url,provider:this.scope.provider,userId:this.scope.userId,entries:[...this.rows.values()]}));}catch{/* Storage is optional. */}}
   put(table,value){const row=validRow(table,value,this.scope);if(!row)return false;const key=`${table}:${recordIdentity(table,row)}`,old=this.rows.get(key);if(old&&millis(old.row.updated_at)>millis(row.updated_at))return true;this.rows.delete(key);this.rows.set(key,{table,row});while(this.rows.size>this.limit)this.rows.delete(this.rows.keys().next().value);this.persist();return true;}
   acknowledge(table,row){const key=`${table}:${recordIdentity(table,row)}`;if(this.rows.get(key)?.row.updated_at===row.updated_at){this.rows.delete(key);this.persist();}}
+  discard(predicate){let removed=0;for(const [key,value]of this.rows)if(predicate(value)){this.rows.delete(key);removed++;}if(removed)this.persist();return removed;}
   apply(rows){const result={...rows};for(const {table,row}of this.rows.values())result[table]=replaceRecord(result[table]||[],row,table);return result;}
   entries(){return [...this.rows.values()];}
 }

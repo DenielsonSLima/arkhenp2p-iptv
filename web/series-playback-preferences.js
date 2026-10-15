@@ -1,4 +1,4 @@
-export const SERIES_PLAYBACK_DEFAULTS = Object.freeze({autoNext:true, autoSkipOpening:true, nextMode:'offset', endOffsetSeconds:30});
+export const SERIES_PLAYBACK_DEFAULTS = Object.freeze({autoNext:true, autoSkipOpening:true, nextMode:'markers', endOffsetSeconds:30});
 export const SERIES_NEXT_MODES = Object.freeze(['offset', 'markers', 'ended']);
 export const SERIES_COUNTDOWN_SECONDS = 5;
 const STORAGE_KEY = 'arkhen.series-playback.v1';

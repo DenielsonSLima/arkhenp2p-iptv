@@ -3,6 +3,8 @@ import path from 'node:path';
 import { createConnection } from 'node:net';
 import { execFile, spawn } from 'node:child_process';
 import { promisify } from 'node:util';
+import {homedir} from 'node:os';
+import {resolveRuntimePaths,runtimeProcessEnvironment} from './p2p-runtime-paths.mjs';
 
 const exec = promisify(execFile);
 export const AVD = 'Arkhen_Engine_Debug';
@@ -65,17 +67,14 @@ export async function acquireLauncherLock(file, { pid = process.pid, alive = id 
 
 export function createRuntime(root, { run = exec, launch = spawn, portOpen = localPortOpen,
   exists = access, sleep = ms => new Promise(resolve => setTimeout(resolve, ms)),
-  now = Date.now, notify = () => {}, signal } = {}) {
+  now = Date.now, notify = () => {}, signal,platform=process.platform,env=process.env,home=homedir() } = {}) {
   const runtime = path.join(root, 'native-bridge/debug-runtime');
-  const sdk = '/Users/denielson/Library/Android/sdk';
-  const adb = '/opt/homebrew/bin/adb';
-  const emulator = path.join(sdk, 'emulator/emulator');
-  const python = path.join(runtime, 'python/bin/python3');
+  let adb,emulator,python,componentEnvironment;
   const prefix = ['-H', '127.0.0.1', '-P', '5038'];
   function cancelled() { if (signal?.aborted) throw runtimeError('P2P_CANCELLED'); }
   async function command(file, args, { timeout = 15000, ...options } = {}) {
     cancelled();
-    try { return (await run(file, args, { timeout, maxBuffer: 1024 * 1024, signal, ...options })).stdout.trim(); }
+    try { return (await run(file, args, { timeout, maxBuffer: 1024 * 1024, signal, ...options,shell:false,windowsHide:true,env:componentEnvironment })).stdout.trim(); }
     catch { cancelled(); throw runtimeError('P2P_COMPONENT_COMMAND_FAILED'); }
   }
   const host = (...args) => command(adb, [...prefix, ...args]);
@@ -90,12 +89,14 @@ export function createRuntime(root, { run = exec, launch = spawn, portOpen = loc
     throw runtimeError(code);
   }
   async function prepare() {
+    const resolved=await resolveRuntimePaths(root,{platform,env,home,exists});
+    ({adb,emulator,python}=resolved);componentEnvironment=runtimeProcessEnvironment(resolved,{env});
     for (const file of [adb, emulator, python, path.join(runtime, 'avd', AVD + '.ini'),
       path.join(root, 'tools/original-engine/readiness-agent.bundle.js'),
       path.join(root, 'tools/original-engine/agent.bundle.js')]) {
       try { await exists(file); } catch { throw runtimeError('P2P_COMPONENT_MISSING'); }
     }
-    const fridaVersion = await command(python, ['-I', '-c', 'import frida; print(frida.__version__)']);
+    const fridaVersion = await command(python, ['-I','-B','-X','utf8', '-c', 'import frida; print(frida.__version__)']);
     if (fridaVersion !== '17.8.0') throw runtimeError('P2P_FRIDA_VERSION');
     await host('start-server');
     let devices = await host('devices');
@@ -112,11 +113,7 @@ export function createRuntime(root, { run = exec, launch = spawn, portOpen = loc
       notify('Iniciando o emulador local de TV…');
       const child = launch(emulator, ['-avd', AVD, '-port', '5582', '-gpu', 'swiftshader',
         '-no-audio', '-no-snapshot', '-no-boot-anim', '-no-window'], {
-        cwd: root, detached: true, stdio: 'ignore', env: { ...process.env,
-          ANDROID_HOME: sdk, ANDROID_SDK_ROOT: sdk,
-          ANDROID_AVD_HOME: path.join(runtime, 'avd'),
-          ANDROID_USER_HOME: path.join(runtime, 'android-user'),
-          ANDROID_ADB_SERVER_PORT: '5038', ADB_SERVER_SOCKET: 'tcp:127.0.0.1:5038' },
+        cwd: root, detached: true, stdio: 'ignore',shell:false,windowsHide:true,env:componentEnvironment,
       });
       let failed = false;
       child.once('error', () => { failed = true; });
@@ -130,6 +127,11 @@ export function createRuntime(root, { run = exec, launch = spawn, portOpen = loc
     assertDevice(devices, await device('emu', 'avd', 'name'));
     await waitFor(async () => (await device('shell', 'getprop', 'sys.boot_completed')) === '1',
       120000, 'P2P_EMULATOR_BOOT_TIMEOUT');
+    // The unmodified APK and the exact native observer use ARM64. An x86_64
+    // host/image is acceptable only when Android itself advertises ARM64
+    // translation; the host CPU alone does not establish compatibility.
+    const abiList=(await device('shell','getprop','ro.product.cpu.abilist')).split(',').map(value=>value.trim());
+    if(!abiList.includes('arm64-v8a'))throw runtimeError('P2P_ARM64_REQUIRED');
     const installed = await device('shell', 'pm', 'path', PACKAGE);
     if (!installed.startsWith('package:')) throw runtimeError('P2P_APK_MISSING');
     // The prepared debug AVD is the only device whose adbd can be restarted.
@@ -160,7 +162,7 @@ export function createRuntime(root, { run = exec, launch = spawn, portOpen = loc
       await device('shell', 'am', 'start', '-n', `${PACKAGE}/org.bitspark.android.Spark`);
     }
     notify('Verificando a sessão já salva no aplicativo…');
-    const output = await command(python, ['-I', path.join(root, 'tools/original-engine/readiness.py'),
+    const output = await command(python, ['-I','-B','-X','utf8', path.join(root, 'tools/original-engine/readiness.py'),
       '--endpoint', '127.0.0.1:27043'], { timeout: 65000 });
     let result;
     try { result = JSON.parse(output); } catch { throw runtimeError('P2P_READINESS_FAILED'); }

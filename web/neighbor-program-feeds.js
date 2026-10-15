@@ -1,4 +1,4 @@
-import {LiveProgramFeed} from './program-guide.js';
+import {LiveProgramFeed, programWindow, retainCurrentProgramList} from './program-guide.js';
 
 const channelID = value => /^\d{1,12}$/.test(String(value ?? '')) ? String(value) : null;
 const CACHE_MS = 60000;
@@ -24,11 +24,13 @@ export class NeighborProgramFeeds {
     for (const id of ids) {
       const existing=this.jobs.get(id);
       if (existing) {this.emit(existing);continue;}
-      const job={id,namespace,list:[],received:false,status:'loading',feed:null};
-      job.feed=new LiveProgramFeed({now:this.now,schedule:this.schedule,cancel:this.cancel,
+      const cached=this.cache.get(`${namespace}:${id}`),window=programWindow(cached?.list,this.now());
+      const initialData=cached&&(window.current||cached.expiresAt>this.now()&&window.next)?{list:cached.list}:null;
+      const job={id,namespace,list:initialData?.list||[],received:Boolean(initialData),status:initialData?'ready':'loading',feed:null};
+      job.feed=new LiveProgramFeed({now:this.now,schedule:this.schedule,cancel:this.cancel,getNamespace:()=>String(this.getNamespace()),
         request:(url,options)=>this.requestProgram(job,url,options),
         onUpdate:data=>{if (!this.active(job)) return;job.list=data.list;this.emit(job);}});
-      this.jobs.set(id,job);job.feed.start(id);
+      this.jobs.set(id,job);job.feed.start(id,{initialData});
     }
   }
   emit(job) {
@@ -41,7 +43,7 @@ export class NeighborProgramFeeds {
     try {
       const data=await this.request(url,options);
       if (!this.active(job) || options.signal.aborted) return data;
-      const list=Array.isArray(data?.list) ? data.list : [];
+      const list=retainCurrentProgramList(cached?.list || job.list, data?.list, this.now());
       job.received=true;job.status='ready';this.cache.delete(key);this.cache.set(key,{list,expiresAt:this.now()+CACHE_MS});
       for (const [entry,value] of this.cache) if (value.expiresAt<=this.now()) this.cache.delete(entry);
       while (this.cache.size>64) this.cache.delete(this.cache.keys().next().value);

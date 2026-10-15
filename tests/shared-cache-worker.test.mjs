@@ -8,6 +8,15 @@ const item=(id='1',kind='live')=>({id,name:'Título',kind,categoryId:'cat',poste
 const catalog=(type='live')=>({categories:[{id:'cat',name:'Categoria',url:'https://private.example'}],items:[item('1',type==='movies'?'movie':type)]});
 const epg=()=>({list:[{title:'Programa',description:'Descrição',start:'2026-10-15T12:00:00Z',end:'2026-10-15T13:00:00Z',playbackUrl:'https://private.example'}]});
 const game=()=>({available:true,date:'2026-10-15',timeZone:'America/Maceio',games:[{id:'game',title:'Jogo',start:'2026-10-15T13:40:00Z',status:'1',homeTeam:{id:'a',name:'A',logo:'https://private.example/?token=private'},awayTeam:{id:'b',name:'B'},channels:[{id:'1',name:'Canal',address:'private-stream'}],token:'private-token'}]});
+
+test('an explicitly disabled source cannot publish an empty shared catalog over another account snapshot',async()=>{
+  for(const type of ['live','movies','series'])await assert.rejects(completeSharedCatalog({authInfo:{service:{enabledLive:false,enabledVoD:false}},catalog:()=>assert.fail('A disabled source cannot be collected.')},type),{code:'CACHE_SOURCE_CAPABILITY_UNAVAILABLE'});
+});
+
+test('a source moved to cloud collection cannot be registered or claimed by the local worker',async()=>{
+  const f=fixture();f.client.cloudCollection=true;assert.equal(f.worker.sourceActive(f.source),false);assert.throws(()=>f.worker.registerSource(f.source),{code:'CACHE_SOURCE_MANAGED_IN_CLOUD'});
+  const result=await f.worker.tick();assert.equal(result.idle,true);assert.equal(f.calls.some(row=>row.name==='arkhen_claim_cache_jobs'),false);
+});
 function fixture(type='catalog',{payload={},rpc,client:clientOverrides={}}={}){
   const calls=[],jobs=[{id:'d243589c-25c5-4db0-b9aa-c087ace3d180',provider_key:scope.providerKey,scope_hash:scope.scopeHash,job_type:type,payload,attempts:1}],timers=new Map();let timerId=0;
   const cloud={ready:Promise.resolve(true),enabled:true,async rpc(name,args){calls.push({name,args});const override=await rpc?.(name,args);if(override!==undefined)return override;if(name==='arkhen_claim_cache_jobs')return jobs.splice(0,1);if(name==='arkhen_renew_cache_job')return true;return null;}};
@@ -31,6 +40,12 @@ test('global game snapshots preserve only opaque persistent sports-logo routes',
   const source=game(),route='/api/sports-image/'+'a'.repeat(64);source.games[0].homeTeam.logo=route;
   source.games[0].awayTeam.logo='/api/sports-image/../../private';
   const result=sanitizeSharedGames(source,{mapImage:value=>value});assert.equal(result.games[0].homeTeam.logo,route);assert.equal(result.games[0].awayTeam.logo,'');
+});
+
+test('shared catalog keeps only valid explicit external identities and authoritative restriction flags',()=>{
+  const source=catalog('movies');source.categories[0].isAdult=true;Object.assign(source.items[0],{imdb_id:'tt0944947',tmdb_id:'1399',isAdult:true});
+  const clean=sanitizeSharedCatalog(source,{type:'movies'});assert.equal(clean.categories[0].isAdult,true);assert.equal(clean.items[0].isAdult,true);assert.equal(clean.items[0].imdbId,'tt0944947');assert.equal(clean.items[0].tmdbId,1399);
+  Object.assign(source.items[0],{imdbId:'https://private.example/tt123456',tmdbId:0});const invalid=sanitizeSharedCatalog(source,{type:'movies'});assert.equal(invalid.items[0].imdbId,undefined);assert.equal(invalid.items[0].tmdbId,undefined);
 });
 
 test('complete catalog traversal loads every category to its terminal page before returning',async()=>{

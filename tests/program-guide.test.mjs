@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {LiveProgramFeed, parseProgramTime, programWindow} from '../web/program-guide.js';
+import {LiveProgramFeed, parseProgramTime, programWindow, retainCurrentProgramList} from '../web/program-guide.js';
 import {ChannelGuide} from '../web/channel-guide.js';
 
 const NOW=Date.parse('2026-10-14T12:00:00Z');
@@ -81,4 +81,54 @@ test('a failed card refresh preserves the current cached guide instead of replac
   const guide={api:async()=>{throw new Error('temporary');},isCurrent:()=>true,cache:new Map([[job.key,{list}]]),store:(key,value)=>saved.push({key,list:value}),active:new Map(),pump:()=>{}};
   await ChannelGuide.prototype.fetch.call(guide,job);
   assert.deepEqual(saved,[{key:job.key,list}]);
+});
+
+test('empty and invalid EPG responses retain only a still-current guide and accept real corrections',()=>{
+  const list=[program('Atual',-10000,60000)];
+  for(const incoming of [[],null,undefined,[{title:'Invalid',start:'bad',end:'bad'}]])assert.equal(retainCurrentProgramList(list,incoming,NOW),list);
+  const corrected=[program('Corrigido',-10000,60000)];
+  assert.equal(retainCurrentProgramList(list,corrected,NOW),corrected);
+  assert.deepEqual(retainCurrentProgramList(list,[],NOW+60000),[]);
+});
+
+test('restarting the same channel seeds its guide immediately and late previous responses cannot overwrite it',async()=>{
+  const timer=clock(),updates=[],requests=[];
+  const feed=new LiveProgramFeed({...timer,getNamespace:()=> 'account-a',request:(_,{signal})=>new Promise(resolve=>requests.push({signal,resolve})),onUpdate:data=>updates.push(data.list[0]?.title||null)});
+  feed.start('123');requests[0].resolve({list:[program('Atual',-10000,120000)]});await flush();
+  assert.equal(feed.peek('123').list[0].title,'Atual');
+  await timer.advance(60000);assert.equal(requests.length,2);
+  feed.stop();const checkpoint=updates.length;feed.start('123');
+  assert.deepEqual(updates.slice(checkpoint),['Atual']);assert.equal(requests[1].signal.aborted,true);
+  requests[1].resolve({list:[program('Resposta antiga',-10000,120000)]});await flush();assert.equal(updates.includes('Resposta antiga'),false);
+  requests[2].resolve({list:[]});await flush();assert.equal(updates.at(-1),'Atual');
+  feed.stop({clearCache:true});assert.equal(feed.peek('123'),null);assert.equal(timer.size,0);
+});
+
+test('a card seed fills the first player update and never makes an expired program current',async()=>{
+  const timer=clock(),updates=[];
+  const feed=new LiveProgramFeed({...timer,request:async()=>({list:[]}),onUpdate:data=>updates.push(data.list[0]?.title||null)});
+  feed.start('123',{initialData:{list:[program('Do card',-10000,30000)]}});assert.equal(updates[0],'Do card');await flush();assert.equal(updates.at(-1),'Do card');
+  await timer.advance(30000);assert.equal(programWindow(feed.current.list,timer.now()).current,null);
+  feed.stop();feed.start('456',{initialData:{list:[program('Expirado',-20000,-10000)]}});assert.equal(updates.at(-1),null);
+  feed.stop();await flush();assert.equal(timer.size,0);
+});
+
+test('main EPG cache and pending responses are isolated when the account namespace changes',async()=>{
+  const timer=clock(),updates=[],requests=[];let namespace='account-a';
+  const feed=new LiveProgramFeed({...timer,getNamespace:()=>namespace,request:(_,{signal})=>new Promise(resolve=>requests.push({signal,resolve})),onUpdate:data=>updates.push(data.list[0]?.title||null)});
+  feed.start('123');requests[0].resolve({list:[program('Conta A',-10000,120000)]});await flush();
+  feed.start('123');namespace='account-b';assert.equal(feed.peek('123'),null);assert.equal(requests[1].signal.aborted,true);
+  const checkpoint=updates.length;feed.start('123');requests[1].resolve({list:[program('Antigo',-10000,120000)]});await flush();
+  assert.deepEqual(updates.slice(checkpoint),[null]);assert.equal(feed.cache.size,0);
+  requests[2].resolve({list:[program('Conta B',-10000,120000)]});await flush();assert.equal(feed.peek('123').list[0].title,'Conta B');
+  feed.stop();assert.equal(timer.size,0);
+});
+
+test('card refresh with an empty HTTP200 keeps the current guide and peek stays in its generation',async t=>{
+  t.mock.method(Date,'now',()=>NOW);
+  const list=[program('Atual',-10000,60000)],job={key:'session:123',controller:new AbortController()},saved=[];
+  const guide={generation:'session',ensureGeneration:()=>{},api:async()=>({list:[]}),isCurrent:()=>true,cache:new Map([[job.key,{list,expiresAt:NOW+60000}]]),store:(key,value)=>saved.push({key,list:value}),active:new Map(),pump:()=>{}};
+  await ChannelGuide.prototype.fetch.call(guide,job);assert.deepEqual(saved,[{key:job.key,list}]);
+  assert.deepEqual(ChannelGuide.prototype.peek.call(guide,'123'),{list});
+  guide.generation='new-session';assert.equal(ChannelGuide.prototype.peek.call(guide,'123'),null);
 });

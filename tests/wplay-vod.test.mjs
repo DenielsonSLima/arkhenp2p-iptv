@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { WplayProviderClient } from '../lib/wplay-provider.mjs';
 import { nativeEpisodeID } from '../lib/wplay-vod.mjs';
+import {ParentalControl} from '../lib/parental-control.mjs';
+import {adultCategory} from '../lib/provider.mjs';
 
 function deferred(){let resolve,reject;const promise=new Promise((yes,no)=>{resolve=yes;reject=no;});return {promise,resolve,reject};}
 
@@ -39,6 +41,13 @@ function fixture({invalidPage=false}={}) {
   return {client,calls};
 }
 
+test('shared artwork fetches only the selected native title and never walks category pages',async()=>{
+  const f=fixture();f.client.catalog=()=>assert.fail('Artwork must not enumerate the provider catalog.');
+  const item=await f.client.artworkMetadata('movie','101');assert.equal(item.id,'101');
+  const paths=f.calls.map(call=>call.url.pathname);assert.equal(paths.includes('/search/@101'),true);
+  assert.equal(paths.some(path=>path.startsWith('/category/')||path==='/do-not-fetch'),false);
+});
+
 test('native VOD follows registered category URLs with bounded initial pages and no bare VOD request',async()=>{
   const {client,calls}=fixture();
   const [movies,series]=await Promise.all([client.catalog('movies'),client.catalog('series')]);
@@ -70,6 +79,16 @@ test('native page snapshots merge titles and only mark completion on an empty su
   await assert.rejects(client.catalogPage('movies','82',5),error=>error.code==='WPLAY_PAGE_INVALID');
   await assert.rejects(client.catalogPage('movies','99999',1),error=>error.code==='WPLAY_CATEGORY_INVALID');
   await assert.rejects(client.catalogPage('movies','1009',1),error=>error.code==='WPLAY_CATEGORY_INVALID');
+});
+
+test('restricted native VIP tags remain protected in snapshots, category pages and direct details while Adult Swim stays safe',async()=>{
+  const f=fixture(),request=f.client.requestJSON.bind(f.client),raw={chid:999,name:{init:'VIP title'},tags:[{_id:1801,name:{init:'VIP Filmes'}}],sources:[]};
+  f.client.requestJSON=async(url,options)=>{const parsed=new URL(url);if(parsed.pathname==='/category/1801'||parsed.pathname==='/search/@999')return parsed.pathname.startsWith('/category/')?[raw]:raw;const data=await request(url,options);if(parsed.pathname==='/tags')data.find(group=>group.group_id===18).items[0].name={init:'VIP Filmes'};return data;};
+  const initial=await f.client.catalog('movies'),guard=new ParentalControl();assert.equal(initial.categories.find(category=>category.id==='1801').isAdult,true);assert.ok(!guard.filterCatalog(initial,'movies').categories.some(category=>category.id==='1801'));
+  const page=await f.client.catalogPage('movies','1801',1);assert.equal(page.items.find(item=>item.id==='999').isAdult,true);assert.ok(!guard.filterCatalog(page,'movies').items.some(item=>item.id==='999'));
+  const details=await f.client.details('movie','999');assert.equal(details.isAdult,true);await assert.rejects(guard.authorize(f.client,'movie','999',{details}),{code:'PARENTAL_LOCKED'});
+  assert.equal(adultCategory('Adult Swim'),false);assert.equal(adultCategory('VIP +18'),true);
+  const live=f.client.normalizeItems([{chid:77,name:'Adult Swim HD',tags:[{_id:3,name:'Adult Swim'}]},{chid:78,name:'VIP',restrictedAccess:true,tags:[{_id:4,name:'VIP'}]}],'live');assert.equal(live.items[0].isAdult,undefined);assert.equal(live.items[1].isAdult,true);
 });
 
 test('failed native pages do not claim success or cache an empty catalog',async()=>{

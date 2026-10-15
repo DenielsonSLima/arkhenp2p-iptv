@@ -1,4 +1,5 @@
 import { formatMediaTime } from './immersive-player.js';
+import {isAdultItem} from './parental-classification.js';
 
 const positiveSeconds = value => {
   if (typeof value !== 'number' && !(typeof value === 'string' && /^\d+(?:\.\d+)?$/.test(value.trim()))) return null;
@@ -7,7 +8,8 @@ const positiveSeconds = value => {
 };
 
 /** Match saved playback to the exact title and, for a series, its real episode. */
-export function detailPlaybackProgress(item, entry) {
+export function detailPlaybackProgress(item, entry, {categories = []} = {}) {
+  if (isAdultItem(item, categories) || isAdultItem(entry, categories) || isAdultItem(entry?.item, categories) || isAdultItem(entry?.episode, categories)) return null;
   if (!['movie','series'].includes(item?.kind) || !String(item?.id ?? '').trim() || !entry?.item ||
       entry.item.kind !== item.kind || String(entry.item.id) !== String(item.id)) return null;
   const savedTime = positiveSeconds(entry.time);
@@ -19,6 +21,7 @@ export function detailPlaybackProgress(item, entry) {
       .flatMap(season => Array.isArray(season?.episodes) ? season.episodes : [])
       .find(value => value && String(value.id) === String(entry.episode.id));
     if (!episode) return null;
+    if (isAdultItem(episode, categories)) return null;
   }
   // A saved video duration was measured by the player. A movie's explicit
   // durationSeconds is also usable; a series runtime is not an episode runtime.

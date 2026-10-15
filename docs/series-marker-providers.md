@@ -47,7 +47,7 @@ A lista delimita o cadastro inicial; não promete cobertura de todos os episódi
 
 ## Duração, edição e cenas adicionais
 
-`exact` no SkipDB significa uma correspondência de runtime dentro da tolerância da fonte; não comprova que dois arquivos tenham os mesmos cortes. `agnostic` não teve duração para comparar; `out-of-range` é incerto. Não aplicar automaticamente deslocamentos estimados, duração média da abertura da temporada ou porcentagens genéricas. As referências comunitárias continuam exigindo os limites do resolvedor e o teste explícito habilitado; marcações comprovadas da edição têm prioridade conforme o contrato do player.
+`exact` no SkipDB significa uma correspondência de runtime dentro da tolerância da fonte; não comprova que dois arquivos tenham os mesmos cortes. `agnostic` não teve duração para comparar; `out-of-range` é incerto. Não aplicar automaticamente deslocamentos estimados, duração média da abertura da temporada ou porcentagens genéricas. Referências comunitárias são apenas diagnósticas, mesmo com runtime semelhante. Somente marcações verificadas e vinculadas à edição/fonte, ou marcações locais explícitas do usuário, habilitam saltos conforme o [contrato do player](marker-playback-verification.md).
 
 Manter as fontes separadas. Há divergências reais entre as bases nas amostras consultadas, inclusive nos episódios de teste; não calcular uma média para inventar um terceiro horário. A pesquisa confirma disponibilidade dos dados, não conferência visual dos arquivos WPLAY.
 

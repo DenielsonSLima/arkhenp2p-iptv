@@ -1,4 +1,5 @@
 import {normalizeSeriesPlaybackPreferences, SERIES_COUNTDOWN_SECONDS} from './series-playback-preferences.js';
+import {isVerifiedEpisodeMarkerResult} from './series-markers/index.js';
 
 const STORAGE_KEY = 'arkhen.episode-skips.v2';
 const ID = /^[A-Za-z0-9_-]{1,160}$/;
@@ -124,12 +125,12 @@ function timeLabel(value) {
 
 export class EpisodeSkipController {
   constructor({video, storage, document = globalThis.document, preferences, getNamespace = () => '', getEpisodeMarkers, onSeek,
-    onNextEpisode, hasNextEpisode = () => false, notify = () => {}, onAction = () => {}, now = Date.now,
+    onNextEpisode, hasNextEpisode = () => false, notify = () => {}, onAction = () => {}, onConfigureMarkers, now = Date.now,
     schedule = (callback, delay) => globalThis.setTimeout(callback,delay), cancel = timer => globalThis.clearTimeout(timer)}) {
     this.video = video; this.document = document; this.getNamespace=getNamespace;this.preferences=preferences;
     this.now=now;this.schedule=schedule;this.cancel=cancel;this.timer=null;this.generation=0;
     this.store = new EpisodeSkipStore(storage,now,{getNamespace});
-    this.options = {onNextEpisode, hasNextEpisode, notify, onAction,onSeek,getEpisodeMarkers}; this.context = null; this.disposers = [];
+    this.options = {onNextEpisode, hasNextEpisode, notify, onAction,onSeek,getEpisodeMarkers,onConfigureMarkers}; this.context = null; this.disposers = [];
     this.build();
     for (const event of ['loadedmetadata', 'durationchange', 'timeupdate', 'seeked', 'seeking', 'playing', 'pause', 'waiting', 'stalled', 'ended', 'error']) this.listen(video, event, () => {
       if(event==='loadedmetadata')this.metadataReady=true;
@@ -165,11 +166,14 @@ export class EpisodeSkipController {
     }
     this.clearButton = this.button('Apagar marcações', () => this.clear(), 'episode-skip-clear');
     this.catalogSource=this.node('p','episode-skip-description episode-marker-source');this.catalogSource.hidden=true;
+    this.catalogAvailability=this.node('p','episode-skip-description episode-marker-availability');this.catalogAvailability.hidden=true;this.catalogAvailability.setAttribute('role','status');
     this.status = this.node('p', 'episode-skip-status'); this.status.setAttribute('role', 'status');
-    this.panel.append(grid,this.catalogSource, this.status, this.clearButton);
+    this.panel.append(this.catalogAvailability,grid,this.catalogSource, this.status, this.clearButton);
     this.overlay = this.node('div', 'episode-skip-actions'); this.overlay.setAttribute('role', 'group'); this.overlay.setAttribute('aria-label', 'Pular trechos marcados');
     this.openingButton = this.button('Pular abertura', () => this.skipOpening(), 'episode-skip-action');
     this.creditsButton = this.button('Pular final', () => this.skipCredits(), 'episode-skip-action');
+    this.configureMarkersButton=this.button('Marcar abertura',()=>this.options.onConfigureMarkers?.(),'episode-skip-action episode-marker-configure');this.configureMarkersButton.hidden=true;
+    this.configureMarkersButton.setAttribute('aria-label','Abertura sem marcação compatível. Abrir ajustes para marcar a abertura.');
     this.openingCountdownPanel=this.node('section','episode-next-countdown episode-opening-countdown');this.openingCountdownPanel.hidden=true;this.openingCountdownPanel.setAttribute('aria-label','Pular abertura');
     this.openingCountdownTitle=this.node('strong','episode-next-title');this.openingCountdownTitle.setAttribute('role','status');this.openingCountdownTitle.setAttribute('aria-live','polite');
     const openingActions=this.node('div','episode-next-buttons');
@@ -184,25 +188,26 @@ export class EpisodeSkipController {
     this.playNextButton=this.button('Reproduzir agora',()=>this.advanceNext({automatic:false}),'episode-skip-action episode-next-now');
     this.cancelNextButton=this.button('Cancelar',()=>this.cancelAutoNext(),'episode-skip-action episode-next-cancel');actions.append(this.playNextButton,this.cancelNextButton);
     this.countdownPanel.append(this.countdownTitle,this.countdownDetail,actions);
-    this.overlay.append(this.openingButton, this.creditsButton,this.openingCountdownPanel,this.countdownPanel);
+    this.overlay.append(this.openingButton, this.creditsButton,this.configureMarkersButton,this.openingCountdownPanel,this.countdownPanel);
   }
-  attach({item, episode, sourceFingerprint} = {}) {
+  attach({item, episode, sourceFingerprint, editionId} = {}) {
     this.reset();
     const context = {seriesId: item?.id, episodeId: episode?.id, sourceFingerprint,namespace:String(this.getNamespace()||'')};
     if (item?.kind !== 'series' || !this.store.identity(context)) return;
-    this.context = context;this.episodeContext={item,episode,sourceFingerprint};this.metadataReady=this.video.readyState===undefined || this.video.readyState>=1;
+    this.context = context;this.episodeContext={item,episode,sourceFingerprint,...(editionId!=null?{editionId}:{})};this.metadataReady=this.video.readyState===undefined || this.video.readyState>=1;
     this.playing=this.video.paused===false && (this.video.readyState===undefined || this.video.readyState>=2);this.update();
   }
   reset() {
-    this.externalController?.abort();this.externalController=null;this.externalKey=null;this.externalResult=null;
+    this.externalController?.abort();this.externalController=null;this.externalKey=null;this.externalResult=null;this.externalOutcome=null;this.externalSettled=false;this.referenceOpening=null;
     this.generation++;this.stopCountdown();this.stopOpeningCountdown();this.metadataReady=false;this.playing=false;this.ended=false;
     this.openingSkipped=false;this.openingPending=false;this.openingCancelledStart=null;this.nextInvoked=false;this.cancelledThreshold=null;this.preferenceSignature='';
     this.context = null;this.episodeContext=null; this.panel.hidden = true; this.overlay.hidden = true;
+    this.configureMarkersButton.hidden=true;this.catalogAvailability.hidden=true;
     this.openingButton.hidden = true; this.creditsButton.hidden = true; this.setStatus('');
   }
   clearSessionMarkers(){this.store.clearTransient();this.update();}
   refreshExternalMarkers(){
-    this.externalController?.abort();this.externalController=null;this.externalKey=null;this.externalResult=null;
+    this.externalController?.abort();this.externalController=null;this.externalKey=null;this.externalResult=null;this.externalOutcome=null;this.externalSettled=false;this.referenceOpening=null;
     this.stopOpeningCountdown();this.stopCountdown();if(this.context)this.update();
   }
   setStatus(text) { if (this.status.textContent !== text) this.status.textContent = text; }
@@ -210,12 +215,14 @@ export class EpisodeSkipController {
     if(typeof this.options.getEpisodeMarkers!=='function')return;
     const key=Math.round(duration*1000);if(this.externalKey===key)return;
     this.externalController?.abort();const controller=new AbortController(),generation=this.generation,namespace=this.context.namespace;
-    this.externalController=controller;this.externalKey=key;this.externalResult=null;
+    this.externalController=controller;this.externalKey=key;this.externalResult=null;this.externalOutcome=null;this.externalSettled=false;this.referenceOpening=null;
     const accept=(value,notify=false)=>{
       if(controller.signal.aborted||generation!==this.generation||namespace!==String(this.getNamespace()||'')||Math.round(this.video.duration*1000)!==key)return;
-      const raw=value?.status===undefined?value?.marks:value.status==='matched'?value.markers:null;
+      const verified=isVerifiedEpisodeMarkerResult(value,{...this.episodeContext,duration});
+      const raw=verified?value.markers:null;
       const marks=validateSkipMarkers(raw,duration);
-      this.externalResult=marks?{marks,blockEarlyNext:value.blockEarlyNext===true,source:value.confidence==='community-reference'?'Tempos comunitários em teste':value.confidence==='edition-verified'?'Tempos conferidos para esta edição':typeof value.source==='string'?value.source:'Tempos do catálogo',confidence:value.confidence}:null;
+      this.externalSettled=true;this.externalOutcome={status:verified?'matched':value?.status==='matched'?'edition-unverified':value?.status||'unavailable',reason:value?.reason};
+      this.externalResult=marks?{marks,blockEarlyNext:value.blockEarlyNext===true,source:'Tempos conferidos para esta edição',confidence:'edition-verified'}:null;
       if(notify)this.update();
     };
     try{
@@ -224,8 +231,8 @@ export class EpisodeSkipController {
       // contract while supplying cancellation to asynchronous adapters.
       Object.defineProperty(input,'signal',{value:controller.signal,enumerable:false});
       const supplied=this.options.getEpisodeMarkers(input);
-      if(supplied?.then)Promise.resolve(supplied).then(value=>accept(value,true),()=>{});else accept(supplied);
-    }catch{/* Optional markers never interrupt the video or manual markings. */}
+      if(supplied?.then)Promise.resolve(supplied).then(value=>accept(value,true),()=>accept({status:'unavailable'},true));else accept(supplied);
+    }catch{accept({status:'unavailable'});}
   }
   state() {
     const duration = this.video.duration, currentTime = this.video.currentTime;
@@ -252,12 +259,20 @@ export class EpisodeSkipController {
     if(this.cancelledThreshold!==null && state.currentTime<this.cancelledThreshold-1)this.cancelledThreshold=null;
     if(this.openingCancelledStart!==null && state.currentTime<this.openingCancelledStart-1)this.openingCancelledStart=null;
     this.panel.hidden = false; this.openingButton.hidden = !active.opening; this.creditsButton.hidden = !active.credits;
+    this.openingButton.textContent='Pular abertura';this.openingButton.title='';
     for (const [key, value] of this.markerValues) { const text = timeLabel(state.marks[key]); if (value.textContent !== text) value.textContent = text; }
     for (const button of this.markerButtons.values()) button.disabled = !state.ready;
     this.markerButtons.get('openingEnd').disabled = !state.ready || state.marks.openingStart === undefined || state.currentTime <= state.marks.openingStart;
     this.markerButtons.get('creditsStart').disabled = !state.ready || state.currentTime <= 0;
     this.clearButton.disabled = !this.store.has(this.context);
     this.catalogSource.hidden=!state.markerSource;this.catalogSource.textContent=state.markerSource?state.markerSource+(state.blockEarlyNext?' · preservar conteúdo final':''):'';
+    const hasOpening=state.marks.openingStart!==undefined&&state.marks.openingEnd!==undefined;
+    let availability='';
+    if(!hasOpening&&this.externalOutcome?.status==='edition-mismatch')availability='Os tempos disponíveis pertencem a outra edição deste episódio.';
+    else if(!hasOpening&&this.externalOutcome?.status==='edition-conflict')availability='As marcações desta edição estão em revisão.';
+    else if(!hasOpening&&this.externalSettled)availability='Abertura sem marcação conferida para esta edição.';
+    else if(!hasOpening&&this.externalController&&!this.externalSettled)availability='Buscando marcações desta edição…';
+    this.catalogAvailability.hidden=!availability;this.catalogAvailability.textContent=availability;
     this.openingCountdownDetail.textContent=`${state.markerSource?state.markerSource+' · ':''}Você pode cancelar para assistir à abertura.`;
     if (state.incompatible) this.setStatus('As marcações salvas pertencem a outra versão deste episódio. Marque os trechos novamente.');
     else if (!state.ready && !durationValid(state.duration)) this.setStatus('Aguarde o vídeo carregar para marcar os trechos.');
@@ -267,7 +282,10 @@ export class EpisodeSkipController {
     const trigger=nextEpisodeTrigger(state.marks,state.duration,preferences,{blockEarlyNext:state.blockEarlyNext});
     if(!this.openingCountdownPanel.hidden)this.stopCountdown();else this.updateCountdown(trigger,state,preferences);
     if(!this.countdownPanel.hidden)this.creditsButton.hidden=true;
-    this.overlay.hidden=this.openingButton.hidden && this.creditsButton.hidden && this.openingCountdownPanel.hidden && this.countdownPanel.hidden;
+    // Optional local marking remains in advanced settings; missing community
+    // coverage must not prompt every viewer to calibrate an episode.
+    this.configureMarkersButton.hidden=true;
+    this.overlay.hidden=this.openingButton.hidden && this.creditsButton.hidden && this.configureMarkersButton.hidden && this.openingCountdownPanel.hidden && this.countdownPanel.hidden;
   }
   stopOpeningCountdown(){
     if(this.openingTimer!==null && this.openingTimer!==undefined)this.cancel(this.openingTimer);this.openingTimer=null;this.openingCountdown=null;
@@ -305,7 +323,7 @@ export class EpisodeSkipController {
   }
   updateCountdown(trigger,state,preferences){
     const ended=this.ended || this.video.ended===true;
-    if(!trigger || !this.metadataReady || this.video.error || !this.options.hasNextEpisode() || this.nextInvoked ||
+    if(!trigger || trigger.reason==='ended'&&!ended || !this.metadataReady || this.video.error || !this.options.hasNextEpisode() || this.nextInvoked ||
       this.cancelledThreshold!==null || !Number.isFinite(state.currentTime) || (!ended && state.currentTime<trigger.at)){
       this.stopCountdown();return;
     }

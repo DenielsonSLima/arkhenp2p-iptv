@@ -1,0 +1,130 @@
+{
+  "requestedAt": "2026-10-15T18:38:58.506Z",
+  "applied": false,
+  "sourceInventoryIsNotIPTVAvailability": true,
+  "editionVerified": false,
+  "titles": [
+    {
+      "imdbId": "tt0944947",
+      "title": "Game of Thrones",
+      "year": 2011,
+      "nativeIds": [
+        "999725200"
+      ],
+      "sourceEpisodes": 374,
+      "requestedEpisodes": 73,
+      "numbering": "source-native"
+    },
+    {
+      "imdbId": "tt2306299",
+      "title": "Vikings",
+      "year": 2013,
+      "nativeIds": [
+        "131129",
+        "999726546"
+      ],
+      "sourceEpisodes": 89,
+      "requestedEpisodes": 89,
+      "numbering": "source-native"
+    },
+    {
+      "imdbId": "tt11311302",
+      "title": "Vikings: Valhalla",
+      "year": 2022,
+      "nativeIds": [
+        "999728421",
+        "105002"
+      ],
+      "sourceEpisodes": 24,
+      "requestedEpisodes": 24,
+      "numbering": "source-native"
+    },
+    {
+      "imdbId": "tt0388629",
+      "title": "One Piece",
+      "year": 1999,
+      "nativeIds": [
+        "148757",
+        "87812597"
+      ],
+      "sourceEpisodes": 1169,
+      "requestedEpisodes": 1169,
+      "numbering": "source-native"
+    },
+    {
+      "imdbId": "tt11737520",
+      "title": "ONE PIECE",
+      "year": 2023,
+      "nativeIds": [
+        "130931"
+      ],
+      "sourceEpisodes": 17,
+      "requestedEpisodes": 16,
+      "numbering": "source-native"
+    },
+    {
+      "imdbId": "tt7631058",
+      "title": "The Lord of the Rings: The Rings of Power",
+      "year": 2022,
+      "nativeIds": [
+        "999730340"
+      ],
+      "sourceEpisodes": 24,
+      "requestedEpisodes": 16,
+      "numbering": "source-native"
+    }
+  ],
+  "preparedSQL": true,
+  "identitiesPrepared": 9,
+  "referencesQueued": null,
+  "referencesPrepared": 1387,
+  "databaseSubmission": {
+    "httpStatus": 201,
+    "transactionSent": true,
+    "readBackConfirmed": false,
+    "executionVerified": false
+  },
+  "verification": {
+    "observedAt": "2026-10-15T18:47:31.152Z",
+    "state": "unavailable",
+    "restPhase": "coverage",
+    "restCode": "MARKER_DATABASE_UNAVAILABLE",
+    "managementHttp": 544,
+    "controlQuery": "SELECT now()",
+    "controlHttp": 544,
+    "projectControlPlane": "ACTIVE_HEALTHY"
+  },
+  "serviceHealth": {
+    "ok": true,
+    "observedAt": "2026-10-15T18:54:49.1109643Z",
+    "http": 200,
+    "elapsed_ms": 11157,
+    "services": [
+      {
+        "name": "auth",
+        "healthy": false,
+        "status": "UNHEALTHY"
+      },
+      {
+        "name": "realtime",
+        "healthy": true,
+        "status": "ACTIVE_HEALTHY"
+      },
+      {
+        "name": "rest",
+        "healthy": false,
+        "status": "UNHEALTHY"
+      },
+      {
+        "name": "storage",
+        "healthy": false,
+        "status": "UNHEALTHY"
+      },
+      {
+        "name": "db",
+        "healthy": false,
+        "status": "UNHEALTHY"
+      }
+    ]
+  }
+}

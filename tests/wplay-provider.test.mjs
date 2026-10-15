@@ -5,6 +5,24 @@ import { WplayProviderClient, wplayAuthForm, wplayServiceURL } from '../lib/wpla
 
 const username='usuário+fixture',password='senha & fixture';
 
+test('WPLAY authentication can run through the cloud gateway while retaining only the engine session in RAM',async()=>{
+  const calls=[],client=new WplayProviderClient({username,password},{authenticate:async value=>{calls.push(value);return {cloudCollector:true,payload:{code:0,user:{EndTime:1999999999},keys:{peer_id:'engine-only',session_key:'engine-secret'},service:{token:'short-lived',enabledLive:true,enabledVoD:true}}};}});
+  client.requestJSON=()=>assert.fail('Cloud login cannot repeat a direct provider authentication.');
+  const session=await client.connect();assert.equal(session.connected,true);assert.equal(client.cloudCollection,true);assert.equal(calls.length,1);
+  const form=new URLSearchParams(calls[0].form);assert.equal(form.get('password'),password);assert.equal(form.get('username'),username+'@wareztv.io');assert.equal(calls[0].server,'https://auth1.wareztv.io/api/v2/auth');
+  assert.doesNotMatch(JSON.stringify(session),/engine-secret|short-lived|senha/);
+});
+
+test('fallback authentication preserves the original cloud partition and account identity',async()=>{
+  const calls=[],canonical='https://auth1.authwplays.one/api/v2/auth',fallback='https://auth1.wareztv.io/api/v2/auth';
+  const client=new WplayProviderClient({username,password,authURLs:[canonical,fallback]},{authenticate:async value=>{
+    calls.push(value);if(value.server===canonical)throw Object.assign(new Error('Transport failure'),{code:'CLOUD_UNAVAILABLE'});
+    return {cloudCollector:true,payload:{code:0,user:{EndTime:1999999999},service:{enabledLive:true,enabledVoD:true}}};
+  }});
+  assert.equal((await client.connect()).connected,true);assert.equal(calls.length,2);
+  assert.equal(calls[1].server,fallback);assert.equal(calls[1].scopeServer,canonical);assert.equal(client.config.server,canonical);
+});
+
 test('native catalog items retain all supplied genres before opening details',()=>{
   const client=new WplayProviderClient({username,password});
   const raw={chid:123,name:{init:'Matchbox'},tags:[{_id:1,name:{init:'Filmes/Ação'}},{_id:2,name:{init:'Filmes/Comédia'}},{_id:3,name:{init:'Filmes/Aventura'}},{_id:4,name:{init:'Filmes/Lançamentos'}},null]};
@@ -23,6 +41,14 @@ test('native cover uses portrait artwork while transparent title art stays out o
   }
   const item=client.normalizeItems([{...raw,image_backdrop:null}],'movie').items[0];
   assert.equal(client.images.get(new URL(item.backdrop,'http://local').searchParams.get('ref')),'https://art.example/wide.jpg');
+});
+
+test('legacy and live shared artwork reuse only already registered items without loading a catalog',async()=>{
+  const client=new WplayProviderClient({username,password});client.authInfo={service:{}};client.connect=async()=>({connected:true});
+  client.catalog=()=>assert.fail('Cold artwork cannot enumerate a catalog.');client.details=()=>assert.fail('Legacy details can hide a full catalog request.');client.requestJSON=()=>assert.fail('Artwork cannot introduce a network read here.');
+  assert.equal(await client.artworkMetadata('live','123'),null);assert.equal(await client.artworkMetadata('movie','123'),null);
+  client.normalizeItems([{chid:123,name:'Registered live item',logo:{image:{big:'https://art.example/live.jpg'}}}],'live');
+  const item=await client.artworkMetadata('live','123');assert.equal(item.id,'123');assert.equal(client.images.get(new URL(item.poster,'http://local').searchParams.get('ref')),'https://art.example/live.jpg');
 });
 async function fixture({auth={code:0},redirect=false,media=null,holdMedia=false}={}) {
   const requests=[];let origin,mediaEntered;const mediaRequested=new Promise(resolve=>{mediaEntered=resolve;});

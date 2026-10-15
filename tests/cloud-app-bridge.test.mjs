@@ -6,10 +6,10 @@ const NOW=Date.parse('2026-10-15T04:00:00Z');
 const defer=()=>{let resolve;const promise=new Promise(done=>{resolve=done;});return {promise,resolve};};
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 const snapshot=(userId='user-a',extra={})=>({ready:true,userId,preferenceRecords:[],collectionRecords:[],...extra});
-function fixture(t,{storage,local={},initialGroups=[],remote=snapshot(),connect}={}){
+function fixture(t,{storage,local={},initialGroups=[],remote=snapshot(),connect,refreshSession,schedule,cancel,pageTarget}={}){
   let session={connected:true,account:{libraryId:'a'.repeat(64)},cloud:{userId:'user-a'}},generation=1,preferences={audio:{mode:'original'},...local},groups=structuredClone(initialGroups),listener,current=remote;
   const calls=[],favorites=new Map([['series:9',{id:'9',kind:'series',name:'Série'}]]),history=new Map(),episodes={list:()=>[{itemId:'9',episodeId:'ep4',season:6,number:4,time:120,duration:3600,updated:NOW}],read:()=>null,save:()=>{}};
-  const cloud={subscribe:fn=>{listener=fn;return()=>{listener=null;}},async connect(value){calls.push(['connect',value]);if(connect)return connect(value);listener(current);return current;},snapshot:()=>current,
+  const cloud={subscribe:fn=>{listener=fn;return()=>{listener=null;}},async connect(value,options){calls.push(['connect',value,options]);if(connect)return connect(value,options);listener(current);return current;},snapshot:()=>current,
     hydrate(value){calls.push(['hydrate',value]);},syncLocal:async value=>{calls.push(['syncLocal',value]);return true;},
     saveFavorite:async(...args)=>{calls.push(['favorite',...args]);return true;},saveProgress:async(...args)=>{calls.push(['progress',...args]);return true;},
     savePreference:async(...args)=>{calls.push(['preference',...args]);return true;},saveCollection:async(...args)=>{calls.push(['collection',...args]);return true;},removeCollection:async(...args)=>{calls.push(['removeCollection',...args]);return true;},
@@ -17,7 +17,7 @@ function fixture(t,{storage,local={},initialGroups=[],remote=snapshot(),connect}
   let bridge;bridge=new CloudAppBridge({cloud,getSession:()=>session,getGeneration:()=>generation,favoritesMap:favorites,historyMap:history,episodeProgress:episodes,
     localLibrary:{saveFavorites:()=>calls.push(['saveFavorites']),saveHistory:()=>calls.push(['saveHistory'])},getPreferences:()=>preferences,
     applyPreferences(value){preferences={...preferences,...value};for(const [key,data]of Object.entries(value))void bridge.preferenceChanged(key,data);},
-    getCollections:()=>groups,applyCollections:value=>{groups=value;bridge.settingsChanged();},defaultPreferences:{audio:{mode:'original'}},onUpdate:value=>calls.push(['update',value,bridge.applying]),storage,now:()=>NOW});
+    getCollections:()=>groups,applyCollections:value=>{groups=value;bridge.settingsChanged();},defaultPreferences:{audio:{mode:'original'}},onUpdate:(value,changes)=>calls.push(['update',value,bridge.applying,changes]),storage,now:()=>NOW,refreshSession,schedule,cancel,pageTarget});
   t.after(()=>bridge.stop({flush:false}));
   return {bridge,cloud,calls,favorites,history,episodes,get preferences(){return preferences;},get groups(){return groups;},setGroups(value){groups=value;},setPreferences(value){preferences=value;},
     emit(value){current=value;listener(value);},account(id,user){generation++;session={connected:true,account:{libraryId:id.repeat(64)},cloud:{userId:user}};},setSnapshot:value=>{current=value;}};
@@ -63,4 +63,44 @@ test('a late connection cannot import the previous account after an account swit
 test('a foreign account snapshot cannot hydrate private maps or overwrite preferences',async t=>{
   const f=fixture(t);await f.bridge.start();f.calls.length=0;f.emit(snapshot('user-b',{preferenceRecords:[{key:'audio',value:{mode:'night'},updated_at:new Date(NOW+1000).toISOString()}]}));
   assert.equal(f.calls.length,0);assert.equal(f.preferences.audio.mode,'original');
+});
+
+test('an unavailable bootstrap retries with a refreshed session and uploads this account local library',async t=>{
+  const jobs=new Map();let attempts=0,refreshes=0,serial=0;
+  const f=fixture(t,{connect:async()=>++attempts===1?null:snapshot(),refreshSession:async()=>{refreshes++;},schedule:(fn,delay)=>{jobs.set(++serial,{fn,delay});return serial;},cancel:id=>jobs.delete(id)});
+  assert.equal(await f.bridge.start(),null);assert.equal(jobs.size,1);assert.equal([...jobs.values()][0].delay,5000);
+  const job=[...jobs.values()][0];jobs.clear();job.fn();await flush();
+  assert.equal(refreshes,1);assert.equal(attempts,2);assert.equal(jobs.size,0);assert.equal(f.calls.filter(([type])=>type==='syncLocal').length,1);
+  await f.bridge.favoriteChanged({kind:'movie',id:'3'},true);assert.equal(f.calls.at(-1)[0],'favorite');
+});
+
+test('focus and online recovery share an in-flight connection and logout cancels future retries',async t=>{
+  const handlers={},jobs=new Map(),pending=defer();let attempts=0,serial=0;
+  const f=fixture(t,{connect:async()=>{attempts++;return attempts===1?snapshot():pending.promise;},pageTarget:{addEventListener:(name,fn)=>{handlers[name]=fn;},removeEventListener:name=>delete handlers[name]},schedule:(fn,delay)=>{jobs.set(++serial,{fn,delay});return serial;},cancel:id=>jobs.delete(id)});
+  await f.bridge.start();handlers.focus();handlers.online();await flush();assert.equal(attempts,2);
+  await f.bridge.stop({flush:false});pending.resolve(null);await flush();assert.equal(jobs.size,0);handlers.focus();assert.equal(attempts,2);
+});
+
+test('automatic retries stop when a session changes to a different account',async t=>{
+  const jobs=new Map();let serial=0,refreshes=0;
+  const f=fixture(t,{connect:async()=>null,refreshSession:async()=>{refreshes++;},schedule:(fn,delay)=>{jobs.set(++serial,{fn,delay});return serial;},cancel:id=>jobs.delete(id)});
+  await f.bridge.start();f.account('b','user-b');const job=[...jobs.values()][0];jobs.clear();job.fn();await flush();
+  assert.equal(refreshes,0);assert.equal(jobs.size,0);assert.equal(f.calls.filter(([type])=>type==='connect').length,1);
+});
+
+test('only a rejected Auth session mints recovery and the next connection must prefer the recovered bootstrap',async t=>{
+  let attempts=0;const refreshes=[],f=fixture(t,{connect:async()=>++attempts===1?null:snapshot(),refreshSession:async options=>{refreshes.push(options);}});f.cloud.getConnectionFailure=()=>({authRecoveryRequired:true});
+  assert.equal((await f.bridge.start()).userId,'user-a');assert.deepEqual(refreshes,[{forceCloud:true}]);assert.deepEqual(f.calls.filter(([type])=>type==='connect')[1][2],{preferBootstrap:true});assert.equal(f.calls.filter(([type])=>type==='syncLocal').length,1);
+});
+
+test('a generic network or rendering error never requests privileged Auth recovery',async t=>{
+  for(const code of ['CLOUD_CONNECTION_FAILED','CLOUD_UI_CALLBACK_FAILED']){const refreshes=[],jobs=new Map(),f=fixture(t,{connect:async()=>null,refreshSession:async options=>refreshes.push(options),schedule:fn=>{jobs.set(1,fn);return 1;},cancel:id=>jobs.delete(id)});f.cloud.getConnectionFailure=()=>({code,authRecoveryRequired:false});assert.equal(await f.bridge.start(),null);assert.equal(refreshes.length,0);assert.equal(jobs.size,1);}
+});
+
+test('a progress-only snapshot emits its exact projection once and never rewrites favorites or preferences',async t=>{
+  const f=fixture(t);await f.bridge.start();f.calls.length=0;
+  const next=snapshot('user-a',{favoriteRecords:[],progressRecords:[{item_key:'series:9',episode_id:'4',updated_at:new Date(NOW+1000).toISOString(),entry:{item:{kind:'series'},time:300}}]});
+  f.emit(next);const changes=f.calls.find(([name])=>name==='update')[3];assert.equal(changes.initial,false);assert.deepEqual(changes.progress,['series']);assert.deepEqual(changes.favorites,[]);
+  assert.equal(f.calls.some(([name])=>['saveFavorites','preference','collection'].includes(name)),false);
+  f.calls.length=0;f.emit(next);assert.equal(f.calls.some(([name])=>name==='update'),false);
 });

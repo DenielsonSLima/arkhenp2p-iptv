@@ -1,0 +1,472 @@
+{
+  "retrievedAt": "2026-10-15T18:19:08.155Z",
+  "responses": [
+    {
+      "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=5&episode=1",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt0944947",
+        "media_type": "tv",
+        "is_movie": false,
+        "season": 5,
+        "episode": 1,
+        "intro": {
+          "start_sec": 6,
+          "end_sec": 113,
+          "start_ms": 6000,
+          "end_ms": 113000,
+          "confidence": 1,
+          "submission_count": 1,
+          "updated_at": "2026-04-08T18:48:15.817Z"
+        },
+        "recap": null,
+        "outro": {
+          "start_sec": 3050,
+          "end_sec": 3131,
+          "start_ms": 3050000,
+          "end_ms": 3131000,
+          "confidence": 1,
+          "submission_count": 1,
+          "updated_at": "2026-04-08T18:48:29.342Z"
+        },
+        "post_credits": null
+      }
+    },
+    {
+      "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=1&episode=1",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt0944947",
+        "media_type": "tv",
+        "is_movie": false,
+        "season": 1,
+        "episode": 1,
+        "intro": {
+          "start_sec": 437,
+          "end_sec": 531,
+          "start_ms": 437000,
+          "end_ms": 531000,
+          "confidence": 1,
+          "submission_count": 2,
+          "updated_at": "2026-06-16T02:49:39.823Z"
+        },
+        "recap": null,
+        "outro": {
+          "start_sec": 3631.5,
+          "end_sec": 3699.5,
+          "start_ms": 3631500,
+          "end_ms": 3699500,
+          "confidence": 1,
+          "submission_count": 2,
+          "updated_at": "2026-04-08T18:48:22.562Z"
+        },
+        "post_credits": null
+      }
+    },
+    {
+      "url": "https://api.introdb.app/segments?imdb_id=tt2306299&season=1&episode=1",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt2306299",
+        "media_type": "tv",
+        "is_movie": false,
+        "season": 1,
+        "episode": 1,
+        "intro": {
+          "start_sec": 10,
+          "end_sec": 30,
+          "start_ms": 10000,
+          "end_ms": 30000,
+          "confidence": 1,
+          "submission_count": 2,
+          "updated_at": "2026-04-08T19:22:03.902Z"
+        },
+        "recap": null,
+        "outro": {
+          "start_sec": 2737,
+          "end_sec": 2798,
+          "start_ms": 2737000,
+          "end_ms": 2798000,
+          "confidence": 1,
+          "submission_count": 2,
+          "updated_at": "2026-04-29T19:39:37.144Z"
+        },
+        "post_credits": null
+      }
+    },
+    {
+      "url": "https://api.introdb.app/segments?imdb_id=tt2306299&season=1&episode=2",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt2306299",
+        "media_type": "tv",
+        "is_movie": false,
+        "season": 1,
+        "episode": 2,
+        "intro": {
+          "start_sec": 10,
+          "end_sec": 30,
+          "start_ms": 10000,
+          "end_ms": 30000,
+          "confidence": 1,
+          "submission_count": 2,
+          "updated_at": "2026-04-08T19:22:04.141Z"
+        },
+        "recap": null,
+        "outro": {
+          "start_sec": 2770,
+          "end_sec": 2831,
+          "start_ms": 2770000,
+          "end_ms": 2831000,
+          "confidence": 1,
+          "submission_count": 2,
+          "updated_at": "2026-04-29T19:39:38.862Z"
+        },
+        "post_credits": null
+      }
+    },
+    {
+      "url": "https://api.introdb.app/segments?imdb_id=tt2306299&season=6&episode=20",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt2306299",
+        "media_type": "tv",
+        "is_movie": false,
+        "season": 6,
+        "episode": 20,
+        "intro": {
+          "start_sec": 0.02,
+          "end_sec": 50.029,
+          "start_ms": 20,
+          "end_ms": 50029,
+          "confidence": 1,
+          "submission_count": 1,
+          "updated_at": "2026-04-29T19:43:10.211Z"
+        },
+        "recap": null,
+        "outro": {
+          "start_sec": 2944,
+          "end_sec": 3046,
+          "start_ms": 2944000,
+          "end_ms": 3046000,
+          "confidence": 1,
+          "submission_count": 1,
+          "updated_at": "2026-04-29T19:43:11.545Z"
+        },
+        "post_credits": null
+      }
+    },
+    {
+      "url": "https://api.introdb.app/segments?imdb_id=tt11311302&season=1&episode=1",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt11311302",
+        "media_type": "tv",
+        "is_movie": false,
+        "season": 1,
+        "episode": 1,
+        "intro": null,
+        "recap": null,
+        "outro": {
+          "start_sec": 3189,
+          "end_sec": 3384,
+          "start_ms": 3189000,
+          "end_ms": 3384000,
+          "confidence": 1,
+          "submission_count": 1,
+          "updated_at": "2026-04-08T18:56:09.961Z"
+        },
+        "post_credits": null
+      }
+    },
+    {
+      "url": "https://api.introdb.app/segments?imdb_id=tt0388629&season=1&episode=1",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt0388629",
+        "media_type": "tv",
+        "is_movie": false,
+        "season": 1,
+        "episode": 1,
+        "intro": {
+          "start_sec": 28.783,
+          "end_sec": 118.783,
+          "start_ms": 28783,
+          "end_ms": 118783,
+          "confidence": 1,
+          "submission_count": 2,
+          "updated_at": "2026-04-08T18:29:41.786Z"
+        },
+        "recap": null,
+        "outro": {
+          "start_sec": 1382,
+          "end_sec": 1422,
+          "start_ms": 1382000,
+          "end_ms": 1422000,
+          "confidence": 1,
+          "submission_count": 1,
+          "updated_at": "2026-04-08T18:34:57.426Z"
+        },
+        "post_credits": null
+      }
+    },
+    {
+      "url": "https://api.introdb.app/segments?imdb_id=tt11737520&season=1&episode=1",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt11737520",
+        "media_type": "tv",
+        "is_movie": false,
+        "season": 1,
+        "episode": 1,
+        "intro": {
+          "start_sec": 29,
+          "end_sec": 119,
+          "start_ms": 29000,
+          "end_ms": 119000,
+          "confidence": 1,
+          "submission_count": 1,
+          "updated_at": "2026-04-08T18:57:04.322Z"
+        },
+        "recap": null,
+        "outro": {
+          "start_sec": 3554,
+          "end_sec": 3864,
+          "start_ms": 3554000,
+          "end_ms": 3864000,
+          "confidence": 1,
+          "submission_count": 1,
+          "updated_at": "2026-04-08T18:57:05.241Z"
+        },
+        "post_credits": null
+      }
+    },
+    {
+      "url": "https://api.introdb.app/segments?imdb_id=tt7631058&season=1&episode=1",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt7631058",
+        "media_type": "tv",
+        "is_movie": false,
+        "season": 1,
+        "episode": 1,
+        "intro": null,
+        "recap": null,
+        "outro": {
+          "start_sec": 3759.99,
+          "end_sec": 3944.33,
+          "start_ms": 3759990,
+          "end_ms": 3944330,
+          "confidence": 1,
+          "submission_count": 1,
+          "updated_at": "2026-08-19T19:31:46.623Z"
+        },
+        "post_credits": null
+      }
+    },
+    {
+      "url": "https://api.introdb.app/segments?imdb_id=tt0120737&is_movie=true",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt0120737",
+        "media_type": "movie",
+        "is_movie": true,
+        "season": 0,
+        "episode": 0,
+        "intro": null,
+        "recap": null,
+        "outro": null,
+        "post_credits": null
+      }
+    },
+    {
+      "url": "https://api.introdb.app/segments?imdb_id=tt0167261&is_movie=true",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt0167261",
+        "media_type": "movie",
+        "is_movie": true,
+        "season": 0,
+        "episode": 0,
+        "intro": null,
+        "recap": null,
+        "outro": null,
+        "post_credits": null
+      }
+    },
+    {
+      "url": "https://api.introdb.app/segments?imdb_id=tt0167260&is_movie=true",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt0167260",
+        "media_type": "movie",
+        "is_movie": true,
+        "season": 0,
+        "episode": 0,
+        "intro": null,
+        "recap": null,
+        "outro": null,
+        "post_credits": null
+      }
+    },
+    {
+      "url": "https://api.skipdb.tv/api/segments?imdb_id=tt0944947&season=5&episode=1&duration=3129&adjust=none",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt0944947",
+        "season": 5,
+        "episode": 1,
+        "segments": {
+          "intro": {
+            "start_ms": 0,
+            "end_ms": 115800,
+            "adjusted": false,
+            "offset_ms": -3400,
+            "match": "exact",
+            "confidence": 0.91
+          },
+          "recap": null,
+          "outro": {
+            "start_ms": 3047700,
+            "end_ms": 3132400,
+            "adjusted": false,
+            "offset_ms": -3400,
+            "match": "exact",
+            "confidence": 0.91
+          },
+          "preview": null
+        },
+        "intro_length_estimate_ms": 116300
+      }
+    },
+    {
+      "url": "https://api.skipdb.tv/api/segments?imdb_id=tt0944947&season=5&episode=1&adjust=none",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt0944947",
+        "season": 5,
+        "episode": 1,
+        "segments": {
+          "intro": {
+            "start_ms": 0,
+            "end_ms": 115800,
+            "adjusted": false,
+            "offset_ms": 0,
+            "match": "agnostic",
+            "confidence": 0.77
+          },
+          "recap": null,
+          "outro": {
+            "start_ms": 3047700,
+            "end_ms": 3132400,
+            "adjusted": false,
+            "offset_ms": 0,
+            "match": "agnostic",
+            "confidence": 0.77
+          },
+          "preview": null
+        },
+        "intro_length_estimate_ms": 116300
+      }
+    },
+    {
+      "url": "https://api.skipdb.tv/api/segments?imdb_id=tt2306299&season=1&episode=1&adjust=none",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt2306299",
+        "season": 1,
+        "episode": 1,
+        "segments": {
+          "intro": {
+            "start_ms": 204200,
+            "end_ms": 254500,
+            "adjusted": false,
+            "offset_ms": 0,
+            "match": "agnostic",
+            "confidence": 0.75
+          },
+          "recap": null,
+          "outro": {
+            "start_ms": 2735400,
+            "end_ms": 2797000,
+            "adjusted": false,
+            "offset_ms": 0,
+            "match": "agnostic",
+            "confidence": 0.75
+          },
+          "preview": null
+        },
+        "intro_length_estimate_ms": 50300
+      }
+    },
+    {
+      "url": "https://api.introdb.app/segments?imdb_id=tt0388629&season=2&episode=62",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt0388629",
+        "media_type": "tv",
+        "is_movie": false,
+        "season": 2,
+        "episode": 62,
+        "intro": {
+          "start_sec": 0,
+          "end_sec": 106,
+          "start_ms": 0,
+          "end_ms": 106000,
+          "confidence": 1,
+          "submission_count": 1,
+          "updated_at": "2026-04-08T18:29:57.357Z"
+        },
+        "recap": null,
+        "outro": {
+          "start_sec": 1377,
+          "end_sec": 1439,
+          "start_ms": 1377000,
+          "end_ms": 1439000,
+          "confidence": 1,
+          "submission_count": 1,
+          "updated_at": "2026-04-08T18:35:05.527Z"
+        },
+        "post_credits": null
+      }
+    },
+    {
+      "url": "https://api.introdb.app/segments?imdb_id=tt0388629&season=2&episode=1",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt0388629",
+        "media_type": "tv",
+        "is_movie": false,
+        "season": 2,
+        "episode": 1,
+        "intro": {
+          "start_sec": 28.783,
+          "end_sec": 118.783,
+          "start_ms": 28783,
+          "end_ms": 118783,
+          "confidence": 1,
+          "submission_count": 1,
+          "updated_at": "2026-04-08T18:29:53.202Z"
+        },
+        "recap": null,
+        "outro": null,
+        "post_credits": null
+      }
+    },
+    {
+      "url": "https://api.introdb.app/segments?imdb_id=tt0388629&season=1&episode=62",
+      "status": 200,
+      "payload": {
+        "imdb_id": "tt0388629",
+        "media_type": "tv",
+        "is_movie": false,
+        "season": 1,
+        "episode": 62,
+        "intro": null,
+        "recap": null,
+        "outro": null,
+        "post_credits": null
+      }
+    }
+  ]
+}

@@ -9,6 +9,9 @@ export function normalizeSearchText(value) {
   return String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
 }
 
+export const GLOBAL_SEARCH_MIN_LENGTH=3;
+export function canSearchGlobally(value){return Array.from(normalizeSearchText(value)).length>=GLOBAL_SEARCH_MIN_LENGTH;}
+
 function remainingChoices(catalogs, isCategoryAllowed) {
   return catalogTypes.map(type => pageChoices(catalogFor(catalogs, type))
     .filter(state => isCategoryAllowed(type, state.id))
@@ -46,6 +49,7 @@ function matchRank(item, query, words) {
  */
 export function searchCatalogs(catalogs, input, {isItemVisible = () => true, isCategoryAllowed = () => true} = {}) {
   const query = normalizeSearchText(input), words = query.split(' ').filter(Boolean), found = new Map();
+  if(!canSearchGlobally(query))return {query,items:[],counts:{live:0,movie:0,series:0},missingTypes:[],partialTypes:[],partial:false,remainingCategories:0,tooShort:true};
   const missingTypes = catalogTypes.filter(type => !catalogFor(catalogs, type));
   const choices = remainingChoices(catalogs, isCategoryAllowed);
   const partialTypes = catalogTypes.filter((type, index) => missingTypes.includes(type) || choices[index].length);

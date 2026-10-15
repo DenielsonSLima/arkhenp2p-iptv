@@ -1,6 +1,6 @@
 # Reprodução de séries
 
-`SeriesPlaybackPreferences` é uma única instância compartilhada por Configurações e `EpisodeSkipController`. Os padrões são `autoNext: true`, `autoSkipOpening: true`, `nextMode: 'offset'` e `endOffsetSeconds: 30`. A interface mantém uma cópia local por conta e o `CloudAppBridge` sincroniza a preferência `series-playback` no Supabase quando conectado. `getPreferences()`, `setPreferences(patch)` e `subscribe(listener)` atualizam a interface sem recriar seus controles. A rota é `#settings/series-playback`.
+`SeriesPlaybackPreferences` é uma única instância compartilhada por Configurações e `EpisodeSkipController`. Os padrões são `autoNext: true`, `autoSkipOpening: true`, `nextMode: 'markers'` e `endOffsetSeconds: 30`. Sem créditos verificados/manuais, o padrão aguarda o evento real `ended`; o valor de 30 segundos só participa quando o modo `offset` foi selecionado ou já estava salvo. Preferências antigas são preservadas. A interface mantém uma cópia local por conta e o `CloudAppBridge` sincroniza a preferência `series-playback` no Supabase quando conectado. `getPreferences()`, `setPreferences(patch)` e `subscribe(listener)` atualizam a interface sem recriar seus controles. A rota é `#settings/series-playback`.
 
 ## Passagem para o próximo episódio
 
@@ -10,7 +10,7 @@
 
 A contagem permite reproduzir imediatamente ou cancelar para este episódio. Pausa, buffering e seek suspendem o relógio. `seeked` sozinho não confirma que a decodificação voltou: o relógio aguarda `playing`, dados decodificados (`readyState >= 2`) e o fim do seek. Cancelar continua valendo até voltar para antes do ponto de disparo ou abrir novamente o episódio. Alterar outra preferência não desfaz o cancelamento. Só existe um avanço automático por sessão do episódio; `ended` repetido não dispara um segundo avanço. O último episódio não oferece reprodução automática de outro título.
 
-Uma referência compatível com `verification.blockEarlyNext: true` informa que pode haver prévia, cena pós-créditos ou um final ambíguo. Nesse caso o player mostra “preservar conteúdo final” e aguarda o término real, mesmo no padrão de 30 segundos antes do fim. O resolvedor pode entregar essa política com `markers: {}`: ela não inventa uma janela de abertura ou créditos. Identidade, episódio, fonte e duração continuam obrigatórios. Créditos marcados manualmente pelo usuário têm prioridade; apagar essa marcação restaura a proteção. Um registro comunitário compatível com essa proteção prevalece sobre créditos comunitários ambíguos da mesma duração; uma edição comprovada ainda tem prioridade.
+Uma política verificada e vinculada à edição com `verification.blockEarlyNext: true` informa que pode haver prévia, cena pós-créditos ou final ambíguo. O player mostra “preservar conteúdo final” e aguarda `ended`, inclusive se houver offset configurado. O resolvedor pode entregar essa política com `markers: {}`, sem inventar janelas. Identidade, episódio, prova de edição/fonte e duração são obrigatórios. Créditos marcados manualmente pelo usuário têm prioridade; apagar essa marcação restaura a proteção. Referências comunitárias permanecem diagnósticas.
 
 O callback recebe `onNextEpisode({automatic, reason: 'credits' | 'ended', approximate})`. Para a antecipação por intervalo, `reason` é `credits` e `approximate` é `true`; o texto na tela sempre informa que o horário é aproximado. O app usa `automatic` para registrar conclusão antes de trocar de episódio. Ações manuais retornam `automatic: false`.
 
@@ -27,14 +27,16 @@ Desativar a preferência mantém o botão manual “Pular abertura”. A contage
 `EpisodeSkipController` recebe um callback opcional, síncrono ou assíncrono:
 
 ```js
-getEpisodeMarkers({item, episode, duration, sourceFingerprint, signal})
-// => Promise<{status: 'matched', markers: {openingStart, openingEnd, creditsStart}, confidence, provenance}> | null
-// Compatibilidade síncrona: {marks: {...}, source?} também é aceita.
+getEpisodeMarkers({item, episode, duration, editionId, sourceFingerprint, signal})
+// => Promise<{status: 'matched', mediaId, season, episode,
+//     markers: {openingStart, openingEnd, creditsStart},
+//     confidence: 'edition-verified', provenance}> | null
+// O mesmo contrato vale para respostas síncronas. marks sem prova é rejeitado.
 ```
 
-O resolvedor confere identidade, episódio e duração antes de devolver a janela. O controlador só o consulta após metadados válidos, valida ordem e limites dos tempos e ignora erro ou ausência de dados. Uma Promise é consultada uma única vez por fonte/duração; reset cancela seu signal e respostas antigas não atravessam fonte, conta ou duração. Apenas `status: 'matched'` entrega marcadores ativos no contrato assíncrono.
+O resolvedor confere identidade, episódio, vínculo de edição/fonte e duração antes de devolver a janela. O controlador repete a verificação, incluindo `mediaId`, temporada e episódio, só após metadados válidos. Também valida ordem e limites dos tempos e ignora erro ou ausência de dados. Uma Promise é consultada uma única vez por fonte/duração; reset cancela seu signal e respostas antigas não atravessam fonte, conta ou duração. `matched` sem prova verificável não entrega marcadores ativos.
 
-`EpisodeMarkerReader`, em `web/series-markers/reader.js`, prefere `CloudLibrary.markerManifest()`; na ausência de um episódio compatível, verifica `/series-markers/open-data/<slug>/manifest.json` e depois os manifests locais originais. A espera pela nuvem é limitada a um segundo, e cada catálogo local tem prazo de quatro segundos. `EpisodeMarkerCatalog` aplica a identidade e a política de edição. Referências comunitárias têm tolerância de até três segundos no runtime e exibem **Tempos comunitários em teste** durante a oferta. Isso não comprova que dois arquivos têm cortes idênticos; conflitos e episódios sem duração de referência permanecem inativos. Marcações `verified` exigem prova adicional da edição/fonte. Os limites e as fontes estão em `web/series-markers/README.md`.
+`EpisodeMarkerReader`, em `web/series-markers/reader.js`, prefere `CloudLibrary.markerManifest()`; na ausência de um episódio verificado compatível, verifica `/series-markers/open-data/<slug>/manifest.json` e depois os manifests locais originais. A espera pela nuvem é limitada a um segundo, e cada catálogo local tem prazo de quatro segundos. Referências comunitárias ficam apenas em diagnósticos, sem oferta manual ou automática. Não há interseção entre fontes. Conflitos entre registros verificados da mesma edição bloqueiam o resultado e não podem ser ocultados por um fallback antigo. Os limites e as fontes estão em [verificação no player](marker-playback-verification.md).
 
 `web/series-markers/registry.js` centraliza as identidades pesquisadas e seus aliases exatos, usado tanto pelo importador de referências como pelo navegador. A nuvem não usa uma lista paralela de séries permitidas. Uma resposta parcial do banco não esconde um episódio local compatível: o leitor verifica o fallback com as mesmas regras, sem transformar uma referência comunitária em edição comprovada.
 
@@ -54,4 +56,4 @@ Marcações antigas v1 não tinham conta associada e não são migradas automati
 
 ## Verificação
 
-`node --test tests/episode-skip.test.mjs tests/series-playback.test.mjs tests/series-playback-preferences-view.test.mjs` cobre limites e persistência, conta/fonte/duração, ausência de abertura, janelas fornecidas e manuais, prioridade dos créditos, horário aproximado, as duas contagens de 5 segundos, pausa, buffering, cancelamento, entrada tardia na abertura, seek para trás, `ended` duplicado, troca de fonte e preferências em tempo real. O navegador não foi aberto nesta tarefa.
+`node --test tests/episode-skip.test.mjs tests/series-playback.test.mjs tests/series-playback-preferences-view.test.mjs` cobre limites e persistência, conta/fonte/duração, ausência de abertura, janelas fornecidas e manuais, prioridade dos créditos, horário aproximado, as duas contagens de 5 segundos, pausa, buffering, cancelamento, entrada tardia na abertura, seek para trás, `ended` duplicado, troca de fonte e preferências em tempo real. A revisão de 15/10/2026 também verificou DOM real em Chromium isolado com mídia e relógio simulados, incluindo cliques nos controles, detalhes sob demanda e ausência de saltos comunitários. Evidências e limites estão em [verificação do player](marker-playback-verification.md).

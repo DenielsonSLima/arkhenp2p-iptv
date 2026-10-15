@@ -94,3 +94,34 @@ test('a failed remembered series does not clear the catalog or prevent other his
   assert.equal(changes.length,1);assert.equal(changes[0].type,'movies');
   assert.deepEqual(changes[0].data.items.map(item=>item.id),['10','30']);
 });
+
+const sharedPage=(snapshotId,ids,{page=1,cursor=120,complete=false,changed=false}={})=>({
+  categories:[{id:'1',name:'Ação'}],items:ids.map(id=>({id,name:'Filme '+id,categoryId:'1'})),
+  pagination:{mode:'category',source:'supabase',snapshotId,snapshotChanged:changed,globalCategory:'__all',complete,byCategory:{'1':{loaded:false,nextPage:1,nextCursor:-1,hasMore:true},__all:{loaded:true,nextPage:page+1,nextCursor:cursor,hasMore:!complete}}}
+});
+
+test('shared keyset completion uses one global stream and preserves every page on terminal delivery',async()=>{
+  let data=sharedPage('revision-a',['10']);const calls=[];
+  const pager=new CatalogPager({getCatalog:()=>data,request:async path=>{
+    const query=new URL(path,'http://localhost').searchParams;calls.push(query);
+    return sharedPage('revision-a',['20'],{page:2,cursor:240,complete:true});
+  },onData:(_,incoming)=>{data=incoming;}});
+  assert.deepEqual(pageChoices(data).map(choice=>choice.id),['__all']);
+  const done=await pager.complete('movies');assert.equal(done.status,'complete');assert.equal(calls.length,1);
+  assert.equal(calls[0].get('snapshot'),'revision-a');assert.equal(calls[0].get('cursor'),'120');assert.equal(calls[0].get('paged'),'1');
+  assert.deepEqual(data.items.map(item=>item.id),['10','20']);assert.equal(data.catalogComplete,true);assert.deepEqual(pageChoices(data),[]);
+});
+
+test('a newly committed shared revision replaces old partial titles and ignores late responses from its predecessor',async()=>{
+  const old=sharedPage('revision-a',['removed'],{page:4,cursor:480});
+  const next=sharedPage('revision-b',['new'],{changed:true});
+  const replaced=mergeCatalogPage(old,next);assert.deepEqual(replaced.items.map(item=>item.id),['new']);
+  const stale=mergeCatalogPage(replaced,sharedPage('revision-a',['removed-again'],{page:5,cursor:600}));
+  assert.deepEqual(stale.items.map(item=>item.id),['new']);assert.equal(stale.pagination.snapshotId,'revision-b');
+});
+
+test('a snapshot rollover restarts completion at its new cursor without reporting a stalled page',async()=>{
+  let data=sharedPage('revision-a',['removed'],{page:4,cursor:480}),requests=0;
+  const pager=new CatalogPager({getCatalog:()=>data,request:async()=>++requests===1?sharedPage('revision-b',['new-1'],{changed:true}):sharedPage('revision-b',['new-2'],{page:2,cursor:240,complete:true}),onData:(_,incoming)=>{data=incoming;}});
+  assert.equal((await pager.complete('movies')).status,'complete');assert.equal(requests,2);assert.deepEqual(data.items.map(item=>item.id),['new-1','new-2']);
+});

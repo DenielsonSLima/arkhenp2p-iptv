@@ -32,11 +32,11 @@ test('watching requires exact real live IDs and never guesses a channel from a m
   assert.deepEqual(gameChannels(game(),[{item:channels[0],number:3}]),[channels[0]]);
 });
 
-test('home and live share one pending request and a fresh namespace cache',async()=>{
+test('repeated category renders share one pending request and a fresh namespace cache',async()=>{
   const pending=deferred(),f=fixture({request:()=>pending.promise});
-  const home=f.daily.start(),live=f.daily.start();assert.equal(home,live);await flush();
+  const initial=f.daily.start(),renderedAgain=f.daily.start();assert.equal(initial,renderedAgain);await flush();
   assert.equal(f.calls.length,1);assert.equal(f.calls[0].url,'/api/games?date=2026-10-14&timezone=America%2FMaceio&lang=pt');
-  pending.resolve(answer());await home;assert.equal(f.daily.state.status,'ready');
+  pending.resolve(answer());await initial;assert.equal(f.daily.state.status,'ready');
   f.daily.stop();await f.daily.start();assert.equal(f.calls.length,1);f.daily.stop();assert.equal(f.time.jobs.size,0);
 });
 

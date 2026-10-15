@@ -8,18 +8,21 @@ export const BUFFER_MODES = {
   stable: {label:'Mais estável',description:'Mantém mais vídeo disponível adiante.',maxBufferLength:60,maxMaxBufferLength:120,liveSyncDurationCount:6,lowLatencyMode:false},
   low: {label:'Baixa latência',description:'Prioriza menor distância da transmissão ao vivo.',maxBufferLength:15,maxMaxBufferLength:30,liveSyncDurationCount:3,lowLatencyMode:true}
 };
-export function fastLoadPolicies(){
+export function fastLoadPolicies(kind='vod'){
   const retry=()=>({maxNumRetry:1,retryDelayMs:500,maxRetryDelayMs:1000});
   return {
-    manifestLoadPolicy:{default:{maxTimeToFirstByteMs:4000,maxLoadTimeMs:8000,timeoutRetry:{maxNumRetry:0,retryDelayMs:0,maxRetryDelayMs:0},errorRetry:{maxNumRetry:0,retryDelayMs:0,maxRetryDelayMs:0}}},
+    // The initial live request resolves the authorized OTT session/catalog
+    // (bounded to 40s server-side) before fetching its manifest (10s).
+    // Playlist reloads and video fragments keep their separate shorter limits.
+    manifestLoadPolicy:{default:{maxTimeToFirstByteMs:kind==='live'?55000:4000,maxLoadTimeMs:kind==='live'?60000:8000,timeoutRetry:{maxNumRetry:0,retryDelayMs:0,maxRetryDelayMs:0},errorRetry:{maxNumRetry:0,retryDelayMs:0,maxRetryDelayMs:0}}},
     playlistLoadPolicy:{default:{maxTimeToFirstByteMs:4000,maxLoadTimeMs:8000,timeoutRetry:retry(),errorRetry:retry()}},
     fragLoadPolicy:{default:{maxTimeToFirstByteMs:6000,maxLoadTimeMs:15000,timeoutRetry:retry(),errorRetry:retry()}},
     startFragPrefetch:true,initialLiveManifestSize:1
   };
 }
-export function bufferConfig(mode='balanced') {
+export function bufferConfig(mode='balanced',kind='vod') {
   const selected=BUFFER_MODES[mode] || BUFFER_MODES.balanced;
-  return {...fastLoadPolicies(),maxBufferLength:selected.maxBufferLength,maxMaxBufferLength:selected.maxMaxBufferLength,liveSyncDurationCount:selected.liveSyncDurationCount,lowLatencyMode:selected.lowLatencyMode,maxBufferSize:48*1024*1024};
+  return {...fastLoadPolicies(kind),maxBufferLength:selected.maxBufferLength,maxMaxBufferLength:selected.maxMaxBufferLength,liveSyncDurationCount:selected.liveSyncDurationCount,lowLatencyMode:selected.lowLatencyMode,maxBufferSize:48*1024*1024};
 }
 export function fragmentBitrateBps(data) {
   if (data?.frag?.type && data.frag.type!=='main') return null;
@@ -88,7 +91,8 @@ export class PlayerTools {
     const current=this.current;
     this.subtitleLayout?.attach();
     this.listen(this.video,'playing',()=>{if(this.current!==current)return;current.started=true;current.buffering=false;this.updateMetrics();});
-    const waiting=()=>{if(this.current!==current||this.video.paused||!current.started||current.buffering||Date.now()<current.intentionalSeekUntil)return;current.buffering=true;current.stalls++;current.lastStall=Date.now();this.updateMetrics();};
+    this.listen(this.video,'timeupdate',()=>{if(this.current===current)this.observeRecoveryProgress();});
+    const waiting=()=>{if(this.current!==current||this.video.paused||!current.started||current.buffering||Date.now()<current.intentionalSeekUntil)return;current.healthyRecoverySince=null;current.buffering=true;current.stalls++;current.lastStall=Date.now();this.updateMetrics();};
     this.listen(this.video,'waiting',waiting);
     for(const event of ['loadedmetadata','resize','durationchange'])this.listen(this.video,event,()=>{this.renderMenus();this.updateMetrics();});
     this.listen(this.video,'pause',()=>this.updateMetrics());
@@ -223,7 +227,7 @@ export class PlayerTools {
     if(Math.abs(this.video.currentTime-position)>1){current.intentionalSeekUntil=Date.now()+4000;this.video.currentTime=position;this.options.toast('Perfil aplicado. A posição ao vivo foi ajustada.');}
     return true;
   }
-  configFor(kind){return {...bufferConfig(this.profiles[kind==='live'?'live':'vod']),backBufferLength:kind==='live'?30:60,startLevel:-1,abrMaxWithRealBitrate:true,preserveManualLevelOnError:false};}
+  configFor(kind){return {...bufferConfig(this.profiles[kind==='live'?'live':'vod'],kind),backBufferLength:kind==='live'?30:60,startLevel:-1,abrMaxWithRealBitrate:true,preserveManualLevelOnError:false};}
   setProfile(profile,key){
     if(!BUFFER_MODES[key]||(profile==='vod'&&key==='low'))return;
     this.profiles[profile]=key;try{localStorage.setItem('arkehn.playbackProfiles.v1',JSON.stringify(this.profiles));}catch{}
@@ -277,11 +281,29 @@ export class PlayerTools {
   }
   getErrorEvents(){return [...(this.current?.errorEvents || [])];}
   fail(){if(this.current){this.current.failed=true;this.updateMetrics();}}
+  observeRecoveryProgress(){
+    const current=this.current;if(!current||current.failed||(!current.networkRetries&&!current.mediaRetries))return;
+    const now=Date.now(),position=Number(this.video.currentTime);
+    if(!this.video.paused&&!this.video.ended&&!current.buffering&&position===current.recoveryPosition){
+      // Duplicate timeupdate samples for one decoded frame are not a stall.
+      // Do not advance the observation clock, so a real freeze still expires.
+      if(now-current.recoveryObservedAt>1500)current.healthyRecoverySince=null;
+      return;
+    }
+    const progressing=!this.video.paused&&!this.video.ended&&!current.buffering&&Number.isFinite(position)&&position>current.recoveryPosition&&now-current.recoveryObservedAt<=5000;
+    if(!progressing)current.healthyRecoverySince=null;
+    else if(current.healthyRecoverySince==null)current.healthyRecoverySince=now;
+    else if(now-current.healthyRecoverySince>=30000){current.networkRetries=0;current.mediaRetries=0;current.healthyRecoverySince=null;}
+    current.recoveryPosition=position;current.recoveryObservedAt=now;
+  }
   recoverError(data){
-    const current=this.current;if(!current?.hls||!data.fatal)return false;const hls=current.hls;
-    if(data.type==='networkError'&&current.started&&current.networkRetries<2){
+    const current=this.current;if(!current?.hls||current.failed||!data.fatal)return false;const hls=current.hls;
+    current.healthyRecoverySince=null;
+    if(data.type==='networkError'&&(current.started||hls.levels?.length)){
+      if(current.recoveryTimer)return true;
+      if(current.networkRetries>=2)return false;
       current.networkRetries++;this.$('#player-status').textContent=`Restabelecendo a transmissão… (${current.networkRetries}/2)`;
-      const timer=setTimeout(()=>{this.timers.delete(timer);if(this.current===current&&!current.failed)hls.startLoad();},current.networkRetries*900);this.timers.add(timer);return true;
+      const timer=setTimeout(()=>{this.timers.delete(timer);current.recoveryTimer=null;if(this.current===current&&!current.failed)hls.startLoad();},current.networkRetries*900);current.recoveryTimer=timer;this.timers.add(timer);return true;
     }
     if(data.type==='mediaError'&&current.mediaRetries<1){current.mediaRetries++;this.$('#player-status').textContent='Recuperando a reprodução…';hls.recoverMediaError();return true;}
     return false;

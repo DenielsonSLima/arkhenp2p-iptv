@@ -89,6 +89,26 @@ function controllerFixture(options = {}) {
   return {video, controller, attach: () => controller.attach({item: {kind: 'series', id: '100'}, episode: {id: '200'}, sourceFingerprint: '/api/play/series/200.mp4'})};
 }
 
+test('community records do not prompt calibration over the video; advanced local marking remains available',()=>{
+  let opened=0;
+  const f=controllerFixture({getEpisodeMarkers:()=>({status:'matched',markers:{creditsStart:550},confidence:'community-reference'}),onConfigureMarkers:()=>opened++});
+  f.attach();assert.equal(f.controller.openingButton.hidden,true);assert.equal(f.controller.configureMarkersButton.hidden,true);
+  assert.match(f.controller.catalogAvailability.textContent,/sem marcação conferida/);
+  assert.equal(opened,0);assert.equal(f.video.currentTime,0);assert.equal(f.controller.overlay.hidden,true);
+  f.video.currentTime=10;f.controller.mark('openingStart');f.video.currentTime=40;f.controller.mark('openingEnd');
+  assert.equal(f.controller.configureMarkersButton.hidden,true);assert.equal(f.controller.catalogAvailability.hidden,true);
+  f.video.currentTime=20;f.controller.update();assert.equal(f.controller.openingButton.hidden,false);f.controller.destroy();
+});
+
+test('incompatible runtimes and failed lookups explain the fallback without making timestamps eligible',async()=>{
+  const f=controllerFixture({getEpisodeMarkers:()=>({status:'edition-mismatch',markers:null}),onConfigureMarkers:()=>{}});f.attach();
+  assert.match(f.controller.catalogAvailability.textContent,/outra edição/);assert.equal(f.controller.skipOpening(),false);f.controller.destroy();
+  const offline=controllerFixture({getEpisodeMarkers:()=>Promise.reject(new Error('Offline')),onConfigureMarkers:()=>{}});offline.attach();
+  assert.match(offline.controller.catalogAvailability.textContent,/Buscando/);await Promise.resolve();await Promise.resolve();
+  assert.equal(offline.controller.configureMarkersButton.hidden,true);assert.match(offline.controller.catalogAvailability.textContent,/sem marcação conferida/);
+  assert.equal(offline.controller.skipOpening(),false);offline.controller.destroy();
+});
+
 test('controller requires a series episode, actual metadata and manual marks before exposing actions', () => {
   const {video, controller, attach} = controllerFixture();
   assert.equal(controller.panel.hidden, true);

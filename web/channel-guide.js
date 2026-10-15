@@ -1,4 +1,4 @@
-import { programWindow } from './program-guide.js';
+import { programWindow, retainCurrentProgramList } from './program-guide.js';
 
 const CACHE_MS = 60000;
 const text = value => String(value ?? '').trim();
@@ -33,6 +33,13 @@ export class ChannelGuide {
   }
   readGeneration() { return String(typeof this.connectionGeneration === 'function' ? this.connectionGeneration() : 0); }
   ensureGeneration() { if (this.readGeneration() !== this.generation) this.reset(); }
+  peek(id) {
+    this.ensureGeneration();
+    const cached = this.cache.get(`${this.generation}:${String(id)}`);
+    if (!cached) return null;
+    const programs = programWindow(cached.list);
+    return programs.current || cached.expiresAt > Date.now() && programs.next ? {list:cached.list} : null;
+  }
   observe(card, item) {
     if (!card || item?.kind !== 'live' || !/^\d{1,12}$/.test(String(item.id))) return;
     this.ensureGeneration(); this.prune();
@@ -79,7 +86,7 @@ export class ChannelGuide {
     try {
       const data = await this.api(`/api/epg?id=${encodeURIComponent(job.id)}`, {signal:job.controller.signal});
       if (!this.isCurrent(job)) return;
-      this.store(job.key, Array.isArray(data?.list) ? data.list : []);
+      this.store(job.key, retainCurrentProgramList(this.cache.get(job.key)?.list, data?.list));
     } catch (error) {
       if (this.isCurrent(job) && !job.controller.signal.aborted) this.store(job.key, this.cache.get(job.key)?.list || []);
     } finally {

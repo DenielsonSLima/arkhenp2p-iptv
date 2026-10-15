@@ -5,6 +5,16 @@ import {detailPlaybackProgress, renderDetailProgress} from '../web/detail-progre
 const movie = {kind:'movie', id:'42', name:'Filme', durationSeconds:7200};
 const history = (item, extra={}) => ({item, time:2712, duration:7290, ...extra});
 
+test('adult titles and previously adult history never reveal a saved position in details', () => {
+  assert.equal(detailPlaybackProgress({...movie,isAdult:true},history(movie)),null);
+  assert.equal(detailPlaybackProgress(movie,history({...movie,isAdult:true})),null);
+  assert.equal(detailPlaybackProgress(movie,history(movie,{isAdult:true})),null);
+  assert.equal(detailPlaybackProgress({...movie,categoryId:'private'},history(movie),{categories:[{id:'private',name:'Reservado',is_adult:true}]}),null);
+  assert.equal(detailPlaybackProgress({...movie,groupNames:['Adultos']},history(movie)),null);
+  const series={kind:'series',id:'s',seasons:[{number:1,episodes:[{id:'e',adult:true}]}]};
+  assert.equal(detailPlaybackProgress(series,history(series,{episode:{id:'e'}})),null);
+});
+
 test('detail progress uses the measured playback duration and exact saved position', () => {
   const entry = history(movie), before = structuredClone(entry);
   const progress = detailPlaybackProgress(movie, entry);

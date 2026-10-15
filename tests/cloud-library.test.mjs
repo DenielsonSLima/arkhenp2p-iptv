@@ -49,12 +49,110 @@ function transport(){
   return {tables,calls,channels,clients,writes,createClient,QueryClient,intercept:fn=>{interceptWrite=fn;},emit(table,row){for(const channel of channels)for(const listener of channel.listeners)if(listener.filter.table===table)listener.callback({eventType:'UPDATE',new:row,old:{}});}};
 }
 function fixture(t,options={}){
-  const sdk=transport(),time=clock(),updates=[],statuses=[],shared=[],handlers={};
+  const sdk=options.sdk||transport(),time=clock(),updates=[],statuses=[],shared=[],handlers={};
   sdk.tables.set('profiles',[A,B].map(id=>({id,provider:'wplay',provider_key:'provider-fixture',scope_hash:'entitlement-fixture',status:'active',access_expires_at:null,last_validated_at:new Date(NOW).toISOString()})));
   const pageTarget={addEventListener:(name,callback)=>{handlers[name]=callback;},removeEventListener:name=>{delete handlers[name];}};
   const library=new CloudLibrary({...time,pageTarget,loadSDK:async()=>sdk,onUpdate:value=>updates.push(value),onStatus:value=>statuses.push(value),onSharedUpdate:value=>shared.push(value),...options});
-  t.after(()=>library.dispose());return {library,sdk,time,updates,statuses,shared,handlers};
+  t.after(async()=>{const queryClient=library.queryClient;await queryClient?.cancelQueries();await library.dispose();queryClient?.clear();queryClient?.unmount();});return {library,sdk,time,updates,statuses,shared,handlers};
 }
+
+test('adult classification arriving before flush removes only protected progress from the queue and snapshot',async t=>{
+  const blocked=new Set(),f=fixture(t,{canRemember:value=>!blocked.has(value.id)});await f.library.connect(bootstrap());
+  await f.library.saveFavorite(item('1'));await f.library.saveProgress(progress('1'));await f.library.saveProgress(progress('2'));
+  blocked.add('1');await f.library.flushProgress();await flush();
+  assert.deepEqual(f.sdk.writes.filter(value=>value.table==='user_progress').map(value=>value.row.item_key),['movie:2']);
+  assert.deepEqual(f.library.snapshot().history.map(value=>value.item.id),['2']);assert.deepEqual(f.library.snapshot().favorites.map(value=>value.id),['1']);
+  assert.equal(f.library.progressQueue.size,0);assert.equal(f.library.outbox.entries().length,0);assert.equal(f.time.jobs.size,0);
+});
+
+test('adult SQL refusal is terminal, removes optimistic data and notifies once without retrying normal records',async t=>{
+  const blocked=[],f=fixture(t,{onHistoryBlocked:value=>blocked.push(value.id)});await f.library.connect(bootstrap());
+  await f.library.saveFavorite(item('1'));await f.library.saveProgress(progress('2'),{force:true});
+  f.sdk.intercept(async(table,value)=>table==='user_progress'&&value.item_key==='movie:1'?{data:null,error:{code:'P0001',message:'ARKHEN_ADULT_PROGRESS_DISABLED'}}:null);
+  assert.equal(await f.library.saveProgress(progress('1'),{force:true}),true);await flush();
+  assert.deepEqual(blocked,['1']);assert.equal(f.library.progressQueue.size,0);assert.equal(f.library.outbox.entries().length,0);assert.equal(f.time.jobs.size,0);
+  assert.equal(await f.library.saveProgress(progress('1'),{force:true}),false);
+  const writes=f.sdk.writes.length;await f.time.advance(60000);assert.equal(f.sdk.writes.length,writes);
+  assert.deepEqual(f.library.snapshot().history.map(value=>value.item.id),['2']);assert.deepEqual(f.library.snapshot().favorites.map(value=>value.id),['1']);
+  const cached=f.library.queryClient.getQueryCache().getAll().find(query=>query.queryKey[4]==='user_progress').state.data;
+  assert.deepEqual(cached.map(value=>value.item_key),['movie:2']);
+});
+
+test('a successful in-flight response cannot restore progress reclassified as adult while the request waited',async t=>{
+  const blocked=new Set(),pending=deferred(),f=fixture(t,{canRemember:value=>!blocked.has(value.id)});await f.library.connect(bootstrap());
+  await f.library.saveFavorite(item('1'));await f.library.saveProgress(progress('2'),{force:true});
+  f.sdk.intercept(async(table,value)=>table==='user_progress'&&value.item_key==='movie:1'?pending.promise:null);
+  const saving=f.library.saveProgress(progress('1'),{force:true});await flush();assert.equal(f.sdk.writes.at(-1).row.item_key,'movie:1');
+  blocked.add('1');f.library.purgeHistory();const updates=f.updates.length;pending.resolve(null);assert.equal(await saving,true);await flush();
+  await f.library.load({force:true});await flush();
+  for(const snapshot of f.updates.slice(updates))assert.equal(snapshot.progressRecords.some(value=>value.item_key==='movie:1'),false);
+  assert.deepEqual(f.library.snapshot().history.map(value=>value.item.id),['2']);assert.deepEqual(f.library.snapshot().favorites.map(value=>value.id),['1']);
+  for(const query of f.library.queryClient.getQueryCache().getAll().filter(query=>query.queryKey[4]==='user_progress'))assert.equal(query.state.data.some(value=>value.item_key==='movie:1'),false);
+  assert.equal(f.library.outbox.entries().length,0);assert.equal(f.time.jobs.size,0);
+});
+
+test('an in-flight network failure after adult classification cannot requeue or retry private progress',async t=>{
+  const blocked=new Set(),pending=deferred(),f=fixture(t,{canRemember:value=>!blocked.has(value.id)});await f.library.connect(bootstrap());
+  f.sdk.intercept(async()=>pending.promise);const saving=f.library.saveProgress(progress('1'),{force:true});await flush();
+  blocked.add('1');pending.resolve({data:null,error:{message:'offline'}});assert.equal(await saving,true);await flush();
+  assert.equal(f.library.progressQueue.size,0);assert.equal(f.library.outbox.entries().length,0);assert.equal(f.time.jobs.size,0);
+  assert.deepEqual(f.library.snapshot().history,[]);const writes=f.sdk.writes.length;await f.time.advance(60000);assert.equal(f.sdk.writes.length,writes);
+});
+
+test('a late adult refusal from the previous account cannot block the same ID in the next account',async t=>{
+  const callbacks=[],pending=deferred(),f=fixture(t,{onHistoryBlocked:value=>callbacks.push(value.id)});await f.library.connect(bootstrap());
+  f.sdk.intercept(async(table,value)=>value.user_id===A?pending.promise:null);
+  const saving=f.library.saveProgress(progress('1'),{force:true});await flush();await f.library.connect(bootstrap(B));
+  pending.resolve({data:null,error:{code:'P0001',message:'ARKHEN_ADULT_PROGRESS_DISABLED'}});await saving;await flush();
+  assert.deepEqual(callbacks,[]);assert.equal(f.library.scope.userId,B);assert.equal(await f.library.saveProgress(progress('1'),{force:true}),true);
+  assert.equal(f.library.snapshot().history[0].item.id,'1');assert.equal(f.library.snapshot().history[0].libraryId,`library-${B}`);
+});
+
+test('a rejected mixed keepalive batch identifies adult progress without losing its safe companion',async t=>{
+  const callbacks=[],requests=[],f=fixture(t,{onHistoryBlocked:value=>callbacks.push(value.id),fetch:async(url,options)=>{requests.push({url,options});return {ok:false,json:async()=>({code:'P0001',message:'ARKHEN_ADULT_PROGRESS_DISABLED'})};}});
+  await f.library.connect(bootstrap());
+  f.sdk.intercept(async(table,value)=>table==='user_progress'&&value.item_key==='movie:1'?{data:null,error:{code:'P0001',message:'ARKHEN_ADULT_PROGRESS_DISABLED'}}:null);
+  await f.library.saveProgress(progress('1'));await f.library.saveProgress(progress('2'));
+  assert.equal(await f.library.flushProgress({keepalive:true}),true);await flush();
+  assert.equal(requests.length,1);assert.equal(JSON.parse(requests[0].options.body).length,2);assert.deepEqual(callbacks,['1']);
+  assert.deepEqual(f.library.snapshot().history.map(value=>value.item.id),['2']);assert.equal(f.library.outbox.entries().length,0);assert.equal(f.library.progressQueue.size,0);assert.equal(f.time.jobs.size,0);
+});
+
+test('hydration and Realtime do not reintroduce adult progress or remove explicit favorites',async t=>{
+  const blocked=new Set(['3']),f=fixture(t,{canRemember:value=>!blocked.has(value.id)});
+  const entries=[progress('1'),{...progress('2'),isAdult:true},progress('3'),progress('4',{id:'ep',adult:true})];
+  f.sdk.tables.set('user_progress',entries.map(entry=>({user_id:A,provider:'wplay',item_key:`${entry.item.kind}:${entry.item.id}`,episode_id:entry.episode?.id||'',entry,updated_at:new Date(NOW).toISOString(),deleted_at:null})));
+  f.sdk.tables.set('user_favorites',[row(item('3'))]);await f.library.connect(bootstrap());
+  const favoritesMap=new Map(),historyMap=new Map([['movie:3',progress('3')]]),purged=[];
+  f.library.hydrate({favoritesMap,historyMap,episodeProgress:{purge:value=>purged.push(value.id),read:()=>null,save:()=>assert.fail('No adult episode may hydrate.')}});
+  assert.deepEqual([...historyMap.keys()],['movie:1']);assert.deepEqual([...favoritesMap.keys()],['movie:3']);assert.deepEqual(purged,['3']);
+  f.sdk.emit('user_progress',f.sdk.tables.get('user_progress')[1]);await flush();f.library.hydrate({historyMap});
+  assert.deepEqual([...historyMap.keys()],['movie:1']);assert.deepEqual(f.library.snapshot().progressRecords.map(value=>value.item_key),['movie:1']);
+});
+
+test('one small global marker revision invalidates all marker caches without subscribing to individual editions',async t=>{
+  const f=fixture(t);await f.library.connect(bootstrap());
+  const listeners=f.sdk.channels.at(-1).listeners.map(listener=>listener.filter);
+  assert.equal(listeners.some(filter=>filter.table==='episode_skip_markers'),false);
+  assert.ok(listeners.some(filter=>filter.table==='marker_cache_versions'&&filter.filter==='name=eq.global'));
+  for(const table of ['episode_skip_markers','series_marker_identities','series_marker_coverage'])f.library.queryClient.setQueryData(['arkhen-cloud','https://fixture.supabase.co','wplay',A,table,'provider-fixture','entitlement-fixture','fixture'],[]);
+  f.sdk.emit('marker_cache_versions',{name:'global',generation:'one-run'});await flush();
+  for(const cached of f.library.queryClient.getQueryCache().getAll().filter(query=>['episode_skip_markers','series_marker_identities','series_marker_coverage'].includes(query.queryKey[4])))assert.equal(cached.state.isInvalidated,true);
+  assert.equal(f.shared.at(-1).table,'episode_skip_markers');
+});
+
+test('small committed generation notices invalidate only their type and ignore another entitlement partition',async t=>{
+  const f=fixture(t);await f.library.connect(bootstrap());
+  const filters=f.sdk.channels.at(-1).listeners.map(listener=>listener.filter);assert.ok(filters.some(filter=>filter.table==='catalog_visible_generations'&&filter.filter==='provider_key=eq.provider-fixture'));
+  for(const table of ['provider_catalog_cache','catalog_media','catalog_categories','catalog_artwork_refs'])assert.equal(filters.some(filter=>filter.table===table),false,'Large catalog metadata must not be subscribed over Realtime.');
+  const key=type=>['arkhen-cloud','https://fixture.supabase.co','wplay',A,'provider_catalog_cache','provider-fixture','entitlement-fixture',type];
+  for(const type of ['live','movies','series'])f.library.queryClient.setQueryData(key(type),[]);
+  const event={provider_key:'provider-fixture',scope_hash:'entitlement-fixture',media_type:'series',updated_at:'2026-10-15T15:00:00Z'};
+  f.sdk.emit('catalog_visible_generations',{...event,scope_hash:'other-partition'});await flush();assert.equal(f.shared.length,0);
+  f.sdk.emit('catalog_visible_generations',event);await flush();assert.deepEqual(f.shared.at(-1),{table:'provider_catalog_cache',type:'series',revision:event.updated_at});
+  for(const query of f.library.queryClient.getQueryCache().getAll().filter(query=>query.queryKey[4]==='provider_catalog_cache'))assert.equal(query.state.isInvalidated,query.queryKey.at(-1)==='series');
+  const count=f.shared.length,queries=f.library.queryClient;await queries.cancelQueries();await f.library.logout();queries.clear();f.sdk.emit('catalog_visible_generations',event);await flush();assert.equal(f.shared.length,count);
+});
 
 test('invalid bootstrap never loads an SDK, accepts only publishable keys and validates the authenticated user',async t=>{
   let loads=0;const f=fixture(t,{loadSDK:async()=>{loads++;throw new Error('Do not load');}});
@@ -93,6 +191,22 @@ test('rolling back one failed favorite cannot remove another concurrently saved 
   assert.equal(f.statuses.some(status=>status.message.includes('private-server-error')),false);
 });
 
+test('a failed favorite retries its durable outbox without needing a browser online event',async t=>{
+  const f=fixture(t);await f.library.connect(bootstrap());let failed=true;
+  f.sdk.intercept(async()=>failed?{data:null,error:{message:'Offline'}}:null);
+  assert.equal(await f.library.saveFavorite(item('4')),false);assert.equal(f.library.outbox.entries().length,1);
+  failed=false;await f.time.advance(5000);await flush();
+  assert.equal(f.sdk.tables.get('user_favorites')[0].item.id,'4');assert.equal(f.library.outbox.entries().length,0);assert.equal(f.library.getStatus().state,'synced');assert.equal(f.time.jobs.size,0);
+});
+
+test('library status stays syncing until pending writes and queued progress are acknowledged',async t=>{
+  const f=fixture(t),pending=deferred();await f.library.connect(bootstrap());f.sdk.intercept(async()=>pending.promise);
+  const saving=f.library.saveFavorite(item('4'));await flush();assert.equal(f.library.getStatus().state,'syncing');
+  await f.library.load({force:true});assert.equal(f.library.getStatus().state,'syncing','A successful read cannot acknowledge a pending write.');
+  pending.resolve(null);await saving;assert.equal(f.library.getStatus().state,'synced');f.sdk.intercept(null);
+  await f.library.saveProgress(progress());assert.equal(f.library.getStatus().state,'syncing');await f.time.advance(5000);await flush();assert.equal(f.library.getStatus().state,'synced');
+});
+
 test('progress coalesces for five seconds, preserves exact episode IDs and force flushes without waiting',async t=>{
   const f=fixture(t);await f.library.connect(bootstrap());
   const episode={id:'episode-4',season:6,number:4,title:'S06E004'};
@@ -119,6 +233,26 @@ test('Realtime invalidation observes favorite tombstones and old callbacks becom
   assert.deepEqual(f.sdk.calls.find(call=>call.operation==='signOut').options,{scope:'local'});
 });
 
+test('two independent browser sessions share favorites, deletions and exact episode progress through Realtime',async t=>{
+  const first=fixture(t),second=fixture(t,{sdk:first.sdk});await first.library.connect(bootstrap());
+  await first.library.saveFavorite(item('8'));const episode={id:'episode-4',season:5,number:1,title:'S05E01'};
+  await first.library.saveProgress({...progress('9',episode),time:420,duration:3600},{force:true});
+  await second.library.connect(bootstrap());
+  const favoritesMap=new Map(),historyMap=new Map(),episodes=[];
+  second.library.hydrate({favoritesMap,historyMap,episodeProgress:{read:()=>null,save:entry=>episodes.push(entry)}});
+  assert.equal(favoritesMap.get('movie:8').name,'Filme 8');assert.equal(historyMap.get('series:9').time,420);assert.equal(episodes[0].episode.id,'episode-4');
+  await first.library.saveFavorite(item('8'),false);first.sdk.emit('user_favorites',first.sdk.tables.get('user_favorites')[0]);await flush();
+  second.library.hydrate({favoritesMap,historyMap});assert.equal(favoritesMap.size,0);
+  await first.library.saveProgress({...progress('9',episode),time:600,duration:3600},{force:true});first.sdk.emit('user_progress',first.sdk.tables.get('user_progress')[0]);await flush();
+  second.library.hydrate({historyMap});assert.equal(historyMap.get('series:9').time,600);
+});
+
+test('Realtime rejoin refreshes missed changes and clears a recovered offline status',async t=>{
+  const f=fixture(t);await f.library.connect(bootstrap());const channel=f.sdk.channels[0];channel.status('CHANNEL_ERROR');assert.equal(f.library.getStatus().state,'offline');
+  f.sdk.tables.set('user_favorites',[row(item('7'))]);channel.status('SUBSCRIBED');await flush();await flush();
+  assert.equal(f.library.snapshot().favorites[0].id,'7');assert.equal(f.library.getStatus().state,'synced');
+});
+
 test('switching accounts clears old cache, queues and subscriptions before reading the next account',async t=>{
   const f=fixture(t);f.sdk.tables.set('user_favorites',[row(item()),row(item('2'),{user_id:B})]);await f.library.connect(bootstrap());const old=f.library.queryClient;
   await f.library.saveProgress(progress());await f.library.connect(bootstrap(B));assert.equal(old.getQueryCache().getAll().length,0);assert.equal(f.time.jobs.size,0);
@@ -135,6 +269,15 @@ test('shared cache checks complete snapshots, expiry and entitlement filters and
   f.sdk.tables.set('episode_skip_markers',[marker,{...marker,edition_id:'wrong-series',imdb_id:'tt9999999'}]);
   const manifest=await f.library.markerManifest('game-of-thrones');assert.equal(manifest.records.length,1);assert.equal(manifest.records[0].markers.creditsStart,3442.6);assert.equal(manifest.records[0].verification.status,'community-reference');assert.equal(manifest.records[0].verification.blockEarlyNext,true);assert.equal(manifest.records[0].edition.sourceFingerprint,'a'.repeat(16));
   const query=f.sdk.calls.find(call=>call.table==='provider_games_cache');assert.deepEqual(query.filters.slice(0,2),[['provider_key','provider-fixture'],['scope_hash','entitlement-fixture']]);
+});
+
+test('catalog identities resolve series outside the original registry and expose a cached manual IntroDB reference without a provider call',async t=>{
+  const f=fixture(t);await f.library.connect(bootstrap());const value={id:'55',kind:'series',name:'Uma série nova - 2020'},imdb='tt1234567';
+  f.sdk.tables.set('series_marker_identities',[{provider_key:'provider-fixture',scope_hash:'entitlement-fixture',media_id:'55',catalog_name:value.name,status:'resolved',imdb_id:imdb,series_slug:'imdb-'+imdb,tmdb_id:null}]);
+  f.sdk.tables.set('series_marker_coverage',[{imdb_id:imdb,season:1,episode:1,status:'unverified',evidence:{introdb:{intro:{start_ms:6000,end_ms:60000}}}}]);
+  const identity=await f.library.markerSeriesIdentity(value);assert.equal(identity.imdbId,imdb);assert.equal(identity.slug,'imdb-'+imdb);
+  const manifest=await f.library.markerManifest(identity.slug,{season:1,episode:1});assert.equal(manifest.records.length,0);assert.equal(manifest.episodeEvidence.evidence.introdb.intro.end_ms,60000);
+  const query=f.sdk.calls.find(call=>call.table==='series_marker_identities');assert.deepEqual(query.filters.slice(0,3),[['provider_key','provider-fixture'],['scope_hash','entitlement-fixture'],['media_id','55']]);
 });
 
 test('hydration applies remote deletions, preserves newer local progress and restores each exact episode',async t=>{
@@ -194,6 +337,18 @@ test('a persisted rotated refresh session takes precedence over an older backend
   const clients=f.sdk.clients.length;await f.library.connect(bootstrap());assert.equal(f.sdk.clients.length,clients);assert.equal(f.sdk.calls.some(call=>call.operation==='signOut'),false);
 });
 
+test('a rejected Auth session requests recovery without revocation and a recovered bootstrap overrides stale browser credentials',async t=>{
+  const diagnostics=[],f=fixture(t,{onDiagnostic:event=>diagnostics.push(event)}),create=f.sdk.createClient,captured=[];let verifies=0,sessionReads=0;
+  f.sdk.createClient=(...args)=>{const client=create(...args),set=client.auth.setSession;client.auth.getSession=async()=>{sessionReads++;return {data:{session:{access_token:'stale-access',refresh_token:'stale-refresh',user:{id:A}}},error:null};};client.auth.setSession=async value=>{captured.push(value);return set(value);};client.auth.getUser=async()=>++verifies===1?{data:{user:null},error:{status:401,message:'private-token-never-log'}}:{data:{user:{id:A}},error:null};return client;};
+  assert.equal(await f.library.connect(bootstrap()),null);assert.equal(f.library.getConnectionFailure().authRecoveryRequired,true);assert.equal(f.library.getConnectionFailure().status,401);assert.equal(f.sdk.calls.some(call=>call.operation==='signOut'),false);
+  const recovered=bootstrap(A,{session:{access_token:'fresh-access',refresh_token:'fresh-refresh'}});assert.equal((await f.library.connect(recovered,{preferBootstrap:true})).userId,A);assert.equal(sessionReads,1);assert.equal(captured[1].refresh_token,'fresh-refresh');assert.equal(f.library.getConnectionFailure(),null);assert.doesNotMatch(JSON.stringify(diagnostics),/private-token|stale-|fresh-/);
+});
+
+test('UI subscriber and status callback failures cannot revoke or fail a valid Auth connection',async t=>{
+  const diagnostics=[],f=fixture(t,{onStatus:()=>{throw Object.assign(new Error('private-ui-state'),{status:401});},onDiagnostic:event=>diagnostics.push(event)});f.library.subscribe(()=>{throw Object.assign(new Error('private-ui-state'),{status:401});});
+  assert.equal((await f.library.connect(bootstrap())).userId,A);assert.equal(f.library.ready,true);assert.equal(f.library.getConnectionFailure(),null);assert.equal(f.sdk.calls.some(call=>call.operation==='signOut'),false);assert.ok(diagnostics.some(event=>event.code==='CLOUD_UI_CALLBACK_FAILED'));assert.doesNotMatch(JSON.stringify(diagnostics),/private-ui-state|access-|refresh-/);
+});
+
 test('offline favorite tombstones persist without auth secrets, survive reload and never cross accounts',async t=>{
   const saved=new Map(),storage={getItem:key=>saved.get(key)||null,setItem:(key,value)=>saved.set(key,value)},first=fixture(t,{storage});
   first.sdk.tables.set('user_favorites',[row(item())]);await first.library.connect(bootstrap());first.sdk.intercept(async()=>({data:null,error:{message:'Offline'}}));
@@ -213,6 +368,13 @@ test('importing local data needs the exact account scope and cannot resurrect a 
   const favoritesMap=new Map([['movie:1',{...item(),savedAt:NOW-1000}],['movie:2',{...item('2'),savedAt:NOW-1000}]]);
   assert.equal(await f.library.syncLocal({libraryId:'wrong-account',favoritesMap}),false);assert.equal(f.sdk.writes.length,0);
   assert.equal(await f.library.syncLocal({libraryId:`library-${A}`,favoritesMap}),true);assert.deepEqual(f.sdk.writes.map(write=>write.row.item_key),['movie:2']);
+});
+
+test('local import picks the newest progress once when history and episode storage contain the same episode',async t=>{
+  const f=fixture(t);await f.library.connect(bootstrap());const episode={id:'ep4',season:5,number:1,title:'Episode'},latest={...progress('9',episode),time:600,duration:3600,updated:NOW+1000};
+  const historyMap=new Map([['series:9',latest]]),episodeEntries=[{...latest,time:120,updated:NOW-1000}];
+  await f.library.syncLocal({libraryId:`library-${A}`,historyMap,episodeEntries});await flush();
+  assert.equal(f.sdk.writes.filter(value=>value.table==='user_progress').length,1);assert.equal(f.sdk.writes.at(-1).row.entry.time,600);
 });
 
 test('an account disabled through Realtime stops cloud reads and clears its in-memory cache',async t=>{

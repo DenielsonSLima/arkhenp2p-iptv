@@ -1,10 +1,12 @@
 export const SETTINGS_SECTIONS = [
   {id:'general',label:'Configurações',icon:'settings',description:'Tudo pronto para a sua próxima sessão.'},
   {id:'profile',label:'Perfil',icon:'user',description:'Seu acesso e os detalhes da sua conta.'},
+  {id:'parental',label:'Controle parental',icon:'user',description:'Escolha quando liberar conteúdo adulto nesta sessão.'},
   {id:'live',label:'TV ao vivo',icon:'tv',description:'Organize seus canais, categorias e favoritos.'},
   {id:'movies',label:'Vídeos',icon:'film',description:'Escolha os filmes que aparecem no seu catálogo.'},
   {id:'series',label:'Séries',icon:'series',description:'Suas séries organizadas do seu jeito.'},
   {id:'series-playback',label:'Reprodução de séries',icon:'play',description:'Aberturas marcadas e o próximo episódio, no seu ritmo.'},
+  {id:'marker-sync',label:'Sincronização de aberturas',icon:'refresh',description:'Acompanhe as marcações compartilhadas do SkipDB e do IntroDB.'},
   {id:'playback',label:'Reprodutor',icon:'play',description:'Ajuste a experiência para assistir com conforto.'},
   {id:'audio',label:'Áudio',icon:'audio',description:'Suavize os picos e as diferenças de volume entre canais.'},
   {id:'startup',label:'Inicialização',icon:'power',description:'Decida onde a sua experiência começa.'}
@@ -70,6 +72,6 @@ export function renderStartup(container,{value,onChange}){
 }
 export function renderGeneral(container,options){
   const intro=node('section','settings-welcome');intro.append(node('span','settings-kicker','À SUA MANEIRA'),node('h3','','Uma experiência que combina com você.'),node('p','settings-note','Personalize seu catálogo, ajuste a reprodução e acompanhe sua conexão.'));container.append(intro);
-  const shortcuts=node('div','settings-shortcuts');for(const id of ['profile','live','movies','series','series-playback','playback','audio','startup']){const section=SETTINGS_SECTIONS.find(item=>item.id===id),shortcut=action('',()=>options.open(id),'settings-shortcut'),copy=node('span');copy.append(node('strong','',section.label),node('small','',section.description));shortcut.append(settingsIcon(section.icon),copy,settingsIcon('arrow'));shortcuts.append(shortcut);}container.append(shortcuts);
+  const shortcuts=node('div','settings-shortcuts');for(const id of ['profile','live','movies','series','series-playback','marker-sync','playback','audio','startup']){const section=SETTINGS_SECTIONS.find(item=>item.id===id),shortcut=action('',()=>options.open(id),'settings-shortcut'),copy=node('span');copy.append(node('strong','',section.label),node('small','',section.description));shortcut.append(settingsIcon(section.icon),copy,settingsIcon('arrow'));shortcuts.append(shortcut);}container.append(shortcuts);
   const maintenance=node('section','settings-maintenance');maintenance.append(node('h3','','Sua conexão'),node('p','settings-note','Confira o serviço ou atualize as opções disponíveis no seu catálogo.'));const actions=node('div','settings-actions');actions.append(action('Testar conexão',()=>options.open('connection')),action('Atualizar catálogo',()=>options.refresh?.()));maintenance.append(actions);container.append(maintenance);
 }

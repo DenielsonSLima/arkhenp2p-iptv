@@ -1,0 +1,83 @@
+{
+  "retrievedAt": "2026-10-15T18:20:30.304Z",
+  "identities": [
+    {
+      "url": "https://skipdb.tv/api/titles/search?q=tt0388629",
+      "status": 200,
+      "results": [
+        {
+          "tmdbId": 37854,
+          "imdbId": "tt0388629",
+          "mediaType": "series",
+          "name": "One Piece",
+          "year": 1999
+        }
+      ]
+    },
+    {
+      "url": "https://skipdb.tv/api/titles/search?q=tt11737520",
+      "status": 200,
+      "results": [
+        {
+          "tmdbId": 111110,
+          "imdbId": "tt11737520",
+          "mediaType": "series",
+          "name": "ONE PIECE",
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "url": "https://skipdb.tv/api/titles/search?q=tt7631058",
+      "status": 200,
+      "results": [
+        {
+          "tmdbId": 84773,
+          "imdbId": "tt7631058",
+          "mediaType": "series",
+          "name": "The Lord of the Rings: The Rings of Power",
+          "year": 2022
+        }
+      ]
+    },
+    {
+      "url": "https://skipdb.tv/api/titles/search?q=tt0120737",
+      "status": 200,
+      "results": [
+        {
+          "tmdbId": 120,
+          "imdbId": "tt0120737",
+          "mediaType": "movie",
+          "name": "The Lord of the Rings: The Fellowship of the Ring",
+          "year": 2001
+        }
+      ]
+    },
+    {
+      "url": "https://skipdb.tv/api/titles/search?q=tt0167261",
+      "status": 200,
+      "results": [
+        {
+          "tmdbId": 121,
+          "imdbId": "tt0167261",
+          "mediaType": "movie",
+          "name": "The Lord of the Rings: The Two Towers",
+          "year": 2002
+        }
+      ]
+    },
+    {
+      "url": "https://skipdb.tv/api/titles/search?q=tt0167260",
+      "status": 200,
+      "results": [
+        {
+          "tmdbId": 122,
+          "imdbId": "tt0167260",
+          "mediaType": "movie",
+          "name": "The Lord of the Rings: The Return of the King",
+          "year": 2003
+        }
+      ]
+    }
+  ]
+}

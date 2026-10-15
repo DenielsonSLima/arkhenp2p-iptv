@@ -34,6 +34,15 @@ test('source identities separate provider origins and preserve noncredential que
   assert.notEqual(first,cache.queue('https://images.example/logo?id=1&t=private',{scope:'https://other-provider.example'}));await cache.idle();
 });
 
+test('cloud logo aliases download only their exact public Supabase object and persist hashes locally',async t=>{
+  const calls=[],{cache,directory}=await fixture(t,{request:async(url,options)=>{calls.push({url,options});return response();}}),key='c'.repeat(64);
+  const url=`https://wnicimkmzswksaqdtgdv.supabase.co/storage/v1/object/public/arkhen-catalog-artwork/${'a'.repeat(64)}/${'b'.repeat(64)}/${key}`;
+  assert.equal(cache.queueShared(key,url),'/api/sports-image/'+key);assert.deepEqual((await cache.read(key)).bytes,png);await cache.idle();
+  assert.equal(calls[0].url,url);assert.equal(calls[0].options.allowPrivate,false);assert.deepEqual(calls[0].options.headers,{});
+  for(const bad of [url+'?token=private',url.replace(key,'d'.repeat(64)),url.replace('wnicimkmzswksaqdtgdv.supabase.co','127.0.0.1'),url.replace('/public/','/authenticated/')])assert.equal(cache.queueShared(key,bad),'');
+  assert.doesNotMatch(await readFile(join(directory,key+'.json'),'utf8'),/https:|supabase|token|headers/);
+});
+
 test('download concurrency is bounded and matching content is stored once',async t=>{
   let active=0,peak=0,release;const gate=new Promise(resolve=>{release=resolve;});
   const {directory,cache}=await fixture(t,{concurrency:2,request:async()=>{active++;peak=Math.max(peak,active);await gate;active--;return response();}});

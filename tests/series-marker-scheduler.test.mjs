@@ -26,6 +26,11 @@ test('a restarted scheduler waits for its cancelled import before starting a fre
   const old=f.scheduler.start();await Promise.resolve();f.scheduler.stop();const next=f.scheduler.start();release();await old;await next;
   assert.equal(calls,2);assert.deepEqual(f.events,[{state:'ready',editions:2}]);assert.equal(f.timers.size,1);f.scheduler.stop();
 });
-test('an unconfigured cloud never downloads data or starts a background timer',async()=>{
-  const f=fixture(()=>assert.fail('No cloud configured'));f.scheduler.cloud.enabled=false;await f.scheduler.start();assert.equal(f.timers.size,0);f.scheduler.stop();
+test('an unconfigured cloud avoids downloads and retries after configuration is supplied',async()=>{
+  let configured=false,calls=0,refreshes=0;
+  const f=fixture(async()=>{calls++;return {activeEditions:2};});f.scheduler.cloud.enabled=false;
+  f.scheduler.cloud.refreshConfiguration=async()=>{refreshes++;f.scheduler.cloud.enabled=configured;};
+  await f.scheduler.start();assert.equal(calls,0);assert.equal(refreshes,1);assert.equal([...f.timers.values()][0].delay,900000);
+  configured=true;await f.scheduler.tick();assert.equal(calls,1);assert.equal(refreshes,2);assert.deepEqual(f.events,[{state:'ready',editions:2}]);
+  assert.equal([...f.timers.values()][0].delay,86400000);f.scheduler.stop();assert.equal(f.timers.size,0);
 });

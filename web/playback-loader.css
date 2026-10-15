@@ -1,0 +1,165 @@
+/* A live animation: media preparation continues underneath, without an intro file. */
+.immersive-stage .ip-intro {
+  overflow: hidden;
+  padding: max(70px, env(safe-area-inset-top)) 24px max(55px, env(safe-area-inset-bottom));
+  background: #040507;
+  opacity: 1;
+  transition: opacity .35s ease;
+  contain: layout paint;
+}
+.immersive-stage .ip-intro[data-state=ready] { opacity: 0; }
+.ip-intro-atmosphere { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.ip-intro-atmosphere::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 38%, #899bb01e, transparent 47%), radial-gradient(ellipse at 50% 120%, #697d9525, transparent 62%);
+  animation: arkhen-atmosphere 7s ease-in-out infinite alternate;
+}
+.ip-intro-atmosphere::after {
+  content: ''; position: absolute; width: 140%; height: 52%; left: -20%; top: 52%;
+  border-top: 1px solid #cedbeb12; border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 0, #b8c9de0b, transparent 58%);
+  transform: rotate(-12deg); animation: arkhen-horizon 9s ease-in-out infinite alternate;
+}
+.ip-intro-light {
+  position: absolute; left: 50%; top: 0; width: 1px; height: 150%;
+  background: linear-gradient(transparent 6%, #d0deef14 42%, #e9f2ff24 51%, transparent 81%);
+  transform: translate(-280px, -30%) rotate(32deg); animation: arkhen-light 8s ease-in-out infinite alternate;
+}
+.ip-intro-light:nth-child(2) { margin-left: 360px; opacity: .45; animation-delay: -3s; }
+.ip-intro-light:nth-child(3) { margin-left: -380px; opacity: .3; animation-delay: -6s; }
+.ip-intro-content { position: relative; width: min(400px, 100%); text-align: center; }
+.immersive-stage .ip-intro .ip-loading-brand { margin-bottom: 28px; gap: 0; }
+.ip-intro-emblem {
+  position: relative; width: clamp(96px, 12vw, 150px); aspect-ratio: 86 / 93;
+  margin-bottom: 27px; animation: arkhen-emblem-enter 1.3s cubic-bezier(.16, 1, .3, 1) both;
+}
+.ip-intro-emblem::before, .ip-intro-emblem::after {
+  content: ''; position: absolute; inset: -32%; border: 1px solid #c8d8ef10; border-radius: 50%;
+  box-shadow: 0 0 70px #adc5e009, inset 0 0 60px #adc5e009;
+  animation: arkhen-halo 5.5s ease-in-out infinite;
+}
+.ip-intro-emblem::after { inset: -48%; opacity: .3; animation-delay: -2.75s; }
+.immersive-stage .ip-intro .ip-loading-symbol {
+  display: block; position: relative; width: 100%; height: 100%;
+  filter: drop-shadow(0 0 25px #cad9f018);
+}
+.ip-intro-shine {
+  position: absolute; inset: 0;
+  mask: url('/assets/brand/symbol.svg') center / contain no-repeat;
+  -webkit-mask: url('/assets/brand/symbol.svg') center / contain no-repeat;
+  background: linear-gradient(110deg, transparent 38%, #fff9 49%, transparent 60%) 150% 0 / 300% 100%;
+  animation: arkhen-silver 5s ease-in-out infinite;
+}
+.immersive-stage .ip-intro .ip-loading-wordmark {
+  display: block; width: clamp(180px, 21vw, 250px); height: auto;
+  animation: arkhen-wordmark-enter 1.35s .15s cubic-bezier(.16, 1, .3, 1) both;
+}
+.immersive-stage .ip-intro .ip-loading-product {
+  margin-top: 16px; padding-left: 4px; color: #9aa8ba; font-size: 8px; letter-spacing: 4px; line-height: 1.6;
+  animation: arkhen-wordmark-enter 1.4s .25s ease both;
+}
+.ip-intro-media {
+  margin: 0; color: #e5eaf1; font-size: clamp(15px, 1.5vw, 20px); font-weight: 500; line-height: 1.4;
+  overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow-wrap: anywhere;
+}
+.ip-intro-episode { margin: 7px 0 0; color: #9caabc; font-size: 11px; line-height: 1.4; }
+.immersive-stage .ip-intro .ip-loading-title {
+  max-width: none; margin: 26px 0 13px; color: #b7c4d4; font-size: 12px; font-weight: 400; letter-spacing: .25px;
+}
+.immersive-stage .ip-intro .ip-loading-bar {
+  width: 100%; height: 3px; border-radius: 3px; background: #d6e1f015;
+}
+.immersive-stage .ip-intro .ip-loading-bar::after {
+  width: 34%; background: linear-gradient(90deg, transparent, #ecf5ffb3, transparent);
+  animation: ip-loading-sweep 2.3s ease-in-out infinite;
+}
+.ip-intro-progress {
+  position: absolute; inset: 0 auto 0 0; width: var(--intro-progress, 0%);
+  background: linear-gradient(90deg, #778697, #e4edf8); border-radius: inherit;
+  box-shadow: 0 0 12px #dbe9ff42; transition: width .3s ease;
+}
+.ip-intro-steps { display: flex; justify-content: space-between; gap: 8px; list-style: none; margin: 12px 0 25px; padding: 0; }
+.ip-intro-steps li { display: flex; align-items: center; gap: 7px; color: #778599; font-size: 10px; line-height: 1.5; }
+.ip-intro-steps li::before { content: ''; width: 4px; height: 4px; border: 1px solid #8999af70; border-radius: 50%; }
+.ip-intro-steps li[data-state=active] { color: #e5edf8; }
+.ip-intro-steps li[data-state=active]::before { background: #e0eafa; border-color: #e0eafa; box-shadow: 0 0 9px #e0eafa60; animation: session-pulse 1.5s ease-in-out infinite; }
+.ip-intro-steps li[data-state=done] { color: #a8b8ca; }
+.ip-intro-steps li[data-state=done]::before { background: #a8b8ca; border-color: #a8b8ca; }
+.ip-intro-metrics { display: grid; grid-template-columns: 1fr 1fr; padding: 17px 0 16px; border-top: 1px solid #d6e2f011; border-bottom: 1px solid #d6e2f011; }
+.ip-intro-metric { display: flex; flex-direction: column; gap: 5px; min-width: 0; padding: 0 8px; }
+.ip-intro-metric + .ip-intro-metric { border-left: 1px solid #d6e2f018; }
+.ip-intro-metric-label { color: #9dacc0; font-size: 10px; line-height: 1.5; }
+.ip-intro-metric strong { color: #e6edf6; font-size: 19px; line-height: 1.5; font-weight: 500; font-variant-numeric: tabular-nums; }
+.ip-intro-metric-note { color: #8493a7; font-size: 9px; line-height: 1.5; }
+.immersive-stage .ip-intro .ip-loading-details { gap: 5px; margin-top: 19px; color: #a6b3c4; font-size: 10px; }
+.immersive-stage .ip-intro .ip-loading-estimate { color: #8c9bb0; font-size: 10px; }
+
+/* A brief interruption resumes with a smaller treatment over the current frame. */
+.immersive-stage .ip-intro[data-mode=buffering] { background: #040507b8; }
+.ip-intro[data-mode=buffering] .ip-intro-atmosphere,
+.ip-intro[data-mode=buffering] .ip-loading-product,
+.ip-intro[data-mode=buffering] .ip-intro-media,
+.ip-intro[data-mode=buffering] .ip-intro-episode,
+.ip-intro[data-mode=buffering] .ip-intro-steps { display: none; }
+.ip-intro[data-mode=buffering] .ip-intro-content { width: min(330px, 100%); }
+.ip-intro[data-mode=buffering] .ip-intro-emblem { width: 60px; margin-bottom: 17px; animation: none; }
+.immersive-stage .ip-intro[data-mode=buffering] .ip-loading-wordmark { width: 145px; animation: none; }
+.immersive-stage .ip-intro[data-mode=buffering] .ip-loading-brand { margin-bottom: 0; }
+.ip-intro[data-mode=buffering] .ip-intro-progress { display: none; }
+.ip-intro[data-mode=buffering] .ip-intro-metrics { margin-top: 20px; }
+
+/* Keep the close button available throughout the cinematic opening. */
+.immersive-stage.ip-loading-active:has(.ip-intro[data-mode=initial]:not([data-kind=live])) .ip-information { opacity: 0; visibility: hidden; }
+.immersive-stage.ip-loading-active:has(.ip-intro[data-mode=initial]:not([data-kind=live])) .ip-controls:not(:focus-within) { opacity: 0; pointer-events: none; }
+.ip-intro[data-kind=live] .ip-intro-emblem { width: 76px; margin-bottom: 18px; }
+.ip-intro[data-kind=live] .ip-intro-atmosphere { opacity: .4; }
+.ip-intro[data-kind=live] .ip-loading-product { display: none; }
+
+@keyframes arkhen-emblem-enter { from { opacity: 0; transform: scale(.72) translateY(9px); filter: blur(9px); } to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); } }
+@keyframes arkhen-wordmark-enter { from { opacity: 0; transform: translateY(10px); filter: blur(5px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+@keyframes arkhen-halo { 0%, 100% { opacity: .2; transform: scale(.94); } 50% { opacity: .8; transform: scale(1.08); } }
+@keyframes arkhen-silver { 0%, 20% { background-position: 150% 0; } 75%, 100% { background-position: -50% 0; } }
+@keyframes arkhen-atmosphere { from { opacity: .6; transform: scale(1); } to { opacity: 1; transform: scale(1.12); } }
+@keyframes arkhen-horizon { from { transform: rotate(-12deg) translateY(0); } to { transform: rotate(-6deg) translateY(25px); } }
+@keyframes arkhen-light { from { transform: translate(-280px, -30%) rotate(32deg); opacity: .2; } to { transform: translate(0, -30%) rotate(24deg); opacity: .8; } }
+
+@media (max-width: 650px) {
+  .immersive-stage .ip-intro { padding-inline: 28px; }
+  .ip-intro-content { width: min(360px, 100%); }
+  .ip-intro-emblem { width: 92px; margin-bottom: 22px; }
+  .immersive-stage .ip-intro .ip-loading-wordmark { width: 188px; }
+  .immersive-stage .ip-intro .ip-loading-product { font-size: 7px; letter-spacing: 3px; margin-top: 13px; }
+  .immersive-stage .ip-intro .ip-loading-brand { margin-bottom: 25px; }
+  .ip-intro-media { font-size: 16px; }
+  .ip-intro-metric strong { font-size: 17px; }
+}
+@media (max-height: 650px) {
+  .immersive-stage .ip-intro { padding-block: 48px 42px; }
+  .ip-intro-emblem { width: 75px; margin-bottom: 17px; }
+  .immersive-stage .ip-intro .ip-loading-wordmark { width: 180px; }
+  .immersive-stage .ip-intro .ip-loading-product { margin-top: 10px; font-size: 7px; }
+  .immersive-stage .ip-intro .ip-loading-brand { margin-bottom: 19px; }
+  .immersive-stage .ip-intro .ip-loading-title { margin-top: 17px; }
+  .ip-intro-steps { margin-bottom: 17px; }
+  .ip-intro-metrics { padding-block: 11px; }
+  .immersive-stage .ip-intro .ip-loading-details { margin-top: 12px; }
+}
+@media (max-height: 480px) and (orientation: landscape) {
+  .ip-intro-content { width: min(680px, calc(100% - 100px)); display: grid; grid-template-columns: 170px minmax(0, 1fr); column-gap: 42px; align-items: center; }
+  .immersive-stage .ip-intro .ip-loading-brand { grid-column: 1; grid-row: 1 / 9; margin: 0; }
+  .ip-intro-content > :not(.ip-loading-brand) { grid-column: 2; }
+  .ip-intro-emblem { width: 75px; }
+  .immersive-stage .ip-intro .ip-loading-wordmark { width: 160px; }
+  .ip-intro-content .ip-intro-media { font-size: 15px; }
+  .ip-intro-steps { margin-bottom: 12px; }
+  .ip-intro-metric-note { display: none; }
+  .ip-intro[data-mode=buffering] .ip-intro-content { display: block; }
+  .ip-intro[data-mode=buffering] .ip-intro-metrics { margin-top: 10px; }
+  .ip-intro[data-mode=buffering] .ip-intro-emblem { width: 45px; margin-bottom: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .immersive-stage .ip-intro, .ip-intro *, .ip-intro *::before, .ip-intro *::after { animation: none !important; transition: none !important; }
+  .ip-intro-atmosphere::before, .ip-intro-atmosphere::after { animation: none; }
+  .ip-intro-shine { display: none; }
+}

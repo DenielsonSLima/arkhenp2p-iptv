@@ -10,6 +10,23 @@ test('loader fallback retains an unconfirmed resume before metadata and uses act
   assert.equal(continuedPlaybackPosition({currentTime:NaN}),0);
 });
 const item={kind:'series',id:'1'},episode={id:'101'};
+test('adult history never resumes, including category-only and stale entry classification',()=>{
+  const base={item,episode,episodeEntry:{itemId:'1',episodeId:'101',time:600,duration:1800},historyEntry:{item,episode,time:900,duration:1800}};
+  for(const classified of [{...item,isAdult:true},{...item,adult:true},{...item,is_adult:true},{...item,groupNames:['Adultos']}])assert.equal(resume({...base,item:classified}),0);
+  assert.equal(resume({...base,item:{...item,categoryId:'adult-cat'},categories:[{id:'adult-cat',name:'Reservado',isAdult:true}]}),0);
+  assert.equal(resume({...base,historyEntry:{...base.historyEntry,item:{...item,isAdult:true}}}),0);
+  assert.equal(resume({...base,historyEntry:{...base.historyEntry,isAdult:true}}),0);
+  assert.equal(resume({...base,episodeEntry:{...base.episodeEntry,adult:true}}),0);
+  assert.equal(resume({...base,episode:{...episode,adult:true}}),0);
+  assert.equal(resume({...base,item:{...item,name:'Adult Swim'}}),600,'An unrelated channel brand is not adult classification.');
+});
+
+test('private playback keeps a deliberate in-memory recovery seek without consulting saved history',()=>{
+  const adult={...item,isAdult:true},previous=continuedPlaybackPosition({seekTarget:240,currentTime:120});
+  assert.equal(resume({item:adult,episode,options:{resumeTime:previous}}),240);
+  assert.equal(resume({item:adult,episode,options:{resumeTime:previous,startFromBeginning:true}}),0);
+  assert.equal(resume({item:adult,episode,options:{},historyEntry:{item:adult,episode,time:240,duration:1800}}),0);
+});
 test('resume selects the requested episode independently of the last series episode',()=>{
   const base={item,episode,episodeEntry:{itemId:'1',episodeId:'101',time:600,duration:1800},historyEntry:{item,episode:{id:'102'},time:1200,duration:1800}};
   assert.equal(resume(base),600);

@@ -29,7 +29,7 @@ não alteram SELinux, não abrem portas, não iniciam processos Android e não
 reautenticam a conta. O iniciador opcional abaixo prepara somente os componentes
 locais previamente instalados.
 
-## Comando único neste Mac
+## Iniciador portátil: Windows, macOS e Linux
 
 Encerre a instância anterior do servidor ARKHEN e execute na raiz do projeto:
 
@@ -37,9 +37,83 @@ Encerre a instância anterior do servidor ARKHEN e execute na raiz do projeto:
 npm run start:p2p
 ```
 
-No Finder, abrir `Iniciar ARKEHN.command` executa esse mesmo comando. A janela
-do terminal deve permanecer aberta durante o uso. Para iniciar apenas o
-servidor web sem preparar TV P2P, execute `npm start` manualmente.
+O comando Node é o mesmo nos três sistemas. No macOS, abrir
+`Iniciar ARKEHN.command` no Finder também executa esse comando. O terminal deve
+permanecer aberto durante o uso. Para iniciar apenas o servidor web sem preparar
+TV P2P, execute `npm start` manualmente. O iniciador recusa uma porta 4173 já
+ocupada e preserva o servidor e a sessão existentes.
+
+`tools/p2p-runtime-paths.mjs` resolve os componentes preparados, sem procurar
+comandos no PATH nem baixar/instalar programas. Todos os overrides devem ser
+caminhos absolutos, sem adicionar argumentos ou aspas dentro do valor:
+
+| Variável | Uso |
+| --- | --- |
+| `ARKHEN_ANDROID_SDK` | SDK escolhido explicitamente; tem prioridade sobre `ANDROID_HOME` e `ANDROID_SDK_ROOT`, nessa ordem. |
+| `ARKHEN_P2P_ADB` | Executável ADB específico; padrão `platform-tools/adb` no SDK, com `.exe` no Windows. |
+| `ARKHEN_P2P_EMULATOR` | Executável do emulador; padrão `emulator/emulator` no SDK, com `.exe` no Windows. |
+| `ARKHEN_P2P_PYTHON` | Python com Frida 17.8.0 previamente preparado; padrão privado abaixo. |
+
+Sem variável de SDK, o iniciador prefere
+`native-bridge/debug-runtime/android-sdk` quando existente. Depois verifica
+`%LOCALAPPDATA%\Android\Sdk` no Windows, `~/Library/Android/sdk` no macOS ou
+`~/Android/Sdk` e `~/Android/sdk` no Linux. Sem instalação encontrada, informa
+componente ausente. O Python privado fica em
+`native-bridge/debug-runtime/python/Scripts/python.exe` no Windows e em
+`native-bridge/debug-runtime/python/bin/python3` no macOS/Linux. Um override
+inválido gera erro explícito, sem selecionar outro executável silenciosamente.
+
+Exemplo de configuração no PowerShell, para uma instalação já preparada:
+
+```powershell
+$env:ARKHEN_ANDROID_SDK = 'C:\Android\Sdk'
+$env:ARKHEN_P2P_PYTHON = 'C:\Ambientes\arkhen\Scripts\python.exe'
+npm run start:p2p
+```
+
+No macOS/Linux, as mesmas variáveis podem ser definidas com `export` antes de
+executar o comando. Os subprocessos são iniciados com `shell:false`; no Windows,
+usam `windowsHide:true`. O cliente Python recebe somente variáveis necessárias
+do sistema e usa `-I -B -X utf8`, sem herdar chaves do servidor, senhas ou `PYTHONPATH`.
+O modo UTF-8 mantém o protocolo JSONL e nomes acentuados consistentes no Windows.
+As credenciais e comandos de reprodução continuam restritos aos pipes privados.
+
+O [preflight e plano de preparação](../../docs/p2p-runtime-preparation.md)
+conferem presença de componentes e distinguem uma configuração portátil de uma
+engine realmente validada. Nenhum componente é instalado pelo iniciador.
+
+### Preparar Python privado no Windows x64
+
+O preparador separado usa os artefatos fixados no manifesto versionado
+`tools/p2p-install-artifacts.json`, com caminhos relativos ao workspace atual.
+Um plano de pesquisa `.local/p2p-install-plan.json` compatível continua opcional;
+clones não dependem desse arquivo privado. Inspecionar o plano não baixa nem
+instala nada:
+
+```sh
+node tools/setup-p2p-python.mjs --plan
+```
+
+Depois de autorizar a preparação, este comando baixa o instalador CPython
+3.13.16 e o wheel Frida 17.8.0, confere tamanho/SHA-256, exige assinatura
+Authenticode válida da Python Software Foundation e prepara o ambiente privado:
+
+```sh
+node tools/setup-p2p-python.mjs --apply
+```
+
+O instalador per-user recebe destino `debug-runtime/python-base`, sem PATH,
+launcher, atalhos ou associações e com `/norestart`. O instalador oficial pode
+registrar esse Python no HKCU e no cache de instalação do usuário. O venv fica
+em `debug-runtime/python`; Frida é instalado do wheel já verificado com
+`pip --isolated --no-index --no-deps`, sem consultar outro índice ou configuração
+pip do usuário. Ambientes já existentes precisam coincidir com versão e
+prefixos esperados. A execução grava somente o diagnóstico sanitizado em
+`.local/p2p-python-setup.json` e mantém logs locais do instalador. Esse preparador
+não inicia Android, não aceita licenças SDK, não ativa recursos do Windows e não
+reinicia o computador. Essa instalação específica é para o manifesto Windows
+x64; os caminhos portáteis não transformam um instalador Windows em instalador
+para macOS/Linux.
 
 O comando verifica ou inicia apenas o AVD `Arkhen_Engine_Debug`, porta 5582,
 usando os dados isolados em `native-bridge/debug-runtime/avd` e o servidor ADB
@@ -63,18 +137,32 @@ precisa ser da mesma conta; o adapter confere isso em cada sessão.
 
 O iniciador aguarda até 45 segundos pela restauração da sessão e até dois
 minutos pelo boot do AVD. Esses são limites máximos; o processo continua assim
-que cada etapa estiver pronta. Ctrl+C encerra somente o servidor que ele criou,
-aguardando a limpeza das reproduções. Frida e emulador permanecem abertos.
+que cada etapa estiver pronta. Ctrl+C solicita por IPC privado o encerramento
+somente do servidor que ele criou, aguardando a limpeza das reproduções antes
+de desconectar o canal. Um limite de 20 segundos precede a terminação forçada
+como último recurso; nenhum PID externo é procurado ou encerrado. Frida e
+emulador permanecem abertos.
 A remoção final da ponte Java pode provocar uma queda nativa do APK neste
 runtime de depuração; a próxima execução reabre o APK quando necessário e
 reutiliza a sessão salva, sem reenviar credenciais pelo iniciador.
 
 Arquivos principais: `tools/start-p2p.mjs` (orquestração/servidor),
-`tools/p2p-runtime.mjs` (verificações e componentes) e `readiness.py` /
+`tools/p2p-runtime.mjs` (verificações e componentes),
+`tools/p2p-runtime-paths.mjs` (caminhos/ambiente por sistema),
+`tools/p2p-web-process.mjs` (encerramento portátil) e `readiness.py` /
 `readiness-agent.mjs` (leitura da sessão). O bundle de readiness pode ser
 recriado com `npm run build:readiness` nesta pasta, usando as dependências locais.
-Os nove testes de `tests/p2p-runtime.test.mjs` usam comandos sintéticos e não
-iniciam emuladores ou transmissões.
+Os testes de caminhos, runtime, encerramento IPC, RPC e configuração usam
+comandos/processos sintéticos: 37 verificações passaram no Windows em
+15/10/2026, sem instalar ou iniciar um emulador. Isso não comprova execução
+real do APK nesses três sistemas.
+
+O APK original e o observador nativo atual exigem ARM64. Após o boot, o
+iniciador exige `ro.product.cpu.abilist` contendo `arm64-v8a`; a arquitetura do
+host não substitui esse requisito. Uma imagem Android x86_64 que anuncia
+tradução ARM64 ainda precisa de validação real: essa lista não comprova a
+arquitetura vista pelo Frida nem os offsets/contratos do observador. Uma
+divergência continua sendo erro explícito, sem desabilitar as verificações.
 
 ## Compilação e transporte
 

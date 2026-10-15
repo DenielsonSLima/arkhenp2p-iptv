@@ -30,9 +30,11 @@ test('series automation has a distinct settings route and the three honestly lab
   const calls=[];SettingsTools.prototype.restoreRoute.call({open:(...args)=>calls.push(args)});assert.deepEqual(calls,[['series-playback',undefined,false]]);
 });
 
-test('the preset discloses its approximate end timing and does not promise opening detection',t=>{
+test('the default preserves the complete episode without verified credits and keeps approximate timing opt-in',t=>{
   const f=view(t);assert.equal(f.checks[0].checked,true);assert.equal(f.checks[1].checked,true);assert.equal(f.seconds.value,'30');
-  assert.match(f.summary.textContent,/últimos 30 segundos/);assert.match(f.summary.textContent,/aproximado.*pode incluir cenas/);
+  assert.equal(f.options[1].children[0].checked,true);assert.equal(f.seconds.disabled,true);
+  assert.match(f.summary.textContent,/quando o episódio terminar/);
+  assert.match(seriesPlaybackSummary({autoNext:true,nextMode:'offset',endOffsetSeconds:30}),/aproximado.*pode incluir cenas/);
   assert.match(f.section.children.filter(child=>child.className==='settings-series-toggle')[1].children[1].children[1].textContent,/Nenhuma abertura é adivinhada/);
   assert.match(seriesPlaybackSummary({autoNext:true,nextMode:'markers'}),/quando o episódio terminar/);
 });
@@ -48,7 +50,7 @@ test('controls update a shared preference instance in place and disabling autopl
 });
 
 test('offset input validates real integer bounds and describes the saved approximation',t=>{
-  const f=view(t);f.seconds.value='45';f.seconds.listeners.change();assert.equal(f.controller.getPreferences().endOffsetSeconds,45);assert.match(f.summary.textContent,/45 segundos/);
+  const f=view(t);f.controller.setPreferences({nextMode:'offset'});f.seconds.value='45';f.seconds.listeners.change();assert.equal(f.controller.getPreferences().endOffsetSeconds,45);assert.match(f.summary.textContent,/45 segundos/);
   for(const invalid of ['0','301','1.5','abc']){f.seconds.value=invalid;f.seconds.listeners.change();assert.equal(f.seconds.value,'45');}
   assert.equal(f.messages.length,4);
 });

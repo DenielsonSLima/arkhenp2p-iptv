@@ -11,6 +11,65 @@ function fixture(options = {}) {
   return {store, data, writes};
 }
 
+test('adult episodes never write, seed, expose or resume progress, even when the permission callback allows them', () => {
+  const {store, writes} = fixture({canRemember:()=>true});store.setNamespace('account-a');
+  const adult = {...item, isAdult:true}, entry = {item:adult, episode:episode(1), time:400, duration:1800, updated:20};
+  assert.equal(store.save(entry), null);assert.equal(store.seed([entry], {namespace:'account-a'}), 0);
+  assert.equal(store.read(adult, episode(1)), null);assert.deepEqual(store.list(adult), []);assert.equal(writes.length, 0);
+  assert.equal(episodePlaybackProgress(adult, episode(1), entry), null);
+  assert.equal(episodePlaybackProgress(item, episode(1), entry), null);
+  assert.equal(episodePlaybackProgress(item, episode(1, {adult:true}), entry), null);
+});
+
+test('late category classification purges every legacy episode for that series and leaves safe series intact', () => {
+  const {store, data} = fixture();store.setNamespace('account-a');
+  const safe = {...item, id:'safe'};
+  for (const id of ['1','2']) store.save({item, episode:episode(id), time:100, updated:10});
+  store.save({item:safe, episode:episode(1), time:200, updated:20});
+  assert.equal(store.reconcileCatalog({categories:[{id:'18', name:'Reservado', isAdult:true}], items:[{id:item.id, categoryIds:['18']}, safe]}, 'movies'), 0);
+  assert.equal(store.reconcileCatalog({categories:[{id:'18', name:'Reservado', isAdult:true}], items:[{id:item.id, categoryIds:['18']}, safe]}, 'series'), 2);
+  assert.equal(store.read(item, episode(1)), null);assert.equal(store.read(safe, episode(1)).time, 200);
+  assert.deepEqual(data.get('orbit.episode-progress.v1.account-a').entries.map(record=>record.itemId), ['safe']);
+  assert.equal(store.seed([{item, episode:episode(2), time:300, updated:30}], {namespace:'account-a'}), 0);
+  assert.equal(store.reconcileCatalog({categories:[], items:[item,safe]}), 0, 'A later unmarked snapshot does not undo a positive classification in this account session.');
+  store.setNamespace('account-b');assert.equal(store.save({item, episode:episode(1), time:150}).time, 150, 'Classification does not leak across account/provider namespaces.');
+});
+
+test('the account classification callback blocks old metadata, and an adult duplicate cannot enter through seed', () => {
+  let blocked = false;
+  const {store, data} = fixture({canRemember:()=>!blocked});store.setNamespace('account-a');
+  store.save({item, episode:episode(1), time:300});blocked = true;
+  assert.equal(store.read(item, episode(1)), null);assert.deepEqual(data.get('orbit.episode-progress.v1.account-a').entries, []);
+  const other = fixture().store;other.setNamespace('account-a');
+  const entry = {item, episode:episode(1), time:100, updated:10};
+  assert.equal(other.seed([entry, {...entry,item:{...item,groupNames:['Adultos']}}], {namespace:'account-a'}), 0);
+  assert.deepEqual(other.list(), []);
+  assert.equal(episodePlaybackProgress({...item,categoryId:'a'}, episode(1), entry, {categories:[{id:'a',is_adult:true}]}), null);
+});
+
+test('a legacy positive flag on the progress envelope is removed before metadata normalization', () => {
+  const {store,data} = fixture();
+  data.set('orbit.episode-progress.v1.account-a',{version:1,namespace:'account-a',entries:[{itemId:item.id,episodeId:'1',time:100,duration:1800,updated:10,isAdult:true},{itemId:item.id,episodeId:'2',time:200,duration:1800,updated:20}]});
+  store.setNamespace('account-a');assert.deepEqual(store.list(),[]);assert.deepEqual(data.get('orbit.episode-progress.v1.account-a').entries,[]);
+  const entry={item,episode:episode(1),time:100,updated:30,adult:true};
+  store.setNamespace('account-b');assert.equal(store.seed([entry],{namespace:'account-b'}),0);assert.equal(episodePlaybackProgress(item,episode(1),entry),null);
+});
+
+test('direct save and legacy episode flags cannot lose positive classification during destructuring', () => {
+  const {store,data} = fixture();store.setNamespace('account-a');
+  store.save({item,episode:episode(1),time:300});
+  assert.equal(store.save({item,episode:episode(1),time:600,adult:true}),null);
+  assert.equal(store.read(item,episode(1)),null);assert.deepEqual(data.get('orbit.episode-progress.v1.account-a').entries,[]);
+  data.set('orbit.episode-progress.v1.account-b',{version:1,namespace:'account-b',entries:[
+    {itemId:item.id,episodeId:'1',time:100,updated:10,episode:{id:'1',is_adult:true}},
+    {itemId:item.id,episodeId:'2',time:200,updated:20},
+    {itemId:'safe',episodeId:'1',time:150,updated:30}
+  ]});
+  store.setNamespace('account-b');assert.deepEqual(store.list().map(record=>record.itemId),['safe']);
+  assert.deepEqual(data.get('orbit.episode-progress.v1.account-b').entries.map(record=>record.itemId),['safe']);
+  assert.equal(store.save({item:{...item,id:'safe'},episode:episode(1),time:180}).time,180);
+});
+
 test('each episode retains its own position after switching and reloading the same account', () => {
   const {store, data} = fixture();store.setNamespace('wplay:account-a');
   store.save({item, episode:episode('ep:one'), time:120, duration:1800, updated:10});

@@ -26,14 +26,24 @@ test('static serving accepts a module imported through an alternate Unicode path
   });
 });
 
-test('canonical static root still rejects traversal, sibling prefixes and outside symlinks',async()=>{
+test('canonical static root still rejects traversal and sibling prefixes',async()=>{
+  await withServer(createApp,async base=>{
+    for(const pathname of ['/%2e%2e%2fpackage.json','/%2e%2e%2fweb-sibling%2fpackage.json']){
+      assert.equal((await fetch(base+pathname)).status,403,`${pathname} must stay outside the served root.`);
+    }
+  });
+});
+
+test('canonical static root still rejects outside symlinks',async t=>{
   const filename=`.static-path-${randomUUID()}.txt`,link=new URL(`../web/${filename}`,import.meta.url);
-  await symlink(fileURLToPath(new URL('../package.json',import.meta.url)),fileURLToPath(link));
+  try {await symlink(fileURLToPath(new URL('../package.json',import.meta.url)),fileURLToPath(link));}
+  catch(error){
+    if(process.platform==='win32'&&['EPERM','EACCES'].includes(error.code)){t.skip('Windows requires Developer Mode or symlink privileges for this check. Traversal is covered separately.');return;}
+    throw error;
+  }
   try {
     await withServer(createApp,async base=>{
-      for(const pathname of ['/%2e%2e%2fpackage.json','/%2e%2e%2fweb-sibling%2fpackage.json',`/${filename}`]){
-        assert.equal((await fetch(base+pathname)).status,403,`${pathname} must stay outside the served root.`);
-      }
+      assert.equal((await fetch(base+`/${filename}`)).status,403,'A symlink must stay outside the served root.');
     });
   } finally {await unlink(link);}
 });

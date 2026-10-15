@@ -2,11 +2,18 @@ import { withoutSessionArtwork } from './stored-artwork.js';
 
 const entries = value => value && typeof value === 'object' ? Object.entries(value) : [];
 export const isPagedCatalog = catalog => catalog?.pagination?.mode === 'category';
-export const isCompleteCatalog = catalog => catalog?.catalogComplete === true && Array.isArray(catalog.categories) && Array.isArray(catalog.items);
+export const isCompleteCatalog = catalog => catalog?.catalogComplete === true && catalog.preparing!==true && catalog.pagination?.preparing!==true && catalog.pagination?.complete!==false && Array.isArray(catalog.categories) && Array.isArray(catalog.items);
 
 // Responses are snapshots. Merge them because separate category pages can finish out of order.
 export function mergeCatalogPage(previous, incoming) {
-  if(isCompleteCatalog(incoming))return {...incoming,pagination:{mode:'complete',byCategory:Object.fromEntries(incoming.categories.map(category=>[String(category.id),{loaded:true,nextPage:1,hasMore:false}]))}};
+  if(isCompleteCatalog(previous)&&!isCompleteCatalog(incoming))return previous.sourceCategories?{...previous,categories:previous.sourceCategories}:previous;
+  const shared=incoming?.pagination?.source==='supabase',revision=incoming?.pagination?.snapshotId;
+  if(shared&&revision&&previous?.pagination?.snapshotId&&previous.pagination.snapshotId!==revision){
+    const oldTime=Date.parse(previous.pagination.revisionAt),newTime=Date.parse(incoming.pagination.revisionAt);
+    if(incoming.pagination.snapshotChanged!==true||Number.isFinite(oldTime)&&Number.isFinite(newTime)&&newTime<oldTime)return previous.sourceCategories?{...previous,categories:previous.sourceCategories}:previous;
+    previous=null;
+  }
+  if(isCompleteCatalog(incoming))return {...incoming,pagination:{...incoming.pagination,mode:'complete',byCategory:Object.fromEntries(incoming.categories.map(category=>[String(category.id),{loaded:true,nextPage:1,hasMore:false}]))}};
   // A late first-page response must not reintroduce a title omitted from the
   // authoritative shared snapshot that completed this catalog generation.
   if(isCompleteCatalog(previous))return previous.sourceCategories?{...previous,categories:previous.sourceCategories}:previous;
@@ -24,13 +31,15 @@ export function mergeCatalogPage(previous, incoming) {
     if (!old || Number(incomingPage.nextPage) >= Number(old.nextPage)) byCategory[id] = {...incomingPage};
     if (old?.loaded && old.hasMore === false) byCategory[id] = {...old};
   }
-  return {...incoming, categories:[...categories.values()], items:[...items.values()], pagination:{...previous?.pagination, ...incoming.pagination, byCategory}};
+  const complete=shared&&incoming.pagination.complete===true;
+  if(complete)for(const state of Object.values(byCategory)){state.loaded=true;state.hasMore=false;}
+  return {...incoming,catalogComplete:complete, categories:[...categories.values()], items:[...items.values()], pagination:{...previous?.pagination, ...incoming.pagination, byCategory}};
 }
 
 export function pageChoices(catalog, category = '__all', initialOnly = false) {
   if (!isPagedCatalog(catalog) || category === '__favorites' || category.startsWith('custom:')) return [];
   const states = catalog.pagination.byCategory || {};
-  const ids = category === '__all' ? Object.keys(states) : [...(catalog.categories.find(group => group.id === category)?.ids || [])].map(String);
+  const ids = category === '__all' ? catalog.pagination.source==='supabase'?[catalog.pagination.globalCategory||'__all']:Object.keys(states) : [...(catalog.categories.find(group => group.id === category)?.ids || [])].map(String);
   return ids.map(id => ({id, ...states[id]})).filter(state => states[state.id] && state.hasMore !== false && (!initialOnly || !state.loaded))
     .sort((first, second) => Number(first.nextPage || 1) - Number(second.nextPage || 1));
 }
@@ -148,7 +157,10 @@ export class CatalogPager {
       try {
         if (activeSignal.aborted) throw abortError();
         if(isCompleteCatalog(this.getCatalog(type)))return this.getCatalog(type);
-        const response = await this.request(`/api/catalog?type=${encodeURIComponent(type)}&category=${encodeURIComponent(state.id)}&page=${page}`, {signal:activeSignal});
+        const pagination=this.getCatalog(type)?.pagination;
+        const shared=pagination?.source==='supabase';
+        const extra=shared?`&paged=1&snapshot=${encodeURIComponent(pagination.snapshotId)}&cursor=${Number(current.nextCursor??-1)}`:'';
+        const response = await this.request(`/api/catalog?type=${encodeURIComponent(type)}&category=${encodeURIComponent(state.id)}&page=${page}${extra}`, {signal:activeSignal});
         if ((this.epochs.get(type) || 0) === epoch && !activeSignal.aborted) this.onData(type, mergeCatalogPage(this.getCatalog(type), response));
         return response;
       } finally {this.#release();}
@@ -166,7 +178,7 @@ export class CatalogPager {
   }
   progressFor(type) {return this.progress.get(type) || null;}
   #report(type, task, status) {
-    const catalog = this.getCatalog(type), states = Object.values(catalog?.pagination?.byCategory || {});
+    const catalog = this.getCatalog(type), states = Object.values(catalog?.pagination?.source==='supabase'?{global:catalog.pagination.byCategory?.__all}:catalog?.pagination?.byCategory || {}).filter(Boolean);
     const failedCategories = [...task.failures].map(([id,error]) => ({id,error}));
     const value = {
       status, categoriesTotal:states.length,
@@ -200,9 +212,11 @@ export class CatalogPager {
           try {
             for (let attempt=0; active(); attempt++) {
               try {
+                const previousRevision=this.getCatalog(type)?.pagination?.snapshotId;
                 await this.#page(type,state,activeSignal);
                 if (!active()) return;
                 if(isCompleteCatalog(this.getCatalog(type)))break;
+                if(previousRevision&&previousRevision!==this.getCatalog(type)?.pagination?.snapshotId)break;
                 const current = this.getCatalog(type)?.pagination?.byCategory?.[state.id];
                 if (!current || current.hasMore !== false && Number(current.nextPage || 1) <= Number(state.nextPage || 1)) throw new Error('O serviço não avançou a página do catálogo.');
                 break;

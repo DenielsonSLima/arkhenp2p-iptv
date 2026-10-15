@@ -37,18 +37,19 @@ test('launcher lock rejects live and incomplete locks, recovers dead owner only'
 });
 
 function harness({ running = true, authenticated = true, ready = true, avd = 'Arkhen_Engine_Debug',
-  forwards = 'emulator-5582 tcp:27043 tcp:27042\nemulator-5582 tcp:8904 tcp:8902', otherAVD = false } = {}) {
+  forwards = 'emulator-5582 tcp:27043 tcp:27042\nemulator-5582 tcp:8904 tcp:8902', otherAVD = false,abiList='arm64-v8a,armeabi-v7a' } = {}) {
   const calls = [], launches = [];
   let booted = running;
-  const run = async (file, args) => {
-    calls.push({ file, args });
+  const run = async (file, args,options) => {
+    calls.push({ file, args,options });
     let output;
     const command = args.join(' ');
-    if (file.endsWith('python3')) output = args.includes('-c') ? '17.8.0' : JSON.stringify({ authenticated, ready });
+    if (/python(?:3|\.exe)$/.test(file)) output = args.includes('-c') ? '17.8.0' : JSON.stringify({ authenticated, ready });
     else if (command.endsWith('start-server')) output = '';
     else if (command.endsWith('devices')) output = booted ? 'emulator-5582\tdevice\n' : (otherAVD ? 'emulator-5554\tdevice\n' : '');
     else if (command.endsWith('emu avd name')) output = avd + '\nOK';
     else if (command.endsWith('sys.boot_completed')) output = '1';
+    else if (command.endsWith('ro.product.cpu.abilist')) output = abiList;
     else if (command.includes('pm path')) output = 'package:/data/app/original/base.apk';
     else if (command.endsWith('id -u')) output = '0';
     else if (command.endsWith('--version')) output = '17.8.0';
@@ -64,8 +65,8 @@ function harness({ running = true, authenticated = true, ready = true, avd = 'Ar
     const child = new EventEmitter(); child.unref = () => {};
     return child;
   };
-  const runtime = createRuntime('/project', { run, launch, portOpen: async () => false,
-    exists: async () => {}, sleep: async () => {} });
+  const runtime = createRuntime(path.resolve('fixture-project'), { run, launch, portOpen: async () => false,
+    env:{},exists: async () => {}, sleep: async () => {} });
   return { runtime, calls, launches };
 }
 
@@ -76,8 +77,9 @@ test('already prepared runtime is reused without start, root, install or rebindi
   const commands = calls.map(call => call.args.join(' ')).join('\n');
   assert.doesNotMatch(commands, /(?:force-stop|install|kill-server| shell am start| -s emulator-5582 root|--no-rebind)/);
   assert.match(commands, /readiness.py --endpoint 127.0.0.1:27043/);
-  for (const { file, args } of calls.filter(call => call.file.endsWith('/adb'))) {
+  for (const { file, args,options } of calls.filter(call => /adb(?:\.exe)?$/.test(call.file))) {
     assert.deepEqual(args.slice(0, 4), ['-H', '127.0.0.1', '-P', '5038'], file);
+    assert.equal(options.shell,false);assert.equal(options.windowsHide,true);
   }
 });
 
@@ -87,10 +89,11 @@ test('missing runtime starts only project AVD with isolated data and exact port'
   assert.equal(launches.length, 1);
   const launch = launches[0];
   assert.deepEqual(launch.args.slice(0, 4), ['-avd', 'Arkhen_Engine_Debug', '-port', '5582']);
-  assert.equal(launch.options.env.ANDROID_AVD_HOME, '/project/native-bridge/debug-runtime/avd');
+  assert.equal(launch.options.env.ANDROID_AVD_HOME, path.resolve('fixture-project','native-bridge','debug-runtime','avd'));
   assert.equal(launch.options.env.ADB_SERVER_SOCKET, 'tcp:127.0.0.1:5038');
   assert.equal(launch.options.detached, true);
   assert.equal(launch.options.stdio, 'ignore');
+  assert.equal(launch.options.shell,false);assert.equal(launch.options.windowsHide,true);
 });
 
 test('existing project AVD on another port is preserved without launching duplicate', async () => {
@@ -116,4 +119,10 @@ test('new forwards use no-rebind and explicit device only', async () => {
   const forwards = calls.filter(call => call.args.includes('--no-rebind'));
   assert.equal(forwards.length, 2);
   forwards.forEach(call => assert.deepEqual(call.args.slice(4, 6), ['-s', 'emulator-5582']));
+});
+
+test('x86 host images are accepted only when Android advertises compatible ARM64 translation',async()=>{
+ const translated=harness({abiList:'x86_64,arm64-v8a,armeabi-v7a,x86'});assert.deepEqual(await translated.runtime.prepare(),{ready:true});
+ const incompatible=harness({abiList:'x86_64,x86'});await assert.rejects(incompatible.runtime.prepare(),{code:'P2P_ARM64_REQUIRED'});
+ assert.equal(incompatible.calls.some(call=>call.args.includes('root')||call.args.some(value=>value.includes('arkhen-frida-server'))),false);
 });

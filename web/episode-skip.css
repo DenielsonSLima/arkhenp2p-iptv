@@ -17,6 +17,7 @@
 .episode-skip-actions[hidden],.episode-skip-panel[hidden],.episode-skip-action[hidden]{display:none!important}
 .episode-skip-panel button:focus-visible,.episode-skip-action:focus-visible{outline:2px solid #e0ebfa;outline-offset:3px}
 .ip-root:has(.ip-tools-slot:not([hidden])) .episode-skip-actions>.episode-skip-action{display:none}
+.ip-root.ip-hidden .episode-marker-configure{display:none}
 .episode-skip-actions{align-items:flex-end;flex-wrap:wrap;max-width:calc(100% - 48px)}
 .episode-next-countdown{min-width:280px;max-width:360px;padding:18px;border:1px solid #d9e3ef38;border-radius:7px;background:#111820f2;backdrop-filter:blur(12px);box-shadow:0 9px 38px #0006}
 .episode-next-title{display:block;color:#eef3fa;font-size:16px;font-weight:600;line-height:1.45;letter-spacing:-.15px}

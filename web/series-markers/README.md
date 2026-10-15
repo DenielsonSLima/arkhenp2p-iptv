@@ -16,20 +16,21 @@ Os manifests identificam temporada e episódio numericamente. Não há regra de 
 const catalog = new EpisodeMarkerCatalog();
 const result = await catalog.lookup({
   item, episode, duration: video.duration,
-  allowReferenceMarkers: true, // somente no teste autorizado das séries cadastradas
+  editionId, sourceFingerprint, // vínculo da edição/fonte previamente verificada
+  allowReferenceMarkers: true, // permite diagnóstico, nunca habilita saltos
   signal: sourceController.signal
 });
-// Aplicar somente se result.status === 'matched' e a fonte ainda for a mesma.
+// Aplicar somente se isVerifiedEpisodeMarkerResult(result, context) e a fonte ainda for a mesma.
 // result.markers contém openingStart, openingEnd e/ou creditsStart em segundos.
 ```
 
-`item` precisa representar uma série conhecida por alias exato ou ID externo explícito. O ID do provedor não é interpretado como IMDb/TMDB. Metadados externos conflitantes rejeitam a seleção, mesmo com um título parecido. `episode` precisa fornecer `season` e `number` (ou suas variantes explícitas `seasonNumber` / `episodeNumber`); não se adivinha episódio pelo ID ou nome.
+`item` precisa representar uma série conhecida por alias exato e candidato único, ou ID externo explícito. Ano informado deve ser consistente; homônimos como One Piece de 1999/2023 precisam de ano ou ID para desambiguação. O ID do provedor não é interpretado como IMDb/TMDB. Metadados externos conflitantes rejeitam a seleção, mesmo com um título parecido. `episode` precisa fornecer `season` e `number` (ou suas variantes explícitas `seasonNumber` / `episodeNumber`); não se adivinha episódio pelo ID ou nome nem se converte numeração de temporada em absoluta.
 
-O resultado fornece `status`, `markers`, `series`, `season`, `episode`, `dataVersion` e `provenance`. Os estados possíveis incluem `matched`, `unverified`, `edition-unverified`, `edition-mismatch`, `invalid-data`, `unavailable` e `cancelled`. Fora de `matched`, `markers` é sempre `null`. Trocar de fonte deve cancelar seu `AbortController`; `reset()` invalida todo o catálogo carregado e todas as respostas pendentes.
+O resultado fornece `status`, `markers`, `series`, `mediaId`, `season`, `episode`, `dataVersion` e `provenance`. Os estados possíveis incluem `matched`, `unverified`, `edition-unverified`, `edition-mismatch`, `edition-conflict`, `invalid-data`, `unavailable` e `cancelled`. Fora de `matched`, `markers` é sempre `null`. Evidências brutas podem aparecer em `references[]`, somente para diagnóstico. Trocar de fonte deve cancelar seu `AbortController`; `reset()` invalida todo o catálogo carregado e todas as respostas pendentes.
 
 O adaptador mantém um cache por série, compartilha requests simultâneos e limita o carregamento a quatro segundos. O cancelamento de um consumidor não cancela outro consumidor ativo. Erros não são armazenados como sucesso; respostas que chegam após cancelamento, timeout ou reset não entram no cache.
 
-Quando a nuvem responde com uma série parcial, uma edição incompatível ou uma referência inativa, `EpisodeMarkerReader` também verifica o arquivo local daquele episódio. O fallback só substitui o resultado se conseguir `matched`, com as mesmas regras de identidade, duração e proveniência. Um resultado válido da nuvem não precisa carregar outro arquivo local. Cada catálogo tem seu próprio limite de quatro segundos; a espera inicial da nuvem é limitada a um segundo.
+Quando a nuvem responde com uma série parcial, uma edição incompatível ou uma referência inativa, `EpisodeMarkerReader` também verifica o arquivo local daquele episódio. O fallback só fornece marcações verificadas com `matched`, com as mesmas regras de identidade, duração e prova de edição/fonte. Um registro verificado da nuvem tem prioridade e não é completado com uma janela de outra fonte. Um conflito verificado não pode ser ocultado por fallback. Cada catálogo tem seu próprio limite de quatro segundos; a espera inicial da nuvem é limitada a um segundo.
 
 ## Esquema de dados
 
@@ -49,15 +50,19 @@ Cada manifest tem `schemaVersion: 1`, uma `dataVersion` textual, `series` com `s
 
 Também podem ser preservados metadados de confiança, quantidade de contribuições, concordância e conflitos retornados pelas fontes. Um número de confiança de uma base comunitária não comprova que o arquivo do provedor tem a mesma edição. Duas bases podem compartilhar contribuições; duas URLs não provam independência.
 
-Um registro com `blockEarlyNext: true` pode ter `markers: {}` e continuar elegível, desde que os mesmos guards de identificação, duração e fonte sejam satisfeitos. Seu resultado `matched` contém `blockEarlyNext: true`; isso é uma política de preservação, sem afirmar a existência de uma abertura ou créditos. O player bloqueia a antecipação automática aproximada de 30 segundos e aguarda `ended`, salvo se houver uma marcação de créditos manual explícita. Sem essa flag, um objeto vazio não fornece marcações ativas.
+`verification.openingCandidates` pode preservar intervalos publicados para auditoria. O cliente não calcula interseção, média, deslocamento ou ampliação a partir deles. O antigo resultado `community-overlap` foi desativado: concordância entre contribuições não comprova a edição do vídeo.
 
-## Política do teste e limites
+Em Game of Thrones T5 E1, as fontes publicam 0–118,7s, 0–115,8s e 6–113s. Esses registros permanecem como referências independentes; o trecho comum não é uma janela executável no player. O manifest aberto preserva os intervalos SkipDB e suas durações originais; a referência IntroDB mantém sua própria fonte.
 
-O padrão `allowReferenceMarkers: false` mantém as referências comunitárias inativas. O teste autorizado usa `true` somente para as séries explicitamente cadastradas. Para ativá-las, é obrigatório haver identificação IMDb conhecida, fonte pública HTTPS, janela válida e duração do vídeo dentro da tolerância informada, com máximo de **três segundos**. O resultado é identificado como `confidence: 'community-reference'` e deve ser exibido no player como referência em teste. Registros com fontes conflitantes e `verification.status: 'unverified'` continuam inativos.
+Um registro verificado com `blockEarlyNext: true` pode ter `markers: {}` e continuar elegível, desde que identificação, duração e vínculo de edição/fonte sejam satisfeitos. Seu resultado `matched` contém `blockEarlyNext: true`; isso é uma política de preservação, sem afirmar a existência de abertura ou créditos. O player bloqueia a antecipação configurada e aguarda `ended`, salvo marcação manual explícita de créditos. Sem essa flag, um objeto vazio não fornece marcações ativas. O padrão novo `markers` já aguarda `ended` quando não há créditos verificados/manuais; offsets previamente salvos são preservados.
 
-A duração pública pode ser derivada do fim dos créditos indicado pela fonte. Isso é uma referência de runtime, não uma medição do arquivo do provedor. Duração semelhante reduz erros de versão, mas não prova cortes, recapitulações ou logotipos idênticos. Não há reconhecimento visual ou acústico de abertura. Nenhum tempo é escalado para fazer uma edição diferente caber.
+## Política de verificação e limites
 
-A política `verified` é mais estrita: além da fonte pública e duração com tolerância máxima de dois segundos, exige `editionId` explícito coincidente ou `sourceFingerprint` coincidente. Uma edição explicitamente diferente sempre é rejeitada, inclusive no modo de teste comunitário. As marcações manuais por conta/fonte continuam sendo outro módulo e podem ter prioridade na integração.
+Referências comunitárias ficam inativas para execução independentemente de `allowReferenceMarkers`, da duração ou da quantidade de fontes concordantes. A opção apenas permite retornar evidência bruta em `references[]`. Não existe botão de pulo baseado somente nessa evidência, nem convite automático para o usuário calibrar cada episódio.
+
+O fim de créditos publicado pela fonte pode anteceder cenas adicionais e não deve ser inferido como duração final do arquivo. Duração semelhante não prova cortes, recapitulações ou logotipos idênticos. Não há reconhecimento visual ou acústico de abertura neste resolvedor. Nenhum tempo é escalado para fazer uma edição diferente caber.
+
+A política `verified` é a única executável: além da fonte documentada e duração com tolerância máxima de dois segundos, exige `editionId` explícito coincidente ou `sourceFingerprint` coincidente. Uma edição explicitamente diferente sempre é rejeitada. Registros verificados divergentes para o mesmo vínculo retornam `edition-conflict`. O player repete as guardas antes de agir. As marcações manuais por conta/fonte continuam sendo outro módulo e têm prioridade na integração.
 
 Se uma edição comprovada e uma referência comunitária forem ambas compatíveis, a edição comprovada tem prioridade. O adaptador Supabase pode preservar um fingerprint explícito em `provenance.edition.sourceFingerprint`; a string formada pelos IDs do provedor e container no player não comprova a edição do arquivo e não é convertida em verificação. Sem prova real fornecida ao resolvedor, `verified` permanece inativo.
 
@@ -69,6 +74,6 @@ Execute `node --test tests/series-marker-catalog.test.mjs` para conferir identid
 
 ## Cobertura pesquisada e seed
 
-A pesquisa de 15/10/2026 encontrou 73 registros de Game of Thrones: 21 concordantes para o teste e 52 com conflitos entre bases. Em Os Anéis de Poder, há 16 registros: sete elegíveis ao teste e nove inativos, incluindo seis sem runtime público que permita conferir a edição. Nenhum runtime foi preenchido por aproximação.
+A pesquisa inicial de 15/10/2026 encontrou 73 registros de Game of Thrones: 21 referências concordantes e 52 com conflitos entre bases. Em Os Anéis de Poder, havia 16 registros: sete referências concordantes e nove inativas, incluindo seis sem runtime público. Nenhum desses totais certifica a edição WPLAY ou autoriza execução automática. A auditoria posterior está em [relatório de fontes](../../reports/marker-source-audit-2026-10-15.md).
 
 `tools/prepare-series-marker-data.mjs` normaliza o arquivo de respostas pesquisadas dos Anéis de Poder e gera `supabase/seed-series-markers.sql` para os dois manifests. O seed contém 83 linhas com duração e limites válidos: 28 `community-reference` e 55 `unverified`. As seis referências sem runtime ficam documentadas no manifest local e não são inseridas com uma duração fictícia no banco. O seed preserva URLs públicas, datas, evidências e motivos dos conflitos.

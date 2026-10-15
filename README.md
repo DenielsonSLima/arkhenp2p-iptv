@@ -4,27 +4,27 @@ Aplicativo local com catálogo real de TV ao vivo, filmes e séries, identidade 
 
 ## Executar
 
-Neste Mac já preparado, abra **`Iniciar ARKEHN.command`** no Finder ou execute na raiz do projeto:
+Execute na raiz do projeto em Windows, macOS ou Linux:
 
 ```sh
-npm run start:p2p
+npm start
 ```
 
-Abra **http://localhost:4173** e mantenha o terminal aberto. O iniciador prepara os componentes locais já instalados para a TV P2P e reutiliza a sessão do APK. Encerre o servidor anterior antes de iniciar outra instância. Use `Ctrl+C` para encerrar.
+Abra **http://localhost:4173** e mantenha o terminal aberto. No Windows, **`Iniciar ARKHEN.cmd`** executa esse comando; no macOS, use **`Iniciar ARKEHN.command`**. O fluxo padrão utiliza os serviços WPLAY e a reprodução HTTP do player web oficial. Use `Ctrl+C` para encerrar o servidor e limpar a reprodução.
 
-O aplicativo requer Node.js 22 ou superior. O bundle do cliente Supabase/TanStack está versionado; para instalar as dependências fixadas e recompilá-lo, execute `npm ci` e `npm run build:cloud`. `npm start` ou `npm run dev` iniciam somente o servidor web: permitem autenticar, consultar o catálogo e reproduzir fontes HTTP, mas não preparam a engine Android necessária aos canais `tvbus://`. As pré-condições do modo P2P estão em [tools/original-engine/README.md](tools/original-engine/README.md#comando-único-neste-mac).
+O aplicativo requer Node.js 22 ou superior. O bundle do cliente Supabase/TanStack está versionado; para instalar as dependências fixadas e recompilá-lo, execute `npm ci` e `npm run build:cloud`. A integração experimental com o APK Android permanece opcional, documentada em [tools/original-engine/README.md](tools/original-engine/README.md).
 
 Os avisos e licenças das dependências distribuídas estão em [CLOUD-LICENSES.txt](web/assets/vendor/CLOUD-LICENSES.txt), gerado junto com o bundle.
 
 ## Publicação e hospedagem
 
-O repositório contém o código, os testes e os recursos da interface. Credenciais, sessões locais, APKs de investigação, emuladores, SDKs e ambientes de execução locais ficam fora do Git. Clonar o repositório permite executar o servidor web básico; a TV P2P requer a preparação local descrita acima.
+O repositório contém o código, os testes e os recursos da interface. Credenciais, sessões locais, APKs de investigação, emuladores, SDKs e ambientes de execução locais ficam fora do Git. A reprodução web usa as fontes autorizadas pela WPLAY; os experimentos com APK ficam documentados separadamente.
 
-Para funcionar na Vercel, esta versão ainda precisa de adaptação do backend: o servidor aceita apenas acesso local, mantém sessões em memória e integra a TV P2P a uma engine Android neste computador. Publicar somente `web/` não disponibiliza as APIs necessárias para login, catálogo e reprodução. O envio ao GitHub preserva a versão local atual.
+Para funcionar na Vercel, esta versão ainda precisa de adaptação do backend: o servidor aceita apenas acesso local e mantém sessões em memória. Publicar somente `web/` não disponibiliza as APIs necessárias para login, catálogo e reprodução. O envio ao GitHub preserva a versão local atual.
 
 ## Conexão
 
-A TV P2P usa, neste Mac, a engine do APK original em um emulador local já autenticado. `start:p2p` ativa essa integração; o servidor web básico a mantém desativada por padrão. O iniciador não solicita senha, mas o login do navegador precisa corresponder à conta ativa no APK.
+A conexão padrão conserva a autenticação, o catálogo e os identificadores WPLAY. Fontes HTTP do catálogo têm prioridade. Nos canais com fonte TVBus, a integração com `player.wplayott.com` consulta a transmissão web da mesma conta, com associação conservadora do canal. Favoritos e progresso conservam os identificadores originais.
 
 A integração WPLAY usa os endpoints observados no APK; a opção WPLAY OTT usa o player web oficial. Cookies e tokens ficam na memória do servidor local. Usuário, senha, cookies, tokens e endereços privados do provedor não são incluídos nas respostas do catálogo nem nas URLs de reprodução apresentadas ao navegador.
 
@@ -50,7 +50,7 @@ Para configurar um servidor Xtream, também aceita `IPTV_SERVER`, `IPTV_USERNAME
 - Identidade em preto e prata, com símbolo e wordmark reconstruídos em SVG e PNG transparente de alta resolução, além do favicon.
 - Configurações de reprodução, teste de conexão e organização do catálogo, com preferências da conta sincronizadas quando a nuvem está disponível.
 - Configurações em página própria, com rota e navegação de volta ao catálogo.
-- Categorias que podem ser ocultadas/restauradas e grupos personalizados de canais, filmes ou séries.
+- Categorias que podem ser ocultadas/restauradas. Filmes e Séries abrem em Favoritos quando há títulos salvos, ou em Lançamentos quando não há. A ordem é Favoritos, Lançamentos, Todos, demais categorias em ordem alfabética e Adulto ao final. A criação de categorias foi removida da interface.
 - Resolução, áudio e legendas conforme as variantes e faixas disponibilizadas pela fonte; importação local de legendas SRT/WebVTT.
 - Perfis de buffer separados para ao vivo e filmes/séries, quando HLS.js controla a reprodução; nas fontes nativas o navegador controla o buffer.
 - Login com o mosaico enviado pelo usuário, degradê preto mais opaco à esquerda, símbolo em destaque e barra preta superior. A página ocupa a altura disponível; opções avançadas longas têm rolagem interna no formulário.
@@ -58,9 +58,9 @@ Para configurar um servidor Xtream, também aceita `IPTV_SERVER`, `IPTV_USERNAME
 - Favoritos atualizados diretamente nos cards; categorias e carregamento adicional preservam imagens e controles já montados. Trocar a categoria retorna ao topo.
 - Indicadores do player para vídeo disponível no buffer, resolução, travamentos observados e estimativa de entrega quando disponível.
 - Qualidade automática que pode ser ativada/desativada e mantém a preferência neste navegador.
-- Abertura e créditos podem vir dos marcadores por episódio no Supabase, das referências locais de teste ou de marcações manuais nos ajustes do reprodutor. A identidade, duração e política da edição determinam quais dados podem ser usados. As contagens de abertura e próximo episódio duram cinco segundos e podem ser canceladas. Sem créditos marcados, o modo padrão oferece o próximo episódio pelo intervalo final configurado, explicitamente aproximado. Não há detecção automática de cenas; consulte [reprodução de séries](docs/series-playback.md).
+- Abertura e créditos usam somente marcadores conferidos para a edição do episódio ou marcações manuais nos ajustes do reprodutor. Referências comunitárias de APIs permanecem diagnósticas até essa confirmação. As contagens de abertura e próximo episódio duram cinco segundos e podem ser canceladas. Sem créditos conferidos, o padrão aguarda o evento real de fim do vídeo; preferências anteriores de intervalo final continuam respeitadas. Não há detecção automática de cenas; consulte [verificação dos marcadores](docs/marker-playback-verification.md).
 
-O catálogo inclui as categorias disponibilizadas pela conta no provedor, inclusive conteúdo adulto quando liberado na assinatura. Categorias podem ser ocultadas em Configurações. A disponibilidade de cada mídia, qualidade e codecs depende do serviço e do navegador. Conteúdos MKV/AVI não são convertidos para outro formato pelo app.
+O catálogo inclui as categorias disponibilizadas pela conta no provedor. Conteúdo adulto fica bloqueado por padrão, com PIN inicial `0000`; o desbloqueio exige também disponibilidade na assinatura. Sua reprodução não gera histórico, progresso ou Continuar assistindo, mesmo depois do desbloqueio. Categorias podem ser ocultadas em Configurações. A disponibilidade de cada mídia, qualidade e codecs depende do serviço e do navegador. Conteúdos MKV/AVI não são convertidos para outro formato pelo app.
 
 Na conexão opcional WPLAY OTT, quando o player web informa que o servidor da lista está indisponível, o acesso retorna HTTP 503 com essa causa, sem classificar a falha como senha incorreta. Catálogos vazios recebidos durante essa condição não são guardados como atualização bem-sucedida. Essa falha do player web é independente do acesso WPLAY nativo, usado por padrão.
 
@@ -98,7 +98,9 @@ O servidor mantém em memória até 32 MB de segmentos já solicitados, com vali
 
 Se os segmentos chegam continuamente mais devagar do que o vídeo os consome, um buffer maior apenas adia o próximo travamento. Se chegam com folga mas há quadros perdidos, é preciso investigar codec, navegador e aparelho. Essas hipóteses precisam ser confirmadas pela telemetria da sessão.
 
-Ocultar categorias e reduzir capas simultâneas alivia a interface. No acesso WPLAY nativo, filmes e séries carregam suas páginas automaticamente em segundo plano, em todas as categorias visíveis. A busca considera os títulos já recebidos e atualiza os resultados enquanto a carga completa termina. Não há botão Carregar mais. Os conectores OTT e Xtream mantêm seus próprios contratos de catálogo. Cards e imagens são montados conforme a navegação; isso não limita a busca aos cards exibidos. Ocultar grupos não altera o bitrate nem a capacidade do provedor.
+Filmes, Séries e TV têm estados, erros e tarefas de importação independentes. O snapshot global completo é carregado integralmente e guardado no IndexedDB da TV/Chrome por 24 horas; reabrir dentro desse prazo reutiliza os metadados. Atualização ou erro preserva o último snapshot válido. Durante a primeira importação global, a prévia é identificada como incompleta; ela não representa o total do catálogo. A busca considera todos os metadados recebidos. Cards e imagens são montados conforme a navegação para reduzir trabalho visual, sem limitar a busca aos cards exibidos.
+
+Favoritos, progresso e listas vêm da biblioteca privada, inclusive quando seus títulos estão fora da prévia. Realtime pessoal não dispara uma nova importação global a cada progresso. A arquitetura e os critérios de estabilização estão em [catálogos por domínio](docs/catalog-architecture.md) e no [plano de estabilização](docs/engineering-recovery.md). Ocultar grupos não altera o bitrate nem a capacidade do provedor.
 
 ### Qualidade automática
 

@@ -1,20 +1,22 @@
 import { withoutSessionArtwork } from './stored-artwork.js';
+import { isAdultItem } from './parental-classification.js';
 
 const key = item => `${item.kind}:${item.id}`;
 const list = value => Array.isArray(value) ? value : [];
 const valid = item => item && ['live','movie','series'].includes(item.kind) && typeof item.id === 'string' && typeof item.name === 'string';
 const title = value => String(value || '').normalize('NFKD').replace(/\p{M}/gu, '').toLowerCase().replace(/\s+/g, ' ').trim();
-const validHistory = entry => valid(entry?.item)&&Number.isFinite(entry.time);
+const privateHistory = entry => isAdultItem(entry)||isAdultItem(entry?.item)||isAdultItem(entry?.episode);
+const validHistory = entry => valid(entry?.item)&&Number.isFinite(entry.time)&&!privateHistory(entry);
 const accountID = value => typeof value==='string'&&/^[a-f0-9]{64}$/i.test(value)?value.toLowerCase():'';
 const authorizedImport = 'legacy:authorized';
 
 // Provider IDs are different namespaces. Keep legacy records intact, and adopt
 // them only after both their ID and title match this connection's real catalog.
 export class MediaLibrary {
-  constructor({read,save,favorites,history}) {
-    Object.assign(this,{read,save,favorites,history});
+  constructor({read,save,favorites,history,onMigrate=()=>{},canRemember=()=>true}) {
+    Object.assign(this,{read,save,favorites,history,onMigrate,canRemember});
     this.legacyFavorites=list(read('orbit.favorites.v1',[])).filter(valid);
-    this.legacyHistory=list(read('orbit.history.v1',[])).filter(entry=>valid(entry?.item)&&Number.isFinite(entry.time));
+    this.legacyHistory=list(read('orbit.history.v1',[])).filter(validHistory);
   }
   activate(provider,accountId) {
     this.provider=['wplay','wplay-ott','xtream'].includes(provider)?provider:'xtream';
@@ -24,23 +26,30 @@ export class MediaLibrary {
     this.currentItems=new Map();
     this.adopted=new Set(list(this.read(`${this.prefix}.adopted`,[])).filter(value=>typeof value==='string'));
     this.favorites.clear();this.history.clear();
-    for(const item of list(this.read(`${this.prefix}.favorites`,[])).filter(valid))this.favorites.set(key(item),withoutSessionArtwork(item));
-    for(const entry of list(this.read(`${this.prefix}.history`,[])).filter(validHistory)){
+    for(const item of list(this.read(`${this.prefix}.favorites`,[])).filter(valid)){if(this.accountId&&item.libraryId&&item.libraryId!==this.accountId)continue;this.favorites.set(key(item),withoutSessionArtwork({...item,...(this.accountId?{libraryId:this.accountId}:{})}));}
+    const storedHistory=list(this.read(`${this.prefix}.history`,[]));
+    for(const entry of storedHistory.filter(validHistory)){
       if(this.accountId&&entry.libraryId&&entry.libraryId!==this.accountId)continue;
+      if(!this.remembers(entry.item))continue;
       this.history.set(key(entry.item),{...entry,...(this.accountId?{libraryId:this.accountId}:{}),item:withoutSessionArtwork(entry.item)});
     }
     // Only an exact account tag proves ownership of records from shared v2/v1.
     // Untagged data stays untouched until the user deliberately imports it.
     if(this.accountId)this.#adoptVerifiedHistory();
+    if(storedHistory.some(entry=>valid(entry?.item)&&!this.remembersEntry(entry)))this.saveHistory();
   }
   saveFavorites() {if(this.prefix)this.save(`${this.prefix}.favorites`,[...this.favorites.values()].map(withoutSessionArtwork));}
-  saveHistory() {if(this.prefix)this.save(`${this.prefix}.history`,[...this.history.values()].map(entry=>({...entry,...(this.accountId?{libraryId:this.accountId}:{}),item:withoutSessionArtwork(entry.item)})));}
+  remembers(item){if(!item)return false;const current=this.currentItems?.get(key(item));return !isAdultItem(item)&&!isAdultItem(current)&&this.canRemember(item)&&(!current||this.canRemember(current));}
+  remembersEntry(entry){return !privateHistory(entry)&&this.remembers(entry?.item);}
+  purgeHistory(){let removed=0;for(const [id,entry]of this.history)if(!this.remembersEntry(entry)){this.history.delete(id);removed++;}if(removed)this.saveHistory();return removed;}
+  saveHistory() {for(const [id,entry]of this.history)if(!this.remembersEntry(entry))this.history.delete(id);if(this.prefix)this.save(`${this.prefix}.history`,[...this.history.values()].map(entry=>({...entry,...(this.accountId?{libraryId:this.accountId}:{}),item:withoutSessionArtwork(entry.item)})));}
   #legacyRecords(){
     const favoriteSources=[...list(this.read(`${this.providerPrefix}.favorites`,[])),...this.legacyFavorites];
     const historySources=[...list(this.read(`${this.providerPrefix}.history`,[])),...this.legacyHistory];
     const favorites=new Map(),history=new Map();
     for(const item of favoriteSources.filter(valid))if(!item.libraryId||item.libraryId===this.accountId)if(!favorites.has(key(item)))favorites.set(key(item),item);
     for(const entry of historySources.filter(validHistory)){
+      if(!this.remembers(entry.item))continue;
       if(entry.libraryId&&entry.libraryId!==this.accountId)continue;
       const id=key(entry.item),previous=history.get(id);
       if(!previous||Number(entry.updated||0)>Number(previous.updated||0))history.set(id,entry);
@@ -51,6 +60,7 @@ export class MediaLibrary {
     let changed=false,historyChanged=false;
     const verified=new Map();
     for(const entry of [...list(this.read(`${this.providerPrefix}.history`,[])),...this.legacyHistory].filter(validHistory)){
+      if(!this.remembers(entry.item))continue;
       if(entry.libraryId!==this.accountId)continue;
       const id=key(entry.item),previous=verified.get(id);
       if(!previous||Number(entry.updated||0)>Number(previous.updated||0))verified.set(id,entry);
@@ -82,7 +92,8 @@ export class MediaLibrary {
   migrate(catalog) {
     if(!this.prefix)return;
     const current=new Map((catalog?.items||[]).map(item=>[key(item),item]));
-    for(const [id,item] of current)this.currentItems.set(id,item);
+    for(const [id,item] of current)this.currentItems.set(id,isAdultItem(item,catalog.categories)?{...item,isAdult:true}:item);
+    this.purgeHistory();
     if(this.accountId&&!this.adopted.has(authorizedImport))return;
     const sources=this.accountId?this.#legacyRecords():{favorites:this.legacyFavorites,history:this.legacyHistory};
     let changed=false,favoritesChanged=false,historyChanged=false;
@@ -93,8 +104,9 @@ export class MediaLibrary {
       return {id,item:withoutSessionArtwork({...stored,...item,savedAt:stored.savedAt})};
     };
     for(const stored of sources.favorites){const adopted=adopt(stored,'favorites');if(adopted&&!this.favorites.has(adopted.id)){this.favorites.set(adopted.id,adopted.item);favoritesChanged=true;}}
-    for(const entry of sources.history){const adopted=adopt(entry.item,'history');if(adopted&&!this.history.has(adopted.id)){this.history.set(adopted.id,{...entry,...(this.accountId?{libraryId:this.accountId}:{}),item:adopted.item});historyChanged=true;}}
+    for(const entry of sources.history){if(!this.remembersEntry(entry))continue;const adopted=adopt(entry.item,'history');if(adopted&&this.remembers(adopted.item)&&!this.history.has(adopted.id)){this.history.set(adopted.id,{...entry,...(this.accountId?{libraryId:this.accountId}:{}),item:adopted.item});historyChanged=true;}}
     if(favoritesChanged)this.saveFavorites();if(historyChanged)this.saveHistory();
     if(changed)this.save(`${this.prefix}.adopted`,[...this.adopted]);
+    if(favoritesChanged||historyChanged)this.onMigrate({favorites:favoritesChanged,history:historyChanged});
   }
 }

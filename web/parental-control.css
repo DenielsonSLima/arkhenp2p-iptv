@@ -1,0 +1,8 @@
+.parental-dialog{width:min(100% - 32px,480px);padding:0;border:1px solid #ffffff1f;border-radius:18px;color:#f4f4f5;background:#111317;box-shadow:0 24px 100px #000a}
+.parental-dialog::backdrop{background:#030609dc;backdrop-filter:blur(14px)}
+.parental-panel{padding:42px 36px 32px;text-align:center}.parental-panel h2{font-size:28px;font-weight:500;margin:20px 0 12px}.parental-panel p{color:#aeb5c0;line-height:1.65}
+.parental-symbol{display:grid;place-items:center;width:66px;height:66px;margin:auto;border:1px solid #9cb0c04d;border-radius:50%;font-size:23px;letter-spacing:1px;background:#202a33}
+.parental-pin-label{display:grid;gap:12px;margin-top:28px;color:#aeb5c0;font-size:13px;text-align:left}.parental-pin{width:100%;box-sizing:border-box;padding:16px;border:1px solid #ffffff30;border-radius:8px;background:#07090c;color:#fff;text-align:center;font-size:30px;letter-spacing:18px;outline-offset:4px}.parental-pin:focus-visible{outline:2px solid #bacfdf}.parental-pin[aria-invalid=true]{border-color:#e7a6a6}
+.parental-panel .parental-error{min-height:26px;color:#edb0b0;font-size:13px}.parental-actions{display:flex;gap:12px;justify-content:center}.parental-actions .button{flex:1}.parental-settings{max-width:660px}
+@media(max-width:520px){.parental-panel{padding:30px 22px 24px}.parental-actions{flex-direction:column}}
+@media(max-height:650px){.parental-panel{padding-top:24px;padding-bottom:22px}.parental-symbol{width:48px;height:48px;font-size:19px}.parental-panel h2{margin-top:14px;font-size:25px}.parental-pin-label{margin-top:16px}.parental-pin{padding:10px}.parental-panel .parental-error{min-height:18px;margin:8px 0}}

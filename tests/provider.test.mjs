@@ -40,7 +40,7 @@ function assertPrivate(value, origin) {
   }
 }
 
-async function fixture({ holdLiveStreams = false, failedSegment = false, reusedSegment = false, adultAvailable = true, bootstrapRedirect = false, truncatedSegment = false } = {}) {
+async function fixture({ holdLiveStreams = false, failedSegment = false, reusedSegment = false, adultAvailable = true, bootstrapRedirect = false, truncatedSegment = false, secondChannel = false } = {}) {
   const requests = [];
   let releaseLive;
   let markLiveRequested;
@@ -71,7 +71,7 @@ async function fixture({ holdLiveStreams = false, failedSegment = false, reusedS
           { stream_id: 203, category_id: '404', name: 'Categoria ausente', stream_icon: image }
         ],
         get_live_categories: [{ category_id: '2', category_name: 'Esportes' }],
-        get_live_streams: [{ stream_id: 101, category_id: '2', name: 'Canal &amp; HD', stream_icon: image }],
+        get_live_streams: [{ stream_id: 101, category_id: '2', name: 'Canal &amp; HD', stream_icon: image },...(secondChannel?[{stream_id:102,category_id:'2',name:'Outro canal',stream_icon:image}]:[])],
         get_series_categories: [{ category_id: '3', category_name: 'Drama' }],
         get_series: [{ series_id: 301, category_id: '3', name: 'Série &amp; Mistério', cover: image }],
         get_series_info: {
@@ -100,7 +100,7 @@ async function fixture({ holdLiveStreams = false, failedSegment = false, reusedS
       res.writeHead(200, { 'Content-Type': 'video/x-matroska' }).end('synthetic-episode');
       return;
     }
-    const entryPlaylist = url.pathname === `/live/${username}/${password}/101.m3u8`;
+    const entryPlaylist = [101,...(secondChannel?[102]:[])].some(id=>url.pathname === `/live/${username}/${password}/${id}.m3u8`);
     const sessionPlaylist = /^\/redirect-session\/(\d+)\/index\.m3u8$/.exec(url.pathname);
     if (entryPlaylist && bootstrapRedirect) {
       bootstrapGeneration++;
@@ -145,11 +145,13 @@ async function fixture({ holdLiveStreams = false, failedSegment = false, reusedS
     res.writeHead(404).end();
   });
   origin = await listen(provider);
-  const app = createApp({ connection: { server: origin, username, password }, allowPrivateUpstream: true });
+  let fixtureClient;
+  const app = createApp({ connection: { server: origin, username, password }, allowPrivateUpstream: true,providerFactory:({config,options})=>(fixtureClient=new ProviderClient(config,options)) });
+  let liveReads=0;app.on('request',req=>{if(req.url.startsWith('/api/play/live/'))liveReads++;});
   let base;
   try { base = await listen(app); } catch (error) { await close(provider); throw error; }
   return {
-    base, origin, requests, liveRequested, releaseLive,
+    base, origin, requests, liveRequested, releaseLive,playbackIntents:()=>fixtureClient?.playbackGeneration,liveReads:()=>liveReads,
     advanceManifest() { manifestSequence++; segmentBody = 'second-generation'; },
     enableAdultCatalog() { adultAvailable = true; },
     expireResolvedPlaylist(status = 410) { expiredSessions.set(bootstrapGeneration, status); },
@@ -183,6 +185,9 @@ test('the local player authenticates, sanitizes catalog data, and proxies only r
     });
 
     await t.test('movies include authorized adult categories and omit streams in categories the provider did not return', async () => {
+      const locked=await fetch(`${mock.base}/api/catalog?type=movies`,{headers:{Cookie:cookie}});
+      assert.equal(locked.status,200);const safe=await locked.json();assert.deepEqual(safe.categories.map(category=>category.id),['1']);assert.deepEqual(safe.items.map(item=>item.id),['201']);
+      const unlock=await fetch(`${mock.base}/api/parental/unlock`,{method:'POST',headers:{Cookie:cookie,Origin:mock.base,'Content-Type':'application/json'},body:JSON.stringify({pin:'0000'})});assert.equal(unlock.status,200);assert.equal((await unlock.json()).unlocked,true);
       const response = await fetch(`${mock.base}/api/catalog?type=movies`, { headers: { Cookie: cookie } });
       assert.equal(response.status, 200);
       const catalog = await response.json();
@@ -377,6 +382,46 @@ test('stopping while channel metadata loads prevents a late playback request fro
   } finally { await mock.close(); }
 });
 
+test('logout while parental metadata loads prevents a late playback request from opening media', async () => {
+  const mock=await fixture({holdLiveStreams:true});
+  try{
+    const session=await loginFixture(mock),cookie=sessionCookie(session);await session.json();
+    const pending=fetch(`${mock.base}/api/play/live/101/index.m3u8`,{headers:{Cookie:cookie}});await mock.liveRequested;
+    const logout=await fetch(`${mock.base}/api/logout`,{method:'POST',headers:{Cookie:cookie,Origin:mock.base}});assert.equal(logout.status,200);await logout.json();mock.releaseLive();
+    const stale=await pending;assert.equal(stale.status,409);await stale.text();assert.ok(!mock.requests.some(request=>request.path.startsWith('/live/')));
+  }finally{await mock.close();}
+});
+
+test('a newer selection supersedes playback still waiting for parental metadata',async()=>{
+  const mock=await fixture({holdLiveStreams:true,secondChannel:true});
+  try{
+    const session=await loginFixture(mock),cookie=sessionCookie(session);await session.json();
+    const first=fetch(`${mock.base}/api/play/live/101/index.m3u8`,{headers:{Cookie:cookie}});await mock.liveRequested;const intent=mock.playbackIntents();
+    const next=fetch(`${mock.base}/api/play/live/102/index.m3u8`,{headers:{Cookie:cookie}}),deadline=Date.now()+1000;
+    while(mock.playbackIntents()===intent&&Date.now()<deadline)await new Promise(setImmediate);
+    assert.ok(mock.playbackIntents()>intent,'The newer request must reserve its intent before metadata resolves.');mock.releaseLive();
+    const [stale,current]=await Promise.all([first,next]);assert.equal(stale.status,409);await stale.text();assert.equal(current.status,200);assert.match(await current.text(),/^#EXTM3U/);
+    assert.equal(mock.requests.filter(request=>request.path.startsWith('/live/')).length,1);
+  }finally{await mock.close();}
+});
+
+test('overlapping live HEAD probes and GET retries share a selection while metadata loads',async t=>{
+  for(const method of ['GET','HEAD'])await t.test(method,async()=>{
+    const mock=await fixture({holdLiveStreams:true});
+    try{
+      const session=await loginFixture(mock),cookie=sessionCookie(session);await session.json();
+      const url=`${mock.base}/api/play/live/101/index.m3u8`,headers={Cookie:cookie};
+      const first=fetch(url,{method,headers});await mock.liveRequested;const intent=mock.playbackIntents();
+      const next=fetch(url,{headers}),deadline=Date.now()+1000;
+      while(mock.liveReads()<2&&Date.now()<deadline)await new Promise(setImmediate);
+      assert.equal(mock.liveReads(),2);await new Promise(setImmediate);
+      assert.equal(mock.playbackIntents(),intent,'Repeated readers must not become channel changes.');
+      mock.releaseLive();const [a,b]=await Promise.all([first,next]);
+      assert.equal(a.status,200);assert.equal(b.status,200);await a.text();assert.match(await b.text(),/^#EXTM3U/);
+    }finally{await mock.close();}
+  });
+});
+
 test('upstream HTTP failures for actual segments reach the playback assessment', async () => {
   const mock = await fixture({ failedSegment: true });
   try {
@@ -415,9 +460,12 @@ test('refreshing the catalog includes categories newly released by a subscriptio
     const cached = await readCatalog();
     assert.deepEqual(cached.categories.map(category => category.id), ['1']);
     const refreshed = await readCatalog(true);
-    assert.deepEqual(refreshed.categories.map(category => category.id), ['1', '9']);
-    assert.deepEqual(refreshed.items.map(item => item.id), ['201', '202']);
-    assert.ok(!refreshed.items.some(item => item.id === '203'));
+    assert.deepEqual(refreshed.categories.map(category=>category.id),['1']);assert.deepEqual(refreshed.items.map(item=>item.id),['201']);
+    const unlock=await fetch(`${mock.base}/api/parental/unlock`,{method:'POST',headers:{Cookie:cookie,Origin:mock.base,'Content-Type':'application/json'},body:JSON.stringify({pin:'0000'})});assert.equal(unlock.status,200);assert.equal((await unlock.json()).unlocked,true);
+    const authorized=await readCatalog();
+    assert.deepEqual(authorized.categories.map(category => category.id), ['1', '9']);
+    assert.deepEqual(authorized.items.map(item => item.id), ['201', '202']);
+    assert.ok(!authorized.items.some(item => item.id === '203'));
     assert.equal(mock.requests.filter(request => request.action === 'get_vod_categories').length, 2);
     assert.equal(mock.requests.filter(request => request.action === 'get_vod_streams').length, 2);
     assertPrivate(refreshed, mock.origin);

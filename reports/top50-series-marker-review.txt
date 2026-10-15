@@ -1,0 +1,17 @@
+Revisão das 50 séries do IPTV — 15/10/2026, 10:39 (Brasília)
+
+Foram revisadas 50 séries distintas presentes no aplicativo ou no catálogo IPTV capturado. A seleção priorizou os itens já presentes no aplicativo, as notas informadas pelo provedor e a diversidade de categorias. Não é um ranking oficial. O conjunto de candidatos veio de 509 itens reais; essa captura parcial não foi publicada como catálogo completo.
+
+22 identidades foram conferidas por IMDb, nome/alias exato, ano e tipo série. As outras 28 ficaram explicitamente sem identidade comprovada. Nenhum identificador foi adivinhado para preencher lacunas.
+
+Foram consultados os primeiros 1–3 episódios das 22 séries identificadas, somando 66 episódios. Nesses episódios, 8 têm abertura no conjunto aprovado SkipDB e 24 têm abertura IntroDB. Há sobreposição entre as fontes; esses números não devem ser somados como episódios distintos.
+
+Game of Thrones: os três primeiros episódios possuem abertura IntroDB. Os Anéis de Poder: dois dos três primeiros possuem abertura IntroDB.
+
+O episódio Game of Thrones S05E01 mostrado na captura também foi conferido: IntroDB informa abertura de 00:06 até 01:53. Essa referência foi persistida globalmente. Ela é comunitária e não comprova a edição do vídeo IPTV; permanece disponível para ação manual, com os limites de duração e identidade do player. Nenhum runtime ou deslocamento foi inventado.
+
+Foram feitas 67 consultas IntroDB nesta revisão, abaixo do limite de 150. O cache público evitou repetir chamadas ao refazer a conferência dos aliases.
+
+A leitura final de confirmação do Supabase encontrou as 50 identidades selecionadas, 22 resolvidas, os 66 episódios da revisão e as 24 janelas IntroDB iguais às fontes registradas. A referência adicional S05E01 também foi relida e confirmada em 00:06–01:53, com a edição ainda não verificada. Nenhum favorito, histórico, progresso, conta ou credencial foi alterado.
+
+Os detalhes por série, motivos de identidade pendente, temporadas, episódios, horários e URLs de origem estão em top50-series-marker-review.json. A planilha resumida está em top50-series-marker-review.csv.

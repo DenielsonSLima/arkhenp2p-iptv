@@ -1,0 +1,3705 @@
+{
+  "reviewedAt": "2026-10-15T13:17:47.770Z",
+  "catalogCapturedAt": "2026-10-15T12:59:57.842Z",
+  "catalogComplete": false,
+  "selectionPolicy": "Até 50 séries reais: itens já presentes no aplicativo primeiro; depois notas do provedor e diversidade nas categorias capturadas. Não é um ranking oficial.",
+  "candidatePool": 509,
+  "maximumIntroDBRequests": 150,
+  "editionPolicy": "Horários sem duração original permanecem referência manual; nenhum runtime ou deslocamento é inferido.",
+  "rows": [
+    {
+      "position": 1,
+      "iptvId": "999725200",
+      "iptvTitle": "Game Of Thrones - 2011",
+      "year": 2011,
+      "providerRating": null,
+      "category": "Itens do aplicativo",
+      "priorityReason": "Já presente entre os itens do aplicativo",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "approved-source-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [
+              3699.2,
+              3702.1
+            ],
+            "hasIntro": true
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:10:01.240Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 437000,
+                "end_ms": 531000,
+                "confidence": 1
+              },
+              "outro": {
+                "start_ms": 3631500,
+                "end_ms": 3699500,
+                "confidence": 1
+              }
+            }
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "approved-source-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [
+              3322.4,
+              3319.8
+            ],
+            "hasIntro": true
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:10:01.725Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 6000,
+                "end_ms": 105000,
+                "confidence": 1
+              },
+              "outro": {
+                "start_ms": 3252000,
+                "end_ms": 3320000,
+                "confidence": 1
+              }
+            }
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "approved-source-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [
+              3438.5,
+              3436.5
+            ],
+            "hasIntro": true
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt0944947&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:10:02.863Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 6000,
+                "end_ms": 102000,
+                "confidence": 1
+              },
+              "outro": {
+                "start_ms": 3366000,
+                "end_ms": 3437000,
+                "confidence": 1
+              }
+            }
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Game%20Of%20Thrones.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Game%20Of%20Thrones",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Game+Of+Thrones&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "imdbId": "tt0944947",
+      "tmdbId": 1399,
+      "seriesSlug": "game-of-thrones",
+      "matchedTitle": "Game of Thrones",
+      "identityMethod": "wikidata-exact-alias-and-imdb-type-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/Game%20Of%20Thrones.json",
+        "https://www.wikidata.org/wiki/Q23572",
+        "https://www.imdb.com/title/tt0944947/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt0944947",
+        "seasons": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "totals": {
+          "approved": 312,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 3,
+      "introDBEpisodesWithIntro": 3,
+      "introDBEmpty": 0,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 2,
+      "iptvId": "999730340",
+      "iptvTitle": "O Senhor Dos Aneis Os Aneis De Poder - 2022",
+      "year": 2022,
+      "providerRating": null,
+      "category": "Itens do aplicativo",
+      "priorityReason": "Já presente entre os itens do aplicativo",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "approved-source-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [
+              3947.5
+            ],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt7631058&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:17:50.377Z",
+            "httpStatus": 200,
+            "evidence": {
+              "outro": {
+                "start_ms": 3759990,
+                "end_ms": 3944330,
+                "confidence": 1
+              }
+            }
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "approved-source-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [
+              4022.4
+            ],
+            "hasIntro": true
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt7631058&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:17:51.002Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 86000,
+                "end_ms": 179000,
+                "confidence": 1
+              }
+            }
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "approved-source-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [
+              4162.7
+            ],
+            "hasIntro": true
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt7631058&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:17:52.157Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 76000,
+                "end_ms": 167000,
+                "confidence": 1
+              },
+              "outro": {
+                "start_ms": 3983200,
+                "end_ms": 4155830,
+                "confidence": 1
+              }
+            }
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/O%20Senhor%20Dos%20Aneis%20Os%20Aneis%20De%20Poder.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=O%20Senhor%20Dos%20Aneis%20Os%20Aneis%20De%20Poder",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=O+Senhor+Dos+Aneis+Os+Aneis+De+Poder&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "imdbId": "tt7631058",
+      "tmdbId": 84773,
+      "seriesSlug": "the-rings-of-power",
+      "matchedTitle": "The Lord of the Rings: The Rings of Power",
+      "identityMethod": "wikidata-exact-alias-and-imdb-type-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/O%20Senhor%20Dos%20Aneis%20Os%20Aneis%20De%20Poder.json",
+        "https://www.wikidata.org/wiki/Q59149852",
+        "https://www.imdb.com/title/tt7631058/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt7631058",
+        "seasons": [
+          1,
+          2,
+          3
+        ],
+        "totals": {
+          "approved": 37,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 2,
+      "introDBEpisodesWithIntro": 2,
+      "introDBEmpty": 0,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 3,
+      "iptvId": "999732717",
+      "iptvTitle": "A Ilha do Tesouro - 2026",
+      "year": 2026,
+      "providerRating": null,
+      "category": "Itens do aplicativo",
+      "priorityReason": "Já presente entre os itens do aplicativo",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/A%20Ilha%20do%20Tesouro.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=A%20Ilha%20do%20Tesouro",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=A+Ilha+do+Tesouro&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 4,
+      "iptvId": "999732718",
+      "iptvTitle": "Alucinacao - 2026",
+      "year": 2026,
+      "providerRating": 10,
+      "category": "Lançamentos",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt33297986&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:10:10.749Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt33297986&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:10:11.458Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt33297986&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:10:12.608Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Alucinacao.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Alucinacao",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Alucinacao&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "imdbId": "tt33297986",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt33297986",
+      "matchedTitle": "Alucinação",
+      "identityMethod": "imdb-exact-title-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/Alucinacao.json",
+        "https://www.imdb.com/title/tt33297986/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt33297986",
+        "seasons": [
+          1
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 0,
+      "introDBEmpty": 3,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 5,
+      "iptvId": "999732549",
+      "iptvTitle": "Duang com Voce - 2026",
+      "year": 2026,
+      "providerRating": 9.1,
+      "category": "Netflix Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Duang%20com%20Voce.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Duang%20com%20Voce",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Duang+com+Voce&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 6,
+      "iptvId": "999730578",
+      "iptvTitle": "Criando Delicias - 2025 (LEG)",
+      "year": 2025,
+      "providerRating": 10,
+      "category": "Prime Video Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Criando%20Delicias.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Criando%20Delicias",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Criando+Delicias&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 7,
+      "iptvId": "999730709",
+      "iptvTitle": "OS DOOMIES - 2026",
+      "year": 2026,
+      "providerRating": 10,
+      "category": "Disney+ Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/OS%20DOOMIES.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=OS%20DOOMIES",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=OS+DOOMIES&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 8,
+      "iptvId": "999731870",
+      "iptvTitle": "Guerra de Gangues Motoqueiros Bandidos - 2026 (LEG)",
+      "year": 2026,
+      "providerRating": 10,
+      "category": "HBO Max Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Guerra%20de%20Gangues%20Motoqueiros%20Bandidos.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Guerra%20de%20Gangues%20Motoqueiros%20Bandidos",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Guerra+de+Gangues+Motoqueiros+Bandidos&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 9,
+      "iptvId": "999729458",
+      "iptvTitle": "Brasil Visto De Cima - 2014",
+      "year": 2014,
+      "providerRating": 10,
+      "category": "Globoplay Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt4893876&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:10:25.790Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt4893876&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:10:26.264Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt4893876&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:10:27.433Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Brasil%20Visto%20De%20Cima.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Brasil%20Visto%20De%20Cima",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Brasil+Visto+De+Cima&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "imdbId": "tt4893876",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt4893876",
+      "matchedTitle": "Brasil Visto de Cima",
+      "identityMethod": "imdb-exact-title-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/Brasil%20Visto%20De%20Cima.json",
+        "https://www.imdb.com/title/tt4893876/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt4893876",
+        "seasons": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 0,
+      "introDBEmpty": 3,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 10,
+      "iptvId": "999732602",
+      "iptvTitle": "Harry Quer Casar - 2026",
+      "year": 2026,
+      "providerRating": 10,
+      "category": "Lançamentos",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Harry%20Quer%20Casar.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Harry%20Quer%20Casar",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Harry+Quer+Casar&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 11,
+      "iptvId": "999732471",
+      "iptvTitle": "The Apartment Job - 2026",
+      "year": 2026,
+      "providerRating": 8.7,
+      "category": "Netflix Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt43357366&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:10:33.174Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 6000,
+                "end_ms": 51000,
+                "confidence": 1
+              },
+              "outro": {
+                "start_ms": 3700000,
+                "end_ms": 3824000,
+                "confidence": 1
+              }
+            }
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt43357366&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:10:33.781Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 6000,
+                "end_ms": 51000,
+                "confidence": 1
+              },
+              "outro": {
+                "start_ms": 3577000,
+                "end_ms": 3694000,
+                "confidence": 1
+              }
+            }
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt43357366&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:10:34.901Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 6000,
+                "end_ms": 51000,
+                "confidence": 1
+              },
+              "outro": {
+                "start_ms": 3728000,
+                "end_ms": 3864000,
+                "confidence": 1
+              }
+            }
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/The%20Apartment%20Job.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=The%20Apartment%20Job",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=The+Apartment+Job&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "imdbId": "tt43357366",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt43357366",
+      "matchedTitle": "The Apartment Job",
+      "identityMethod": "wikidata-exact-alias-and-imdb-type-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/The%20Apartment%20Job.json",
+        "https://www.wikidata.org/wiki/Q139455537",
+        "https://www.imdb.com/title/tt43357366/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt43357366",
+        "seasons": [
+          1
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 3,
+      "introDBEmpty": 0,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 12,
+      "iptvId": "999729881",
+      "iptvTitle": "Mascaras de Oxigenio Nao Cairao Automaticamente - 2025",
+      "year": 2025,
+      "providerRating": 9.4,
+      "category": "Prime Video Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt28753811&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:17:55.478Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt28753811&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:17:56.582Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt28753811&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:17:57.698Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Mascaras%20de%20Oxigenio%20Nao%20Cairao%20Automaticamente.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Mascaras%20de%20Oxigenio%20Nao%20Cairao%20Automaticamente",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Mascaras+de+Oxigenio+Nao+Cairao+Automaticamente&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "imdbId": "tt28753811",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt28753811",
+      "matchedTitle": "Oxygen Masks Will Not Drop Automatically",
+      "identityMethod": "wikidata-exact-alias-and-imdb-type-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/Mascaras%20de%20Oxigenio%20Nao%20Cairao%20Automaticamente.json",
+        "https://www.wikidata.org/wiki/Q125295097",
+        "https://www.imdb.com/title/tt28753811/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt28753811",
+        "seasons": [
+          1
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 0,
+      "introDBEmpty": 3,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 13,
+      "iptvId": "999731354",
+      "iptvTitle": "As Mais Incríveis Viagens De Animais - 2023",
+      "year": 2023,
+      "providerRating": 9.2,
+      "category": "Disney+ Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/As%20Mais%20Incr%C3%ADveis%20Viagens%20De%20Animais.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=As%20Mais%20Incr%C3%ADveis%20Viagens%20De%20Animais",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=As+Mais+Incr%C3%ADveis+Viagens+De+Animais&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 14,
+      "iptvId": "999731326",
+      "iptvTitle": "Batalha Do Churrasco - 2019",
+      "year": 2019,
+      "providerRating": 10,
+      "category": "HBO Max Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Batalha%20Do%20Churrasco.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Batalha%20Do%20Churrasco",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Batalha+Do+Churrasco&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 15,
+      "iptvId": "999726229",
+      "iptvTitle": "Filhos da Patria - 2017",
+      "year": 2017,
+      "providerRating": 9.5,
+      "category": "Globoplay Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt7393142&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:10:44.851Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt7393142&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:10:45.554Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt7393142&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:10:46.639Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Filhos%20da%20Patria.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Filhos%20da%20Patria",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Filhos+da+Patria&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "imdbId": "tt7393142",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt7393142",
+      "matchedTitle": "Filhos da Pátria",
+      "identityMethod": "imdb-exact-title-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/Filhos%20da%20Patria.json",
+        "https://www.imdb.com/title/tt7393142/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt7393142",
+        "seasons": [
+          1,
+          2
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 0,
+      "introDBEmpty": 3,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 16,
+      "iptvId": "999732581",
+      "iptvTitle": "Diarios de Armario Descendentes - 2026",
+      "year": 2026,
+      "providerRating": 10,
+      "category": "Lançamentos",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Diarios%20de%20Armario%20Descendentes.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Diarios%20de%20Armario%20Descendentes",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Diarios+de+Armario+Descendentes&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 17,
+      "iptvId": "999731979",
+      "iptvTitle": "Um Grude de Amor - 2026",
+      "year": 2026,
+      "providerRating": 8.7,
+      "category": "Netflix Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Um%20Grude%20de%20Amor.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Um%20Grude%20de%20Amor",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Um+Grude+de+Amor&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 18,
+      "iptvId": "999729964",
+      "iptvTitle": "La oficina - 2026 (LEG)",
+      "year": 2026,
+      "providerRating": 9.3,
+      "category": "Prime Video Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt34231110&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:18:03.766Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt34231110&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:18:04.469Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt34231110&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:18:05.578Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/La%20oficina.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=La%20oficina",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=La+oficina&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "imdbId": "tt34231110",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt34231110",
+      "matchedTitle": "The Office",
+      "identityMethod": "wikidata-exact-alias-and-imdb-type-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/La%20oficina.json",
+        "https://www.wikidata.org/wiki/Q138682494",
+        "https://www.imdb.com/title/tt34231110/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt34231110",
+        "seasons": [
+          1
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 0,
+      "introDBEmpty": 3,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 19,
+      "iptvId": "999729951",
+      "iptvTitle": "A Coroa Perfeita - 2026",
+      "year": 2026,
+      "providerRating": 9,
+      "category": "Disney+ Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/A%20Coroa%20Perfeita.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=A%20Coroa%20Perfeita",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=A+Coroa+Perfeita&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 20,
+      "iptvId": "999731277",
+      "iptvTitle": "As Crônicas de Gumball - 2020",
+      "year": 2020,
+      "providerRating": 9.3,
+      "category": "HBO Max Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/As%20Cr%C3%B4nicas%20de%20Gumball.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=As%20Cr%C3%B4nicas%20de%20Gumball",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=As+Cr%C3%B4nicas+de+Gumball&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 21,
+      "iptvId": "999731672",
+      "iptvTitle": "Selva de Pedra - 1972",
+      "year": 1972,
+      "providerRating": 9.1,
+      "category": "Globoplay Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt0208635&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:11:01.690Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt0208635&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:11:02.356Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt0208635&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:11:03.549Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Selva%20de%20Pedra.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Selva%20de%20Pedra",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Selva+de+Pedra&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "imdbId": "tt0208635",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt0208635",
+      "matchedTitle": "Selva de Pedra",
+      "identityMethod": "wikidata-exact-alias-and-imdb-type-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/Selva%20de%20Pedra.json",
+        "https://www.wikidata.org/wiki/Q10369809",
+        "https://www.imdb.com/title/tt0208635/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt0208635",
+        "seasons": [
+          1
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 0,
+      "introDBEmpty": 3,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 22,
+      "iptvId": "999732575",
+      "iptvTitle": "Diarios de Armario Phineas e Ferb - 2026",
+      "year": 2026,
+      "providerRating": 10,
+      "category": "Lançamentos",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Diarios%20de%20Armario%20Phineas%20e%20Ferb.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Diarios%20de%20Armario%20Phineas%20e%20Ferb",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Diarios+de+Armario+Phineas+e+Ferb&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 23,
+      "iptvId": "999731724",
+      "iptvTitle": "Assustadoramente Apaixonados - 2026",
+      "year": 2026,
+      "providerRating": 8.7,
+      "category": "Netflix Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Assustadoramente%20Apaixonados.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Assustadoramente%20Apaixonados",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Assustadoramente+Apaixonados&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 24,
+      "iptvId": "999730004",
+      "iptvTitle": "Rancho Dutton - 2026",
+      "year": 2026,
+      "providerRating": 9.2,
+      "category": "Prime Video Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Rancho%20Dutton.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Rancho%20Dutton",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Rancho+Dutton&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_RATE_LIMITED"
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 25,
+      "iptvId": "999729744",
+      "iptvTitle": "Segredos das Abelhas - 2026",
+      "year": 2026,
+      "providerRating": 9,
+      "category": "Disney+ Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Segredos%20das%20Abelhas.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Segredos%20das%20Abelhas",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Segredos+das+Abelhas&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 26,
+      "iptvId": "999731217",
+      "iptvTitle": "Antes que Matem de Novo - 2024",
+      "year": 2024,
+      "providerRating": 9,
+      "category": "HBO Max Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Antes%20que%20Matem%20de%20Novo.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Antes%20que%20Matem%20de%20Novo",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Antes+que+Matem+de+Novo&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 27,
+      "iptvId": "999732022",
+      "iptvTitle": "Por Voce - 2026",
+      "year": 2026,
+      "providerRating": 9,
+      "category": "Globoplay Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt43745049&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:11:17.801Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt43745049&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:11:18.529Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt43745049&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:11:19.611Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Por%20Voce.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Por%20Voce",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Por+Voce&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "imdbId": "tt43745049",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt43745049",
+      "matchedTitle": "Por Você",
+      "identityMethod": "wikidata-exact-alias-and-imdb-type-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/Por%20Voce.json",
+        "https://www.wikidata.org/wiki/Q141282402",
+        "https://www.imdb.com/title/tt43745049/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt43745049",
+        "seasons": [
+          1
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 0,
+      "introDBEmpty": 3,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 28,
+      "iptvId": "999731521",
+      "iptvTitle": "ONE PIECE A Serie Conteudo Extra - 2026",
+      "year": 2026,
+      "providerRating": 9.8,
+      "category": "Lançamentos",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/ONE%20PIECE%20A%20Serie%20Conteudo%20Extra.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=ONE%20PIECE%20A%20Serie%20Conteudo%20Extra",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=ONE+PIECE+A+Serie+Conteudo+Extra&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 29,
+      "iptvId": "999731853",
+      "iptvTitle": "A Pousada do Jae seok - 2026",
+      "year": 2026,
+      "providerRating": 8.6,
+      "category": "Netflix Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/A%20Pousada%20do%20Jae%20seok.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=A%20Pousada%20do%20Jae%20seok",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=A+Pousada+do+Jae+seok&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 30,
+      "iptvId": "999730708",
+      "iptvTitle": "Te vejo no trabalho - 2026",
+      "year": 2026,
+      "providerRating": 9.1,
+      "category": "Prime Video Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt38960812&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:18:10.595Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 0,
+                "end_ms": 54000,
+                "confidence": 1
+              }
+            }
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt38960812&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:18:11.247Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 0,
+                "end_ms": 54000,
+                "confidence": 1
+              }
+            }
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt38960812&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:18:12.362Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 0,
+                "end_ms": 54000,
+                "confidence": 1
+              }
+            }
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Te%20vejo%20no%20trabalho.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Te%20vejo%20no%20trabalho",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Te+vejo+no+trabalho&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "imdbId": "tt38960812",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt38960812",
+      "matchedTitle": "See You at Work Tomorrow!",
+      "identityMethod": "wikidata-exact-alias-and-imdb-type-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/Te%20vejo%20no%20trabalho.json",
+        "https://www.wikidata.org/wiki/Q135815592",
+        "https://www.imdb.com/title/tt38960812/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt38960812",
+        "seasons": [
+          1
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 3,
+      "introDBEmpty": 0,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 31,
+      "iptvId": "999730600",
+      "iptvTitle": "MAO - 2026",
+      "year": 2026,
+      "providerRating": 8.9,
+      "category": "Disney+ Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt37577523&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:11:29.484Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 114000,
+                "end_ms": 204000,
+                "confidence": 1
+              }
+            }
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt37577523&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:11:30.157Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt37577523&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:11:31.259Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/MAO.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=MAO",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=MAO&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "imdbId": "tt37577523",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt37577523",
+      "matchedTitle": "Mao",
+      "identityMethod": "wikidata-exact-alias-and-imdb-type-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/MAO.json",
+        "https://www.wikidata.org/wiki/Q135312743",
+        "https://www.imdb.com/title/tt37577523/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt37577523",
+        "seasons": [
+          1
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 1,
+      "introDBEmpty": 2,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 32,
+      "iptvId": "999730117",
+      "iptvTitle": "Rick E Morty - 2013",
+      "year": 2013,
+      "providerRating": 8.7,
+      "category": "HBO Max Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Rick%20E%20Morty.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Rick%20E%20Morty",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Rick+E+Morty&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 33,
+      "iptvId": "999727682",
+      "iptvTitle": "Andar na Pedra A Historia do Raimundos - 2026",
+      "year": 2026,
+      "providerRating": 9,
+      "category": "Globoplay Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt40902278&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:11:36.802Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt40902278&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:11:37.498Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt40902278&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:11:38.708Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Andar%20na%20Pedra%20A%20Historia%20do%20Raimundos.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Andar%20na%20Pedra%20A%20Historia%20do%20Raimundos",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Andar+na+Pedra+A+Historia+do+Raimundos&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "imdbId": "tt40902278",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt40902278",
+      "matchedTitle": "Andar na Pedra: A História do Raimundos",
+      "identityMethod": "imdb-exact-title-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/Andar%20na%20Pedra%20A%20Historia%20do%20Raimundos.json",
+        "https://www.imdb.com/title/tt40902278/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt40902278",
+        "seasons": [
+          1
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 0,
+      "introDBEmpty": 3,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 34,
+      "iptvId": "999731943",
+      "iptvTitle": "A Mulher Proibida - 2026",
+      "year": 2026,
+      "providerRating": 9.7,
+      "category": "Lançamentos",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/A%20Mulher%20Proibida.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=A%20Mulher%20Proibida",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=A+Mulher+Proibida&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 35,
+      "iptvId": "999732643",
+      "iptvTitle": "Nana - 2006",
+      "year": 2006,
+      "providerRating": 8.5,
+      "category": "Netflix Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt0810705&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:11:44.332Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 32553,
+                "end_ms": 115552,
+                "confidence": 1
+              },
+              "outro": {
+                "start_ms": 1270000,
+                "end_ms": 1338000,
+                "confidence": 1
+              }
+            }
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt0810705&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:11:44.877Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 37099,
+                "end_ms": 120057,
+                "confidence": 1
+              },
+              "outro": {
+                "start_ms": 1271000,
+                "end_ms": 1339000,
+                "confidence": 1
+              }
+            }
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt0810705&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:11:45.983Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 107000,
+                "end_ms": 203000,
+                "confidence": 1
+              },
+              "outro": {
+                "start_ms": 1266000,
+                "end_ms": 1345000,
+                "confidence": 1
+              }
+            }
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Nana.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Nana",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Nana&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "imdbId": "tt0810705",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt0810705",
+      "matchedTitle": "Nana",
+      "identityMethod": "wikidata-exact-alias-and-imdb-type-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/Nana.json",
+        "https://www.wikidata.org/wiki/Q89343467",
+        "https://www.imdb.com/title/tt0810705/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt0810705",
+        "seasons": [
+          1
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 3,
+      "introDBEmpty": 0,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 36,
+      "iptvId": "999730352",
+      "iptvTitle": "Aeroporto Area Restrita Estados Unidos - 2024",
+      "year": 2024,
+      "providerRating": 9,
+      "category": "Prime Video Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Aeroporto%20Area%20Restrita%20Estados%20Unidos.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Aeroporto%20Area%20Restrita%20Estados%20Unidos",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Aeroporto+Area+Restrita+Estados+Unidos&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 37,
+      "iptvId": "999731671",
+      "iptvTitle": "O Marido - 2026",
+      "year": 2026,
+      "providerRating": 8.6,
+      "category": "Disney+ Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/O%20Marido.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=O%20Marido",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=O+Marido&language=pt&uselang=pt&format=json&limit=8",
+          "status": "ok",
+          "httpStatus": 200
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 38,
+      "iptvId": "999731324",
+      "iptvTitle": "Assassino Sem Passado - 2021",
+      "year": 2021,
+      "providerRating": 8.6,
+      "category": "HBO Max Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Assassino%20Sem%20Passado.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Assassino%20Sem%20Passado",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Assassino+Sem+Passado&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 39,
+      "iptvId": "999726472",
+      "iptvTitle": "O Misterio de Varginha - 2026",
+      "year": 2026,
+      "providerRating": 9,
+      "category": "Globoplay Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": false,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt39320093&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:11:55.502Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": false,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt39320093&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:11:56.180Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": false,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt39320093&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:11:57.297Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/O%20Misterio%20de%20Varginha.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=O%20Misterio%20de%20Varginha",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=O+Misterio+de+Varginha&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "imdbId": "tt39320093",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt39320093",
+      "matchedTitle": "O Mistério de Varginha",
+      "identityMethod": "imdb-exact-title-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/O%20Misterio%20de%20Varginha.json",
+        "https://www.imdb.com/title/tt39320093/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt39320093",
+        "seasons": [],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 0,
+      "introDBEmpty": 3,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 40,
+      "iptvId": "999732504",
+      "iptvTitle": "Brothers - 2026",
+      "year": 2026,
+      "providerRating": 9.4,
+      "category": "Lançamentos",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt6773088&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:12:00.413Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 282675,
+                "end_ms": 322240,
+                "confidence": 1
+              }
+            }
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt6773088&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:12:01.533Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 158880,
+                "end_ms": 198945,
+                "confidence": 1
+              }
+            }
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt6773088&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:12:02.660Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 104000,
+                "end_ms": 143000,
+                "confidence": 1
+              }
+            }
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Brothers.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Brothers",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Brothers&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "imdbId": "tt6773088",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt6773088",
+      "matchedTitle": "Brothers",
+      "identityMethod": "wikidata-exact-alias-and-imdb-type-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/Brothers.json",
+        "https://www.wikidata.org/wiki/Q133842356",
+        "https://www.imdb.com/title/tt6773088/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt6773088",
+        "seasons": [
+          1
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 3,
+      "introDBEmpty": 0,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 41,
+      "iptvId": "999732141",
+      "iptvTitle": "Hotel del Luna - 2019",
+      "year": 2019,
+      "providerRating": 8.5,
+      "category": "Netflix Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt10220588&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:12:05.908Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt10220588&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:12:07.009Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt10220588&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:12:08.189Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Hotel%20del%20Luna.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Hotel%20del%20Luna",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Hotel+del+Luna&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "imdbId": "tt10220588",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt10220588",
+      "matchedTitle": "Hotel Del Luna",
+      "identityMethod": "wikidata-exact-alias-and-imdb-type-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/Hotel%20del%20Luna.json",
+        "https://www.wikidata.org/wiki/Q61981835",
+        "https://www.imdb.com/title/tt10220588/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt10220588",
+        "seasons": [
+          1
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 0,
+      "introDBEmpty": 3,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 42,
+      "iptvId": "999731563",
+      "iptvTitle": "Irmao Do Jorel - 2014",
+      "year": 2014,
+      "providerRating": 8.9,
+      "category": "Prime Video Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt6574360&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:18:14.789Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt6574360&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:18:15.917Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt6574360&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:18:16.928Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Irmao%20Do%20Jorel.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Irmao%20Do%20Jorel",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Irmao+Do+Jorel&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "imdbId": "tt6574360",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt6574360",
+      "matchedTitle": "Jorel's Brother",
+      "identityMethod": "wikidata-exact-alias-and-imdb-type-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/Irmao%20Do%20Jorel.json",
+        "https://www.wikidata.org/wiki/Q10303705",
+        "https://www.imdb.com/title/tt6574360/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt6574360",
+        "seasons": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 0,
+      "introDBEmpty": 3,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 43,
+      "iptvId": "999732053",
+      "iptvTitle": "Snowdrop - 2021",
+      "year": 2021,
+      "providerRating": 8.5,
+      "category": "Disney+ Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt13304700&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:12:13.933Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt13304700&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:12:14.539Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt13304700&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:12:15.628Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Snowdrop.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Snowdrop",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Snowdrop&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "imdbId": "tt13304700",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt13304700",
+      "matchedTitle": "Snowdrop",
+      "identityMethod": "wikidata-exact-alias-and-imdb-type-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/Snowdrop.json",
+        "https://www.wikidata.org/wiki/Q98791700",
+        "https://www.imdb.com/title/tt13304700/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt13304700",
+        "seasons": [
+          1
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 0,
+      "introDBEmpty": 3,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 44,
+      "iptvId": "999730849",
+      "iptvTitle": "A Familia Derrico - 2020",
+      "year": 2020,
+      "providerRating": 8.6,
+      "category": "HBO Max Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/A%20Familia%20Derrico.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=A%20Familia%20Derrico",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=A+Familia+Derrico&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 45,
+      "iptvId": "999722839",
+      "iptvTitle": "Guerreiros do Sol - 2025",
+      "year": 2025,
+      "providerRating": 8.6,
+      "category": "Globoplay Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt24019192&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:18:18.066Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt24019192&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:18:19.178Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "empty",
+            "url": "https://api.introdb.app/segments?imdb_id=tt24019192&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:18:20.283Z",
+            "httpStatus": 200,
+            "evidence": {}
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Guerreiros%20do%20Sol.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Guerreiros%20do%20Sol",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Guerreiros+do+Sol&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "imdbId": "tt24019192",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt24019192",
+      "matchedTitle": "Love is a Knife",
+      "identityMethod": "wikidata-exact-alias-and-imdb-type-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/Guerreiros%20do%20Sol.json",
+        "https://www.wikidata.org/wiki/Q121118428",
+        "https://www.imdb.com/title/tt24019192/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt24019192",
+        "seasons": [
+          1
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 0,
+      "introDBEmpty": 3,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 46,
+      "iptvId": "999732281",
+      "iptvTitle": "Quatro Maos Duas Sonatas - 2026",
+      "year": 2026,
+      "providerRating": 9.3,
+      "category": "Lançamentos",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Quatro%20Maos%20Duas%20Sonatas.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Quatro%20Maos%20Duas%20Sonatas",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Quatro+Maos+Duas+Sonatas&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 47,
+      "iptvId": "999731889",
+      "iptvTitle": "Tatsuki Um Professor Bonzinho Demais - 2026",
+      "year": 2026,
+      "providerRating": 8.5,
+      "category": "Netflix Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Tatsuki%20Um%20Professor%20Bonzinho%20Demais.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Tatsuki%20Um%20Professor%20Bonzinho%20Demais",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Tatsuki+Um+Professor+Bonzinho+Demais&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 48,
+      "iptvId": "999730161",
+      "iptvTitle": "Spider Noir - 2026",
+      "year": 2026,
+      "providerRating": 8.9,
+      "category": "Prime Video Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "approved-source-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [
+              2815.8
+            ],
+            "hasIntro": true
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt30460310&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:12:25.208Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 175000,
+                "end_ms": 262000,
+                "confidence": 1
+              },
+              "recap": {
+                "start_ms": 2415000,
+                "end_ms": 2530000,
+                "confidence": 1
+              },
+              "outro": {
+                "start_ms": 2530000,
+                "end_ms": 2815000,
+                "confidence": 1
+              }
+            }
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "approved-source-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [
+              2562
+            ],
+            "hasIntro": true
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt30460310&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:12:25.905Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 343000,
+                "end_ms": 430000,
+                "confidence": 1
+              },
+              "recap": {
+                "start_ms": 6000,
+                "end_ms": 68000,
+                "confidence": 1
+              },
+              "outro": {
+                "start_ms": 2277000,
+                "end_ms": 2561000,
+                "confidence": 1
+              }
+            }
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "approved-source-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [
+              2843.2
+            ],
+            "hasIntro": true
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt30460310&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:12:27.036Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 343000,
+                "end_ms": 430000,
+                "confidence": 1
+              },
+              "recap": {
+                "start_ms": 6000,
+                "end_ms": 65000,
+                "confidence": 1
+              },
+              "outro": {
+                "start_ms": 2552000,
+                "end_ms": 2843000,
+                "confidence": 1
+              }
+            }
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Spider%20Noir.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Spider%20Noir",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Spider+Noir&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "imdbId": "tt30460310",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt30460310",
+      "matchedTitle": "Spider-Noir",
+      "identityMethod": "wikidata-exact-alias-and-imdb-type-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/Spider%20Noir.json",
+        "https://www.wikidata.org/wiki/Q123956515",
+        "https://www.imdb.com/title/tt30460310/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt30460310",
+        "seasons": [
+          1
+        ],
+        "totals": {
+          "approved": 15,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 3,
+      "introDBEpisodesWithIntro": 3,
+      "introDBEmpty": 0,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 49,
+      "iptvId": "999729761",
+      "iptvTitle": "A Juiza do Inferno - 2024",
+      "year": 2024,
+      "providerRating": 8.5,
+      "category": "Disney+ Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "unresolved",
+      "episodes": [],
+      "identityReason": "EXACT_IDENTITY_NOT_VERIFIED",
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/A%20Juiza%20do%20Inferno.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=A%20Juiza%20do%20Inferno",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=A+Juiza+do+Inferno&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "databaseStatus": "review-saved"
+    },
+    {
+      "position": 50,
+      "iptvId": "999732114",
+      "iptvTitle": "Steven Universo - 2013 (LEG)",
+      "year": 2013,
+      "providerRating": 8.4,
+      "category": "HBO Max Séries",
+      "priorityReason": "Nota do provedor e diversidade de categorias do catálogo capturado",
+      "identityStatus": "resolved",
+      "episodes": [
+        {
+          "season": 1,
+          "episode": 1,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt3061046&season=1&episode=1",
+            "retrievedAt": "2026-10-15T13:18:24.452Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 0,
+                "end_ms": 21000,
+                "confidence": 1
+              }
+            }
+          }
+        },
+        {
+          "season": 1,
+          "episode": 2,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt3061046&season=1&episode=2",
+            "retrievedAt": "2026-10-15T13:18:25.643Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 0,
+                "end_ms": 21000,
+                "confidence": 1
+              }
+            }
+          }
+        },
+        {
+          "season": 1,
+          "episode": 3,
+          "inventoryConfirmed": true,
+          "skipDB": {
+            "status": "no-approved-data",
+            "sourceUrl": "https://skipdb.tv/api/dump",
+            "sourceGeneratedAt": "2026-10-15T10:00:56.882Z",
+            "editionDurationsSeconds": [],
+            "hasIntro": false
+          },
+          "introDB": {
+            "status": "unverified",
+            "url": "https://api.introdb.app/segments?imdb_id=tt3061046&season=1&episode=3",
+            "retrievedAt": "2026-10-15T13:18:26.708Z",
+            "httpStatus": 200,
+            "evidence": {
+              "intro": {
+                "start_ms": 0,
+                "end_ms": 21000,
+                "confidence": 1
+              }
+            }
+          }
+        }
+      ],
+      "identityReason": null,
+      "identityLookups": [
+        {
+          "url": "https://v3.sg.media-imdb.com/suggestion/x/Steven%20Universo.json",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://skipdb.tv/api/titles/search?q=Steven%20Universo",
+          "status": "ok",
+          "httpStatus": 200
+        },
+        {
+          "url": "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=Steven+Universo&language=pt&uselang=pt&format=json&limit=8",
+          "status": "failed",
+          "error": "PROVIDER_COOLDOWN"
+        }
+      ],
+      "imdbId": "tt3061046",
+      "tmdbId": null,
+      "seriesSlug": "imdb-tt3061046",
+      "matchedTitle": "Steven Universe",
+      "identityMethod": "wikidata-exact-alias-and-imdb-type-year",
+      "identitySources": [
+        "https://v3.sg.media-imdb.com/suggestion/x/Steven%20Universo.json",
+        "https://www.wikidata.org/wiki/Q7615342",
+        "https://www.imdb.com/title/tt3061046/"
+      ],
+      "skipDBInventory": {
+        "status": "verified",
+        "url": "https://skipdb.tv/api/titles/tt3061046",
+        "seasons": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "totals": {
+          "approved": 0,
+          "pending": 0
+        }
+      },
+      "episodesChecked": 3,
+      "skipDBEpisodesWithIntro": 0,
+      "introDBEpisodesWithIntro": 3,
+      "introDBEmpty": 0,
+      "introDBFailed": 0,
+      "databaseStatus": "review-saved"
+    }
+  ],
+  "database": {
+    "identitiesWritten": 50,
+    "episodesWritten": 66,
+    "privateUserWrites": 0
+  },
+  "summary": {
+    "selected": 50,
+    "resolved": 22,
+    "unresolved": 28,
+    "ambiguous": 0,
+    "failed": 0,
+    "episodesChecked": 66,
+    "skipDBEpisodesWithIntro": 8,
+    "introDBEpisodesWithIntro": 24,
+    "additionalEpisodesChecked": 1,
+    "totalEpisodeLookups": 67
+  },
+  "statistics": {
+    "requests": {
+      "imdb": 1,
+      "wikidata": 19,
+      "skipdb": 8,
+      "introdb": 21
+    },
+    "cached": 180,
+    "totalRequests": {
+      "imdb": 50,
+      "wikidata": 43,
+      "skipdb": 72,
+      "introdb": 67
+    }
+  },
+  "databaseReadBack": {
+    "checkedAt": "2026-10-15T13:39:47.391Z",
+    "identities": 50,
+    "resolved": 22,
+    "episodeRows": 66,
+    "introDBIntrosMatchingReport": 24,
+    "privateUserReads": 0,
+    "privateUserWrites": 0,
+    "goT_S05E01": {
+      "imdb_id": "tt0944947",
+      "season": 5,
+      "episode": 1,
+      "status": "unverified",
+      "intro": {
+        "end_ms": 113000,
+        "start_ms": 6000,
+        "confidence": 1
+      },
+      "editionVerified": false
+    }
+  },
+  "additionalValidation": [
+    {
+      "imdb_id": "tt0944947",
+      "season": 5,
+      "episode": 1,
+      "sourceUrl": "https://api.introdb.app/segments?imdb_id=tt0944947&season=5&episode=1",
+      "httpStatus": 200,
+      "retrievedAt": "2026-10-15T13:23:52.578Z",
+      "editionVerified": false,
+      "status": "unverified",
+      "evidence": {
+        "intro": {
+          "start_ms": 6000,
+          "end_ms": 113000,
+          "confidence": 1
+        },
+        "outro": {
+          "start_ms": 3050000,
+          "end_ms": 3131000,
+          "confidence": 1
+        }
+      }
+    }
+  ]
+}

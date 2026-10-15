@@ -2,6 +2,7 @@ import { EpisodeSkipController } from './episode-skip.js';
 import { programWindow } from './program-guide.js';
 import { NeighborProgramFeeds } from './neighbor-program-feeds.js';
 import { renderPlayerChannelLogo } from './player-channel-logos.js';
+import { PlaybackLoader } from './playback-loader.js';
 export { parseProgramTime, programWindow } from './program-guide.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -85,6 +86,7 @@ export class ImmersivePlayer {
       preferences:this.options.seriesPlaybackPreferences,
       getNamespace:this.options.getAccountNamespace || (()=>''),
       getEpisodeMarkers:context=>this.options.getEpisodeMarkers?.(context),
+      onConfigureMarkers:()=>{this.tools.hidden=false;this.settingsButton.setAttribute('aria-expanded','true');this.settingsButton.setAttribute('aria-label','Fechar ajustes de reprodução');this.reveal();this.episodeSkip.markerButtons.get('openingStart')?.focus?.();},
       onSeek:(target,options)=>this.requestSeek(target,options),
       notify:message => this.options.toast?.(message), onAction:() => this.reveal()
     });
@@ -95,15 +97,7 @@ export class ImmersivePlayer {
   listen(target, event, callback, options) { target.addEventListener(event, callback, options); this.disposers.push(() => target.removeEventListener(event, callback, options)); }
   build() {
     this.root = element('div', 'ip-root'); this.root.hidden = true;
-    this.loading = element('div', 'ip-loading');
-    const brand = element('div', 'ip-loading-brand'), symbol = element('img', 'ip-loading-symbol'), wordmark = element('img', 'ip-loading-wordmark');
-    symbol.src = '/assets/brand/symbol.svg'; symbol.alt = ''; wordmark.src = '/assets/brand/wordmark.svg'; wordmark.alt = 'ARKHEN';
-    brand.append(symbol, wordmark, element('span', 'ip-loading-product', 'P2 IPTV'));
-    this.loadingTitle = element('p', 'ip-loading-title', 'Preparando sua sessão'); this.loadingTitle.setAttribute('role', 'status');
-    this.loadingElapsed = element('span', 'ip-loading-elapsed'); this.loadingEstimate = element('span', 'ip-loading-estimate');
-    const bar = element('div', 'ip-loading-bar'); bar.setAttribute('aria-hidden', 'true');
-    const details = element('div', 'ip-loading-details'); details.append(this.loadingElapsed, this.loadingEstimate);
-    this.loading.append(brand, this.loadingTitle, bar, details);
+    this.playbackLoader = new PlaybackLoader({video: this.video}); this.loading = this.playbackLoader.root;
     this.error = element('div', 'ip-error'); this.error.hidden = true; this.error.setAttribute('role', 'alert');
     this.errorMessage = element('p', 'ip-error-message'); this.retryButton = control('Tentar novamente', 'play', () => this.options.onRetry?.());
     this.retryButton.classList.add('ip-retry'); this.error.append(element('span', 'ip-error-title', 'Sua transmissão foi interrompida'), this.errorMessage, this.retryButton);
@@ -163,11 +157,14 @@ export class ImmersivePlayer {
     this.root.append(this.loading, this.error, this.info, this.closeButton, this.typed, this.tools, this.controls); this.stage.append(this.root);
   }
   bind() {
-    for (const event of ['loadstart', 'waiting']) this.listen(this.video, event, () => { if (this.current) this.setLoading(true, event === 'waiting' ? 'Aguardando a transmissão' : 'Preparando sua sessão'); });
-    for (const event of ['loadeddata', 'playing']) this.listen(this.video, event, () => { if (!this.current) return; this.current.failed = false; this.error.hidden = true; this.recordStart(); this.setLoading(false); this.updateControls(); });
+    for (const event of ['loadstart', 'waiting']) this.listen(this.video, event, () => { if (this.current && !(this.current.awaitingPlay && this.video.paused) && !(event === 'waiting' && this.video.paused)) this.setLoading(true, event === 'waiting' ? this.current.item.kind === 'live' ? 'Aguardando a transmissão' : 'Retomando seu vídeo' : 'Preparando sua sessão'); });
+    for (const event of ['loadeddata', 'canplay']) this.listen(this.video, event, () => { if (this.current?.awaitingPlay && this.video.paused) this.setLoading(false); });
+    this.listen(this.video, 'playing', () => { if (!this.current || this.current.failed) return; this.current.awaitingPlay = false; this.error.hidden = true; this.recordStart(); this.setLoading(false); this.updateControls(); });
     for (const event of ['loadedmetadata', 'durationchange', 'timeupdate', 'progress', 'pause', 'play', 'ended']) this.listen(this.video, event, () => { if (this.current) { this.updateControls(); if (this.video.paused || this.video.ended) this.reveal(); } });
     this.listen(this.video, 'volumechange', () => this.updateVolume());
-    this.listen(this.video, 'error', () => this.setFailure('Leitura do vídeo indisponível. Tente novamente ou escolha outra fonte.'));
+    // The transport controller owns retries and terminal failures. A media
+    // element error during HLS recovery must not create a competing overlay.
+    this.listen(this.video, 'error', () => { if(!this.options?.managedErrors)this.setFailure('Leitura do vídeo indisponível. Tente novamente ou escolha outra fonte.'); });
     this.listen(this.stage, 'pointermove', () => this.reveal()); this.listen(this.stage, 'pointerdown', event => { this.keyboardMode = false; if (event.target === this.stage || event.target === this.video) this.stage.focus({preventScroll: true}); this.reveal(); });
     this.listen(this.stage, 'focusin', () => this.reveal()); this.listen(this.stage, 'focusout', () => this.scheduleHide());
     for (const node of [this.controls, this.closeButton, this.tools, this.info]) {
@@ -183,11 +180,14 @@ export class ImmersivePlayer {
     this.listen(document, 'keydown', event => this.keydown(event));
     for (const event of ['fullscreenchange', 'webkitfullscreenchange']) this.listen(document, event, () => this.updateFullscreen());
   }
-  attach({item, episode = null, channelNumber = null}) {
+  attach({item, episode = null, channelNumber = null, initialProgram = null, continuation = null}) {
     this.reset(); this.video.controls = false; this.video.removeAttribute('controls');
     const source = this.channelEntries().find(entry => String(entry.item.id) === String(item.id));
     const startedAt = performance.now();
-    this.current = {item, episode, channelNumber: channelNumber ?? source?.number ?? null, loading: true, failed: false, startedAt, loadStartedAt: startedAt, recorded: false};
+    const continuing=item.kind==='live'&&continuation&&Number.isFinite(continuation.startedAt)&&Number.isFinite(continuation.loadStartedAt);
+    this.current = {item, episode, channelNumber: channelNumber ?? source?.number ?? null, loading: true, failed: false, startedAt:continuing?continuation.startedAt:startedAt, loadStartedAt:continuing?continuation.loadStartedAt:startedAt, recorded:continuing?Boolean(continuation.recorded):false};
+    this.programs=Array.isArray(initialProgram?.list)?initialProgram.list:[];
+    this.playbackLoader.attach({item, episode});
     this.episodeSkip.attach({item, episode, sourceFingerprint:`${this.options.getSourceNamespace?.() || 'iptv'}:${item.kind}:${item.id}:${episode?.id || ''}:${episode?.container || item.container || 'mp4'}`});
     this.root.hidden = false; this.root.classList.remove('ip-hidden'); this.stage.classList.add('ip-active'); this.error.hidden = true;
     this.stage.setAttribute('aria-label', `Reprodução de ${text(item.name)}`);
@@ -195,11 +195,16 @@ export class ImmersivePlayer {
     this.title.textContent = episode ? `${text(item.name)} · ${text(episode.title) || 'Episódio'}` : text(item.name);
     this.number.hidden = item.kind !== 'live' || !Number.isSafeInteger(Number(this.current.channelNumber)) || Number(this.current.channelNumber) < 1;
     this.number.textContent = this.number.hidden ? '' : String(this.current.channelNumber).padStart(3, '0');
-    this.schedule.hidden = item.kind !== 'live'; this.renderChannelNeighbors(); this.renderProgram(); this.updateControls(); this.setLoading(true, 'Preparando sua sessão');
+    this.schedule.hidden = item.kind !== 'live'; this.renderChannelNeighbors(); this.renderProgram(); this.updateControls(); this.setLoading(true, continuing&&continuation.recorded?'Restabelecendo a transmissão':'Preparando sua sessão');
     this.tickTimer = setInterval(() => { if (!this.current) return; this.updateLoading(); this.renderProgram(); this.updateControls(); }, 1000);
     this.reveal();
   }
+  preparationContinuation(){
+    const current=this.current;if(!current||current.item.kind!=='live')return null;
+    return {startedAt:current.startedAt,loadStartedAt:current.loading?current.loadStartedAt:performance.now(),recorded:current.recorded};
+  }
   reset() {
+    this.playbackLoader?.reset();
     this.episodeSkip?.reset();
     this.neighborFeeds?.stop();this.neighborPrograms = {previous:null,next:null};
     clearTimeout(this.hideTimer); clearTimeout(this.digitTimer); clearInterval(this.tickTimer);
@@ -213,6 +218,15 @@ export class ImmersivePlayer {
     this.renderChannelNeighbors();
   }
   setTools(node) { this.tools.replaceChildren(); if (node) this.tools.append(node); this.tools.append(this.episodeSkip.panel); this.tools.hidden = true; this.settingsButton.hidden = !node && !this.current?.episode; this.settingsButton.setAttribute('aria-expanded', 'false'); }
+  setEpisodeSequence({episode}) {
+    if(!this.current||this.current.item.kind!=='series'||String(this.current.episode?.id)!==String(episode?.id))return;
+    const previous=this.current.episode;this.current.episode=episode;
+    if(previous?.season!==episode.season||previous?.number!==episode.number){
+      if(this.episodeSkip.episodeContext)this.episodeSkip.episodeContext.episode=episode;
+      this.episodeSkip.refreshExternalMarkers();
+    }
+    this.updateControls();this.episodeSkip.update();
+  }
   channelEntries() { try { return numberedChannels(this.options.getChannels ? this.options.getChannels() : this.channels || []); } catch { return this.channels || []; } }
   renderChannelNeighbors() {
     const live = this.current?.item.kind === 'live';this.info.classList.toggle('ip-live-information', live);
@@ -269,15 +283,22 @@ export class ImmersivePlayer {
     if (!this.current) return;
     if (loading && this.current.failed) return;
     if (loading && !this.current.loading) this.current.loadStartedAt = performance.now();
-    this.current.loading = loading; this.loading.hidden = !loading;
-    this.stage.classList.toggle('ip-loading-active', loading); if (title) this.loadingTitle.textContent = title;
+    this.current.loading = loading;
+    if (loading) this.playbackLoader.show({started: this.current.recorded, message: title});
+    else this.playbackLoader.hide({immediate: this.current.failed});
+    this.stage.classList.toggle('ip-loading-active', loading);
     this.updateLoading(); this.reveal();
   }
   updateLoading() {
     if (!this.current?.loading) return;
-    this.loadingElapsed.textContent = `Tempo decorrido: ${Math.max(0, Math.floor((performance.now() - this.current.loadStartedAt) / 1000))} s`;
     const estimate = loadingEstimate(this.samples[this.current.item.kind === 'live' ? 'live' : 'vod']);
-    this.loadingEstimate.textContent = this.current.recorded ? 'Sem estimativa para esta interrupção' : estimate === null ? 'Estimativa ainda indisponível' : `Início observado: aproximadamente ${Math.max(1, Math.round(estimate / 1000))} s`;
+    this.playbackLoader.update({elapsed: (performance.now() - this.current.loadStartedAt) / 1000, estimateMs: estimate});
+  }
+  setLoadingSource(source) { this.playbackLoader.setSource(source); }
+  waitForPlay({ready = true} = {}) {
+    if (!this.current) return;
+    this.current.awaitingPlay = true;
+    if (ready || this.video.readyState >= 2) this.setLoading(false);
   }
   recordStart() {
     if (!this.current || this.current.recorded || this.current.failed) return;

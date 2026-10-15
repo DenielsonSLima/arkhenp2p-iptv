@@ -1,6 +1,6 @@
 # Agenda de jogos
 
-`lib/wplay-games.mjs` consulta o serviço informado pelo próprio acesso WPLAY. `web/daily-games.js` compartilha uma agenda entre Início e TV ao vivo. Não abre outra transmissão para consultar os jogos; o botão Assistir usa somente um ID de canal presente no catálogo visível da sessão.
+`lib/wplay-games.mjs` consulta o serviço informado pelo próprio acesso WPLAY. `web/daily-games.js` apresenta a agenda somente em **Ao vivo → Jogos de hoje**, dentro do painel de resultados. Essa categoria fica ao lado de Favoritos e Todos; as categorias do provedor continuam em ordem alfabética. A página inicial e as demais categorias não exibem nem atualizam a agenda. Não abre outra transmissão para consultar os jogos; o botão Assistir usa somente um ID de canal presente no catálogo visível da sessão.
 
 ## Evidência do contrato
 

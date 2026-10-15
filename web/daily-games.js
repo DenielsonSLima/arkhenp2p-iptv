@@ -37,7 +37,7 @@ export function gameDisplay(game, {timeZone = 'UTC'} = {}) {
     status:live?'Ao vivo':labels[statusKey] || (/^\d+$/.test(status)?'':status)};
 }
 
-/** One cached, cancellable feed shared by the home and live sections. */
+/** Cached, cancellable feed for the live catalog's games category. */
 export class DailyGames {
   constructor({request,getNamespace = () => '',getChannels = () => [],supportsGames = () => true,onWatch = () => {},timeZone = defaultZone(),now = Date.now,
     document = globalThis.document,schedule = (callback,delay) => globalThis.setTimeout(callback,delay),cancel = timer => globalThis.clearTimeout(timer),onUpdate = () => {}}) {
@@ -49,8 +49,8 @@ export class DailyGames {
   }
   getSection() {
     if (this.section) return this.section;
-    const section=this.#node('section','daily-games');section.setAttribute('aria-label','Jogos do dia');
-    const heading=this.#node('div','daily-games-heading');heading.append(this.#node('h2','','Jogos do dia'));
+    const section=this.#node('section','daily-games');section.setAttribute('aria-label','Jogos de hoje');
+    const heading=this.#node('div','daily-games-heading');heading.append(this.#node('h2','','Jogos de hoje'));
     this.dateNode=this.#node('span','daily-games-date');heading.append(this.dateNode);
     this.message=this.#node('p','daily-games-message');this.message.setAttribute('role','status');
     this.retry=this.#node('button','daily-games-retry','Tentar novamente');this.retry.type='button';this.retry.addEventListener('click',()=>{void this.refresh();});

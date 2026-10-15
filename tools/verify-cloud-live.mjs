@@ -1,6 +1,10 @@
 // Explicit live verification, never included in npm test. Uses an existing,
 // recently WPLAY-validated account and removes only its random test preference.
 import {randomUUID} from 'node:crypto';
+import {execFile} from 'node:child_process';
+import {promisify} from 'node:util';
+import {access,readFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
 import {createClient} from '@supabase/supabase-js';
 import {QueryClient} from '@tanstack/query-core';
 import {SupabaseCloud} from '../lib/supabase-cloud.mjs';
@@ -9,6 +13,19 @@ import {CloudLibrary} from '../web/cloud-library.js';
 const memory=()=>{const entries=new Map();return {getItem:key=>entries.get(key)??null,setItem:(key,value)=>entries.set(key,value),removeItem:key=>entries.delete(key)};};
 const cloud=new SupabaseCloud(),libraries=[],tokens=[];
 let profile,key,stage='configuration',preferenceCreated=false,ok=false;
+// The production Edge Function deliberately cannot delete private user data.
+// An explicitly invoked verification uses the administrator's CLI only to
+// remove its own random, narrowly identified test preference.
+async function removeTestPreference(){
+  const config=JSON.parse(await readFile('.local/supabase.json','utf8'));
+  const filter=new URLSearchParams({user_id:'eq.'+profile.id,provider:'eq.'+profile.provider,key:'eq.'+key});
+  if(!config.gateway){await cloud.request('/rest/v1/user_preferences?'+filter,{method:'DELETE'});return;}
+  if(!/^[a-f0-9-]{36}$/i.test(profile.id)||!['wplay','wplay-ott'].includes(profile.provider)||!/^review\.[a-f0-9-]{36}$/.test(key))throw new Error('invalid-cleanup-scope');
+  let executable=resolve('.local/bin',process.platform==='win32'?'supabase.exe':'supabase');
+  try{await access(executable);}catch{executable='supabase';}
+  const query=`delete from public.user_preferences where user_id='${profile.id}' and provider='${profile.provider}' and key='${key}';`;
+  await promisify(execFile)(executable,['db','query','--linked','--project-ref','wnicimkmzswksaqdtgdv','--output-format','json',query],{timeout:60000,maxBuffer:1048576,windowsHide:true});
+}
 const deadline=async(promise,ms)=>{let timer;try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('timeout')),ms);})]);}finally{clearTimeout(timer);}};
 try{
   await cloud.ready;if(!cloud.enabled)throw new Error('not-configured');
@@ -60,8 +77,7 @@ try{
   for(const token of tokens)await cloud.revoke(token).catch(()=>{});
   if(preferenceCreated&&profile&&key){
     try{
-      const filter=new URLSearchParams({user_id:'eq.'+profile.id,provider:'eq.'+profile.provider,key:'eq.'+key});
-      await cloud.request('/rest/v1/user_preferences?'+filter,{method:'DELETE'});
+      await removeTestPreference();
       console.log(JSON.stringify({temporary_preference_removed:true}));
     }catch{console.error(JSON.stringify({temporary_preference_removed:false}));process.exitCode=1;}
   }

@@ -1,0 +1,106 @@
+// Local PostgreSQL integration checks; no remote connection or credentials.
+import {readFile} from 'node:fs/promises';
+import {pathToFileURL} from 'node:url';
+import assert from 'node:assert/strict';
+if(!process.argv[2])throw new Error('Pass an installed local PGlite module path.');
+const {PGlite}=await import(pathToFileURL(process.argv[2]).href),db=new PGlite();
+const owner='10000000-0000-4000-8000-000000000001',other='10000000-0000-4000-8000-000000000002',generation='20261015T100000Z',imdb='tt1234567';
+const metadata={license:'ODbL 1.0 + Service Provider Reciprocity',count:3},query=(sql,args=[])=>db.query(sql,args);
+let assertions=0;const check=(value,message)=>{assert.ok(value,message);assertions++;};
+async function role(name,run){await db.exec('set role '+name);try{return await run();}finally{await db.exec('reset role');}}
+async function rejects(run,pattern){await assert.rejects(run,pattern);assertions++;}
+const row=(id,episode=1)=>({segment_id:id,imdb_id:imdb,season:1,episode,segment_type:'intro',start_ms:1000,end_ms:60000,duration_ms:100000,score:1});
+const stage=(rows,count,next,complete=false,meta=metadata,lease=owner)=>role('service_role',()=>query('select public.arkhen_marker_stage_page($1,$2,$3,$4,$5,$6,$7) as n',[generation,lease,rows,count,next,complete,meta]));
+const batch=()=>role('service_role',async()=> (await query('select public.arkhen_marker_source_batch($1,$2,20) as data',[generation,owner])).rows[0].data);
+const state=()=>query("select * from public.series_marker_sync_state where name='global'");
+try{
+  await db.exec(`create role anon nologin;create role authenticated nologin;create role service_role nologin bypassrls;
+    create schema auth;create table auth.users(id uuid primary key);
+    create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
+    grant usage on schema auth to anon,authenticated,service_role;grant execute on function auth.uid() to anon,authenticated,service_role;
+    create schema storage;create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);`);
+  for(const name of ['20261015044236_arkhen_cloud_schema.sql','20261015095103_arkhen_shared_metadata_set_based.sql'])await db.exec(await readFile(new URL('../supabase/migrations/'+name,import.meta.url),'utf8'));
+  // Only platform extension/bootstrap calls are unavailable in the local engine.
+  const cloud=(await readFile(new URL('../supabase/migrations/20261015113617_arkhen_marker_cloud_pipeline.sql',import.meta.url),'utf8')).replace(/^create extension if not exists pg_net.*$/m,'').replace(/^select cron\.schedule\(.*$/m,'');
+  await db.exec(cloud);
+  await db.exec(await readFile(new URL('../supabase/migrations/20261015120527_arkhen_marker_incremental_source.sql',import.meta.url),'utf8'));
+  await db.exec(await readFile(new URL('../supabase/migrations/20261015124712_arkhen_marker_cache_retention.sql',import.meta.url),'utf8'));
+  check((await query("select public from storage.buckets where id='arkhen-marker-staging'")).rows[0].public===false,'Raw source is private.');
+  const published=(await query("select tablename from pg_publication_tables where pubname='supabase_realtime'")).rows.map(row=>row.tablename);
+  check(!published.includes('episode_skip_markers')&&published.includes('marker_cache_versions'),'Realtime sends only the small marker revision.');
+  await query("update public.series_marker_sync_state set lease_owner=$1,lease_until=now()+interval '1 hour',raw_generation=$2",[owner,generation]);
+  await rejects(()=>stage([row(1)],1,10,false,metadata,other),/Marker lease expired/);
+  await query("update public.series_marker_sync_state set lease_until=now()-interval '1 second'");
+  await rejects(()=>stage([row(1)],1,10),/Marker lease expired/);
+  await query("update public.series_marker_sync_state set lease_until=now()+interval '1 hour'");
+  await rejects(()=>stage({},1,10),/Invalid source page/);
+  await rejects(()=>stage([row(1)],0,10),/Invalid source page/);
+  await rejects(()=>stage([{...row(1),segment_id:'bad'}],1,10),/invalid input syntax/);
+  await rejects(()=>stage([{...row(1),episode:0}],1,10),/check constraint/);
+  await rejects(()=>stage([row(1)],1,10,false,{...metadata,license:'unknown'}),/Invalid source license/);
+  await rejects(()=>stage([row(1)],1,10,false,{...metadata,count:{}}),/Invalid source license/);
+  check((await stage([row(1),row(2)],2,1000)).rows[0].n===2,'First page commits sanitized rows.');
+  await rejects(()=>stage([row(3)],1,1000),/Invalid source page/);
+  await rejects(()=>stage([row(3)],1,999),/Invalid source page/);
+  await rejects(()=>stage([row(3)],1,2000,true,{...metadata,count:4}),/Incomplete source count/);
+  check((await state()).rows[0].raw_seen_count===2,'A failed completion rolls back both rows and cursor.');
+  check((await query('select count(*)::int as n from public.series_marker_source_segments')).rows[0].n===2,'A count mismatch cannot stage a partial final page.');
+  check((await stage([row(3,2)],1,2000,true)).rows[0].n===1,'Final page completes the exact advertised source count.');
+  check((await state()).rows[0].raw_seen_count===3,'All source objects are accounted for exactly once.');
+  await rejects(()=>stage([],0,2001,true),/Invalid source page/);
+  const page=await batch();check(page.groups.length===2&&page.segments.length===3,'Only complete episode groups are selected.');
+  check(Object.keys(page.segments[0]).every(key=>['id','status','media_type','imdb_id','season','episode','segment_type','start_ms','end_ms','duration_ms','score'].includes(key)),'Shared derivation receives no raw contributor metadata.');
+  const key='skipdb-'+generation+'-part-'+'a'.repeat(24)+'.jsonl';
+  await rejects(()=>role('service_role',()=>query('select public.arkhen_marker_source_done($1,$2,$3,$4)',[generation,owner,page.groups,'bad-key'])),/Invalid public artifact/);
+  await role('service_role',()=>query('select public.arkhen_marker_source_done($1,$2,$3,$4)',[generation,owner,page.groups,key]));
+  check((await batch()).groups.length===0,'An exported episode group is not normalized again.');
+  check((await role('service_role',()=>query('select public.arkhen_marker_source_index($1) as parts',[generation]))).rows[0].parts[0]===key,'Public part index lists only completed licensed artifacts.');
+  // Exercise >2,000 total rows without ever returning a partial episode.
+  await query("insert into public.series_marker_source_segments select $1,10000+i,$2,2,case when i<=1200 then 1 else 2 end,'intro',0,60000,100000,1 from generate_series(1,2400) i",[generation,imdb]);
+  await query('insert into public.series_marker_source_groups(generation,imdb_id,season,episode,segment_count) values($1,$2,2,1,1200),($1,$2,2,2,1200)',[generation,imdb]);
+  const bounded=await batch();check(bounded.groups.length===1&&bounded.segments.length===1200,'The SQL CPU bound stops between complete episode groups.');
+  await db.exec("delete from public.series_marker_source_groups;delete from public.series_marker_source_segments");
+  await query("update public.series_marker_sync_state set raw_cursor=0,raw_seen_count=0,raw_complete_at=null");
+  const outlier=Array.from({length:2001},(_,index)=>row(index+20000,3));outlier.push(row(30000,4));
+  await stage(outlier,outlier.length,3000,true,{...metadata,count:outlier.length});
+  const isolated=await batch();check(isolated.groups.length===1&&isolated.groups[0].episode===4&&isolated.segments.length===1&&isolated.excluded_groups===1,'One oversized episode is isolated without blocking other complete episodes.');
+  check((await query("select error_code from public.series_marker_coverage where imdb_id=$1 and episode=3",[imdb])).rows[0].error_code==='SOURCE_EPISODE_GROUP_LIMIT','An isolated source episode has a persistent explicit coverage error.');
+  for(const caller of ['anon','authenticated']){
+    for(const table of ['series_marker_source_segments','series_marker_source_groups','series_marker_sync_state'])await rejects(()=>role(caller,()=>query('select * from public.'+table)),/permission denied/);
+    await rejects(()=>role(caller,()=>query('select public.arkhen_marker_source_batch($1,$2,20)',[generation,owner])),/permission denied/);
+    await rejects(()=>role(caller,()=>query('update public.marker_cache_versions set generation=$1',['untrusted'])),/permission denied/);
+  }
+  await role('service_role',()=>query("update public.marker_cache_versions set generation='test-run' where name='global'"));
+  check((await query('select generation from public.marker_cache_versions')).rows[0].generation==='test-run','Only the service publishes marker cache revisions.');
+  const prefix='https://wnicimkmzswksaqdtgdv.supabase.co/storage/v1/object/public/arkhen-marker-open-data/',oldGeneration='20261010T100000Z',oldKey='skipdb-'+oldGeneration+'-part-'+'a'.repeat(24)+'.jsonl',newKey='skipdb-'+generation+'-part-'+'b'.repeat(24)+'.jsonl';
+  const marker={series_slug:'imdb-'+imdb,season:3,episode:1,edition_id:'skipdb-cloud-'+'c'.repeat(24),tmdb_id:null,imdb_id:imdb,duration_seconds:100,tolerance_seconds:2,verification:'community-reference',markers:{openingStart:1,openingEnd:60},provenance:{source:'skipdb-cloud',openDataUrl:prefix+oldKey,notes:'preserve this proof'},data_version:'old',is_active:true};
+  const publish=rows=>role('service_role',()=>query('select public.arkhen_marker_publish($1,$2,$3)',[rows,generation,owner]));
+  await publish([marker]);await publish([{...marker,provenance:{source:'skipdb-cloud',openDataUrl:prefix+newKey,notes:'replace proof?'}}]);
+  let stored=(await query('select * from public.episode_skip_markers where edition_id=$1',[marker.edition_id])).rows[0];
+  check(stored.provenance.openDataUrl===prefix+newKey&&stored.provenance.notes==='preserve this proof','An unchanged edition only updates its derivative link, retaining all other proof.');
+  check(stored.markers.openingEnd===60,'Publication cannot modify existing marker content.');
+  await query("update public.episode_skip_markers set verification='verified' where edition_id=$1",[marker.edition_id]);
+  await publish([{...marker,provenance:{source:'skipdb-cloud',openDataUrl:prefix+oldKey}}]);
+  stored=(await query('select * from public.episode_skip_markers where edition_id=$1',[marker.edition_id])).rows[0];
+  check(stored.verification==='verified'&&stored.provenance.openDataUrl===prefix+newKey,'Verified editions keep their original proof and retained artifact.');
+  await query("update public.series_marker_sync_state set dump_completed_at=now(),dump_generation=$1,raw_object=$2,dump_object=$3",[generation,'skipdb-raw-'+generation+'.json','skipdb-'+generation+'.jsonl']);
+  await query("insert into public.series_marker_source_segments select $1,50000+i,$2,1,1,'intro',0,60000,100000,1 from generate_series(1,10) i",[oldGeneration,imdb]);
+  await query('insert into public.series_marker_source_groups(generation,imdb_id,season,episode,segment_count) values($1,$2,1,1,10)',[oldGeneration,imdb]);
+  const context=async(limit=5000,lease=owner)=>role('service_role',async()=> (await query('select public.arkhen_marker_retention_context($1,$2) as data',[lease,limit])).rows[0].data);
+  await rejects(()=>context(5001),/Invalid retention limit/);await rejects(()=>context(5000,other),/lease unavailable/);
+  const retained=await context(3);check(retained.removed_segments===3&&retained.removed_groups===1,'Old staging is removed in bounded cache-only batches.');
+  check(retained.public_keys.includes(newKey)&&retained.public_keys.includes('skipdb-'+generation+'.jsonl'),'Current dump and verified artifact URLs are retained.');
+  check((await query('select count(*)::int as n from public.series_marker_source_segments where generation=$1',[generation])).rows[0].n===2002,'Staging for the current generation is preserved.');
+  const candidates=(raw,publicKeys,lease=owner)=>role('service_role',async()=> (await query('select public.arkhen_marker_retention_candidates($1,$2,$3) as data',[lease,raw,publicKeys])).rows[0].data);
+  const protectedKeys=await candidates(['skipdb-raw-'+generation+'.json','skipdb-raw-'+oldGeneration+'.json'],[newKey,oldKey,'skipdb-current.json','../private-user-file']);
+  check(protectedKeys.raw.length===1&&protectedKeys.raw[0]==='skipdb-raw-'+oldGeneration+'.json','Current RAW bytes can never be selected for Storage deletion.');
+  check(protectedKeys.public.length===1&&protectedKeys.public[0]===oldKey,'Only an obsolete unreferenced derivative may be selected.');
+  await query('update public.episode_skip_markers set verification=$1,is_active=false,provenance=$2 where edition_id=$3',['verified',{source:'skipdb-cloud',openDataUrl:prefix+oldKey},marker.edition_id]);
+  check((await candidates([],[oldKey])).public.length===0,'Inactive verified editions still retain their public artifact.');
+  await query("update public.series_marker_sync_state set lease_until=now()+interval '10 seconds'");
+  await rejects(()=>context(),/lease unavailable/);await rejects(()=>candidates([],[oldKey]),/lease unavailable/);
+  await query("update public.series_marker_sync_state set lease_until=now()+interval '1 hour',dump_completed_at=null");
+  await rejects(()=>context(),/lease unavailable/);
+  for(const caller of ['anon','authenticated'])await rejects(()=>role(caller,()=>query('select public.arkhen_marker_retention_context($1)',[owner])),/permission denied/);
+  console.log(JSON.stringify({ok:true,assertions,remote:false}));
+}catch(error){console.error(JSON.stringify({ok:false,message:error.message,code:error.code,assertions}));process.exitCode=1;}finally{await db.close();}

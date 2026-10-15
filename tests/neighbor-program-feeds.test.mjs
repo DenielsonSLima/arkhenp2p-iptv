@@ -88,3 +88,22 @@ test('neighbor rendering keeps distinct schedules and ignores an obsolete channe
   assert.equal(view.channelNeighborNodes.next.programs.current.name.textContent,'Programação 30');
   assert.equal(view.channelNeighborNodes.previous.status.hidden,true);
 });
+
+test('an empty HTTP200 neighbor refresh does not erase an active schedule and expires naturally',async()=>{
+  const timer=clock(),updates=[];let calls=0;
+  const feeds=new NeighborProgramFeeds({...timer,request:async()=>({list:++calls===1?[program('real')]:[]}),onUpdate:data=>updates.push(data)});
+  feeds.select({previous:'10'});await flush();assert.equal(updates.at(-1).list[0].title,'Programação real');
+  await timer.advance(60000);assert.equal(calls,2);assert.equal(updates.at(-1).list[0].title,'Programação real');
+  await timer.advance(75000);assert.equal(updates.at(-1).list.length,0);
+  feeds.destroy();assert.equal(timer.size,0);
+});
+
+test('returning a cached neighbor paints no empty frame and a namespace change stops its polling',async()=>{
+  const timer=clock(),updates=[];let calls=0,namespace='account-a';
+  const feeds=new NeighborProgramFeeds({...timer,getNamespace:()=>namespace,request:async()=>{calls++;return {list:[program('real')]};},onUpdate:data=>updates.push(data)});
+  feeds.select({previous:'10'});await flush();feeds.stop();const checkpoint=updates.length;
+  feeds.select({next:'10'});assert.equal(updates.at(-1).list[0].title,'Programação real');await flush();
+  assert.ok(updates.slice(checkpoint).every(data=>data.list.length===1));assert.equal(calls,1);
+  namespace='account-b';await timer.advance(120000);assert.equal(calls,1,'Old account must not schedule EPG requests in the new account.');
+  feeds.destroy();assert.equal(timer.size,0);
+});

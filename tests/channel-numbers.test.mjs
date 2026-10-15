@@ -151,3 +151,10 @@ test('provider category settings accept Set identifiers and include native title
   fixture.tools.hiddenItems.movies.add('201');assert.equal(fixture.tools.restoreCategoryItems('movies','acao'),1);
   assert.equal(fixture.tools.countVisibleItems('movies'),0,'Restoring an item must not silently expose hidden categories.');
 });
+
+test('account-authorized saved channels outside the first catalog page retain numbers while hidden or protected snapshots stay absent',()=>{
+  const saved=[{id:'900',kind:'live',name:'Off-page favorite',categoryId:'1'},{id:'901',kind:'live',name:'Hidden favorite',categoryId:'9'},{id:'902',kind:'live',name:'Protected favorite',categoryId:'1',isAdult:true}],f=preferences({favorites:saved,items:[channels[0]]});
+  f.tools.options.resolveFavoriteItem=item=>item.isAdult?null:item;
+  assert.deepEqual(f.tools.getNumberedChannels({favoritesOnly:true,fallbackToAll:false}).map(row=>row.item.id),['900']);assert.equal(f.tools.getChannelNumber('900'),1);
+  f.catalogs.delete('live');assert.deepEqual(f.tools.getNumberedChannels({favoritesOnly:true,fallbackToAll:false}).map(row=>row.item.id),['900']);
+});

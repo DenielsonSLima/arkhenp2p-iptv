@@ -19,7 +19,7 @@ export class SettingsTools {
     this.groups=(Array.isArray(stored.groups)?stored.groups:[]).filter(group=>group&&typeof group.id==='string'&&typeof group.name==='string'&&TYPES[group.type]&&Array.isArray(group.itemKeys)).map(group=>({...group,name:group.name.slice(0,60),itemKeys:group.itemKeys.filter(key=>/^(live|movie|series):\d{1,12}$/.test(key)).slice(0,500)}));
     this.startupView=STARTUP_VIEWS.some(([id])=>id===stored.startupView)?stored.startupView:'home';
     this.trash=[];this.tab='general';this.type='live';this.editing=null;this.query='';this.categoryQuery='';this.onlyFavorites=false;this.isOpen=false;this.diagnosticRequest=0;
-    this.catalogPane='personal';this.providerCategory=null;this.providerQuery='';this.providerLimit=80;this.catalogLoadFailures=new Set();this.catalogLoads=new Map();
+    this.catalogPane='provider';this.providerCategory=null;this.providerQuery='';this.providerLimit=80;this.catalogLoadFailures=new Set();this.catalogLoads=new Map();
     this.dialog=node('section','settings-page');this.dialog.id='settings-page';this.dialog.hidden=true;this.dialog.setAttribute('aria-labelledby','settings-title');
     const sidebar=node('aside','settings-sidebar'),identity=node('div','settings-sidebar-identity'),mark=node('img');mark.src='/assets/brand/symbol.svg';mark.alt='';const identityCopy=node('div');identityCopy.append(node('small','','SUA EXPERIÊNCIA'),node('strong','','Preferências'));identity.append(mark,identityCopy);sidebar.append(identity);
     this.tabs=node('nav','settings-sidebar-nav');this.tabs.setAttribute('aria-label','Seções de configurações');
@@ -33,6 +33,7 @@ export class SettingsTools {
   getPreferences(){return {hidden:Object.fromEntries(Object.entries(this.hidden).map(([type,ids])=>[type,[...ids]])),hiddenItems:Object.fromEntries(Object.entries(this.hiddenItems||{}).map(([type,ids])=>[type,[...ids]])),groups:this.getCustomGroups(),channelNumbers:Object.fromEntries(this.channelNumbers),startupView:this.getStartupView()};}
   store({notify=true}={}){try{localStorage.setItem(this.storageKey,JSON.stringify(this.getPreferences()));}catch{this.options.toast('Não foi possível salvar estas preferências no navegador.');}if(notify)this.options.onStore?.();}
   activateAccount(id){
+    this.markerSyncCleanup?.();this.markerSyncCleanup=null;this.markerSyncController?.reset();
     this.storageKey=/^[a-f0-9]{64}$/i.test(id||'')?`${STORAGE}.account.${id}`:STORAGE;
     this.applyPreferences(read(this.storageKey),{includeGroups:true});
   }
@@ -71,10 +72,11 @@ export class SettingsTools {
   countVisibleItems(type){return(this.catalog(type)?.items||[]).filter(item=>this.isCatalogItemVisible(type,item)).length;}
   getCustomGroups(){return this.groups.map(group=>({...group,itemKeys:[...group.itemKeys]}));}
   getNumberedChannels({favoritesOnly=true,fallbackToAll=true}={}){
-    const catalog=this.catalog('live');if(!catalog)return[];
+    const catalog=this.catalog('live');if(!catalog&&!this.options.resolveFavoriteItem)return[];
     const stored=this.options.getFavorites(),favorites=stored instanceof Map?[...stored.values()]:Array.isArray(stored)?stored:[];
-    const visible=(catalog.items||[]).filter(item=>this.isCatalogItemVisible('live',item));const visibleMap=new Map(visible.map(item=>[String(item.id),item]));
-    const favoriteItems=favorites.filter(item=>item.kind==='live'&&visibleMap.has(String(item.id))).map(item=>visibleMap.get(String(item.id)));
+    const visible=(catalog?.items||[]).filter(item=>this.isCatalogItemVisible('live',item));const visibleMap=new Map(visible.map(item=>[String(item.id),item]));
+    const favoriteItems=favorites.filter(item=>item.kind==='live').map(item=>this.options.resolveFavoriteItem?this.options.resolveFavoriteItem(item):visibleMap.get(String(item.id))).filter(item=>item&&this.isCatalogItemVisible('live',item));
+    for(const item of favoriteItems)if(!visibleMap.has(String(item.id))){visibleMap.set(String(item.id),item);visible.push(item);}
     const used=new Set(this.channelNumbers.values());let candidate=1,changed=false;
     for(const item of favoriteItems){if(this.channelNumbers.has(String(item.id)))continue;while(used.has(candidate))candidate++;if(candidate>9999)break;this.channelNumbers.set(String(item.id),candidate);used.add(candidate);changed=true;}
     if(changed)this.store();
@@ -89,7 +91,7 @@ export class SettingsTools {
     const list=node('div','settings-channel-number-list');for(const {item,number}of channels){const row=node('label','settings-channel-number'),input=node('input','settings-search');input.type='number';input.min='1';input.max='9999';input.value=String(number);input.setAttribute('aria-label',`Número do canal ${item.name}`);input.addEventListener('change',()=>{if(!this.setChannelNumber(item.id,input.value))input.value=String(this.getChannelNumber(item.id,number));});row.append(input,node('span','',item.name));list.append(row);}section.append(list);return section;
   }
   updateRoute(){const hash=`#settings/${this.tab}`;if(location.hash!==hash)history.pushState({settings:true},'',hash);}
-  restoreRoute(){const match=/^#settings\/(general|profile|live|movies|series|series-playback|playback|audio|startup|connection|catalog)(?:\/(live|movies|series))?$/.exec(location.hash);if(match)this.open(match[1],match[2],false);}
+  restoreRoute(){const match=/^#settings\/(general|profile|parental|live|movies|series|series-playback|marker-sync|playback|audio|startup|connection|catalog)(?:\/(live|movies|series))?$/.exec(location.hash);if(match)this.open(match[1],match[2],false);}
   open(tab='general',type,route=true){
     if(!this.isOpen){this.previousTitle=document.title;this.previousHash=location.hash.startsWith('#settings/')?'#home':location.hash;this.options.onOpen?.();}
     const next=tab==='catalog'?(TYPES[type]?type:this.type):tab;
@@ -105,10 +107,11 @@ export class SettingsTools {
     const pending=Promise.resolve(this.options.loadCatalog(type)).then(data=>{if(!data)this.catalogLoadFailures.add(type);}).catch(()=>this.catalogLoadFailures.add(type)).finally(()=>{this.catalogLoads.delete(type);if(this.isOpen&&this.tab===type)this.render();});
     this.catalogLoads.set(type,pending);
   }
-  close(route=true){if(!this.isOpen)return;this.audioCleanup?.();this.audioCleanup=null;this.seriesPlaybackCleanup?.();this.seriesPlaybackCleanup=null;this.diagnosticRequest++;this.isOpen=false;this.dialog.hidden=true;document.querySelector('#main-content').hidden=false;document.title=this.previousTitle||'ARKHEN P2 IPTV';if(route)history.replaceState(null,'',this.previousHash||'#home');this.options.onClose?.();}
+  close(route=true){if(!this.isOpen)return;this.audioCleanup?.();this.audioCleanup=null;this.seriesPlaybackCleanup?.();this.seriesPlaybackCleanup=null;this.markerSyncCleanup?.();this.markerSyncCleanup=null;this.diagnosticRequest++;this.isOpen=false;this.dialog.hidden=true;document.querySelector('#main-content').hidden=false;document.title=this.previousTitle||'ARKHEN P2 IPTV';if(route)history.replaceState(null,'',this.previousHash||'#home');this.options.onClose?.();}
   render(){
     this.audioCleanup?.();this.audioCleanup=null;
     this.seriesPlaybackCleanup?.();this.seriesPlaybackCleanup=null;
+    this.markerSyncCleanup?.();this.markerSyncCleanup=null;
     for(const tab of this.tabs.children){const active=tab.dataset.tab===this.tab||(this.tab==='connection'&&tab.dataset.tab==='general');tab.classList.toggle('active',active);active?tab.setAttribute('aria-current','page'):tab.removeAttribute('aria-current');}
     const section=SETTINGS_SECTIONS.find(item=>item.id===this.tab);this.title.textContent=section?.label||'Teste de conexão';this.description.textContent=section?.description||'Confira como está o seu serviço e a reprodução.';
     const account=this.options.getSession?.()?.account||{};this.sidebarAccount.replaceChildren(node('span','status-dot'),node('span','',account.usernameMasked||'Conta conectada'));
@@ -116,9 +119,11 @@ export class SettingsTools {
     const viewOptions={getSession:this.options.getSession,getCloudStatus:this.options.getCloudStatus,mediaLibrary:this.options.mediaLibrary,onLibraryChange:()=>{this.options.onLibraryChange?.();this.options.onChange?.();},open:(tab,type)=>this.open(tab,type),logout:()=>this.options.onLogout?.(),refresh:()=>this.options.onRefresh?.()};
     if(this.tab==='general')renderGeneral(this.body,viewOptions);
     else if(this.tab==='profile')renderProfile(this.body,viewOptions);
+    else if(this.tab==='parental')this.options.parentalControl?.renderSettings(this.body);
     else if(this.tab==='startup')renderStartup(this.body,{value:this.getStartupView(),onChange:value=>this.setStartupView(value)});
     else if(this.tab==='audio')this.audioCleanup=renderAudioPreferences(this.body,{controller:this.options.audioController,toast:this.options.toast});
     else if(this.tab==='series-playback')this.seriesPlaybackCleanup=renderSeriesPlaybackPreferences(this.body,{controller:this.options.seriesPlaybackPreferences,toast:this.options.toast});
+    else if(this.tab==='marker-sync')void this.renderMarkerSync();
     else if(this.tab==='playback'){
       if(this.options.playerTools?.renderPreferences)this.options.playerTools.renderPreferences(this.body);
       else this.body.append(node('p','settings-note','Ajuste o buffer no menu do player durante a reprodução.'));
@@ -129,6 +134,18 @@ export class SettingsTools {
       const run=button('Iniciar teste de conexão',()=>this.diagnose(result,run),'button primary');this.body.append(run,result);
       this.body.append(node('p','settings-note','O teste não abre outro canal. Sem reprodução HLS, a avaliação informa que faltam amostras de vídeo.'));
     }else this.renderCatalog();
+  }
+  async renderMarkerSync(){
+    const request=++this.diagnosticRequest,loading=node('p','settings-note','Carregando o registro de sincronização…');this.body.append(loading);
+    try{
+      const module=await(this.markerSyncModule||=import('./marker-sync-settings.js'));
+      if(request!==this.diagnosticRequest||!this.isOpen||this.tab!=='marker-sync')return;
+      this.markerSyncController||=new module.MarkerSyncRegistry({api:this.options.api,getScope:()=>{const cloud=this.options.getSession?.()?.cloud;return{project:cloud?.url,providerKey:cloud?.providerKey,scopeHash:cloud?.scopeHash};}});
+      this.body.replaceChildren();this.markerSyncCleanup=module.renderMarkerSyncSettings(this.body,{controller:this.markerSyncController});
+    }catch{
+      if(request!==this.diagnosticRequest||!this.isOpen||this.tab!=='marker-sync')return;
+      this.body.replaceChildren(node('p','diagnostics-error','Não foi possível abrir o registro de sincronização.'),button('Tentar novamente',()=>this.render()));
+    }
   }
   async diagnose(container,run){
     const request=++this.diagnosticRequest;run.disabled=true;container.replaceChildren(node('p','settings-note','Verificando três respostas do serviço e os dados da reprodução…'));
@@ -200,9 +217,7 @@ export class SettingsTools {
     groups.append(node('h3','','Categorias pessoais'));const currentGroups=this.groups.filter(group=>group.type===this.type);
     for(const group of currentGroups){const row=node('div','settings-group-row');row.dataset.groupId=group.id;row.append(button(`${group.name} · ${group.itemKeys.length}`,()=>{this.editing=group.id;this.query='';this.render();},'settings-group-open'),button('Remover',()=>{this.trash.push(group);this.groups=this.groups.filter(entry=>entry.id!==group.id);if(this.editing===group.id)this.editing=null;this.persist();this.render();},'settings-remove'));groups.append(row);}
     if(this.trash.length)groups.append(button('Desfazer remoção',()=>{this.groups.push(this.trash.pop());this.persist();this.render();},'button secondary compact'));
-    const create=node('form','settings-create-group'),name=node('input','settings-search');name.maxLength=60;name.placeholder='Nome da nova categoria';name.setAttribute('aria-label','Nome da nova categoria');name.required=true;
-    const submit=node('button','button secondary compact','Criar categoria');submit.type='submit';create.append(name,submit);create.addEventListener('submit',event=>{event.preventDefault();const value=name.value.trim();if(!value)return;const group={id:crypto.randomUUID(),name:value,type:this.type,itemKeys:[]};this.groups.push(group);this.editing=group.id;this.persist();this.render();});groups.append(create);
-    const selected=this.groups.find(group=>group.id===this.editing&&group.type===this.type);if(!selected){groups.append(node('p','settings-note','Crie uma categoria e selecione seus canais, filmes ou séries.'));return;}
+    const selected=this.groups.find(group=>group.id===this.editing&&group.type===this.type);if(!selected){groups.append(node('p','settings-note',currentGroups.length?'Selecione uma categoria salva para organizar seus títulos.':'Nenhuma categoria pessoal salva.'));return;}
     const editor=node('div','settings-group-editor');groups.append(editor);
     const rename=node('form','settings-create-group'),renameInput=node('input','settings-search');renameInput.value=selected.name;renameInput.maxLength=60;renameInput.setAttribute('aria-label','Renomear grupo');const renameSubmit=node('button','button secondary compact','Renomear');renameSubmit.type='submit';rename.append(renameInput,renameSubmit);rename.addEventListener('submit',event=>{event.preventDefault();const value=renameInput.value.trim();if(value){selected.name=value;this.persist();this.render();}});editor.append(rename);
     const itemSearch=node('input','settings-search');itemSearch.type='search';itemSearch.placeholder='Buscar título para adicionar';itemSearch.setAttribute('aria-label','Buscar título para adicionar ao grupo');itemSearch.value=this.query;editor.append(itemSearch);

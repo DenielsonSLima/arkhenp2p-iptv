@@ -3,8 +3,12 @@ import assert from 'node:assert/strict';
 import {EpisodeSkipController, EpisodeSkipStore, nextEpisodeTrigger} from '../web/episode-skip.js';
 import {SeriesPlaybackPreferences, SERIES_PLAYBACK_DEFAULTS, normalizeSeriesPlaybackPreferences} from '../web/series-playback-preferences.js';
 import {EpisodeMarkerCatalog} from '../web/series-markers/index.js';
+import {EpisodeMarkerReader} from '../web/series-markers/reader.js';
+import {readFile} from 'node:fs/promises';
 
 const namespace='a'.repeat(64);
+const verified=(markers,extra={})=>({status:'matched',confidence:'edition-verified',mediaId:'show_1',season:1,episode:1,markers,
+  provenance:{editionId:'fixture-edition',durationSeconds:600,toleranceSeconds:.5,sources:[{url:'https://example.com/verified-fixture',title:'Verified test edition'}]},...extra});
 const storage=()=>{const values=new Map();return {values,getItem:key=>values.get(key)||null,setItem:(key,value)=>values.set(key,value)};};
 class Element extends EventTarget {
   constructor(tag){super();this.tagName=tag;this.children=[];this.textContent='';this.hidden=false;this.attributes={};}
@@ -15,17 +19,39 @@ class Element extends EventTarget {
 const document={createElement:tag=>new Element(tag)};
 function clock(){let now=1000,serial=0;const timers=new Map();return {now:()=>now,timers,schedule:(run,delay)=>{const id=++serial;timers.set(id,{at:now+delay,run});return id;},cancel:id=>timers.delete(id),
   advance(ms){const end=now+ms;for(;;){const next=[...timers].filter(([,job])=>job.at<=end).sort((a,b)=>a[1].at-b[1].at)[0];if(!next)break;timers.delete(next[0]);now=next[1].at;next[1].run();}now=end;}};}
-function fixture({values={},onSeek,getEpisodeMarkers,readyState=4}={}){
+function fixture({values={nextMode:'offset'},onSeek,getEpisodeMarkers,readyState=4}={}){
   const time=clock(),browserStorage=storage(),preferences=new SeriesPlaybackPreferences({storage:browserStorage}),video=new EventTarget(),next=[],notifications=[];
   Object.assign(video,{duration:600,currentTime:0,paused:false,ended:false,readyState,error:null});preferences.setPreferences(values);let account=namespace;
   const controller=new EpisodeSkipController({video,document,storage:browserStorage,preferences,getNamespace:()=>account,onSeek,getEpisodeMarkers,...time,onNextEpisode:options=>next.push(options),hasNextEpisode:()=>true,notify:message=>notifications.push(message)});
-  const attach=(episode='episode_1',source='source-one')=>controller.attach({item:{kind:'series',id:'show_1'},episode:{id:episode},sourceFingerprint:source});attach();
+  const attach=(episode='episode_1',source='source-one')=>controller.attach({item:{kind:'series',id:'show_1'},episode:{id:episode,season:1,number:1},sourceFingerprint:source,editionId:'fixture-edition'});attach();
   return {time,video,controller,preferences,browserStorage,next,notifications,attach,event:name=>video.dispatchEvent(new Event(name)),at(value){video.currentTime=value;video.dispatchEvent(new Event('timeupdate'));},account(value){account=value;}};
 }
 
-test('defaults are automatic, a clearly configured 30 second fallback and marked openings only',()=>{
+test('GoT community manifest at eleven seconds cannot offer or execute a skip for the WPLAY edit',async()=>{
+  const reader=new EpisodeMarkerReader({allowReferenceMarkers:true,request:async url=>JSON.parse(await readFile(new URL('../web'+url,import.meta.url),'utf8'))});
+  const seeks=[];let pending;
+  const f=fixture({values:{nextMode:'markers'},onSeek:target=>{seeks.push(target);return true;},getEpisodeMarkers:context=>pending=reader.lookup(context)});
+  f.video.duration=3129.9;f.video.currentTime=11;
+  f.controller.attach({item:{id:'100',kind:'series',name:'Game Of Thrones - 2011'},episode:{id:'501',season:5,number:1,title:'S05E001'},sourceFingerprint:'provider-series-501'});
+  await pending;await Promise.resolve();
+  assert.equal(f.controller.openingCountdownPanel.hidden,true);assert.equal(f.controller.openingButton.hidden,true);
+  f.time.advance(5000);assert.deepEqual(seeks,[]);assert.equal(f.controller.skipOpening(),false);
+  f.at(113);assert.equal(f.controller.openingCountdownPanel.hidden,true);
+  f.at(3047.7);assert.equal(f.controller.countdownPanel.hidden,true);f.time.advance(5000);
+  assert.deepEqual(f.next,[]);f.controller.destroy();
+});
+
+test('a raw community fallback cannot expose even a manual skip button or trigger early next by default',()=>{
+  const seeks=[],f=fixture({values:{nextMode:'markers'},onSeek:target=>{seeks.push(target);return true;},getEpisodeMarkers:()=>({status:'unavailable',referenceOpening:{openingStart:10,openingEnd:60,source:'IntroDB'}})});
+  f.at(11);assert.equal(f.controller.openingButton.hidden,true);assert.equal(f.controller.openingCountdownPanel.hidden,true);
+  f.time.advance(10000);assert.equal(seeks.length,0);assert.equal(f.controller.skipOpening(),false);assert.deepEqual(seeks,[]);
+  f.at(570);assert.equal(f.controller.countdownPanel.hidden,true);f.time.advance(10000);assert.equal(f.next.length,0);
+  f.video.ended=true;f.event('ended');f.time.advance(5000);assert.equal(f.next.length,1);f.controller.destroy();
+});
+
+test('defaults use verified or manual credits and otherwise preserve playback until ended',()=>{
   const preferences=new SeriesPlaybackPreferences({storage:storage()});assert.deepEqual(preferences.getPreferences(),SERIES_PLAYBACK_DEFAULTS);
-  assert.deepEqual(nextEpisodeTrigger({},600,preferences.getPreferences()),{at:570,reason:'offset',approximate:true});
+  assert.deepEqual(nextEpisodeTrigger({},600,preferences.getPreferences()),{at:600,reason:'ended',approximate:false});
   assert.deepEqual(nextEpisodeTrigger({creditsStart:555},600,preferences.getPreferences()),{at:555,reason:'credits',approximate:false});
   assert.deepEqual(nextEpisodeTrigger({},30,preferences.getPreferences()),{at:30,reason:'ended',approximate:false});
   assert.equal(nextEpisodeTrigger({},600,{autoNext:false}),null);
@@ -39,7 +65,45 @@ test('preference persistence validates mode, flags and limits and notifies one l
   const copy=preferences.getPreferences();copy.autoNext=true;assert.equal(preferences.getPreferences().autoNext,false);unsubscribe();preferences.setPreferences({autoNext:true});assert.equal(changes.length,1);
 });
 
-test('the default countdown runs for five seconds once, includes its approximation, and ignores duplicate ended',()=>{
+test('a persisted offset remains an explicit compatible preference after the safer default changes',()=>{
+  const saved=storage();saved.setItem('arkhen.series-playback.v1',JSON.stringify({version:1,preferences:{autoNext:true,autoSkipOpening:true,nextMode:'offset',endOffsetSeconds:45}}));
+  const preferences=new SeriesPlaybackPreferences({storage:saved});assert.equal(preferences.getPreferences().nextMode,'offset');
+  assert.deepEqual(nextEpisodeTrigger({},600,preferences.getPreferences()),{at:555,reason:'offset',approximate:true});
+  const safe=fixture({values:{}});safe.at(599);safe.time.advance(10000);assert.equal(safe.next.length,0);
+  safe.at(600);safe.time.advance(10000);assert.equal(safe.next.length,0,'The duration threshold alone is not a completed playback event.');
+  safe.video.ended=true;safe.event('ended');safe.time.advance(5000);assert.deepEqual(safe.next,[{automatic:true,reason:'ended',approximate:false}]);safe.controller.destroy();
+});
+
+test('the player rejects community, unlabeled, wrong-episode and unbound verified windows even when an adapter says matched',async()=>{
+  const marks={openingStart:10,openingEnd:117,creditsStart:550};
+  const badProof=verified(marks);delete badProof.provenance;
+  const otherEdition=verified(marks,{provenance:{...verified(marks).provenance,editionId:'another-edit'}});
+  const wrongRuntime=verified(marks,{provenance:{...verified(marks).provenance,durationSeconds:601}});
+  for(const value of [
+    {marks},{status:'matched',markers:marks,confidence:'community-reference'},
+    {status:'matched',markers:marks,confidence:'community-overlap'},
+    {status:'matched',markers:marks,confidence:'edition-verified'},badProof,otherEdition,wrongRuntime,
+    verified(marks,{mediaId:'another-series'}),verified(marks,{season:2}),verified(marks,{episode:2}),
+    {status:'unavailable',referenceOpening:{openingStart:10,openingEnd:117,source:'SkipDB'}}
+  ]){
+    const seeks=[],f=fixture({values:{},getEpisodeMarkers:async()=>value,onSeek:target=>seeks.push(target)});
+    f.at(11);await Promise.resolve();f.time.advance(10000);
+    assert.equal(f.controller.openingButton.hidden,true);assert.equal(f.controller.openingCountdownPanel.hidden,true);assert.equal(f.controller.skipOpening(),false);
+    f.at(551);f.time.advance(10000);assert.equal(f.controller.creditsButton.hidden,true);assert.equal(f.next.length,0);assert.deepEqual(seeks,[]);
+    assert.deepEqual(f.controller.state().marks,{});f.controller.destroy();
+  }
+});
+
+test('the player independently accepts a verified exact source fingerprint without inventing a hash for a logical URL',()=>{
+  const source='a'.repeat(16),evidence=verified({openingStart:10,openingEnd:60});evidence.provenance.sourceFingerprint=source;
+  const f=fixture({getEpisodeMarkers:()=>evidence});
+  f.controller.attach({item:{kind:'series',id:'show_1'},episode:{id:'episode_1',season:1,number:1},sourceFingerprint:source});
+  f.at(11);assert.equal(f.controller.openingCountdownPanel.hidden,false);
+  f.controller.attach({item:{kind:'series',id:'show_1'},episode:{id:'episode_1',season:1,number:1},sourceFingerprint:'provider:show_1:episode_1'});
+  f.at(11);assert.equal(f.controller.openingCountdownPanel.hidden,true);assert.equal(f.controller.skipOpening(),false);f.controller.destroy();
+});
+
+test('an explicitly selected offset runs once, includes its approximation, and ignores duplicate ended',()=>{
   const f=fixture();f.at(569.99);assert.equal(f.controller.countdownPanel.hidden,true);f.at(570);
   assert.match(f.controller.countdownTitle.textContent,/5s/);assert.match(f.controller.countdownDetail.textContent,/aproximado/);
   f.time.advance(4999);assert.equal(f.next.length,0);f.time.advance(1);
@@ -104,9 +168,9 @@ test('trusted episode credits override the approximate offset and a manual actio
   assert.deepEqual(f.next,[{automatic:false,reason:'credits',approximate:false}]);f.time.advance(10000);f.event('ended');assert.equal(f.next.length,1);f.controller.destroy();
 });
 
-test('a compatible imported post-credit policy preserves final content instead of using the default 30-second offset',async()=>{
-  const catalog=new EpisodeMarkerCatalog({request:async()=>({schemaVersion:1,dataVersion:'post-credits-test',series:{slug:'game-of-thrones',tmdbId:1399,imdbId:'tt0944947'},records:[{season:1,episode:1,edition:{id:'community-post-credits',durationSeconds:600,toleranceSeconds:2},verification:{status:'community-reference',blockEarlyNext:true},markers:{},sources:[{url:'https://skipdb.tv/docs',title:'SkipDB'}]}]})});
-  const metadata=await catalog.lookup({item:{kind:'series',name:'Game of Thrones'},episode:{season:1,number:1},duration:600,allowReferenceMarkers:true});assert.equal(metadata.status,'matched');
+test('a verified bound post-credit policy preserves final content even with a configured offset',async()=>{
+  const catalog=new EpisodeMarkerCatalog({request:async()=>({schemaVersion:1,dataVersion:'post-credits-test',series:{slug:'game-of-thrones',tmdbId:1399,imdbId:'tt0944947'},records:[{season:1,episode:1,edition:{id:'fixture-edition',durationSeconds:600,toleranceSeconds:2},verification:{status:'verified',blockEarlyNext:true},markers:{},sources:[{url:'https://skipdb.tv/docs',title:'Verified fixture'}]}]})});
+  const metadata=await catalog.lookup({item:{id:'show_1',kind:'series',name:'Game of Thrones'},episode:{season:1,number:1},duration:600,editionId:'fixture-edition'});assert.equal(metadata.status,'matched');
   const f=fixture({getEpisodeMarkers:()=>metadata});f.at(570);f.time.advance(20000);assert.equal(f.next.length,0);assert.equal(f.controller.countdownPanel.hidden,true);assert.match(f.controller.catalogSource.textContent,/preservar conteúdo final/);
   f.at(599.9);f.time.advance(10000);assert.equal(f.next.length,0,'The player cannot guess that final scenes have ended.');
   f.video.currentTime=600;f.video.ended=true;f.video.paused=true;f.event('ended');assert.match(f.controller.countdownTitle.textContent,/5s/);assert.match(f.controller.countdownDetail.textContent,/preservar conteúdo final/);
@@ -114,7 +178,7 @@ test('a compatible imported post-credit policy preserves final content instead o
 });
 
 test('an explicit manual credits marker overrides the imported preserve-final policy and clearing it restores protection',()=>{
-  const f=fixture({getEpisodeMarkers:()=>({status:'matched',markers:{creditsStart:500},blockEarlyNext:true,confidence:'community-reference'})});
+  const f=fixture({getEpisodeMarkers:()=>verified({creditsStart:500},{blockEarlyNext:true})});
   f.at(550);assert.equal(f.controller.state().marks.creditsStart,undefined,'An ambiguous imported credits boundary is not offered as a real window.');assert.equal(f.controller.countdownPanel.hidden,true);
   assert.equal(f.controller.mark('creditsStart'),true);assert.equal(f.controller.state().blockEarlyNext,false);assert.equal(f.controller.countdown.reason,'credits');
   f.time.advance(2000);f.controller.clear();assert.equal(f.controller.state().blockEarlyNext,true);assert.equal(f.controller.countdownPanel.hidden,true);f.time.advance(10000);assert.equal(f.next.length,0);
@@ -131,7 +195,7 @@ test('automatic openings count down visibly for five seconds before using the ce
 });
 
 test('the opening countdown pauses during buffering and seek, and requires playing to resume',()=>{
-  const seeks=[],f=fixture({getEpisodeMarkers:()=>({marks:{openingStart:10,openingEnd:60}}),onSeek:target=>{seeks.push(target);return true;}});
+  const seeks=[],f=fixture({getEpisodeMarkers:()=>verified({openingStart:10,openingEnd:60}),onSeek:target=>{seeks.push(target);return true;}});
   f.at(10);f.time.advance(2000);f.event('waiting');f.time.advance(10000);
   assert.equal(seeks.length,0);assert.match(f.controller.openingCountdownTitle.textContent,/pausada.*3s/);
   f.video.seeking=true;f.event('seeking');f.video.seeking=false;f.event('seeked');f.time.advance(10000);assert.equal(seeks.length,0);
@@ -139,7 +203,7 @@ test('the opening countdown pauses during buffering and seek, and requires playi
 });
 
 test('cancelling an opening survives updates and unrelated settings, and rearms only before the opening',()=>{
-  const seeks=[],f=fixture({getEpisodeMarkers:()=>({marks:{openingStart:10,openingEnd:60}}),onSeek:target=>{seeks.push(target);return true;}});
+  const seeks=[],f=fixture({getEpisodeMarkers:()=>verified({openingStart:10,openingEnd:60}),onSeek:target=>{seeks.push(target);return true;}});
   f.at(10);f.time.advance(1000);assert.equal(f.controller.cancelAutoOpening(),true);assert.equal(f.controller.openingCountdownPanel.hidden,true);assert.equal(f.controller.openingButton.hidden,false);
   f.preferences.setPreferences({endOffsetSeconds:45});f.at(30);f.time.advance(10000);assert.equal(seeks.length,0);
   f.at(65);f.at(20);f.time.advance(10000);assert.equal(seeks.length,0);
@@ -147,20 +211,20 @@ test('cancelling an opening survives updates and unrelated settings, and rearms 
 });
 
 test('the explicit opening action skips immediately and reset revokes an old countdown callback',()=>{
-  const seeks=[],f=fixture({getEpisodeMarkers:()=>({marks:{openingStart:10,openingEnd:60}}),onSeek:target=>{seeks.push(target);return true;}});
+  const seeks=[],f=fixture({getEpisodeMarkers:()=>verified({openingStart:10,openingEnd:60}),onSeek:target=>{seeks.push(target);return true;}});
   f.at(10);const stale=[...f.time.timers.values()][0].run;
   f.controller.skipOpeningNowButton.dispatchEvent(new Event('click'));assert.deepEqual(seeks,[60]);f.time.advance(10000);assert.equal(seeks.length,1);
   f.video.currentTime=0;f.attach('episode_2','new-source');stale();f.time.advance(10000);assert.equal(seeks.length,1);assert.equal(f.controller.openingCountdownPanel.hidden,true);f.controller.destroy();
 });
 
 test('late arrival within the last five seconds never creates or rushes an automatic opening skip',()=>{
-  const seeks=[],f=fixture({getEpisodeMarkers:()=>({marks:{openingStart:10,openingEnd:60}}),onSeek:target=>{seeks.push(target);return true;}});
+  const seeks=[],f=fixture({getEpisodeMarkers:()=>verified({openingStart:10,openingEnd:60}),onSeek:target=>{seeks.push(target);return true;}});
   f.at(55.1);assert.equal(f.controller.openingCountdownPanel.hidden,true);assert.equal(f.controller.openingButton.hidden,false);f.time.advance(10000);assert.equal(seeks.length,0);
   f.at(60);assert.equal(f.controller.overlay.hidden,true);f.controller.destroy();
 });
 
 test('opening cancellation and timers never cross accounts or episode generations',()=>{
-  const seeks=[],f=fixture({getEpisodeMarkers:()=>({marks:{openingStart:10,openingEnd:60}}),onSeek:target=>{seeks.push(target);return true;}});
+  const seeks=[],f=fixture({getEpisodeMarkers:()=>verified({openingStart:10,openingEnd:60}),onSeek:target=>{seeks.push(target);return true;}});
   f.at(10);const stale=[...f.time.timers.values()][0].run;f.account('b'.repeat(64));f.time.advance(10000);
   assert.equal(f.controller.context,null);assert.equal(f.controller.openingCountdownPanel.hidden,true);assert.equal(seeks.length,0);
   f.video.currentTime=10;f.attach('episode_2','source-two');f.controller.cancelAutoOpening();
@@ -168,9 +232,9 @@ test('opening cancellation and timers never cross accounts or episode generation
 });
 
 test('validated supplied windows work without manual marks and remain separate from user overrides',()=>{
-  const calls=[],f=fixture({getEpisodeMarkers:args=>{calls.push(args);return {marks:{openingStart:10,openingEnd:60,creditsStart:550},source:'fixture exact edition'};}});
+  const calls=[],f=fixture({getEpisodeMarkers:args=>{calls.push(args);return verified({openingStart:10,openingEnd:60,creditsStart:550});}});
   f.at(10);assert.equal(f.controller.openingCountdownPanel.hidden,false);assert.equal(f.controller.store.has(f.controller.context),false);
-  assert.deepEqual(calls.at(-1),{item:{kind:'series',id:'show_1'},episode:{id:'episode_1'},duration:600,sourceFingerprint:'source-one'});
+  assert.deepEqual(calls.at(-1),{item:{kind:'series',id:'show_1'},episode:{id:'episode_1',season:1,number:1},duration:600,sourceFingerprint:'source-one',editionId:'fixture-edition'});
   f.controller.cancelAutoOpening();f.at(20);assert.equal(f.controller.mark('openingStart'),true);
   assert.deepEqual(f.controller.state().marks,{openingStart:20,creditsStart:550},'An unfinished manual opening cannot borrow an imported end.');
   f.at(65);f.controller.mark('openingEnd');assert.deepEqual(f.controller.state().marks,{openingStart:20,openingEnd:65,creditsStart:550});
@@ -189,8 +253,8 @@ test('async catalog windows load once and start a visible five-second opening of
   let resolve,calls=0,signal;const pending=new Promise(done=>resolve=done),seeks=[];
   const f=fixture({getEpisodeMarkers:input=>{calls++;signal=input.signal;return pending;},onSeek:target=>seeks.push(target)});
   f.at(10);f.at(11);assert.equal(calls,1);assert.equal(f.controller.openingCountdownPanel.hidden,true);
-  resolve({status:'matched',markers:{openingStart:10,openingEnd:60,creditsStart:550},confidence:'community-reference'});await Promise.resolve();
-  assert.equal(f.controller.openingCountdownPanel.hidden,false);assert.match(f.controller.openingCountdownDetail.textContent,/em teste/);
+  resolve(verified({openingStart:10,openingEnd:60,creditsStart:550}));await Promise.resolve();
+  assert.equal(f.controller.openingCountdownPanel.hidden,false);assert.match(f.controller.openingCountdownDetail.textContent,/conferidos para esta edição/);
   assert.match(f.controller.openingCountdownTitle.textContent,/5s/);f.time.advance(4999);assert.deepEqual(seeks,[]);f.time.advance(1);assert.deepEqual(seeks,[60]);
   f.controller.destroy();assert.equal(signal.aborted,true);
 });
@@ -198,7 +262,7 @@ test('async catalog windows load once and start a visible five-second opening of
 test('async catalog results cannot cross episode, duration or account and inactive references never become marks',async()=>{
   for(const change of [f=>f.attach('other','other-source'),f=>{f.video.duration=800;f.event('durationchange');},f=>f.account('b'.repeat(64))]){
     let resolve,calls=0;const pending=new Promise(done=>resolve=done),f=fixture({getEpisodeMarkers:()=>++calls===1?pending:null});f.at(10);change(f);
-    resolve({status:'matched',markers:{openingStart:10,openingEnd:60}});await Promise.resolve();
+    resolve(verified({openingStart:10,openingEnd:60}));await Promise.resolve();
     assert.equal(f.controller.externalResult,null);assert.equal(f.controller.openingCountdownPanel.hidden,true);f.controller.destroy();
   }
   const f=fixture({getEpisodeMarkers:async()=>({status:'unverified',markers:{openingStart:10,openingEnd:60}})});f.at(10);await Promise.resolve();

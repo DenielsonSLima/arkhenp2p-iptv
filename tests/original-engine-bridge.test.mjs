@@ -141,6 +141,16 @@ function fakeChild(respond) {
   return child;
 }
 
+// A real child process keeps Node alive while shutdown's fallback timers are
+// unref'ed. The in-memory fake has no such handle; this deadline supplies it
+// and turns a missing exit event into a useful failure instead of cancellation.
+async function cleanupFakeChild(cleanup) {
+  let timer;
+  try {
+    await Promise.race([cleanup(),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Fake child did not exit during cleanup.')),1000);})]);
+  } finally {clearTimeout(timer);}
+}
+
 test('JSONL transport keeps private values off argv/env and sanitizes remote exceptions', async () => {
   let spawned;
   const child = fakeChild((request, child) => child.reply({ ok: false, error: 'exception with private-password http://secret' }));
@@ -149,10 +159,21 @@ test('JSONL transport keeps private values off argv/env and sanitizes remote exc
   await assert.rejects(rpc.call('verifyAccount', { username: 'fixture' }), { code: 'ENGINE_RPC_FAILED' });
   assert.equal(spawned[2].shell, false);
   assert.deepEqual(spawned[2].stdio, ['pipe', 'pipe', 'ignore']);
-  assert.deepEqual(Object.keys(spawned[2].env), ['PYTHONDONTWRITEBYTECODE', 'PYTHONNOUSERSITE']);
+  assert.equal(spawned[2].windowsHide,true);assert.deepEqual(spawned[1].slice(0,4),['-I','-B','-X','utf8']);
+  assert.ok(Object.keys(spawned[2].env).every(key=>['PYTHONDONTWRITEBYTECODE','PYTHONNOUSERSITE','SystemRoot','WINDIR','TEMP','TMP','TMPDIR'].includes(key)));
   assert.equal(JSON.stringify(spawned).includes('fixture'), false);
-  await rpc.close();
+  await cleanupFakeChild(()=>rpc.close());
   assert.deepEqual(child.killed, ['SIGINT']);
+});
+
+test('Windows RPC uses an explicit absolute Python executable and only required OS environment values',async()=>{
+ let spawned;const child=fakeChild((request,child)=>child.reply({ok:true,op:request.op,result:true}));
+ const rpc=new OriginalEngineRPC({platform:'win32',cleanupGraceMs:5,env:{ARKHEN_P2P_PYTHON:'C:\\Private Python\\Scripts\\python.exe',SystemRoot:'C:\\Windows',TEMP:'C:\\Temp',SUPABASE_SERVICE_ROLE_KEY:'private-key',PASSWORD:'private-password',PYTHONPATH:'C:\\injection'},spawnProcess:(...args)=>{spawned=args;return child;}});
+ await rpc.ready();assert.equal(spawned[0],'C:\\Private Python\\Scripts\\python.exe');assert.deepEqual(spawned[1].slice(0,2),['-I','-B']);assert.equal(spawned[2].env.SystemRoot,'C:\\Windows');assert.equal(spawned[2].env.TEMP,'C:\\Temp');assert.doesNotMatch(JSON.stringify(spawned),/private-key|private-password|injection|SUPABASE/);assert.equal(spawned[2].shell,false);assert.equal(spawned[2].windowsHide,true);await cleanupFakeChild(()=>rpc.close());
+});
+
+test('relative or shell-style Python overrides fail before creating any RPC child',()=>{
+ for(const python of ['python.exe','C:python.exe','C:\\Python\\python.cmd','python3 -m module'])assert.throws(()=>new OriginalEngineRPC({platform:'win32',python,spawnProcess:()=>assert.fail('Invalid paths cannot launch a subprocess.')}),{code:'ENGINE_PYTHON_CONFIGURATION'});
 });
 
 test('JSONL cancellation drains its response without unloading the original engine', async () => {
@@ -171,7 +192,7 @@ test('JSONL cancellation drains its response without unloading the original engi
   await new Promise(resolve => setImmediate(resolve));
   child.reply({ ok: true, op: 'status', result: { attached: true } });
   assert.deepEqual(await status, { attached: true });
-  await rpc.close();
+  await cleanupFakeChild(()=>rpc.close());
   await assert.rejects(rpc.call('status'), { code: 'ENGINE_CONTROL_CLOSED' });
   assert.deepEqual(child.killed, ['SIGINT']);
 });
@@ -184,7 +205,7 @@ test('an idle JSONL client receives EOF and exits without an interrupt', async (
   });
   const rpc = new OriginalEngineRPC({ cleanupGraceMs: 10, spawnProcess: () => child });
   await rpc.ready();
-  await rpc.close();
+  await cleanupFakeChild(()=>rpc.close());
   assert.equal(child.stdin.writableEnded, true);
   assert.deepEqual(child.killed, []);
 });
@@ -232,7 +253,7 @@ test('a queued channel switch stops a cancelled pending start and keeps the same
     assert.equal(children.length, 1);
     assert.deepEqual(children[0].killed, []);
     assert.equal(manager.acceptsMediaURL(owner, source), true);
-  } finally { await manager.shutdown(); }
+  } finally { await cleanupFakeChild(()=>manager.shutdown()); }
 });
 
 test('logout revokes playback and account while reusing the engine for a verified next session', async t => {

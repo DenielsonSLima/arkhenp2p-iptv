@@ -1,3 +1,5 @@
+import {isAdultItem} from './parental-classification.js';
+
 const prefix = 'orbit.episode-progress.v1.';
 const maxSeconds = Number.MAX_SAFE_INTEGER;
 const validNamespace = value => typeof value === 'string' && /^[a-zA-Z0-9:_-]{1,200}$/.test(value) ? value : null;
@@ -37,26 +39,54 @@ function normalizeRecord(value) {
 
 /** Keep each episode independent; persistence requires a stable account scope. */
 export class EpisodeProgressStore {
-  constructor({read = browserRead, save = browserSave, limit = 1500, now = () => Date.now()} = {}) {
+  constructor({read = browserRead, save = browserSave, limit = 1500, now = () => Date.now(), canRemember = () => true} = {}) {
     this.readStorage = read;this.saveStorage = save;this.now = now;
+    this.canRemember = canRemember;this.blockedItems = new Set();
     this.limit = Number.isFinite(limit) ? Math.max(1, Math.min(5000, Math.floor(limit))) : 1500;
     this.namespace = null;this.records = new Map();
   }
   setNamespace(namespace) {
     const next = validNamespace(namespace);
     if (next !== null && next === this.namespace) return true;
-    this.namespace = next;this.records.clear();
+    this.namespace = next;this.records.clear();this.blockedItems.clear();
     if (next === null) return false;
     let stored;
     try { stored = this.readStorage(prefix + next, null); } catch { return true; }
     // Checking the envelope as well as the key rejects data from another account.
     if (stored?.version !== 1 || stored.namespace !== next || !Array.isArray(stored.entries)) return true;
+    let rejected = false;
     for (const raw of stored.entries.slice(0, 5000)) {
+      if (isAdultItem(raw) || isAdultItem(raw?.item) || isAdultItem(raw?.episode)) {const blocked = identifier(raw?.itemId);if (blocked !== null) this.blockedItems.add(blocked);rejected = true;continue;}
       const record = normalizeRecord(raw);if (!record) continue;
       const key = recordKey(record.itemId, record.episodeId), old = this.records.get(key);
       if (!old || old.updated <= record.updated) this.records.set(key, record);
     }
-    this.trim();return true;
+    this.trim();if (rejected) {for (const [key,record] of this.records) if (this.blockedItems.has(record.itemId)) this.records.delete(key);this.persist();}return true;
+  }
+  #allowed(item, episode) {
+    if (!item || this.blockedItems.has(String(item.id)) || isAdultItem(item) || isAdultItem(episode)) return false;
+    try { return this.canRemember(item) !== false; } catch { return false; }
+  }
+  /** Classification can arrive after legacy ID-only progress has been loaded. */
+  reconcileCatalog(data, type = 'series') {
+    if (type !== 'series' || !Array.isArray(data?.items)) return 0;
+    const categories = [...(data.categories || []), ...(data.sourceCategories || [])];
+    for (const raw of data.items) {
+      const item = {...raw, kind:'series'};
+      if (isAdultItem(item, categories) || !this.#allowed(item)) this.blockedItems.add(String(item.id));
+    }
+    let removed = 0;
+    for (const [key, record] of this.records) if (!this.#allowed({kind:'series', id:record.itemId})) {this.records.delete(key);removed++;}
+    if (removed) this.persist();
+    return removed;
+  }
+  purge(item) {
+    if (item?.kind !== 'series' || identifier(item.id) === null) return 0;
+    this.blockedItems.add(String(item.id));
+    let removed = 0;
+    for (const [key, record] of this.records) if (record.itemId === String(item.id)) {this.records.delete(key);removed++;}
+    if (removed) this.persist();
+    return removed;
   }
   trim() {
     if (this.records.size <= this.limit) return;
@@ -68,7 +98,9 @@ export class EpisodeProgressStore {
     if (this.namespace === null) return;
     try { this.saveStorage(prefix + this.namespace, {version:1, namespace:this.namespace, entries:this.list()}); } catch { /* Playback survives full or blocked storage. */ }
   }
-  save({item, episode, time, duration, completed = false, updated = this.now()} = {}) {
+  save(value = {}) {
+    const {item, episode, time, duration, completed = false, updated = this.now()} = value;
+    if (isAdultItem(value) || !this.#allowed(item, episode)) {this.purge(item);return null;}
     const ids = identity(item, episode);if (!ids) return null;
     const key = recordKey(ids.itemId, ids.episodeId), old = this.records.get(key);
     const record = normalizeRecord({...ids, time, duration:seconds(duration) ?? old?.duration, completed, updated, season:episode.season, number:episode.number});
@@ -77,13 +109,15 @@ export class EpisodeProgressStore {
     this.records.set(key, record);this.persist();return {...record};
   }
   read(item, episode) {
+    if (!this.#allowed(item, episode)) {this.purge(item);return null;}
     const ids = identity(item, episode);if (!ids) return null;
     const record = this.records.get(recordKey(ids.itemId, ids.episodeId));
     return record ? {...record} : null;
   }
   list(item) {
     if (item && (item.kind !== 'series' || identifier(item.id) === null)) return [];
-    return [...this.records.values()].filter(record => !item || record.itemId === String(item.id))
+    if (item && !this.#allowed(item)) {this.purge(item);return [];}
+    return [...this.records.values()].filter(record => (!item || record.itemId === String(item.id)) && this.#allowed({kind:'series', id:record.itemId}))
       .sort((a, b) => b.updated - a.updated).map(record => ({...record}));
   }
   // The caller must prove that legacy entries belong to this exact account.
@@ -93,6 +127,7 @@ export class EpisodeProgressStore {
     const source = entries instanceof Map ? entries.values() : Array.isArray(entries) ? entries : [];
     const candidates = new Map();
     for (const entry of source) {
+      if (isAdultItem(entry) || !this.#allowed(entry?.item, entry?.episode)) {this.purge(entry?.item);continue;}
       const ids = identity(entry?.item, entry?.episode);if (!ids) continue;
       const key = recordKey(ids.itemId, ids.episodeId);if (this.records.has(key)) continue;
       const record = normalizeRecord({...ids, time:entry.time, duration:entry.duration, completed:entry.completed, updated:entry.updated, season:entry.episode.season, number:entry.episode.number});
@@ -100,8 +135,9 @@ export class EpisodeProgressStore {
       const old = candidates.get(key);
       if (!old || old.updated <= record.updated) candidates.set(key, record);
     }
-    for (const [key, record] of candidates) this.records.set(key, record);
-    if (candidates.size) this.persist();return candidates.size;
+    let added = 0;
+    for (const [key, record] of candidates) if (this.#allowed({kind:'series', id:record.itemId})) {this.records.set(key, record);added++;}
+    if (added) this.persist();return added;
   }
 }
 
@@ -123,7 +159,8 @@ function formatTime(value) {
 }
 
 /** Data for a row, using only the exact episode's measured or explicit total. */
-export function episodePlaybackProgress(item, episode, entry) {
+export function episodePlaybackProgress(item, episode, entry, {categories = []} = {}) {
+  if (isAdultItem(item, categories) || isAdultItem(episode, categories) || isAdultItem(entry, categories) || isAdultItem(entry?.item, categories)) return null;
   const ids = identity(item, episode);if (!ids) return null;
   let saved = null;
   if (entry?.itemId === ids.itemId && entry.episodeId === ids.episodeId) saved = normalizeRecord(entry);

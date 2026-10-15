@@ -3,14 +3,17 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { acquireLauncherLock, createRuntime, localPortOpen, runtimeError } from './p2p-runtime.mjs';
+import {requestP2PWebShutdown} from './p2p-web-process.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const errors = {
   P2P_ALREADY_RUNNING: 'O iniciador P2P deste projeto já está aberto.',
   P2P_WEB_PORT_BUSY: 'A porta 4173 já está em uso. Encerre somente a instância anterior do servidor ARKHEN e execute novamente.',
   P2P_COMPONENT_MISSING: 'Falta um componente local preparado (emulador, AVD, Python ou bundle). Consulte tools/original-engine/README.md. Nada foi instalado.',
+  P2P_PATH_CONFIGURATION: 'Um caminho de SDK/ADB/emulador/Python configurado é inválido. Use um caminho absoluto, sem aspas extras ou comandos.',
   P2P_APK_MISSING: 'O APK original ainda não está instalado no AVD Arkhen_Engine_Debug.',
   P2P_APK_VERSION: 'O aplicativo instalado precisa ser o WPLAYP2P 11.9.0d original (1190).',
+  P2P_ARM64_REQUIRED: 'O Android deste AVD não anunciou suporte ARM64. Use uma imagem compatível com o APK original e o observador ARM64.',
   P2P_WRONG_AVD: 'O emulador 5582 pertence a outro AVD. Nenhum aplicativo dele foi alterado.',
   P2P_AVD_OTHER_PORT: 'O AVD Arkhen_Engine_Debug já está aberto em outra porta. Feche essa instância antes de continuar.',
   P2P_FORWARD_CONFLICT: 'Um encaminhamento ADB necessário pertence a outro dispositivo. Ele foi preservado.',
@@ -26,11 +29,12 @@ const errors = {
 let release;
 let server;
 let requestedSignal;
+let serverShutdown;
 const controller = new AbortController();
 function shutdown(signal) {
   requestedSignal ||= signal;
   controller.abort();
-  if (server && server.exitCode === null) server.kill(signal);
+  if (server && server.exitCode === null&&!serverShutdown) serverShutdown=requestP2PWebShutdown(server);
 }
 process.on('SIGINT', () => shutdown('SIGINT'));
 process.on('SIGTERM', () => shutdown('SIGTERM'));
@@ -41,7 +45,7 @@ try {
   if (controller.signal.aborted) throw runtimeError('P2P_CANCELLED');
   console.log('TV ao vivo pronta. Iniciando o ARKHEN em http://localhost:4173');
   server = spawn(process.execPath, [path.join(root, 'server.mjs')], {
-    cwd: root, stdio: 'inherit', env: { ...process.env, PORT: '4173', ARKHEN_ORIGINAL_ENGINE: '1',
+    cwd: root,shell:false,windowsHide:true, stdio: ['inherit','inherit','inherit','ipc'], env: { ...process.env, PORT: '4173', ARKHEN_ORIGINAL_ENGINE: '1',ARKHEN_P2P_LAUNCHER:'1',
       ARKHEN_ORIGINAL_ENGINE_ENDPOINT: '127.0.0.1:27043', ARKHEN_ORIGINAL_ENGINE_MEDIA_PORT: '8904' },
   });
   await new Promise((resolve, reject) => {
@@ -53,5 +57,6 @@ try {
   console.error(`${errors[code] ?? 'Não foi possível preparar a TV local. Consulte o código abaixo e a documentação do projeto.'} (${code})`);
   process.exitCode = requestedSignal ? 0 : 1;
 } finally {
+  serverShutdown?.();
   await release?.();
 }

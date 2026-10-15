@@ -1,0 +1,74 @@
+{
+  "retrievedAt": "2026-10-15T18:42:01.389Z",
+  "rows": [
+    {
+      "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=5&episode=1&duration_ms=3129669",
+      "retrievedAt": "2026-10-15T18:41:56.933Z",
+      "status": 200,
+      "payload": {
+        "tmdb_id": 1399,
+        "type": "tv",
+        "season": 5,
+        "episode": 1,
+        "intro": [
+          {
+            "start_ms": null,
+            "end_ms": 113000
+          }
+        ],
+        "credits": [
+          {
+            "start_ms": 3047700,
+            "end_ms": 3131600
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.theintrodb.org/v3/media?imdb_id=tt0944947&season=1&episode=1&duration_ms=3697319",
+      "retrievedAt": "2026-10-15T18:41:58.567Z",
+      "status": 200,
+      "payload": {
+        "tmdb_id": 1399,
+        "type": "tv",
+        "season": 1,
+        "episode": 1,
+        "intro": [
+          {
+            "start_ms": 435691,
+            "end_ms": 534851
+          }
+        ],
+        "credits": [
+          {
+            "start_ms": 3630687,
+            "end_ms": null
+          }
+        ]
+      }
+    },
+    {
+      "url": "https://api.theintrodb.org/v3/media?imdb_id=tt2306299&season=1&episode=1&duration_ms=2651191",
+      "retrievedAt": "2026-10-15T18:41:59.988Z",
+      "status": 200,
+      "payload": {
+        "tmdb_id": 44217,
+        "type": "tv",
+        "season": 1,
+        "episode": 1,
+        "intro": [
+          {
+            "start_ms": 205500,
+            "end_ms": 254250
+          }
+        ],
+        "credits": [
+          {
+            "start_ms": 2627000,
+            "end_ms": null
+          }
+        ]
+      }
+    }
+  ]
+}
