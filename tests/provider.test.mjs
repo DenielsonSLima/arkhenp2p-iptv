@@ -333,7 +333,7 @@ test('startup scripts and their local module imports are served as JavaScript', 
       }
     }
     assert.ok(visited.has('/player-tools.js'), 'The player module must be checked through the app import graph.');
-    for(const module of ['/login-screen.js','/account-menu.js','/settings-views.js','/catalog-renderer.js'])assert.ok(visited.has(module),`The new module ${module} must be included in the served import graph.`);
+    for(const module of ['/login/tela.js','/sistema/conta/menu.js','/sistema/configuracoes/views.js','/catalog-renderer.js'])assert.ok(visited.has(module),`The new module ${module} must be included in the served import graph.`);
     assert.equal(mock.requests.length, 0, 'Checking startup assets must not contact the provider.');
   } finally { await mock.close(); }
 });

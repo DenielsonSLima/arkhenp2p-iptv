@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {renderProfile} from '../web/settings-views.js';
+import {renderProfile} from '../web/sistema/configuracoes/views.js';
 
 class Element{
   constructor(tag){this.tagName=tag;this.children=[];this.attributes={};this.listeners={};}

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { SettingsTools } from '../web/settings-tools.js';
+import {SettingsTools} from '../web/sistema/configuracoes/orquestrador.js';
 
 const channels = [
   { id: '101', kind: 'live', name: 'Esportes atual', categoryId: '1' },

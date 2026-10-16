@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {SharedCatalogUpdates} from '../web/shared-catalog-updates.js';
+import {SharedCatalogUpdates} from '../web/sistema/catalogo/realtime.js';
 
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
 const deferred=()=>{let resolve;const promise=new Promise(yes=>{resolve=yes;});return {promise,resolve};};

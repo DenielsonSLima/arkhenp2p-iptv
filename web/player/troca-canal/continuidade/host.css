@@ -1,0 +1,5 @@
+:is(.video-stage,.immersive-stage)>video.ip-continuity-video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:0}
+:is(.video-stage,.immersive-stage)>video.ip-continuity-video[data-continuity-slot=standby]{opacity:0;pointer-events:none}
+:is(.video-stage,.immersive-stage)>video.ip-continuity-video[data-continuity-slot=active]{opacity:1;pointer-events:auto}
+:is(.video-stage,.immersive-stage)>.ip-continuity-frame{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;z-index:1;pointer-events:none}
+:is(.video-stage,.immersive-stage)>.ip-continuity-frame[data-visible=false]{display:none}

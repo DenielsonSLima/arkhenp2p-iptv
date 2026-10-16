@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {SettingsTools} from '../web/settings-tools.js';
+import {SettingsTools} from '../web/sistema/configuracoes/orquestrador.js';
 
 class Element{
   constructor(tag){this.tagName=tag;this.children=[];this.attributes={};this.listeners={};this.dataset={};this.textContent='';}

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {QueryClient} from '@tanstack/query-core';
-import {HomeCloudModel} from '../web/home-cloud-model.js';
+import {HomeCloudModel} from '../web/inicio/tanstack-query.js';
 const result=name=>({schemaVersion:1,counts:{live:1,movie:1,series:1},favoriteChannels:[],history:{live:[],movie:[],series:[]},recommendations:{items:[{id:'1',kind:'movie',name}],personalized:true}});
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
 async function ready(model){for(let i=0;i<30&&model.pending;i++)await tick();assert.equal(model.pending,null);}

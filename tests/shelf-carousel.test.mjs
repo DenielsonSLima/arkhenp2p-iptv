@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {ShelfCarousels, shelfScrollTarget} from '../web/shelf-carousel.js';
+import {ShelfCarousels,shelfScrollTarget} from '../web/inicio/carrosseis.js';
 
 class Target {
   constructor() { this.listeners = new Map(); }

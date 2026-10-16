@@ -2,7 +2,7 @@
 import {readFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
-import {homeRecommendations} from '../web/home-recommendations.js';
+import {homeRecommendations} from '../web/inicio/recomendados/legado.js';
 import {movieRecommendationsFixture} from './test-movie-recommendations-fixture.mjs';
 if(!process.argv[2])throw new Error('Pass the installed local PGlite module path.');
 const {PGlite}=await import(pathToFileURL(process.argv[2]).href),db=new PGlite();

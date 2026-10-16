@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { computeSeriesStats, allSeriesEpisodes } from '../web/series-preview.js';
-import { movieWithPlaybackDuration } from '../web/movie-preview.js';
+import { movieWithPlaybackDuration } from '../web/filmes/duracao.js';
 
 test('series statistics count all received seasons and episodes without using declared totals or runtime',()=>{
   const data={seasonCount:99,episodeCount:999,duration:'1º episódio: 45 min',seasons:[1,2].map(season=>({number:season,episodes:Array.from({length:8},(_,index)=>({id:String(season*100+index),number:index+1,title:'Episódio'}))}))};

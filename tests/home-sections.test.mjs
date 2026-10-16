@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {featuredMovies, featuredTitles, latestReleases, homeShelves, playbackProgress} from '../web/home-sections.js';
+import {featuredMovies,featuredTitles} from '../web/inicio/bannerprincipal/selecao.js';
+import {latestReleases} from '../web/inicio/ordens.js';
+import {homeShelves} from '../web/inicio/seletores-offline.js';
+import {playbackProgress} from '../web/inicio/progresso.js';
 const item = (id, name, kind = 'movie', extra = {}) => ({id:String(id), name, kind, ...extra});
 test('three banner titles are movies, ordered by supplied release data without fictional dates', () => {
   const entries = [item(1,'Antigo', 'movie',{year:'2020'}),item(2,'Mais recente','movie',{year:'2026'}),item(3,'Série','series',{year:'2027'}),item(4,'Segundo','movie',{year:'2025'}),item(5,'Terceiro (2024)'),item(6,'Sem ano')];

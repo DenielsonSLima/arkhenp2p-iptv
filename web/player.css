@@ -1,3 +1,5 @@
+@import './player/troca-canal/visualizacao.css';
+@import './player/troca-canal/continuidade/host.css';
 .immersive-stage{position:relative;isolation:isolate;background:#000;overflow:hidden;outline:none}
 .immersive-stage:focus-visible{outline:2px solid #d2dae4;outline-offset:-2px}
 .immersive-stage video{width:100%;height:100%;object-fit:contain}
@@ -105,6 +107,11 @@
   text-shadow: 0 2px 12px #0009;
 }
 .immersive-stage .ip-channel-current { min-width: 0; }
+.immersive-stage .ip-channel-selection { padding:0; border:0; background:transparent; color:inherit; font:inherit; text-align:left; pointer-events:auto; cursor:pointer; }
+.immersive-stage .ip-channel-selection:disabled { cursor:default; opacity:1; }
+.immersive-stage .ip-channel-selection:focus-visible { outline:2px solid #e1e8f3; outline-offset:7px; border-radius:4px; }
+.immersive-stage .ip-channel-selection[data-preview="true"] .ip-kind { color:#d7e8f9; letter-spacing:1.3px; }
+.immersive-stage .ip-information.ip-guide-dismissed { opacity:0; visibility:hidden; transform:translateY(-5px); }
 .immersive-stage .ip-live-information .ip-channel-current { grid-column: 2; grid-row: 1; width: 100%; max-width: 600px; justify-self: center; }
 .immersive-stage .ip-live-information .ip-information-heading { min-height: 64px; justify-content: center; gap: 16px; }
 .immersive-stage .ip-live-information .ip-information-copy { text-align: center; }

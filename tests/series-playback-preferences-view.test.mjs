@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {SeriesPlaybackPreferences} from '../web/series-playback-preferences.js';
-import {SERIES_AUTOPLAY_CHOICES, renderSeriesPlaybackPreferences, seriesPlaybackSummary} from '../web/series-playback-preferences-view.js';
-import {SETTINGS_SECTIONS} from '../web/settings-views.js';
-import {SettingsTools} from '../web/settings-tools.js';
+import {SERIES_AUTOPLAY_CHOICES,renderSeriesPlaybackPreferences,seriesPlaybackSummary} from '../web/sistema/configuracoes/series.js';
+import {SETTINGS_SECTIONS} from '../web/sistema/configuracoes/views.js';
+import {SettingsTools} from '../web/sistema/configuracoes/orquestrador.js';
 
 class Element {
   constructor(tag){this.tagName=tag;this.children=[];this.attributes={};this.listeners={};this.classes=new Set();this.classList={toggle:(key,value)=>value?this.classes.add(key):this.classes.delete(key)};}

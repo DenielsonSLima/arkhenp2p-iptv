@@ -17,6 +17,9 @@ export class CollectorStore{
   claim(worker){return this.rpc('arkhen_claim_cloud_cache_jobs',{p_worker:worker});}
   source(job){return this.rpc('arkhen_source_get',{p_provider_key:job.provider_key,p_scope_hash:job.scope_hash});}
   state(job,worker){return this.rpc('arkhen_cloud_catalog_state',{p_job_id:job.id,p_worker:worker});}
+  epgState(job,worker){return this.rpc('arkhen_epg_snapshot_state',{p_job_id:job.id,p_worker:worker});}
+  epgStage(job,worker,{channels,contentHash,fetchedAt}){return this.rpc('arkhen_epg_snapshot_stage',{p_job_id:job.id,p_worker:worker,p_channels:channels,p_content_hash:contentHash,p_fetched_at:fetchedAt},{timeoutMs:18000});}
+  epgPublish(job,worker){return this.rpc('arkhen_epg_snapshot_publish',{p_job_id:job.id,p_worker:worker},{timeoutMs:18000});}
   seed(job,worker,type,payload){return this.rpc('arkhen_catalog_preview_seed',{p_job_id:job.id,p_worker:worker,p_media_type:type,p_payload:payload});}
   renew(job,worker){return this.rpc('arkhen_renew_cache_job',{p_job_id:job.id,p_worker:worker,p_lease_seconds:180});}
   checkpoint(job,worker,{type=null,step=null,payload=null,progress={}}={}){return this.rpc('arkhen_cloud_catalog_checkpoint',{p_job_id:job.id,p_worker:worker,p_media_type:type,p_step_key:step,p_payload:payload,p_progress:progress});}

@@ -1,0 +1,20 @@
+.immersive-stage .ip-channel-switch{position:absolute;top:max(78px,calc(env(safe-area-inset-top) + 64px));left:max(25px,calc(env(safe-area-inset-left) + 12px));z-index:8;width:min(340px,calc(100% - 50px));padding:12px 14px 10px;border:1px solid #c7d9e91c;border-radius:7px;background:#101821e8;box-shadow:0 9px 26px #0004;backdrop-filter:blur(14px);color:#dce7f1;font-family:inherit;pointer-events:none;contain:layout style}
+.immersive-stage .ip-channel-switch[hidden],.immersive-stage .ip-channel-switch [hidden]{display:none!important}
+.ip-channel-switch-identity{display:flex;align-items:center;gap:11px;min-width:0}
+.ip-channel-switch-number{flex-shrink:0;padding-right:10px;border-right:1px solid #c5d8e822;color:#d7e7f4;font-size:24px;font-weight:500;line-height:1;letter-spacing:-.6px;font-variant-numeric:tabular-nums}
+.ip-channel-switch-logo{display:flex;align-items:center;justify-content:center;width:45px;height:31px;flex:0 0 45px;overflow:hidden}
+.ip-channel-switch-logo img{display:block;width:100%;height:100%;object-fit:contain;filter:none}
+.ip-channel-switch-copy{display:flex;flex:1;flex-direction:column;gap:4px;min-width:0}
+.ip-channel-switch-name{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:#e4edf5;font-size:13px;font-weight:500;line-height:1.4;letter-spacing:.1px}
+.ip-channel-switch-phase{color:#91a8bc;font-size:9px;font-weight:400;line-height:1.4;letter-spacing:.2px}
+.ip-channel-switch-program{display:flex;align-items:baseline;gap:10px;min-width:0;margin-top:9px;padding-top:8px;border-top:1px solid #c5d8e812}
+.ip-channel-switch-program-label{flex-shrink:0;color:#7490a8;font-size:8px;font-weight:400;line-height:1.5}
+.ip-channel-switch-program-copy{display:flex;flex:1;flex-direction:column;gap:3px;min-width:0}
+.ip-channel-switch-program-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#bbcddd;font-size:11px;font-weight:400;line-height:1.4;overflow-wrap:anywhere}
+.ip-channel-switch-program-time{color:#708ba3;font-size:8px;font-weight:400;line-height:1.4;letter-spacing:.2px;font-variant-numeric:tabular-nums}
+.ip-channel-switch-bar{position:relative;height:2px;margin-top:10px;border-radius:2px;background:#bbd5eb1c;overflow:hidden}
+.ip-channel-switch-sweep{position:absolute;top:0;bottom:0;left:0;width:38%;border-radius:inherit;background:linear-gradient(90deg,#bbd8f000,#c5e1f7cc,#bbd8f000);animation:ip-channel-switch-sweep 1.35s ease-in-out infinite}
+@keyframes ip-channel-switch-sweep{from{transform:translateX(-140%)}to{transform:translateX(360%)}}
+@media(max-width:650px){.immersive-stage .ip-channel-switch{top:max(57px,calc(env(safe-area-inset-top) + 51px));left:max(12px,calc(env(safe-area-inset-left) + 8px));width:min(300px,calc(100% - 24px));padding:10px 11px 9px;border-radius:6px}.ip-channel-switch-identity{gap:9px}.ip-channel-switch-number{padding-right:8px;font-size:21px}.ip-channel-switch-logo{width:38px;height:27px;flex-basis:38px}.ip-channel-switch-name{font-size:12px}.ip-channel-switch-phase{font-size:8px}.ip-channel-switch-program{gap:8px;margin-top:8px;padding-top:7px}.ip-channel-switch-program-title{font-size:10px}.ip-channel-switch-bar{margin-top:9px}}
+@media(max-height:500px) and (orientation:landscape){.immersive-stage .ip-channel-switch{top:max(64px,calc(env(safe-area-inset-top) + 54px));left:max(20px,calc(env(safe-area-inset-left) + 8px));width:min(310px,calc(100% - 40px));padding:9px 12px 8px}.ip-channel-switch-program{margin-top:7px;padding-top:6px}.ip-channel-switch-program-title{-webkit-line-clamp:1}.ip-channel-switch-bar{margin-top:8px}}
+@media(prefers-reduced-motion:reduce){.ip-channel-switch-sweep{left:31%;animation:none;transform:none;opacity:.65}}

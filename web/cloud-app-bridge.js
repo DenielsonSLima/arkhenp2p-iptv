@@ -49,15 +49,20 @@ export class CloudAppBridge {
         // Fetch a fresh bootstrap before retrying a disabled/expired connection.
         if(refresh&&this.refreshSession)await this.refreshSession();
         if(!this.#current(serial,generation))return null;
-        let snapshot=await this.cloud.connect(this.getSession()?.cloud);
+        const session=this.getSession(),bootstrap=session?.cloud||null;let waitingBootstrap=!bootstrap;
+        // Provisioning has its own backend deadline and may outlive login.
+        // Never feed its temporary null result to the explicit Auth lifecycle.
+        let snapshot=bootstrap?await this.cloud.connect(bootstrap):await this.cloud.resume?.({libraryId:this.account,pending:session?.cloudStatus?.state==='pending',code:session?.cloudStatus?.code});
         if(!snapshot&&this.cloud.getConnectionFailure?.()?.authRecoveryRequired===true&&this.refreshSession&&this.#current(serial,generation)){
           // Only a rejected Auth session may mint a replacement. A rendering,
           // network or profile-policy failure must not request this capability.
           await this.refreshSession({forceCloud:true});
           if(!this.#current(serial,generation))return null;
-          snapshot=await this.cloud.connect(this.getSession()?.cloud,{preferBootstrap:true});
+          const recovered=this.getSession()?.cloud;
+          if(recovered){waitingBootstrap=false;snapshot=await this.cloud.connect(recovered,{preferBootstrap:true});}
         }
         if(!this.#current(serial,generation))return null;
+        if(waitingBootstrap)this.#retry(serial,generation);
         if(!snapshot){this.#retry(serial,generation);return null;}
         await this.syncLocal();
         if(!this.#current(serial,generation))return null;
@@ -66,7 +71,7 @@ export class CloudAppBridge {
         for(const [key,value]of Object.entries(this.getPreferences())){if(!this.#current(serial,generation))return null;if(!remoteKeys.has(key))await this.preferenceChanged(key,value,{force:true});}
         const remoteGroups=new Set((current.collectionRecords||[]).map(row=>row.id));
         for(const group of this.getCollections()){if(!this.#current(serial,generation))return null;if(!remoteGroups.has(group.id))await this.cloud.saveCollection(collection(group));}
-        this.retryAttempt=0;return this.cloud.snapshot();
+        if(!waitingBootstrap)this.retryAttempt=0;return this.cloud.snapshot();
       }catch{this.#retry(serial,generation);return null;}
       finally{if(this.connecting===operation)this.connecting=null;}
     })();
@@ -81,7 +86,8 @@ export class CloudAppBridge {
     return result;
   }
   receive(snapshot){
-    const session=this.getSession();if(!this.account||!snapshot.ready||snapshot.userId!==session?.cloud?.userId||session?.account?.libraryId!==this.account)return;
+    const session=this.getSession(),scope=this.cloud.scope,expectedUser=session?.cloud?.userId||(scope?.libraryId===this.account?scope.userId:null);
+    if(!this.account||!snapshot.ready||snapshot.userId!==expectedUser||session?.account?.libraryId!==this.account)return;
     const changes=libraryChangeSet(this.lastSnapshot,snapshot);this.lastSnapshot=snapshot;
     this.applying=true;
     try{

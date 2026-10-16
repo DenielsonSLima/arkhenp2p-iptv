@@ -1,5 +1,6 @@
 import {openSource,sealSource,publicProviderURL} from '../_shared/provider-sources.mjs';
 import {createWplayHttpSource,sharedImageReference} from './wplay-http.mjs';
+import {collectEPGSnapshot} from './epg-collector.mjs';
 
 const failure=code=>Object.assign(new Error(code),{code});
 const safeError=(error,phase)=>/^[A-Z][A-Z0-9_]{0,79}$/.test(error?.code||'')?error.code:'COLLECTOR_'+phase+'_FAILED';
@@ -23,6 +24,18 @@ export async function runCloudCollector({store,fetch:request=globalThis.fetch,en
   const renew=async()=>{if(now()-renewedAt>=45000){if(await store.renew(job,worker)!==true)throw failure('COLLECTOR_LEASE_LOST');renewedAt=now();}};
   const pendingArtwork=new Map();
   try{
+    if(job.job_type==='epg'){
+      phase='EPG';
+      const result=await collectEPGSnapshot({store,job,worker,now,started,budgetMs,renew,openClient:async()=>{
+        const row=await store.source(job);if(!row)throw failure('COLLECTOR_SOURCE_UNAVAILABLE');
+        const source=await decrypt(row,encryptionKey);
+        if(source?.provider!=='wplay'||!Number.isFinite(Date.parse(source.expiresAt))||Date.parse(source.expiresAt)<=now())throw failure('COLLECTOR_SOURCE_EXPIRED');
+        return createSource({source,fetch:request,now,timeoutMs:Math.max(1000,Math.min(10000,budgetMs))});
+      }});
+      ({completed,yielded,steps}=result);
+      if(completed){phase='FINISH';await store.finish(job,worker,true);}
+      return {state:yielded?'checkpointed':'ready',jobType:job.job_type,steps};
+    }
     const row=await store.source(job);if(!row)throw failure('COLLECTOR_SOURCE_UNAVAILABLE');
     const source=await decrypt(row,encryptionKey);
     if(source?.provider!=='wplay'||!Number.isFinite(Date.parse(source.expiresAt))||Date.parse(source.expiresAt)<=now())throw failure('COLLECTOR_SOURCE_EXPIRED');
@@ -83,16 +96,6 @@ export async function runCloudCollector({store,fetch:request=globalThis.fetch,en
       }
       if(!completed)completed=types.every(type=>state.publishedTypes?.includes(type));
       if(!completed){phase='YIELD';await store.yield(job,worker,state);yielded=true;}
-    }else if(job.job_type==='epg'){
-      phase='PROVIDER';const data=await client.epg();if(!Array.isArray(data?.channels))throw failure('COLLECTOR_EPG_INVALID');
-      const state=await store.state(job,worker)||{},done=new Set(Array.isArray(state.epgDone)?state.epgDone:[]);
-      const wanted=Array.isArray(job.payload?.channel_ids)?new Set(job.payload.channel_ids.map(String)):null,channels=data.channels.filter(row=>(!wanted||wanted.has(String(row.channel_id)))&&!done.has(String(row.channel_id)));
-      for(let index=0;index<channels.length&&steps<maxSteps&&now()-started<budgetMs;index+=100){
-        const batch=channels.slice(index,index+100);await renew();await store.rpc('arkhen_publish_epg_batch',{...common,p_channels:batch,p_expires_at:new Date(now()+300000).toISOString()},{timeoutMs:45000});steps++;
-        for(const channel of batch)done.add(String(channel.channel_id));await store.checkpoint(job,worker,{progress:{epgDone:[...done]}});
-      }
-      completed=channels.every(row=>done.has(String(row.channel_id)));
-      if(!completed){await store.yield(job,worker,{epgDone:[...done]});yielded=true;}
     }else if(job.job_type==='games'){
       phase='PROVIDER';const data=await client.games({date:job.payload?.date,timeZone:job.payload?.timeZone||job.payload?.time_zone||'America/Maceio',lang:job.payload?.lang||'pt'});
       await flush();await store.rpc('arkhen_publish_games',{...common,p_game_date:data.date,p_time_zone:data.timeZone,p_payload:data,p_expires_at:new Date(now()+60000).toISOString()});completed=true;

@@ -8,8 +8,10 @@ const projectRef = 'wnicimkmzswksaqdtgdv';
 const api = `https://api.supabase.com/v1/projects/${projectRef}`;
 const tokenPath = new URL('.local/supabase-access-token', root);
 const [command = 'status', flag, filename] = process.argv.slice(2);
+const timeoutMs = Number(process.env.ARKHEN_SUPABASE_ADMIN_TIMEOUT_MS || 120_000);
 
 try {
+  if(!Number.isInteger(timeoutMs)||timeoutMs<1000||timeoutMs>120000)throw new Error('Prazo administrativo inválido.');
   const metadata = await stat(tokenPath);
   if ((metadata.mode & 0o077) !== 0) throw new Error('Proteja .local/supabase-access-token com chmod 600.');
   const token = (await readFile(tokenPath, 'utf8')).trim();
@@ -29,7 +31,7 @@ try {
     method: body ? 'POST' : 'GET',
     headers: { Authorization: `Bearer ${token}`, ...(body ? { 'Content-Type': 'application/json' } : {}) },
     body,
-    signal: AbortSignal.timeout(120_000),
+    signal: AbortSignal.timeout(timeoutMs),
   });
   const result = await response.json();
   if (!response.ok) {

@@ -56,3 +56,22 @@
 @media(max-width:1000px){.marker-sync-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.marker-sync-provider{padding:19px 16px}.marker-sync-provider-heading{align-items:flex-start;flex-direction:column;gap:8px}.marker-sync-provider-details>div{flex-direction:column;gap:4px}.marker-sync-provider-details dd{text-align:left}}
 @media(max-width:650px){.marker-sync-providers{grid-template-columns:1fr}.marker-sync-provider-heading{flex-direction:row;align-items:center}.marker-sync-provider-details>div{flex-direction:row;gap:15px}.marker-sync-provider-details dd{text-align:right}.marker-sync-toolbar{align-items:flex-start;gap:12px}.marker-sync-toolbar .button{font-size:10px;padding:0 12px}.marker-sync-metric strong{font-size:27px}.marker-sync-issues li{align-items:flex-start;flex-direction:column;gap:8px}.marker-sync-section>h3{font-size:19px}.marker-sync-section>.settings-note,.marker-sync-feedback{font-size:11px}}
 .marker-sync-catalog-timestamp,.marker-sync-global-timestamp{margin:0 0 14px}
+/* Channel numbers follow the same order in the list, guide and player. */
+.settings-numbering .settings-channel-number-list{gap:8px;max-height:540px;padding:3px;overscroll-behavior:contain}
+.settings-numbering .settings-channel-number{position:relative;gap:14px;padding:12px;border-color:#d3e1e510;background:#121b21;transition:background .15s,border-color .15s,opacity .15s}
+.settings-numbering .settings-channel-number:focus-within{border-color:#bdd5df55;background:#17232b}
+.settings-numbering .settings-channel-number.dragging{opacity:.45}
+.settings-numbering .settings-channel-number.drop-before{border-top:2px solid #c4dce7}
+.settings-numbering .settings-channel-number.drop-after{border-bottom:2px solid #c4dce7}
+.settings-numbering .settings-channel-number input{width:78px;min-height:44px;font-variant-numeric:tabular-nums}
+.settings-numbering .settings-channel-name{flex:1;min-width:0;color:#c5d4de;font-size:12px}
+.settings-channel-drag,.settings-channel-move{display:grid;place-items:center;flex-shrink:0;width:40px;min-height:44px;border:1px solid #d8e4eb15;border-radius:5px;background:#d8e4eb05;color:#9eb4c1;font-size:18px;line-height:1}
+.settings-channel-drag{cursor:grab;font-size:24px;user-select:none}
+.settings-channel-drag:active{cursor:grabbing}
+.settings-channel-moves{display:flex;gap:6px;margin-left:auto;flex-shrink:0}
+.settings-channel-move:not(:disabled):hover,.settings-channel-drag:hover{background:#d8e4eb12;color:#e2edf4;border-color:#d8e4eb35}
+.settings-channel-move:disabled{opacity:.25;cursor:default}
+.settings-numbering input:focus-visible,.settings-channel-drag:focus-visible,.settings-channel-move:focus-visible{outline:2px solid #d7e5f4;outline-offset:3px}
+.settings-numbering-status{min-height:23px;margin:11px 3px 0;color:#99b1c3;font-size:11px;line-height:1.8}
+@media(max-width:650px){.settings-numbering .settings-channel-number{gap:8px;padding:9px 8px;flex-wrap:wrap}.settings-numbering .settings-channel-number-list{max-height:430px}.settings-numbering .settings-channel-number input{width:62px;padding:9px 5px}.settings-numbering .settings-channel-name{font-size:11px;flex-basis:calc(100% - 126px)}.settings-channel-moves{padding-left:0}.settings-channel-drag{width:36px}.settings-channel-move{width:44px}.settings-numbering-status{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.settings-numbering .settings-channel-number{transition:none}}

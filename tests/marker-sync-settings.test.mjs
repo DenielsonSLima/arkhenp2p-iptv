@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {QueryClient} from '@tanstack/query-core';
-import {MarkerSyncRegistry,markerSyncError,renderMarkerSyncSettings} from '../web/marker-sync-settings.js';
-import {SETTINGS_SECTIONS,renderGeneral} from '../web/settings-views.js';
+import {MarkerSyncRegistry,markerSyncError,renderMarkerSyncSettings} from '../web/sistema/configuracoes/marker-sync.js';
+import {SETTINGS_SECTIONS,renderGeneral} from '../web/sistema/configuracoes/views.js';
 
 const deferred=()=>{let resolve,reject;const promise=new Promise((yes,no)=>{resolve=yes;reject=no;});return {promise,resolve,reject};};
 const tick=()=>new Promise(resolve=>setImmediate(resolve));

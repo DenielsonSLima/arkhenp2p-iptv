@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { artworkURL, loadChannelLogos, logoGeometry } from '../web/channel-artwork.js';
-import { preloadArtwork } from '../web/session-loader.js';
+import {preloadArtwork} from '../web/login/capas.js';
 
 const alagoas = '/assets/channels/globo-alagoas-0123456789abcdef.webp';
 const sergipe = '/assets/channels/globo-sergipe-fedcba9876543210.webp';

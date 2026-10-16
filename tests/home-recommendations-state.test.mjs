@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {homeRecommendationState} from '../web/home-recommendations-state.js';
-import {cloudHomeSections} from '../web/home-cloud-sections.js';
+import {homeRecommendationState} from '../web/inicio/recomendados/estado.js';
+import {cloudHomeSections} from '../web/inicio/secoes.js';
 test('an unavailable recommendation projection remains visible as a retry state without inventing candidates',()=>{
   assert.deepEqual(homeRecommendationState(),{phase:'unavailable',message:'As recomendações estão temporariamente indisponíveis.',retry:true});
   assert.equal(homeRecommendationState({available:true,error:'failed'}).phase,'error');

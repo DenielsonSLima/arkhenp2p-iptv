@@ -2,6 +2,14 @@
 
 `web/app.js` coordena a sessão, a fonte de vídeo e os módulos abaixo. Cada módulo tem um único responsável por seu estado; os controles de séries não iniciam uma segunda transmissão em paralelo.
 
+Escolha de motor em 16/10: Configurações → Player oferece Atual (padrão) e Shaka, com preferência por navegador aplicada na próxima abertura. Distribuição local sob demanda e implementação em [`web/player/motores/`](../web/player/motores/README.md), sem modo automático. Encerramento assíncrono preserva a barreira entre fontes; Shaka não conserva buffer antigo após destroy. Conferência estática, sem mídia ou reinício.
+
+Atualização de 16/10: a UI compartilhada foi extraída para `web/player/`, com volume, play/pause e teclado separados. O cabeçalho e a seleção temporária de canais ficam em `web/tv/player/`; `web/immersive-player.js` conserva a API como fachada. Veja o [mapa de arquivos](../web/player/README.md) e a [análise da navegação e carregamento](tv-player-navigation-20261016.md). Esta etapa não modifica a sessão/transporte nem implementa prebuffer de outros canais.
+
+Atualização posterior de 16/10: a confirmação lateral passa pelo [fluxo de continuidade](../web/player/troca-canal/continuidade/README.md): dois elementos locais, um único alvo remoto após STOP, promoção do vídeo preparado e migração dos controles/áudio. O buffer anterior permanece finito; ao esgotar, mantém-se o último quadro disponível. Cima/baixo e número seguem a abertura padrão. Conferência estática, sem reinício ou prova audiovisual.
+
+Atualização de 16/10: [Filmes foi modularizado](movies-modularization-20261016.md). Prévia, título, duração, biblioteca e recomendações residem em `web/filmes/`; resolução, buffer, áudio, legendas e retomada delegam às políticas desse domínio sobre os mesmos controladores compartilhados. Os registros de testes abaixo são históricos; nesta etapa houve apenas revisão, sintaxe, bundle e conferência estrutural da RPC, sem navegador ou reprodução.
+
 | Recurso | Implementação | Integração e regras |
 | --- | --- | --- |
 | Progresso de cada episódio | `web/episode-progress.js`, `web/series-preview.js`, `web/episode-progress.css` | `saveProgress()` salva o episódio atual antes da troca. A prévia recebe `readEpisodeProgress`. [Contrato](episode-progress.md). |
@@ -15,7 +23,8 @@
 | Começar do início | `web/resume-prompt.js`, `web/resume-prompt.css` | Oferta por cinco segundos após a retomada realmente reproduzir. Foco de teclado preserva o botão até sair dele. Reset cancela timers antigos. |
 | Abertura, créditos e próximo episódio | `web/episode-skip.js`, `web/episode-skip.css` | Único responsável pelo avanço automático. Tem contagem cancelável de cinco segundos. [Contrato e limites](series-playback.md). |
 | Configurações de séries | `web/series-playback-preferences.js`, `web/series-playback-preferences-view.js` | Uma instância compartilhada por Configurações e player. Rota `#settings/series-playback`. |
-| Controles e navegação entre canais | `web/immersive-player.js`, `web/neighbor-program-feeds.js` | Canal atual em destaque, vizinhos menores; programação real por canal. |
+| Controles e navegação entre canais | `web/player/`, `web/tv/player/` | Cima/baixo confirma; esquerda/direita somente prévia com Enter/OK/clique. Expiração cancela a prévia; EPG usa o mapa compartilhado. |
+| Carregamento de troca TV | `web/player/troca-canal/` | Prévia lateral confirmada usa logo, número, nome, programa e barra indeterminada. Cima/baixo e número mantêm visual/abertura padrão. [Limites da continuidade](../web/player/troca-canal/README.md). |
 | Intro durante o carregamento | `web/playback-loader.js`, `web/playback-loader.css` | Marca animada, etapas reais da fonte e buffer; sai no evento `playing`, com fade visual de 350 ms, sem atrasar o vídeo. Bloqueio de autoplay libera o play manual; interrupções usam uma apresentação compacta. |
 | Logos no cabeçalho do player | `web/player-channel-logos.js`, `web/player-channel-logos.css` | Usa apenas arte local/registrada. Falha da imagem preserva nome e número. |
 | Superfície sem moldura de foco | `web/player-surface.css` | Carregar por último. Remove o contorno da área de vídeo e preserva o foco dos controles. [Motivo](player-surface.md). |

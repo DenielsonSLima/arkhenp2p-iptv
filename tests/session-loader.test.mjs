@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { openingArtwork, preloadArtwork } from '../web/session-loader.js';
+import {openingArtwork,preloadArtwork} from '../web/login/capas.js';
 
 test('opening selection fairly warms thirty real covers per type after the hero',()=>{
   const items=(kind,count)=>Array.from({length:count},(_,id)=>({id,kind,poster:`/api/image?ref=${kind}-${id}`}));

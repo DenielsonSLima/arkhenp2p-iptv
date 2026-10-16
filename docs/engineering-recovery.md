@@ -1,5 +1,7 @@
 # Plano de estabilização ARKHEN
 
+Último lote local sobre `962eef0`: [TV e Início](tv-home-recovery-20261015.md). Inclui a comparação do player oficial atual e correções de transporte/EPG/entrada; por solicitação do usuário, este lote tem revisão estática e sintaxe, com testes de reprodução reservados ao usuário.
+
 Atualizado em 15/10/2026. Responsável pela integração: agente principal. A validação final da experiência pertence ao usuário; a equipe executa as verificações internas e registra evidências antes da entrega.
 
 ## Decisões do produto
@@ -159,3 +161,7 @@ Solicitação seguinte dividida entre entrada/preparação, backend de recomenda
 Suíte integrada: 1.070 testes, 1.069 passaram, zero falhas e um skip Windows. SQL/RLS89 e API9 aprovados; 82 imports compilados. Fixtures Chromium conferiram entrada em cinco tamanhos, prévia em andamento, fim real com até três sugestões, navegação, foco, ausência de autoplay e recuperação da home. [Contrato integrado e evidências](home-and-movie-recommendations.md).
 
 A migração `20261015192346` está preparada e revisada, mas sua instalação remota não foi comprovada. O último health check, às16:32 locais, apresentou todos os serviços Supabase UNHEALTHY, e a leitura administrativa limitada não respondeu. Nenhuma resposta sintética foi tratada como recomendação real da conta. Não reenviar DDL ou a antiga fila de marcadores sem conferir primeiro sua existência/estado.
+
+Etapa16/10: [TV modularizada e mapa de manutenção](tv-modularization-20261016.md). Código local integrado e servidor reiniciado; validação audiovisual reservada ao usuário.
+
+Etapa posterior16/10: [login, início, shell e abas](system-modularization-20261016.md), com [correção da entrega da programação](tv-epg-recovery-20261016.md). As leituras de banco confirmaram programas atuais; não confundir ausência de captura nova com banco sem EPG.

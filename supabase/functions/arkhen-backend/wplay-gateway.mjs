@@ -70,7 +70,9 @@ export function createWplayGateway({environment,fetch:request=globalThis.fetch,n
         const scopeOrigin=new URL(body.scopeServer??body.server).origin;
         const providerKey=await digest(JSON.stringify(['arkhen-provider-v1','wplay',scopeOrigin.toLowerCase()])),scopeHash=await digest('arkhen-shared-v1:'+providerKey);
         const sourceId=await digest(JSON.stringify(['wplay',scopeOrigin,form.get('username').trim()]));
-        const expiresAt=new Date(Math.min(now()+7200000,expiry(payload.user?.end_time??payload.user?.EndTime)??Infinity,tokenExpiry(service.token)??Infinity)).toISOString();if(Date.parse(expiresAt)<=now())throw new Error();
+        // A metadata collection can run six hours after this authorized login.
+        // The provider JWT/account remain hard limits; this never renews them.
+        const expiresAt=new Date(Math.min(now()+23400000,expiry(payload.user?.end_time??payload.user?.EndTime)??Infinity,tokenExpiry(service.token)??Infinity)).toISOString();if(Date.parse(expiresAt)<=now())throw new Error();
         const source={provider:'wplay',service,userAgent:body.userAgent,validatedAt:new Date(now()).toISOString(),expiresAt};
         const cipher=await sealSource({source,providerKey,scopeHash,sourceId,key:environment('ARKHEN_SOURCE_ENCRYPTION_KEY')});
         await rpc(key,'arkhen_source_put',{p_provider_key:providerKey,p_scope_hash:scopeHash,p_source_id:sourceId,p_cipher:cipher,p_expires_at:expiresAt});cloudCollector=true;

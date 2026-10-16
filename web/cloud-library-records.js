@@ -2,7 +2,7 @@ import {withoutSessionArtwork} from './stored-artwork.js';
 import {isAdultItem} from './parental-classification.js';
 
 export const USER_TABLES=Object.freeze(['user_favorites','user_progress','user_preferences','custom_collections']);
-export const SHARED_TABLES=Object.freeze(['provider_catalog_cache','provider_epg_cache','provider_games_cache','marker_cache_versions']);
+export const SHARED_TABLES=Object.freeze(['provider_catalog_cache','epg_cache_versions','provider_games_cache','marker_cache_versions']);
 export const itemKey=item=>`${item.kind}:${item.id}`;
 export const millis=value=>typeof value==='number'&&Number.isFinite(value)?value:typeof value==='string'&&Number.isFinite(Date.parse(value))?Date.parse(value):0;
 const text=(value,max=300)=>typeof value==='string'?value.slice(0,max):'';

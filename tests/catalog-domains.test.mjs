@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import {QueryClient} from '@tanstack/query-core';
 import {CatalogRepository,catalogQueryKey} from '../web/catalog-repository.js';
 import {CatalogCache} from '../web/catalog-cache.js';
-import {MoviesFeature} from '../web/features/movies.js';
-import {SeriesFeature} from '../web/features/series.js';
-import {LiveFeature} from '../web/features/live.js';
+import {MoviesFeature} from '../web/filmes/orquestrador.js';
+import {SeriesFeature} from '../web/serie/orquestrador.js';
+import {LiveFeature} from '../web/tv/aba.js';
 import {selectLibraryFavorites,libraryChangeSet,includePreparingSearch} from '../web/library-selectors.js';
 import {mergeCatalogPage} from '../web/catalog-pagination.js';
 

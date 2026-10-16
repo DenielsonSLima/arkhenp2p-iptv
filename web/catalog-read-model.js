@@ -1,6 +1,6 @@
 import {catalogGenres} from './catalog-genres.js';
 import {sortCatalogItems} from './catalog-sort.js';
-import {latestReleases} from './home-sections.js';
+import {latestReleases} from './inicio/ordens.js';
 import {isAdultItem} from './parental-classification.js';
 import {ADULT_CATEGORY,RELEASES_CATEGORY} from './catalog-navigation.js';
 

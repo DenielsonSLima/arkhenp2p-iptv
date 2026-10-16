@@ -11,6 +11,7 @@
     "prepare:p2p:tools": "node tools/prepare-p2p-tools.mjs",
     "prepare:p2p:sdk": "node tools/prepare-p2p-sdk.mjs",
     "build:cloud": "node tools/build-cloud.mjs",
+    "build:shaka": "node tools/build-shaka.mjs",
     "supabase:project": "node tools/supabase-project.mjs",
     "test": "node --test tests/*.test.mjs"
   },
@@ -19,7 +20,8 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "2.117.3",
-    "@tanstack/query-core": "5.104.2"
+    "@tanstack/query-core": "5.104.2",
+    "shaka-player": "5.2.13"
   },
   "devDependencies": {
     "esbuild": "0.28.2"

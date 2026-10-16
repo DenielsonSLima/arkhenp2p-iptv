@@ -5,7 +5,7 @@ import {sanitizeSharedCatalog} from '../lib/shared-cache-worker.mjs';
 import {artworkURL,fallbackArtworkURL} from '../web/channel-artwork.js';
 import {episodeArtworkSources} from '../web/series-preview.js';
 import {playerChannelLogoSources} from '../web/player-channel-logos.js';
-import {openingArtwork,preloadArtwork} from '../web/session-loader.js';
+import {openingArtwork,preloadArtwork} from '../web/login/capas.js';
 import {withoutSessionArtwork} from '../web/stored-artwork.js';
 
 test('shared catalog images survive normalization, player logos, episode fallback and opening preparation',async()=>{

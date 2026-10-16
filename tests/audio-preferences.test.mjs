@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {AUDIO_CHOICES, audioStatusMessage, renderAudioPreferences} from '../web/audio-preferences.js';
-import {SETTINGS_SECTIONS} from '../web/settings-views.js';
-import {SettingsTools} from '../web/settings-tools.js';
+import {AUDIO_CHOICES,audioStatusMessage,renderAudioPreferences} from '../web/sistema/configuracoes/audio.js';
+import {SETTINGS_SECTIONS} from '../web/sistema/configuracoes/views.js';
+import {SettingsTools} from '../web/sistema/configuracoes/orquestrador.js';
 
 test('audio settings have a dedicated route and the three distinct listening modes', t => {
   assert.equal(SETTINGS_SECTIONS.find(section => section.id === 'audio')?.label, 'Áudio');

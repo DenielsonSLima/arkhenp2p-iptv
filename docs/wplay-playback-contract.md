@@ -1,5 +1,7 @@
 # Reprodução WPLAY: APK e player web
 
+Revisão local mais recente: [recuperação de TV e Início](tv-home-recovery-20261015.md), com geração por abertura, STOP confirmado e limites da verificação atual. Os testes registrados abaixo pertencem às revisões anteriores.
+
 Inspeção estática realizada em 15/10/2026 no APK original WPLAYP2P 11.9.0d, versão 1190, pacote `io.wareztv.android.one`. SHA-256: `2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69`. O APK não foi executado nesta inspeção. Nenhum Android, ADB, login ou engine foi iniciado. A preparação Android anterior está interrompida; houve criação de metadados de um AVD, sem boot.
 
 ## O que está dentro do APK

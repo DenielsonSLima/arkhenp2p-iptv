@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {cloudHomeSections,cloudFeaturedTitles,readHomeOrder} from '../web/home-cloud-sections.js';
+import {cloudHomeSections} from '../web/inicio/secoes.js';
+import {cloudFeaturedTitles} from '../web/inicio/bannerprincipal/selecao.js';
+import {readHomeOrder} from '../web/inicio/projecao.js';
 const catalog=(kind,items,orders={})=>{const values=items.map(item=>({...item,kind}));return {items:values,itemMap:new Map(values.map(item=>[item.id,item])),readModel:{orders:{name:values.map(item=>item.id),releases:values.map(item=>item.id),featured:values.map(item=>item.id),...orders}}};};
 function fixtures(){return new Map([['movies',catalog('movie',[{id:'1',name:'Zulu',rating:1},{id:'2',name:'Alfa',rating:9}],{releases:['1','2'],featured:['1','2']})],['series',catalog('series',[{id:'3',name:'Serie'}])],['live',catalog('live',[{id:'4',name:'Canal HD'},{id:'5',name:'Canal FHD'},{id:'6',name:'Outro canal'}])]]);}
 

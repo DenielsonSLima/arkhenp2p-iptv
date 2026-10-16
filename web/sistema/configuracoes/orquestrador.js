@@ -1,0 +1,284 @@
+import { SETTINGS_SECTIONS, STARTUP_VIEWS, settingsIcon, renderGeneral, renderProfile, renderStartup } from './views.js';
+import {renderAudioPreferences} from './audio.js';
+import {renderSeriesPlaybackPreferences} from './series.js';
+import {renderPlayerEnginePreferences} from '../../player/motores/configuracoes.js';
+const STORAGE='arkehn.catalog-settings.v1';
+const TYPES={live:'TV ao vivo',movies:'Filmes',series:'Séries'};
+const normalize=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const itemKey=item=>`${item.kind}:${item.id}`;
+function node(tag,className='',text){const element=document.createElement(tag);element.className=className;if(text!==undefined)element.textContent=text;return element;}
+function button(text,action,className='button secondary'){const element=node('button',className,text);element.type='button';element.addEventListener('click',action);return element;}
+function read(key=STORAGE){try{const value=JSON.parse(localStorage.getItem(key));return value&&typeof value==='object'?value:{};}catch{return {};}}
+export class SettingsTools {
+  constructor(options){
+    this.options=options;this.storageKey=STORAGE;const stored=read();this.hidden={};this.hiddenItems={};
+    for(const type of Object.keys(TYPES)){
+      this.hidden[type]=new Set(Array.isArray(stored.hidden?.[type])?stored.hidden[type].filter(id=>typeof id==='string'):[]);
+      this.hiddenItems[type]=new Set(Array.isArray(stored.hiddenItems?.[type])?stored.hiddenItems[type].filter(id=>typeof id==='string'):[]);
+    }
+    this.channelNumbers=new Map();const usedNumbers=new Set();for(const [id,number]of Object.entries(stored.channelNumbers||{})){if(/^\d{1,12}$/.test(id)&&Number.isInteger(number)&&number>0&&number<=9999&&!usedNumbers.has(number)){this.channelNumbers.set(id,number);usedNumbers.add(number);}}
+    this.groups=(Array.isArray(stored.groups)?stored.groups:[]).filter(group=>group&&typeof group.id==='string'&&typeof group.name==='string'&&TYPES[group.type]&&Array.isArray(group.itemKeys)).map(group=>({...group,name:group.name.slice(0,60),itemKeys:group.itemKeys.filter(key=>/^(live|movie|series):\d{1,12}$/.test(key)).slice(0,500)}));
+    this.startupView=STARTUP_VIEWS.some(([id])=>id===stored.startupView)?stored.startupView:'home';
+    this.trash=[];this.tab='general';this.type='live';this.editing=null;this.query='';this.categoryQuery='';this.onlyFavorites=false;this.isOpen=false;this.diagnosticRequest=0;
+    this.catalogPane='provider';this.providerCategory=null;this.providerQuery='';this.providerLimit=80;this.catalogLoadFailures=new Set();this.catalogLoads=new Map();
+    this.dialog=node('section','settings-page');this.dialog.id='settings-page';this.dialog.hidden=true;this.dialog.setAttribute('aria-labelledby','settings-title');
+    const sidebar=node('aside','settings-sidebar'),identity=node('div','settings-sidebar-identity'),mark=node('img');mark.src='/assets/brand/symbol.svg';mark.alt='';const identityCopy=node('div');identityCopy.append(node('small','','SUA EXPERIÊNCIA'),node('strong','','Preferências'));identity.append(mark,identityCopy);sidebar.append(identity);
+    this.tabs=node('nav','settings-sidebar-nav');this.tabs.setAttribute('aria-label','Seções de configurações');
+    for(const {id,label,icon}of SETTINGS_SECTIONS){const tab=button('',()=>this.open(id),'settings-sidebar-link');tab.dataset.tab=id;tab.append(settingsIcon(icon),node('span','',label));this.tabs.append(tab);}sidebar.append(this.tabs);
+    this.sidebarAccount=node('div','settings-sidebar-account');sidebar.append(this.sidebarAccount);this.dialog.append(sidebar);
+    const workspace=node('div','settings-workspace'),heading=node('div','settings-heading');heading.append(node('div','','SEU UNIVERSO, DO SEU JEITO'),button('Voltar ao catálogo',()=>this.close(),'button secondary compact'));
+    this.title=node('h2','','Configurações');this.title.id='settings-title';this.title.tabIndex=-1;this.description=node('p','settings-section-description');this.body=node('div','settings-body');workspace.append(heading,this.title,this.description,this.body);this.dialog.append(workspace);document.querySelector('#application').insertBefore(this.dialog,document.querySelector('.app-footer'));
+    this.onPopState=()=>{if(location.hash.startsWith('#settings/'))this.restoreRoute();else this.close(false);};
+    window.addEventListener('popstate',this.onPopState);
+  }
+  catalog(type){const catalogs=this.options.getCatalogs();return catalogs instanceof Map?catalogs.get(type):catalogs?.[type];}
+  getPreferences(){return {hidden:Object.fromEntries(Object.entries(this.hidden).map(([type,ids])=>[type,[...ids]])),hiddenItems:Object.fromEntries(Object.entries(this.hiddenItems||{}).map(([type,ids])=>[type,[...ids]])),groups:this.getCustomGroups(),channelNumbers:Object.fromEntries(this.channelNumbers),startupView:this.getStartupView()};}
+  store({notify=true}={}){try{localStorage.setItem(this.storageKey,JSON.stringify(this.getPreferences()));}catch{this.options.toast('Não foi possível salvar estas preferências no navegador.');}if(notify)this.options.onStore?.();}
+  activateAccount(id){
+    this.markerSyncCleanup?.();this.markerSyncCleanup=null;this.markerSyncController?.reset();
+    this.storageKey=/^[a-f0-9]{64}$/i.test(id||'')?`${STORAGE}.account.${id}`:STORAGE;
+    this.applyPreferences(read(this.storageKey),{includeGroups:true});
+  }
+  applyPreferences(value={}, {includeGroups=false}={}){
+    for(const type of Object.keys(TYPES)){
+      this.hidden[type]=new Set((Array.isArray(value.hidden?.[type])?value.hidden[type]:[]).filter(id=>typeof id==='string'));
+      this.hiddenItems[type]=new Set((Array.isArray(value.hiddenItems?.[type])?value.hiddenItems[type]:[]).filter(id=>typeof id==='string'));
+    }
+    this.channelNumbers=new Map();const used=new Set();for(const [id,number]of Object.entries(value.channelNumbers||{}))if(/^\d{1,12}$/.test(id)&&Number.isInteger(number)&&number>0&&number<=9999&&!used.has(number)){used.add(number);this.channelNumbers.set(id,number);}
+    this.startupView=STARTUP_VIEWS.some(([id])=>id===value.startupView)?value.startupView:'home';
+    if(includeGroups)this.setCustomGroups(value.groups||[],{store:false});this.store({notify:false});
+  }
+  setCustomGroups(groups,{store=true}={}){
+    this.groups=(Array.isArray(groups)?groups:[]).filter(group=>group&&typeof group.id==='string'&&/^[\w-]{1,160}$/.test(group.id)&&typeof group.name==='string'&&TYPES[group.type]&&Array.isArray(group.itemKeys)).map(group=>({id:group.id,name:group.name.slice(0,60),type:group.type,itemKeys:group.itemKeys.filter(key=>/^(live|movie|series):\d{1,12}$/.test(key)).slice(0,500)}));
+    if(store)this.store({notify:false});
+  }
+  getStartupView(){return STARTUP_VIEWS.some(([id])=>id===this.startupView)?this.startupView:'home';}
+  setStartupView(value){if(!STARTUP_VIEWS.some(([id])=>id===value))return;this.startupView=value;this.store();this.options.toast('Tela de inicialização salva.');}
+  persist(){this.store();this.options.onChange();if(this.isOpen)document.title='ARKHEN P2 IPTV · Configurações';}
+  isCategoryVisible(type,id){return !this.hidden[type]?.has(String(id));}
+  isItemVisible(type,itemId){return !this.hiddenItems?.[type]?.has(String(itemId));}
+  isCatalogItemVisible(type,item){return (item.categoryIds||[item.categoryId]).some(id=>this.isCategoryVisible(type,id))&&this.isItemVisible(type,item.id);}
+  setItemVisible(type,itemId,visible){
+    const id=String(itemId);if(!TYPES[type]||!this.catalog(type)?.items?.some(item=>String(item.id)===id))return false;
+    this.hiddenItems ||= {};this.hiddenItems[type] ||= new Set();const hidden=this.hiddenItems[type],wasHidden=hidden.has(id);
+    visible?hidden.delete(id):hidden.add(id);if(wasHidden!==hidden.has(id))this.persist();return true;
+  }
+  getProviderCategoryItems(type,categoryId){
+    const catalog=this.catalog(type),category=catalog?.categories?.find(group=>String(group.id)===String(categoryId));if(!category)return[];
+    const ids=new Set([...(category.ids||[category.id])].map(String));return(catalog.items||[]).filter(item=>(item.categoryIds||[item.categoryId]).some(id=>ids.has(String(id))));
+  }
+  restoreCategoryItems(type,categoryId){
+    let restored=0;for(const item of this.getProviderCategoryItems(type,categoryId))if(this.hiddenItems?.[type]?.delete(String(item.id)))restored++;
+    if(restored)this.persist();return restored;
+  }
+  countVisibleItems(type){return(this.catalog(type)?.items||[]).filter(item=>this.isCatalogItemVisible(type,item)).length;}
+  getCustomGroups(){return this.groups.map(group=>({...group,itemKeys:[...group.itemKeys]}));}
+  getNumberedChannels({favoritesOnly=true,fallbackToAll=true,persistMissing=true}={}){
+    const catalog=this.catalog('live');if(!catalog&&!this.options.resolveFavoriteItem)return[];
+    const stored=this.options.getFavorites(),favorites=stored instanceof Map?[...stored.values()]:Array.isArray(stored)?stored:[];
+    const visible=(catalog?.items||[]).filter(item=>this.isCatalogItemVisible('live',item));const visibleMap=new Map(visible.map(item=>[String(item.id),item]));
+    const favoriteItems=favorites.filter(item=>item.kind==='live').map(item=>this.options.resolveFavoriteItem?this.options.resolveFavoriteItem(item):visibleMap.get(String(item.id))).filter(item=>item&&this.isCatalogItemVisible('live',item));
+    for(const item of favoriteItems)if(!visibleMap.has(String(item.id))){visibleMap.set(String(item.id),item);visible.push(item);}
+    const used=new Set(this.channelNumbers.values());let candidate=1,changed=false;
+    for(const item of favoriteItems){if(this.channelNumbers.has(String(item.id)))continue;while(used.has(candidate))candidate++;if(candidate>9999)break;this.channelNumbers.set(String(item.id),candidate);used.add(candidate);changed=true;}
+    if(changed&&persistMissing)this.store();
+    const selected=favoritesOnly?(favoriteItems.length||!fallbackToAll?favoriteItems:visible):visible;
+    const result=selected.map(item=>{let number=this.channelNumbers.get(String(item.id));if(!number){while(used.has(candidate))candidate++;number=candidate++;used.add(number);}return{item,number};});return result.sort((a,b)=>a.number-b.number);
+  }
+  getChannelNumber(itemId,fallback=null){return this.channelNumbers.get(String(itemId))??this.getNumberedChannels({favoritesOnly:false}).find(entry=>String(entry.item.id)===String(itemId))?.number??fallback;}
+  setChannelNumber(itemId,value){
+    const number=Number(value),id=String(itemId);if(!Number.isInteger(number)||number<1||number>9999){this.options.toast('Use um número de canal entre 1 e 9999.');return false;}
+    const effective=this.getNumberedChannels({favoritesOnly:false,persistMissing:false}),next=new Map(this.channelNumbers);
+    let previous=next.get(id)??effective.find(entry=>String(entry.item.id)===id)?.number;
+    const occupied=[...next].find(([other,assigned])=>other!==id&&assigned===number)?.[0]??effective.find(entry=>String(entry.item.id)!==id&&entry.number===number)?.item.id;
+    if(occupied!==undefined){
+      if(!Number.isInteger(previous)||previous<1||previous>9999){const used=new Set([...next.values(),...effective.map(entry=>entry.number),number]);previous=1;while(used.has(previous)&&previous<=9999)previous++;}
+      if(previous>9999){this.options.toast('Não há um número disponível para trocar estes canais.');return false;}
+      next.set(String(occupied),previous);
+    }
+    next.set(id,number);this.channelNumbers=next;this.persist();return true;
+  }
+  moveChannel(itemId,targetItemId){
+    const channels=this.getNumberedChannels({favoritesOnly:true,fallbackToAll:false,persistMissing:false});
+    const from=channels.findIndex(({item})=>String(item.id)===String(itemId)),to=channels.findIndex(({item})=>String(item.id)===String(targetItemId));
+    if(from<0||to<0||from===to)return false;
+    const numbers=channels.map(({number})=>number),ordered=[...channels],next=new Map(this.channelNumbers);
+    ordered.splice(to,0,ordered.splice(from,1)[0]);for(let index=0;index<ordered.length;index++)next.set(String(ordered[index].item.id),numbers[index]);
+    this.channelNumbers=next;this.persist();return true;
+  }
+  renderNumbering(){
+    const section=node('section','settings-section settings-numbering');section.append(node('h3','','Ordem e números dos canais favoritos'),node('p','settings-note','Arraste pelo pegador ou use as setas para mover os canais. Ao digitar um número ocupado, os dois canais trocam de número. Em tela cheia, use as setas para cima/baixo ou digite o número para sintonizar.'));
+    const channels=this.getNumberedChannels({favoritesOnly:true,fallbackToAll:false});if(!channels.length){section.append(node('p','settings-note','Marque a estrela de um canal para adicioná-lo aos Favoritos e definir seu número.'));return section;}
+    const list=node('div','settings-channel-number-list'),status=node('p','settings-numbering-status');list.setAttribute('role','list');list.setAttribute('aria-label','Ordem dos canais favoritos');status.setAttribute('role','status');status.setAttribute('aria-live','polite');status.setAttribute('aria-atomic','true');
+    let dragging=null;
+    const clearDrag=()=>{dragging=null;for(const row of list.children)row.classList.remove('dragging','drop-before','drop-after');};
+    const draw=({focusId,control,message}={})=>{
+      const scrollTop=list.scrollTop,entries=this.getNumberedChannels({favoritesOnly:true,fallbackToAll:false});list.replaceChildren();
+      for(let index=0;index<entries.length;index++){
+        const {item,number}=entries[index],id=String(item.id),row=node('div','settings-channel-number'),input=node('input','settings-search');row.dataset.channelId=id;row.setAttribute('role','listitem');row.setAttribute('aria-posinset',String(index+1));row.setAttribute('aria-setsize',String(entries.length));
+        const handle=button('⠿',()=>{},'settings-channel-drag');handle.draggable=true;handle.dataset.control='drag';handle.title=`Arrastar ${item.name}`;handle.setAttribute('aria-label',`Mover ${item.name}. Use as setas para cima ou para baixo.`);
+        handle.addEventListener('dragstart',event=>{if(!event.dataTransfer){event.preventDefault();return;}dragging=id;event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain',id);row.classList.add('dragging');});handle.addEventListener('dragend',clearDrag);
+        const move=(direction,focusControl)=>{const target=entries[index+direction];if(target&&this.moveChannel(id,target.item.id))draw({focusId:id,control:focusControl,message:`${item.name} movido para o número ${this.getChannelNumber(id)}.`});};
+        handle.addEventListener('keydown',event=>{if(event.key==='ArrowUp'||event.key==='ArrowDown'){event.preventDefault();move(event.key==='ArrowUp'?-1:1,'drag');}});
+        input.type='number';input.min='1';input.max='9999';input.step='1';input.inputMode='numeric';input.value=String(number);input.dataset.control='number';input.setAttribute('aria-label',`Número do canal ${item.name}`);
+        input.addEventListener('change',()=>{if(this.setChannelNumber(id,input.value))draw({focusId:id,control:'number',message:`Numeração atualizada. ${item.name} está no canal ${this.getChannelNumber(id)}.`});else{input.value=String(this.getChannelNumber(id,number));status.textContent='Numeração não alterada. Use um número de canal entre 1 e 9999.';}});
+        const actions=node('div','settings-channel-moves'),up=button('↑',()=>move(-1,'up'),'settings-channel-move'),down=button('↓',()=>move(1,'down'),'settings-channel-move');
+        for(const [action,direction,label]of [[up,'up','Subir'],[down,'down','Descer']]){action.dataset.control=direction;action.title=`${label} ${item.name}`;action.setAttribute('aria-label',`${label} ${item.name}`);}up.disabled=index===0;down.disabled=index===entries.length-1;
+        actions.append(up,down);row.append(handle,input,node('span','settings-channel-name',item.name),actions);list.append(row);
+      }
+      list.scrollTop=scrollTop;if(message)status.textContent=message;
+      if(focusId!==undefined){const row=[...list.children].find(entry=>entry.dataset.channelId===String(focusId));let target=row?.querySelector(`[data-control="${control}"]`);if(target?.disabled)target=row.querySelector('[data-control="drag"]');target?.focus({preventScroll:true});}
+    };
+    const dragTarget=event=>{const row=event.target.closest?.('.settings-channel-number');return dragging&&row&&row.parentNode===list&&row.dataset.channelId!==dragging?row:null;};
+    list.addEventListener('dragover',event=>{const target=dragTarget(event);if(!target)return;event.preventDefault();event.dataTransfer.dropEffect='move';const rows=[...list.children],from=rows.findIndex(row=>row.dataset.channelId===dragging),to=rows.indexOf(target);for(const row of rows)row.classList.remove('drop-before','drop-after');target.classList.add(from<to?'drop-after':'drop-before');});
+    list.addEventListener('dragleave',event=>{if(!list.contains(event.relatedTarget))for(const row of list.children)row.classList.remove('drop-before','drop-after');});
+    list.addEventListener('drop',event=>{const target=dragTarget(event);if(!target){clearDrag();return;}event.preventDefault();const id=dragging,targetId=target.dataset.channelId;clearDrag();if(this.moveChannel(id,targetId)){const name=channels.find(({item})=>String(item.id)===id)?.item.name||'Canal';draw({message:`${name} movido para o número ${this.getChannelNumber(id)}.`});}});
+    draw();section.append(list,status);return section;
+  }
+  updateRoute(){const hash=`#settings/${this.tab}`;if(location.hash!==hash)history.pushState({settings:true},'',hash);}
+  restoreRoute(){const match=/^#settings\/(general|profile|parental|live|movies|series|series-playback|marker-sync|playback|audio|startup|connection|catalog)(?:\/(live|movies|series))?$/.exec(location.hash);if(match)this.open(match[1],match[2],false);}
+  open(tab='general',type,route=true){
+    if(!this.isOpen){this.previousTitle=document.title;this.previousHash=location.hash.startsWith('#settings/')?'#home':location.hash;this.options.onOpen?.();}
+    const next=tab==='catalog'?(TYPES[type]?type:this.type):tab;
+    this.diagnosticRequest++;this.tab=SETTINGS_SECTIONS.some(section=>section.id===next)||next==='connection'?next:'general';
+    if(TYPES[this.tab]&&this.type!==this.tab){this.type=this.tab;this.editing=null;this.query='';this.categoryQuery='';this.providerCategory=null;this.providerQuery='';this.providerLimit=80;}
+    this.isOpen=true;this.dialog.hidden=false;document.querySelector('#main-content').hidden=true;document.title='ARKHEN P2 IPTV · Configurações';
+    this.render();if(route)this.updateRoute();window.scrollTo({top:0,behavior:'instant'});this.title.focus({preventScroll:true});
+    if(TYPES[this.tab]&&!this.catalog(this.tab))this.ensureCatalog(this.tab);
+  }
+  ensureCatalog(type){
+    if(!this.options.loadCatalog||this.catalogLoads.has(type))return;
+    this.catalogLoadFailures.delete(type);
+    const pending=Promise.resolve(this.options.loadCatalog(type)).then(data=>{if(!data)this.catalogLoadFailures.add(type);}).catch(()=>this.catalogLoadFailures.add(type)).finally(()=>{this.catalogLoads.delete(type);if(this.isOpen&&this.tab===type)this.render();});
+    this.catalogLoads.set(type,pending);
+  }
+  close(route=true){if(!this.isOpen)return;this.audioCleanup?.();this.audioCleanup=null;this.seriesPlaybackCleanup?.();this.seriesPlaybackCleanup=null;this.playerEngineCleanup?.();this.playerEngineCleanup=null;this.markerSyncCleanup?.();this.markerSyncCleanup=null;this.diagnosticRequest++;this.isOpen=false;this.dialog.hidden=true;document.querySelector('#main-content').hidden=false;document.title=this.previousTitle||'ARKHEN P2 IPTV';if(route)history.replaceState(null,'',this.previousHash||'#home');this.options.onClose?.();}
+  render(){
+    this.audioCleanup?.();this.audioCleanup=null;
+    this.seriesPlaybackCleanup?.();this.seriesPlaybackCleanup=null;
+    this.playerEngineCleanup?.();this.playerEngineCleanup=null;
+    this.markerSyncCleanup?.();this.markerSyncCleanup=null;
+    for(const tab of this.tabs.children){const active=tab.dataset.tab===this.tab||(this.tab==='connection'&&tab.dataset.tab==='general');tab.classList.toggle('active',active);active?tab.setAttribute('aria-current','page'):tab.removeAttribute('aria-current');}
+    const section=SETTINGS_SECTIONS.find(item=>item.id===this.tab);this.title.textContent=section?.label||'Teste de conexão';this.description.textContent=section?.description||'Confira como está o seu serviço e a reprodução.';
+    const account=this.options.getSession?.()?.account||{};this.sidebarAccount.replaceChildren(node('span','status-dot'),node('span','',account.usernameMasked||'Conta conectada'));
+    this.body.replaceChildren();
+    const viewOptions={getSession:this.options.getSession,getCloudStatus:this.options.getCloudStatus,mediaLibrary:this.options.mediaLibrary,onLibraryChange:()=>{this.options.onLibraryChange?.();this.options.onChange?.();},open:(tab,type)=>this.open(tab,type),logout:()=>this.options.onLogout?.(),refresh:()=>this.options.onRefresh?.()};
+    if(this.tab==='general')renderGeneral(this.body,viewOptions);
+    else if(this.tab==='profile')renderProfile(this.body,viewOptions);
+    else if(this.tab==='parental')this.options.parentalControl?.renderSettings(this.body);
+    else if(this.tab==='startup')renderStartup(this.body,{value:this.getStartupView(),onChange:value=>this.setStartupView(value)});
+    else if(this.tab==='audio')this.audioCleanup=renderAudioPreferences(this.body,{controller:this.options.audioController,toast:this.options.toast});
+    else if(this.tab==='series-playback')this.seriesPlaybackCleanup=renderSeriesPlaybackPreferences(this.body,{controller:this.options.seriesPlaybackPreferences,toast:this.options.toast});
+    else if(this.tab==='marker-sync')void this.renderMarkerSync();
+    else if(this.tab==='playback'){
+      this.playerEngineCleanup=renderPlayerEnginePreferences(this.body,{toast:this.options.toast});
+      const playbackOptions=node('div','settings-player-options');this.body.append(playbackOptions);
+      if(this.options.playerTools?.renderPreferences)this.options.playerTools.renderPreferences(playbackOptions);
+      else playbackOptions.append(node('p','settings-note','Ajuste o buffer no menu do player durante a reprodução.'));
+      this.body.append(node('p','settings-note','Mais buffer dá margem contra oscilações e pode aumentar o atraso ao vivo. Para filmes e séries, priorize estabilidade.'));
+    }else if(this.tab==='connection'){
+      this.body.append(node('h3','','Como está a sua sessão?'),node('p','settings-note','Verifique a resposta do serviço e a entrega dos segmentos do vídeo que já está em reprodução.'));
+      const result=node('div','settings-diagnostic-result');
+      const run=button('Iniciar teste de conexão',()=>this.diagnose(result,run),'button primary');this.body.append(run,result);
+      this.body.append(node('p','settings-note','O teste não abre outro canal. Sem reprodução HLS, a avaliação informa que faltam amostras de vídeo.'));
+    }else this.renderCatalog();
+  }
+  async renderMarkerSync(){
+    const request=++this.diagnosticRequest,loading=node('p','settings-note','Carregando o registro de sincronização…');this.body.append(loading);
+    try{
+      const module=await(this.markerSyncModule||=import('./marker-sync.js'));
+      if(request!==this.diagnosticRequest||!this.isOpen||this.tab!=='marker-sync')return;
+      this.markerSyncController||=new module.MarkerSyncRegistry({api:this.options.api,getScope:()=>{const cloud=this.options.getSession?.()?.cloud;return{project:cloud?.url,providerKey:cloud?.providerKey,scopeHash:cloud?.scopeHash};}});
+      this.body.replaceChildren();this.markerSyncCleanup=module.renderMarkerSyncSettings(this.body,{controller:this.markerSyncController});
+    }catch{
+      if(request!==this.diagnosticRequest||!this.isOpen||this.tab!=='marker-sync')return;
+      this.body.replaceChildren(node('p','diagnostics-error','Não foi possível abrir o registro de sincronização.'),button('Tentar novamente',()=>this.render()));
+    }
+  }
+  async diagnose(container,run){
+    const request=++this.diagnosticRequest;run.disabled=true;container.replaceChildren(node('p','settings-note','Verificando três respostas do serviço e os dados da reprodução…'));
+    try{
+      const data=await this.options.api('/api/diagnostics');if(request!==this.diagnosticRequest||!this.isOpen||this.tab!=='connection')return;
+      container.replaceChildren();const assessment=node('section','diagnostics-assessment');assessment.dataset.status=data.assessment.status;assessment.append(node('h3','',data.assessment.title),node('p','',data.assessment.detail));container.append(assessment);
+      if(this.options.playerTools?.current?.failed)container.append(node('p','diagnostics-error','O player reportou uma interrupção. A margem de entrega dos segmentos não garante que o navegador consiga decodificar esta fonte. Confira a mensagem do player e tente novamente.'));
+      const grid=node('div','diagnostics-grid'),value=(number,unit)=>number===null||number===undefined?'Sem amostra':`${Number(number).toLocaleString('pt-BR',{maximumFractionDigits:2})} ${unit}`;
+      for(const [label,measurement]of [['Serviço',data.server.host],['Resposta da API',value(data.server.latencyMs,'ms')],['Variação da API',value(data.server.jitterMs,'ms')],['Entrega do vídeo',value(data.playback.throughputMbps,'Mb/s')],['Necessidade da fonte',value(data.playback.requiredMbps,'Mb/s')],['Segmentos medidos',String(data.playback.segmentSamples)]]){const metric=node('div','diagnostics-metric');metric.append(node('span','',label),node('strong','',measurement));grid.append(metric);}container.append(grid);
+      container.append(node('p','settings-note',`Medido às ${new Date(data.checkedAt).toLocaleTimeString('pt-BR')}. ${data.playback.active?'Amostras da reprodução selecionada.':'Nenhuma reprodução ativa nesta medição.'}`));
+      for(const recommendation of data.recommendations||[])container.append(node('p','settings-note',recommendation));
+      const limits=node('details','diagnostics-limits');limits.append(node('summary','','Como interpretar este teste'));for(const limit of data.limits||[])limits.append(node('p','settings-note',limit));container.append(limits);
+    }catch(error){if(request===this.diagnosticRequest)container.replaceChildren(node('p','diagnostics-error',error.message));}
+    finally{if(request===this.diagnosticRequest)run.disabled=false;}
+  }
+  renderCatalog(){
+    this.body.append(node('p','settings-note','Organize o que aparece neste navegador. Uma lista menor torna a navegação mais leve; a qualidade da transmissão depende da fonte e da conexão.'));
+    const catalog=this.catalog(this.type);if(!catalog){const failed=this.catalogLoadFailures.has(this.type);this.body.append(node('p','settings-note',failed?'Não foi possível carregar as categorias. Confira sua conexão e tente novamente.':'Carregando suas categorias…'));if(failed)this.body.append(button('Tentar novamente',()=>{this.ensureCatalog(this.type);this.render();},'button secondary'));return;}
+    let numbering=this.type==='live'?this.renderNumbering():null;if(numbering)this.body.append(numbering);
+    const columns=node('div','settings-columns'),categories=node('section','settings-section'),groups=node('section','settings-section settings-catalog-content');columns.append(categories,groups);this.body.append(columns);
+    categories.append(node('h3','','Categorias visíveis'));
+    const total=catalog.items?.length||0,counter=node('p','settings-counter');categories.append(counter);
+    const updateSummary=()=>{counter.textContent=`${this.countVisibleItems(this.type).toLocaleString('pt-BR')} de ${total.toLocaleString('pt-BR')} títulos visíveis`;if(numbering){const replacement=this.renderNumbering();numbering.replaceWith(replacement);numbering=replacement;}};
+    const actions=node('div','settings-actions');actions.append(button('Mostrar todas',()=>{this.hidden[this.type].clear();this.persist();this.render();},'button secondary compact'),button('Ocultar todas',()=>{for(const category of catalog.categories||[])for(const id of category.ids||[category.id])this.hidden[this.type].add(String(id));this.persist();this.render();},'button secondary compact'));categories.append(actions);
+    const search=node('input','settings-search');search.type='search';search.placeholder='Buscar categoria';search.setAttribute('aria-label','Buscar categoria');search.value=this.categoryQuery;
+    const list=node('div','settings-category-list');categories.append(search,list);
+    const drawRight=()=>{
+      groups.replaceChildren();const modes=node('div','settings-type-choices settings-catalog-modes');
+      for(const [mode,label]of [['provider',this.type==='live'?'Canais da categoria':'Títulos da categoria'],['personal','Categorias pessoais']])modes.append(button(label,()=>{this.catalogPane=mode;drawRight();drawCategories();},`settings-tab${this.catalogPane===mode?' active':''}`));
+      groups.append(modes);if(this.catalogPane==='provider')this.renderProviderCategory(groups,catalog,updateSummary);else this.renderPersonalGroups(groups,catalog);
+    };
+    const drawCategories=()=>{
+      list.replaceChildren();for(const category of catalog.categories||[]){
+        if(!normalize(category.name).includes(normalize(this.categoryQuery)))continue;
+        const ids=[...(category.ids||[category.id])].map(String),row=node('div','settings-check settings-provider-category'),checkbox=node('input');
+        checkbox.type='checkbox';checkbox.setAttribute('aria-label',`Mostrar categoria ${category.name}`);checkbox.checked=ids.every(id=>this.isCategoryVisible(this.type,id));checkbox.indeterminate=!checkbox.checked&&ids.some(id=>this.isCategoryVisible(this.type,id));
+        checkbox.addEventListener('click',event=>event.stopPropagation());checkbox.addEventListener('change',()=>{for(const id of ids)checkbox.checked?this.hidden[this.type].delete(id):this.hidden[this.type].add(id);this.persist();updateSummary();drawRight();});
+        const select=button(category.name,event=>{event.stopPropagation();this.providerCategory=String(category.id);this.catalogPane='provider';this.providerQuery='';this.providerLimit=80;drawCategories();drawRight();},'settings-group-open settings-category-select');
+        const selected=this.catalogPane==='provider'&&String(category.id)===this.providerCategory;select.setAttribute('aria-pressed',String(selected));row.classList.toggle('selected',selected);row.dataset.categoryId=String(category.id);
+        row.append(checkbox,select,node('small','',String(category.count??this.getProviderCategoryItems(this.type,category.id).length)));list.append(row);
+      }
+    };
+    search.addEventListener('input',()=>{this.categoryQuery=search.value;drawCategories();});updateSummary();drawRight();drawCategories();
+  }
+  renderProviderCategory(section,catalog,updateSummary){
+    let category=(catalog.categories||[]).find(group=>String(group.id)===this.providerCategory);
+    if(!category){category=catalog.categories?.[0];this.providerCategory=category?String(category.id):null;}
+    if(!category){section.append(node('p','settings-note','Nenhuma categoria disponível neste catálogo.'));return;}
+    const all=this.getProviderCategoryItems(this.type,category.id),label=this.type==='live'?'canais':'títulos';
+    section.append(node('h3','',category.name),node('p','settings-note',`Remova ${label} desta lista para organizar seu catálogo. Você pode restaurá-los a qualquer momento.`));
+    if(![...(category.ids||[category.id])].every(id=>this.isCategoryVisible(this.type,id)))section.append(node('p','settings-note','Esta categoria está oculta ou parcialmente oculta. Marque sua caixa à esquerda para exibir seus títulos.'));
+    const summary=node('p','settings-counter'),actions=node('div','settings-actions'),restore=button('Restaurar removidos desta categoria',()=>{this.restoreCategoryItems(this.type,category.id);updateSummary();drawItems();},'button secondary compact');actions.append(restore);section.append(summary,actions);
+    const search=node('input','settings-search');search.type='search';search.placeholder=this.type==='live'?'Buscar canal nesta categoria':'Buscar título nesta categoria';search.setAttribute('aria-label',search.placeholder);search.value=this.providerQuery;
+    const items=node('div','settings-item-list settings-provider-items'),progress=node('p','settings-counter'),more=button('Mostrar mais',()=>{this.providerLimit+=80;drawItems();},'button secondary compact');section.append(search,items,progress,more);
+    const drawItems=()=>{
+      items.replaceChildren();const removed=all.filter(item=>!this.isItemVisible(this.type,item.id)).length,matches=all.filter(item=>normalize(item.name).includes(normalize(this.providerQuery))),visible=all.filter(item=>this.isCatalogItemVisible(this.type,item)).length;
+      summary.textContent=`${visible.toLocaleString('pt-BR')} de ${all.length.toLocaleString('pt-BR')} ${label} visíveis · ${removed.toLocaleString('pt-BR')} removidos`;restore.disabled=removed===0;
+      for(const item of matches.slice(0,this.providerLimit)){
+        const available=this.isItemVisible(this.type,item.id),row=node('div','settings-group-row settings-provider-item');row.classList.toggle('is-hidden',!available);row.dataset.itemId=String(item.id);
+        const title=node('span','settings-group-open',item.name),toggle=button(available?'Remover':'Restaurar',()=>{this.setItemVisible(this.type,item.id,!available);updateSummary();drawItems();},'settings-remove');toggle.setAttribute('aria-label',`${available?'Remover':'Restaurar'} ${item.name}`);
+        row.append(title,toggle);items.append(row);
+      }
+      if(!matches.length)items.append(node('p','settings-note','Nenhum título encontrado nesta categoria.'));
+      progress.textContent=matches.length?`${Math.min(this.providerLimit,matches.length).toLocaleString('pt-BR')} de ${matches.length.toLocaleString('pt-BR')} ${label}`:'';more.hidden=matches.length<=this.providerLimit;
+    };
+    search.addEventListener('input',()=>{this.providerQuery=search.value;this.providerLimit=80;drawItems();});drawItems();
+  }
+  renderPersonalGroups(groups,catalog){
+    groups.append(node('h3','','Categorias pessoais'));const currentGroups=this.groups.filter(group=>group.type===this.type);
+    for(const group of currentGroups){const row=node('div','settings-group-row');row.dataset.groupId=group.id;row.append(button(`${group.name} · ${group.itemKeys.length}`,()=>{this.editing=group.id;this.query='';this.render();},'settings-group-open'),button('Remover',()=>{this.trash.push(group);this.groups=this.groups.filter(entry=>entry.id!==group.id);if(this.editing===group.id)this.editing=null;this.persist();this.render();},'settings-remove'));groups.append(row);}
+    if(this.trash.length)groups.append(button('Desfazer remoção',()=>{this.groups.push(this.trash.pop());this.persist();this.render();},'button secondary compact'));
+    const selected=this.groups.find(group=>group.id===this.editing&&group.type===this.type);if(!selected){groups.append(node('p','settings-note',currentGroups.length?'Selecione uma categoria salva para organizar seus títulos.':'Nenhuma categoria pessoal salva.'));return;}
+    const editor=node('div','settings-group-editor');groups.append(editor);
+    const rename=node('form','settings-create-group'),renameInput=node('input','settings-search');renameInput.value=selected.name;renameInput.maxLength=60;renameInput.setAttribute('aria-label','Renomear grupo');const renameSubmit=node('button','button secondary compact','Renomear');renameSubmit.type='submit';rename.append(renameInput,renameSubmit);rename.addEventListener('submit',event=>{event.preventDefault();const value=renameInput.value.trim();if(value){selected.name=value;this.persist();this.render();}});editor.append(rename);
+    const itemSearch=node('input','settings-search');itemSearch.type='search';itemSearch.placeholder='Buscar título para adicionar';itemSearch.setAttribute('aria-label','Buscar título para adicionar ao grupo');itemSearch.value=this.query;editor.append(itemSearch);
+    const favoriteLabel=node('label','settings-check'),favoriteCheck=node('input');favoriteCheck.type='checkbox';favoriteCheck.checked=this.onlyFavorites;favoriteLabel.append(favoriteCheck,node('span','','Somente minha lista'));editor.append(favoriteLabel);
+    const selectionCount=node('p','settings-counter',`${selected.itemKeys.length} selecionados · limite de 500 por grupo`),items=node('div','settings-item-list');editor.append(selectionCount,items);
+    const drawItems=()=>{items.replaceChildren();const favorites=this.options.getFavorites(),favoriteKeys=new Set((favorites instanceof Map?[...favorites.values()]:Array.isArray(favorites)?favorites:[]).map(itemKey));const matches=(catalog.items||[]).filter(item=>(!this.onlyFavorites||favoriteKeys.has(itemKey(item)))&&normalize(item.name).includes(normalize(this.query)));for(const item of matches.slice(0,80)){const key=itemKey(item),row=node('label','settings-check'),check=node('input');check.type='checkbox';check.checked=selected.itemKeys.includes(key);check.addEventListener('change',()=>{if(check.checked){if(selected.itemKeys.length>=500){check.checked=false;this.options.toast('O grupo chegou ao limite de 500 títulos.');return;}if(!selected.itemKeys.includes(key))selected.itemKeys.push(key);}else selected.itemKeys=selected.itemKeys.filter(value=>value!==key);this.persist();const selectedRow=[...groups.querySelectorAll(".settings-group-row")].find(row=>row.dataset.groupId===selected.id);if(selectedRow)selectedRow.firstElementChild.textContent=`${selected.name} · ${selected.itemKeys.length}`;selectionCount.textContent=`${selected.itemKeys.length} selecionados · limite de 500 por grupo`;});row.append(check,node('span','',item.name));items.append(row);}if(matches.length>80)items.append(node('p','settings-note','Mostrando os primeiros 80 resultados. Use a busca para encontrar outros títulos.'));if(!matches.length)items.append(node('p','settings-note','Nenhum título encontrado.'));};
+    itemSearch.addEventListener('input',()=>{this.query=itemSearch.value;drawItems();});favoriteCheck.addEventListener('change',()=>{this.onlyFavorites=favoriteCheck.checked;drawItems();});drawItems();
+  }
+  dispose(){
+    this.close(false);this.diagnosticRequest++;
+    this.audioCleanup?.();this.seriesPlaybackCleanup?.();this.markerSyncCleanup?.();
+    this.audioCleanup=this.seriesPlaybackCleanup=this.markerSyncCleanup=null;
+    this.markerSyncController?.reset();this.catalogLoads.clear();
+    window.removeEventListener('popstate',this.onPopState);this.dialog.remove();
+  }
+}

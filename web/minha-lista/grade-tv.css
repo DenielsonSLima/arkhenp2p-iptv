@@ -1,0 +1,118 @@
+.grade-tv{--grade-tv-line:#c3d4e614;--grade-tv-number-width:42px;--grade-tv-channel-width:190px;--grade-tv-actions-width:44px;--grade-tv-row-height:94px;--grade-tv-hour-width:400px;--grade-tv-hours:6;--grade-tv-tick-step:8.333333%;--grade-tv-first-tick:0%;width:100%;min-width:0;border:1px solid var(--grade-tv-line);border-radius:8px;background:#101417;overflow:hidden}
+.grade-tv [hidden]{display:none!important}
+.grade-tv-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px 16px;min-height:48px;padding:9px 16px;border-bottom:1px solid var(--grade-tv-line);background:#11171d}
+.grade-tv-clock-group{display:flex;align-items:baseline;gap:10px;min-width:0}
+.grade-tv-clock-label{color:#6b8298;font-size:9px;line-height:1.5;letter-spacing:.2px}
+.grade-tv-clock{display:flex;align-items:baseline;flex-wrap:wrap;gap:9px;min-width:0;color:#c7d7e6;font-size:12px;line-height:1.5;letter-spacing:.2px;font-variant-numeric:tabular-nums}
+.grade-tv-clock small{color:#6b8298;font-size:9px;letter-spacing:.3px}
+.grade-tv-timeline-controls{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:6px;min-width:0}
+.grade-tv-fit-button{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;min-height:29px;padding:0 11px;border:1px solid #b5cee31f;border-radius:4px;background:#b5cee307;color:#8da8c0;font-size:10px;line-height:1.5;transition:background .18s ease,border-color .18s ease,color .18s ease}
+.grade-tv-fit-button[aria-pressed=true]{border-color:#b5cee344;background:#b5cee315;color:#d1e3f3}
+.grade-tv-fit-button:hover{border-color:#b5cee35c;background:#b5cee31b;color:#d9e9f7}
+.grade-tv-scroll-button{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:29px;height:29px;padding:0;border:1px solid #b5cee31f;border-radius:4px;background:#b5cee307;color:#8da8c0;transition:background .18s ease,border-color .18s ease,color .18s ease}
+.grade-tv-scroll-button svg{width:14px;height:14px}
+.grade-tv-scroll-button:hover{border-color:#b5cee350;background:#b5cee315;color:#d2e5f6}
+.grade-tv-now-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex-shrink:0;min-height:29px;padding:0 11px;border:1px solid #b5cee32b;border-radius:4px;background:#b5cee30a;color:#bed2e5;font-size:10px;line-height:1.5;transition:background .18s ease,border-color .18s ease}
+.grade-tv-now-button:before{content:'';width:5px;height:5px;flex-shrink:0;border-radius:50%;background:#b9d8f1;box-shadow:0 0 8px #b0d3f136}
+.grade-tv-now-button:hover{background:#b5cee315;border-color:#b5cee359}
+.grade-tv-program-detail{display:flex;flex-direction:column;justify-content:center;gap:5px;min-width:0;min-height:82px;padding:11px 16px;border-bottom:1px solid var(--grade-tv-line);background:#151f28}
+.grade-tv-detail-meta{color:#7f9bb4;font-size:9px;line-height:1.5;letter-spacing:.2px;font-variant-numeric:tabular-nums;white-space:normal;overflow-wrap:anywhere}
+.grade-tv-detail-title{color:#d5e2ed;font-size:12px;font-weight:500;line-height:1.6;white-space:normal;overflow-wrap:anywhere}
+.grade-tv-scroll{width:100%;overflow-x:scroll;overflow-y:hidden;scrollbar-width:auto;scrollbar-color:#52657b #101417;overscroll-behavior-x:contain}
+.grade-tv-scroll::-webkit-scrollbar{width:12px;height:12px}
+.grade-tv-scroll::-webkit-scrollbar-track{background:#101417}
+.grade-tv-scroll::-webkit-scrollbar-thumb{border:3px solid #101417;border-radius:8px;background:#52657b}
+.grade-tv-scroll::-webkit-scrollbar-thumb:hover{background:#7691ad}
+.grade-tv-scroll::-webkit-scrollbar-corner{background:#101417}
+.grade-tv-scroll:focus-visible{outline:2px solid #bcd4ed;outline-offset:-3px}
+.grade-tv-table{width:100%;min-width:0;border-collapse:separate;border-spacing:0;table-layout:fixed;text-align:left}
+.grade-tv[data-zoom=detail] .grade-tv-table{min-width:calc(var(--grade-tv-hours) * var(--grade-tv-hour-width) + var(--grade-tv-number-width) + var(--grade-tv-channel-width) + var(--grade-tv-actions-width))}
+.grade-tv-caption{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.grade-tv-heading{position:sticky;top:0;z-index:6;height:40px;padding:0 13px;background:#172029;border-bottom:1px solid var(--grade-tv-line);color:#8095ad;font-size:8px;font-weight:500;letter-spacing:.8px;text-transform:uppercase;vertical-align:middle}
+.grade-tv-number{position:sticky;z-index:5;left:0;width:var(--grade-tv-number-width);text-align:center}
+.grade-tv-channel{position:sticky;z-index:5;left:var(--grade-tv-number-width);width:var(--grade-tv-channel-width);box-shadow:7px 0 12px -8px #000b}
+.grade-tv-actions{position:sticky;z-index:5;right:0;width:var(--grade-tv-actions-width);text-align:center;box-shadow:-7px 0 12px -8px #0009}
+.grade-tv-heading.grade-tv-number{padding:0}
+.grade-tv-heading.grade-tv-number,.grade-tv-heading.grade-tv-channel,.grade-tv-heading.grade-tv-actions{z-index:7;background:#172029}
+.grade-tv-heading.grade-tv-actions{font-size:0}
+.grade-tv-heading.grade-tv-timeline-heading{padding:0;border-left:1px solid var(--grade-tv-line)}
+.grade-tv-ruler{position:relative;height:40px;overflow:hidden;background:#172029;text-transform:none;letter-spacing:.2px;font-variant-numeric:tabular-nums}
+.grade-tv-ruler-ticks{position:absolute;inset:0;overflow:hidden}
+.grade-tv-tick{position:absolute;top:0;bottom:0;display:block;width:1px;padding:13px 0 0 8px;border-left:1px solid #b7cce21a;color:#8fa6bd;font-size:10px;font-weight:400;line-height:1.4;white-space:nowrap;pointer-events:none}
+.grade-tv-now-label{position:absolute;top:8px;z-index:4;display:block;transform:translateX(-50%);padding:3px 6px;border-radius:3px;background:#c6def1;color:#102235;font-size:9px;font-weight:600;line-height:1.3;letter-spacing:.1px;white-space:nowrap;pointer-events:none}
+.grade-tv-row>td{height:var(--grade-tv-row-height);padding:0;vertical-align:middle;border-bottom:1px solid var(--grade-tv-line);background:#101417;transition:background .18s ease}
+.grade-tv-row:last-child>td{border-bottom:0}
+.grade-tv-row:nth-child(even)>td{background:#13181d}
+.grade-tv-row:hover>td,.grade-tv-row:focus-within>td{background:#19232c}
+.grade-tv-row>.grade-tv-number{font-size:13px;letter-spacing:-.3px;font-weight:500;font-variant-numeric:tabular-nums;color:#a6bbcf;border-right:1px solid var(--grade-tv-line)}
+.grade-tv-channel-button{display:flex;align-items:center;gap:10px;width:100%;min-height:var(--grade-tv-row-height);padding:10px 12px;background:transparent;text-align:left;color:#e1e9f1}
+.grade-tv .grade-tv-logo{position:relative;display:flex;align-items:center;justify-content:center;width:46px;height:30px;min-width:0;flex:0 0 46px;padding:3px;border-radius:4px;background:#0c1117;box-shadow:inset 0 0 0 1px #ffffff0a;overflow:hidden}
+.grade-tv .grade-tv-logo:has(.channel-logo-framed){padding:0}
+.grade-tv .grade-tv-logo-fallback{color:#99aec3;font-size:12px;font-weight:600;letter-spacing:-.4px}
+.grade-tv .grade-tv-logo .channel-initial{font-size:12px;letter-spacing:-.4px}
+.grade-tv-channel-copy{display:flex;flex:1;flex-direction:column;gap:4px;min-width:0}
+.grade-tv-channel-name{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12px;font-weight:500;line-height:1.4;letter-spacing:0}
+.grade-tv-channel-group{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:normal;color:#8a9fb4;font-size:10px;line-height:1.4}
+.grade-tv-timeline-cell{position:relative;border-left:1px solid var(--grade-tv-line)}
+.grade-tv-track{position:relative;min-height:var(--grade-tv-row-height);height:var(--grade-tv-row-height);overflow:hidden;background-image:repeating-linear-gradient(90deg,transparent calc(var(--grade-tv-first-tick) - var(--grade-tv-tick-step)),transparent calc(var(--grade-tv-first-tick) - 1px),#bed3e80a calc(var(--grade-tv-first-tick) - 1px),#bed3e80a var(--grade-tv-first-tick))}
+.grade-tv-events{position:absolute;inset:0;overflow:hidden}
+.grade-tv-event{position:absolute;top:6px;bottom:6px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:3px;min-width:0;padding:7px 0;border:0;border-radius:4px;background:#18212a;box-shadow:inset 0 0 0 1px #a8bdd313;color:#aebfd0;text-align:left;overflow:hidden;isolation:isolate;transition:background .18s ease,box-shadow .18s ease}
+.grade-tv-event.is-current{box-shadow:inset 0 0 0 1px #c0d8ef36;background:#233443;color:#dce8f4}
+.grade-tv-event.is-next{background:#18232e;color:#aebfd0}
+.grade-tv-event.is-later{background:#151e27;color:#93a8bc}
+.grade-tv-event.is-selected{box-shadow:inset 0 0 0 1px #bcd8ee80;background:#294052;color:#e0edf7}
+button.grade-tv-event:hover{box-shadow:inset 0 0 0 1px #c0d8ef68;background:#2b4153}
+.grade-tv-event-time,.grade-tv-event .grade-tv-program-time{display:block;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:#829db8;font-size:10px;line-height:1.3;letter-spacing:.1px;font-weight:400;font-variant-numeric:tabular-nums}
+.grade-tv-event.is-current .grade-tv-event-time,.grade-tv-event.is-current .grade-tv-program-time{color:#a5c3dc}
+.grade-tv-event-title,.grade-tv-event .grade-tv-program-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:0;max-width:100%;overflow:hidden;white-space:normal;overflow-wrap:normal;color:inherit;font-size:13px;font-weight:500;line-height:1.35}
+.grade-tv-event-status,.grade-tv-event .grade-tv-program-status{display:block;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:#7591ab;font-size:9px;font-weight:400;line-height:1.3}
+.grade-tv-event.is-current .grade-tv-event-status,.grade-tv-event.is-current .grade-tv-program-status{color:#a9c7e0}
+.grade-tv-event.is-compact{gap:3px}
+.grade-tv-event.is-compact .grade-tv-event-title{display:block;white-space:nowrap;text-overflow:ellipsis}
+.grade-tv-event.is-compact .grade-tv-event-status,.grade-tv-event.is-compact .grade-tv-program-status{display:none}
+.grade-tv .grade-tv-event>*{min-width:0;max-width:calc(100% - min(24px,16%));margin-inline:min(12px,8%)}
+.grade-tv-now-line{position:absolute;top:0;bottom:0;z-index:3;width:1px;background:#c6e0f7;box-shadow:0 0 6px #c6e0f72b;pointer-events:none}
+.grade-tv-track>.grade-tv-program-empty,.grade-tv-timeline-empty{position:absolute;inset:0;display:flex;align-items:center;margin:0;padding:0 14px;color:#62788d;font-size:10px;font-weight:400;line-height:1.5;pointer-events:none}
+.grade-tv .card-favorite{position:static;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:25px;height:25px;opacity:1}
+.grade-tv .card-favorite svg{width:13px;height:13px}
+.grade-tv button:focus-visible{outline:2px solid #bcd4ed;outline-offset:-3px;border-radius:4px}
+.grade-tv-event:focus-visible{outline:2px solid #bcd4ed;outline-offset:-3px;box-shadow:inset 0 0 0 1px #c0d8ef68}
+.grade-tv .card-favorite:focus-visible{outline-offset:3px;border-radius:50%}
+.grade-tv-notice{margin:0;padding:10px 16px;border-top:1px solid var(--grade-tv-line);font-size:10px;line-height:1.5;color:#8094a8}
+@media(min-width:1700px){.grade-tv{--grade-tv-channel-width:210px;--grade-tv-row-height:96px}.grade-tv-channel-button{gap:12px;padding:10px 14px}.grade-tv-channel-name,.grade-tv-event-title,.grade-tv-event .grade-tv-program-title{font-size:13px}.grade-tv-event-time,.grade-tv-event .grade-tv-program-time,.grade-tv-event-status,.grade-tv-event .grade-tv-program-status{font-size:10px}}
+@media(max-width:1100px){.grade-tv{--grade-tv-channel-width:175px}.grade-tv-channel-button{gap:8px;padding:10px}}
+@media(max-width:650px){
+  .grade-tv{--grade-tv-number-width:34px;--grade-tv-channel-width:128px;--grade-tv-actions-width:39px;--grade-tv-row-height:86px;--grade-tv-hour-width:360px;border-radius:6px}
+  .grade-tv-toolbar{min-height:44px;padding:8px 11px;gap:8px}
+  .grade-tv-clock-group{gap:6px}
+  .grade-tv-clock-label{font-size:8px}
+  .grade-tv-clock{gap:6px;font-size:11px}
+  .grade-tv-clock small{font-size:8px}
+  .grade-tv-timeline-controls{flex:1 0 100%;gap:5px}
+  .grade-tv-scroll-button{width:26px;height:27px}
+  .grade-tv-scroll-button svg{width:13px;height:13px}
+  .grade-tv-now-button,.grade-tv-fit-button{min-height:27px;padding:0 9px;font-size:9px}
+  .grade-tv-program-detail{min-height:76px;padding:10px 11px;gap:4px}
+  .grade-tv-detail-meta{font-size:8px}
+  .grade-tv-detail-title{font-size:11px;line-height:1.5}
+  .grade-tv-table{min-width:680px}
+  .grade-tv[data-zoom=detail] .grade-tv-table{min-width:max(680px,calc(var(--grade-tv-hours) * var(--grade-tv-hour-width) + var(--grade-tv-number-width) + var(--grade-tv-channel-width) + var(--grade-tv-actions-width)))}
+  .grade-tv-heading{height:36px;padding:0 10px;font-size:7px;letter-spacing:.6px}
+  .grade-tv-ruler{height:36px}
+  .grade-tv-tick{padding-top:11px;font-size:9px}
+  .grade-tv-now-label{top:7px}
+  .grade-tv-row>.grade-tv-number{font-size:12px}
+  .grade-tv-channel-button{gap:7px;padding:9px 7px}
+  .grade-tv .grade-tv-logo{width:38px;height:26px;flex-basis:38px;padding:2px}
+  .grade-tv-channel-copy{gap:3px}
+  .grade-tv-channel-name{font-size:11px;line-height:1.35}
+  .grade-tv-channel-group{font-size:9px;line-height:1.35}
+  .grade-tv-event{top:5px;bottom:5px;gap:3px;padding:6px 0}
+  .grade-tv-event-title,.grade-tv-event .grade-tv-program-title{font-size:12px}
+  .grade-tv-event-time,.grade-tv-event .grade-tv-program-time,.grade-tv-event-status,.grade-tv-event .grade-tv-program-status{font-size:9px}
+  .grade-tv-row>.grade-tv-actions{position:static;box-shadow:none}
+  .grade-tv .card-favorite{width:23px;height:23px}
+  .grade-tv .card-favorite svg{width:12px;height:12px}
+  .grade-tv-notice{padding:9px 11px;font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){.grade-tv-row>td,.grade-tv-event,.grade-tv-now-button,.grade-tv-fit-button,.grade-tv-scroll-button{transition:none}}

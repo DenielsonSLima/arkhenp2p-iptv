@@ -9,6 +9,25 @@ const safeError=()=>new Error('Não foi possível sincronizar sua biblioteca. Se
 const accessError=()=>Object.assign(safeError(),{cloudAccessDenied:true});
 const authFailure=(error,stage)=>Boolean(error?.cloudAuthFailure||stage.startsWith('auth_')&&([401,403].includes(Number(error?.status))||['refresh_token_not_found','refresh_token_already_used','invalid_refresh_token','session_not_found','bad_jwt','session_expired','refresh_token_expired','user_not_found'].includes(error?.code)));
 const conflict={user_favorites:'user_id,provider,item_key',user_progress:'user_id,provider,item_key,episode_id',user_preferences:'user_id,provider,key',custom_collections:'user_id,provider,id'};
+// Keep one GoTrueClient per SDK/project/user for this JS realm. Disposing Auth
+// removes Supabase's internal token -> Realtime listener, so a disposed client
+// must neither be reused nor replaced on every transient library retry.
+const authClients=new WeakMap();
+const authIdentity=scope=>JSON.stringify([scope.url,scope.userId]);
+const serializeAuth=(entry,operation)=>{
+  const pending=entry.pending.catch(()=>{}).then(operation);entry.pending=pending.catch(()=>{});return pending;
+};
+function reusableClient(createClient,scope,owner,fetch){
+  let clients=authClients.get(createClient);if(!clients){clients=new Map();authClients.set(createClient,clients);}
+  const identity=authIdentity(scope);let entry=clients.get(identity);
+  if(entry&&(entry.publishableKey!==scope.publishableKey||entry.owner&&entry.owner!==owner))throw safeError();
+  if(!entry){
+    entry={identity,publishableKey:scope.publishableKey,pending:Promise.resolve(),revoked:false,owner:null,fetch};
+    entry.client=createClient(scope.url,scope.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:`arkhen.cloud.${new URL(scope.url).host}.${scope.userId}`},global:{fetch:(...args)=>(entry.fetch||globalThis.fetch)(...args)}});
+    clients.set(identity,entry);
+  }
+  entry.owner=owner;entry.fetch=fetch;return entry;
+}
 
 /** Supabase transport and TanStack Query cache; it never owns the local player. */
 export class CloudLibrary {
@@ -16,7 +35,7 @@ export class CloudLibrary {
     schedule=(callback,delay)=>globalThis.setTimeout(callback,delay),cancel=timer=>globalThis.clearTimeout(timer),fetch=(...args)=>globalThis.fetch(...args),pageTarget=globalThis.window,storage,canRemember=()=>true,onHistoryBlocked=()=>{}}={}){
     Object.assign(this,{loadSDK,onUpdate,onStatus,onSharedUpdate,onDiagnostic,now,schedule,cancel,fetch,pageTarget,canRemember,onHistoryBlocked});
     this.blockedProgressItems=new Set();
-    this.epoch=0;this.connectRequest=0;this.client=null;this.queryClient=null;this.scope=null;this.ready=false;this.listeners=new Set();this.rows=emptyRows();
+    this.epoch=0;this.connectRequest=0;this.client=null;this.authEntry=null;this.queryClient=null;this.scope=null;this.ready=false;this.listeners=new Set();this.rows=emptyRows();
     this.offlineScope=null;this.outbox=new CloudOutbox({storage});this.cleanupPending=Promise.resolve();
     this.outboxTimer=null;this.outboxAttempt=0;
     this.channel=null;this.authSubscription=null;this.queryUnsubscribe=null;this.progressQueue=new Map();this.progressTimer=null;this.writeControllers=new Set();this.revisions=new Map();this.optimisticRows=new Map();this.lastStamp=0;
@@ -55,34 +74,60 @@ export class CloudLibrary {
   #current(epoch,client=this.client){return this.epoch===epoch&&this.client===client&&Boolean(this.scope);}
   #key(table,...suffix){return ['arkhen-cloud',this.scope.url,this.scope.provider,this.scope.userId,table,this.scope.providerKey,this.scope.scopeHash,...suffix];}
   #stamp(){this.lastStamp=Math.max(this.now(),this.lastStamp+1);return new Date(this.lastStamp).toISOString();}
+  #outboxScope(scope){
+    const previous=this.outbox.scope;
+    if(scope&&previous&&scope.url===previous.url&&scope.provider===previous.provider&&scope.userId===previous.userId&&scope.libraryId===previous.libraryId)this.outbox.scope=scope;
+    else this.outbox.setScope(scope);
+  }
+  async resume({libraryId,pending=false,code}={}){
+    const scope=this.scope||this.offlineScope;
+    // A missing backend bootstrap is not a sign-out. Only a client already
+    // authorized for this exact library may recover its own rotated session.
+    if(libraryId&&scope?.libraryId===libraryId&&this.authEntry&&!this.authEntry.revoked&&this.authEntry.identity===authIdentity(scope))return this.connect(scope);
+    if(scope&&scope.libraryId!==libraryId){const request=this.connectRequest+1;await this.logout({flush:false});if(request!==this.connectRequest)return null;}
+    if(!this.ready){
+      const backendCode=typeof code==='string'&&/^[A-Z][A-Z0-9_]{0,79}$/.test(code)?code:null;
+      this.connectionFailure={code:pending?'CLOUD_BOOTSTRAP_PENDING':'CLOUD_BOOTSTRAP_UNAVAILABLE',stage:'bootstrap',authRecoveryRequired:false,...(backendCode?{backendCode}:{})};
+      if(!pending&&backendCode)this.#diagnostic(backendCode,'bootstrap');
+      this.#status(pending?'connecting':'offline',pending?'Preparando a sincronização da sua biblioteca…':'A sincronização está temporariamente indisponível. Sua biblioteca continua salva neste aparelho.');
+    }
+    return null;
+  }
   async connect(value,{preferBootstrap=false}={}){
     this.connectionFailure=null;
     const valid=cloudBootstrap(value);
-    if(!preferBootstrap&&this.ready&&valid&&valid.url===this.scope?.url&&valid.userId===this.scope?.userId&&valid.provider===this.scope?.provider&&valid.providerKey===this.scope?.providerKey&&valid.scopeHash===this.scope?.scopeHash)return this.load({force:true});
-    const request=++this.connectRequest;await this.logout({flush:false,cancelConnect:false});if(request!==this.connectRequest)return null;
+    if(!preferBootstrap&&this.ready&&valid&&valid.url===this.scope?.url&&valid.publishableKey===this.scope?.publishableKey&&valid.userId===this.scope?.userId&&valid.provider===this.scope?.provider&&valid.providerKey===this.scope?.providerKey&&valid.scopeHash===this.scope?.scopeHash)return this.load({force:true});
+    const request=++this.connectRequest,sameAuth=valid&&this.authEntry?.identity===authIdentity(valid);
+    await this.logout({flush:false,cancelConnect:false,revoke:!sameAuth});if(request!==this.connectRequest)return null;
     const scope=valid;if(!scope){this.#status('local','Sincronização na nuvem ainda não configurada.');return null;}
-    this.offlineScope=scope;this.outbox.setScope(scope);this.purgeHistory();
+    this.offlineScope=scope;this.#outboxScope(scope);this.purgeHistory();
     const epoch=this.epoch;let stage='sdk';this.#status('connecting','Conectando sua biblioteca…');
     try{
-      const {createClient,QueryClient}=await this.loadSDK();if(this.epoch!==epoch)return null;
-      const client=createClient(scope.url,scope.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:`arkhen.cloud.${new URL(scope.url).hostname}.${scope.userId}`},global:{fetch:(input,options)=>this.#fetchWithDeadline(input,options)}});
+      const {createClient,QueryClient}=await this.loadSDK();if(this.epoch!==epoch||request!==this.connectRequest)return null;
+      const entry=reusableClient(createClient,scope,this,(input,options)=>this.#fetchWithDeadline(input,options)),client=entry.client;this.authEntry=entry;
       this.client=client;this.scope=scope;this.queryClient=new QueryClient({defaultOptions:{queries:{staleTime:30000,gcTime:300000,retry:1,refetchOnWindowFocus:false},mutations:{retry:0,gcTime:0}}});this.queryClient.mount();
       // The browser SDK may already have rotated its refresh token. A cached
       // backend bootstrap must not replace that newer session on page reload.
-      stage='auth_session';const persisted=preferBootstrap?{data:{session:null}}:await client.auth.getSession();if(persisted.error)throw persisted.error;
-      const previous=persisted.data?.session;
-      const credentials=previous?.user?.id===scope.userId&&previous.access_token&&previous.refresh_token?previous:scope.session;
-      stage='auth_set_session';const authorized=await client.auth.setSession(credentials);if(authorized.error)throw authorized.error;
-      stage='auth_user';const verified=await client.auth.getUser();if(verified.error)throw verified.error;if(verified.data?.user?.id!==scope.userId)throw accessError();
-      if(!this.#current(epoch,client))return null;
+      const current=()=>request===this.connectRequest&&this.#current(epoch,client);
+      const authorized=await serializeAuth(entry,async()=>{
+        if(!current())return null;
+        stage='auth_session';const persisted=preferBootstrap||entry.revoked?{data:{session:null}}:await client.auth.getSession();if(!current())return null;if(persisted.error)throw persisted.error;
+        const previous=persisted.data?.session;if(previous?.user?.id&&previous.user.id!==scope.userId)throw accessError();
+        const reusable=previous?.user?.id===scope.userId&&previous.access_token&&previous.refresh_token;
+        stage='auth_set_session';const result=reusable?persisted:await client.auth.setSession(scope.session);if(!current())return null;if(result.error)throw result.error;
+        stage='auth_user';const verified=await client.auth.getUser();if(!current())return null;if(verified.error)throw verified.error;if(verified.data?.user?.id!==scope.userId)throw accessError();
+        entry.revoked=false;return result;
+      });
+      if(!authorized||!current())return null;
       stage='profile';const profile=await client.from('profiles').select('id,provider,provider_key,scope_hash,status,access_expires_at,last_validated_at').eq('id',scope.userId).maybeSingle();
+      if(!current())return null;
       if(profile.error)throw Object.assign(safeError(),{status:profile.status||profile.error.status,cloudAuthFailure:Number(profile.status||profile.error.status)===401});
       if(!this.#profileActive(profile.data)||profile.data.provider!==scope.provider||profile.data.provider_key!==scope.providerKey||profile.data.scope_hash!==scope.scopeHash)throw accessError();
       this.accessToken=authorized.data?.session?.access_token||scope.session.access_token;
       this.authSubscription=client.auth.onAuthStateChange((event,session)=>{
         if(!this.#current(epoch,client))return;
         if(session?.user?.id===scope.userId)this.accessToken=session.access_token;
-        else if(event==='SIGNED_OUT')queueMicrotask(()=>{if(this.#current(epoch,client))void this.logout({flush:false});});
+        else if(event==='SIGNED_OUT'||session?.user?.id&&session.user.id!==scope.userId){this.accessToken=null;this.ready=false;queueMicrotask(()=>{if(this.#current(epoch,client))void this.logout({flush:false});});}
       }).data?.subscription;
       this.queryUnsubscribe=this.queryClient.getQueryCache().subscribe(event=>{
         if(!this.#current(epoch,client)||!this.ready||event.type!=='updated'||event.query?.state?.status!=='success')return;
@@ -93,10 +138,10 @@ export class CloudLibrary {
       this.#subscribeRealtime(epoch,client);await this.flushOutbox();if(!this.#current(epoch,client))return null;this.#libraryStatus();return this.snapshot();
     }catch(error){
       // A temporary data/API outage must not revoke the still-valid Auth
-      // bootstrap cached by the backend. Dispose the SDK while preserving its
-      // stored (possibly rotated) session so the next connection can recover.
+      // bootstrap cached by the backend. Detach data/query state while keeping
+      // the same Auth client and its possibly rotated session for recovery.
       const revoke=error?.cloudAccessDenied===true,authRecoveryRequired=!revoke&&authFailure(error,stage),status=Number(error?.status);
-      if(this.epoch===epoch){this.connectionFailure={code:revoke?'CLOUD_ACCESS_DENIED':authRecoveryRequired?'CLOUD_AUTH_SESSION_REJECTED':'CLOUD_CONNECTION_FAILED',stage,authRecoveryRequired,...(Number.isInteger(status)&&status>=100&&status<=599?{status}:{})};this.#diagnostic(this.connectionFailure.code,stage,status);await this.logout({flush:false,preserveOffline:scope,revoke});this.#status(revoke?'restricted':'offline','Não foi possível conectar à nuvem. Sua biblioteca local continua disponível.');}
+      if(this.epoch===epoch&&request===this.connectRequest){this.connectionFailure={code:revoke?'CLOUD_ACCESS_DENIED':authRecoveryRequired?'CLOUD_AUTH_SESSION_REJECTED':'CLOUD_CONNECTION_FAILED',stage,authRecoveryRequired,...(Number.isInteger(status)&&status>=100&&status<=599?{status}:{})};this.#diagnostic(this.connectionFailure.code,stage,status);await this.logout({flush:false,preserveOffline:scope,revoke,cancelConnect:false});if(request===this.connectRequest)this.#status(revoke?'restricted':'offline','Não foi possível conectar à nuvem. Sua biblioteca local continua disponível.');}
       return null;
     }
   }
@@ -217,7 +262,7 @@ export class CloudLibrary {
     });
     try{return Boolean(await mutation.execute(row));}catch(error){return error?.adultProgressBlocked===true||table==='user_progress'&&this.#privateEntry(row.entry);}
   }
-  saveFavorite(value,active=true){const item=cloudItem(value);if(!item)return Promise.resolve(false);return this.#write('user_favorites',this.#row('user_favorites',{item_key:itemKey(item),item,deleted_at:active?null:new Date(this.now()).toISOString()}));}
+  saveFavorite(value,active=true){const item=cloudItem(value),scope=this.scope||this.offlineScope;if(!item||!scope||value.libraryId&&scope.libraryId&&value.libraryId!==scope.libraryId)return Promise.resolve(false);return this.#write('user_favorites',this.#row('user_favorites',{item_key:itemKey(item),item,deleted_at:active?null:new Date(this.now()).toISOString()}));}
   saveProgress(value,{force=false}={}){
     const entry=this.#rememberProgress(value)?cloudProgress(value,{canRemember:this.canRemember}):null,scope=this.scope||this.offlineScope;if(!entry||!scope||value.libraryId&&scope.libraryId&&value.libraryId!==scope.libraryId)return Promise.resolve(false);
     const row=this.#row('user_progress',{item_key:itemKey(entry.item),episode_id:entry.episode?.id||'',entry,deleted_at:null});
@@ -259,7 +304,7 @@ export class CloudLibrary {
     if(!this.ready||!libraryId||libraryId!==this.scope.libraryId)return false;
     const epoch=this.epoch,client=this.client;
     const favorites=new Map(this.snapshot().favoriteRecords.map(row=>[row.item_key,row]));
-    for(const value of favoritesMap?.values?.()||[]){if(!this.#current(epoch,client))return false;const item=cloudItem(value);if(!item)continue;const remote=favorites.get(itemKey(item));if(remote&&millis(remote.updated_at)>=millis(value.savedAt))continue;await this.saveFavorite(item,true);}
+    for(const value of favoritesMap?.values?.()||[]){if(!this.#current(epoch,client))return false;if(value.libraryId&&value.libraryId!==libraryId)continue;const item=cloudItem(value);if(!item)continue;const remote=favorites.get(itemKey(item));if(remote&&millis(remote.updated_at)>=millis(value.savedAt))continue;await this.saveFavorite(item,true);}
     const progress=new Map(this.snapshot().progressRecords.map(row=>[recordIdentity('user_progress',row),row]));
     const candidates=new Map();
     for(const value of [...(historyMap?.values?.()||[]),...episodeEntries]){
@@ -340,17 +385,20 @@ export class CloudLibrary {
     const request=this.connectRequest,startingEpoch=this.epoch,startingClient=this.client;
     if(flush){await this.flushProgress();await this.flushOutbox();}
     if(request!==this.connectRequest||startingEpoch!==this.epoch||startingClient!==this.client)return this.cleanupPending;
-    ++this.epoch;const client=this.client;this.ready=false;this.scope=null;this.client=null;this.accessToken=null;this.blockedProgressItems.clear();
+    ++this.epoch;const entry=this.authEntry,client=this.client||entry?.client,offlineScope=preserveOffline||(!revoke?(this.scope||this.offlineScope):null);if(revoke&&entry){entry.revoked=true;this.authEntry=null;}this.ready=false;this.scope=null;this.client=null;this.accessToken=null;this.blockedProgressItems.clear();
     if(this.outboxTimer!==null)this.cancel(this.outboxTimer);this.outboxTimer=null;this.outboxAttempt=0;
     if(this.progressTimer!==null)this.cancel(this.progressTimer);this.progressTimer=null;this.progressQueue.clear();
     for(const controller of this.writeControllers)controller.abort();this.writeControllers.clear();
     this.authSubscription?.unsubscribe();this.authSubscription=null;this.queryUnsubscribe?.();this.queryUnsubscribe=null;
     const queryClient=this.queryClient;this.queryClient=null;if(queryClient){void queryClient.cancelQueries();queryClient.clear();queryClient.unmount();}
-    const channel=this.channel;this.channel=null;this.rows=emptyRows();this.revisions.clear();this.optimisticRows.clear();this.offlineScope=preserveOffline;this.outbox.setScope(preserveOffline);this.#status('local','Biblioteca salva neste aparelho.');
+    const channel=this.channel;this.channel=null;this.rows=emptyRows();this.revisions.clear();this.optimisticRows.clear();this.offlineScope=offlineScope;this.#outboxScope(offlineScope);this.#status('local','Biblioteca salva neste aparelho.');
     if(client)this.cleanupPending=this.cleanupPending.catch(()=>{}).then(async()=>{
       if(channel)await client.removeChannel(channel).catch(()=>{});
-      if(revoke)await client.auth.signOut({scope:'local'}).catch(()=>{});
-      await client.auth.dispose?.().catch(()=>{});
+      if(entry)await serializeAuth(entry,async()=>{
+        try{if(revoke)await client.auth.signOut({scope:'local'}).catch(()=>{});}
+        finally{if(revoke&&entry.owner===this){entry.owner=null;entry.fetch=null;}}
+      });
+      else if(revoke)await client.auth.signOut({scope:'local'}).catch(()=>{});
     });
     await this.cleanupPending;
   }

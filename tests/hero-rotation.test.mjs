@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { HeroRotation } from '../web/hero-rotation.js';
+import {HeroRotation} from '../web/inicio/bannerprincipal/rotacao.js';
 
 test('default browser timers keep the global receiver required by Safari',t=>{
   const schedule=globalThis.setTimeout,cancel=globalThis.clearTimeout,calls=[];

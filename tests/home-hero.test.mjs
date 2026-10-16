@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {heroArtworkKind, setHeroArtwork, heroFacts} from '../web/home-hero.js';
+import {heroArtworkKind,setHeroArtwork,heroFacts} from '../web/inicio/bannerprincipal/apresentacao.js';
 
 function artwork() {
   const classes = new Set(), requests = [];

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {prepareHomeCatalogs} from '../web/home-bootstrap.js';
+import {prepareHomeCatalogs} from '../web/inicio/hooks.js';
 import {CatalogPager} from '../web/catalog-pagination.js';
 
 const item = (kind, id, extra = {}) => ({id: String(id), kind, name: `Título ${id} HD`, year: 2026, ...extra});

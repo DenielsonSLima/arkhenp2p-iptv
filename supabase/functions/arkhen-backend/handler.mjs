@@ -52,6 +52,10 @@ function rpcRules(now){
     arkhen_claim_cache_jobs:{p_worker:worker,p_limit:optional(value=>integer(value,1,10)),p_lease_seconds:optional(value=>integer(value,30,900))},
     arkhen_renew_cache_job:{p_job_id:value=>UUID.test(value||''),p_worker:worker,p_lease_seconds:optional(value=>integer(value,30,900))},
     arkhen_finish_cache_job:{p_job_id:value=>UUID.test(value||''),p_worker:worker,p_success:value=>typeof value==='boolean',p_error_code:optional(nullable(value=>typeof value==='string'&&/^[A-Za-z0-9_.-]{1,80}$/.test(value)))},
+    arkhen_epg_snapshot_state:{p_job_id:value=>UUID.test(value||''),p_worker:worker},
+    arkhen_epg_snapshot_stage:{p_job_id:value=>UUID.test(value||''),p_worker:worker,p_channels:value=>list(value,row=>shape(row,{channel_id:channel=>typeof channel==='string'&&/^[0-9]{1,12}$/.test(channel),payload:data=>keys(data,['list'])&&Array.isArray(data.list)&&metadata(data)}),10000),p_content_hash:value=>/^[a-f0-9]{64}$/.test(value||''),p_fetched_at:iso},
+    arkhen_epg_snapshot_publish:{p_job_id:value=>UUID.test(value||''),p_worker:worker},
+    arkhen_tv_guide:{...partition,p_channel_ids:nullable(value=>list(value,channel=>typeof channel==='string'&&/^[0-9]{1,12}$/.test(channel),2000)),p_include_adult:value=>typeof value==='boolean',p_time_zone:value=>['America/Maceio','America/Sao_Paulo','UTC'].includes(value)},
     arkhen_publish_catalog:{...lease,p_media_type:value=>['live','movies','series'].includes(value),p_payload:value=>keys(value,['categories','items'])&&Array.isArray(value.categories)&&Array.isArray(value.items)&&metadata(value),p_complete:value=>value===true,p_snapshot_id:value=>UUID.test(value||''),p_expires_at:iso},
     arkhen_publish_epg:{...lease,p_channel_id:id,p_payload:value=>keys(value,['list'])&&Array.isArray(value.list)&&metadata(value),p_expires_at:iso},
     arkhen_publish_epg_batch:{...lease,p_channels:value=>list(value,row=>shape(row,{channel_id:id,payload:data=>keys(data,['list'])&&Array.isArray(data.list)&&metadata(data)}),20000),p_expires_at:iso},
@@ -94,6 +98,7 @@ function operation(envelope,now){
     const rules=rpcRules(now)[rpc[1]];
     if(method!=='POST'||url.search||!rules||!shape(envelope.body,rules))throw failure(400,'GATEWAY_OPERATION_REJECTED');
     if(/^arkhen_publish_/.test(rpc[1]))result.timeoutMs=65000;
+    if(['arkhen_epg_snapshot_stage','arkhen_epg_snapshot_publish'].includes(rpc[1]))result.timeoutMs=18000;
     return result;
   }
   if(url.pathname==='/auth/v1/admin/users'&&method==='POST'&&!url.search){

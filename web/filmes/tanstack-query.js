@@ -1,0 +1,78 @@
+import {withRequestSignals} from '../request-signals.js';
+import {isAdultItem} from '../parental-classification.js';
+import {movieScope,movieScopeKey} from './scope.js';
+import {MOVIE_RECOMMENDATION_LIMIT,MOVIE_RECOMMENDATION_RANKING_VERSION,MOVIE_RECOMMENDATION_IDENTITY_VERSION,recommendationReply,recommendationUnavailable} from './recomendacoes/contrato.js';
+
+const cancelled=()=>new DOMException('A consulta foi cancelada.','AbortError');
+const unavailable=recommendationUnavailable;
+const movieID=item=>item?.kind==='movie'&&/^\d{1,12}$/.test(String(item.id??''))?String(item.id):null;
+export const movieQueryKeys=Object.freeze({
+  recommendations:scope=>['arkhen-movie-recommendations',movieScopeKey(scope)],
+  favorites:scope=>['arkhen-movies','favorites',movieScopeKey(scope)],
+  progress:scope=>['arkhen-movies','progress',movieScopeKey(scope)]
+});
+/** Cache server-ranked API results. Preview/end share work, not cancellation;
+ * outages retain a destination's prior valid DTO instead of ranking locally. */
+export class MovieRecommendationsModel{
+  constructor({request,services=null,getScope,getRevision=()=>'',requestTimeoutMs=12000,loadQueryCore=()=>import('/assets/vendor/cloud-client.js')}={}){
+    Object.assign(this,{request:services?.api||request,getScope,getRevision,loadQueryCore});
+    // The RPC has an 8 s SQL budget and a 10 s server transport budget. This
+    // outer deadline leaves time for local routing without changing playback.
+    this.requestTimeoutMs=Number.isFinite(requestTimeoutMs)?Math.max(500,Math.min(15000,requestTimeoutMs)):12000;
+    this.scope=null;this.epoch=0;this.jobs=new Map();this.client=null;this.clientPromise=null;this.disposed=false;
+  }
+  reset(){
+    this.epoch++;for(const job of this.jobs.values())job.controller.abort();this.jobs.clear();
+    this.scope=null;void this.client?.cancelQueries();this.client?.clear();
+  }
+  async queries(){
+    if(!this.clientPromise)this.clientPromise=Promise.resolve().then(()=>this.loadQueryCore()).then(({QueryClient})=>this.client=new QueryClient({defaultOptions:{queries:{retry:0,staleTime:60000,gcTime:Infinity,refetchOnWindowFocus:false,refetchOnReconnect:false,structuralSharing:false}}})).catch(()=>null);
+    return this.clientPromise;
+  }
+  lookup(item,{signal,limit=MOVIE_RECOMMENDATION_LIMIT,force=false}={}){
+    if(signal?.aborted)return Promise.reject(cancelled());
+    const id=movieID(item),scope=movieScope(this.getScope());
+    if(this.disposed||!id||isAdultItem(item)||!scope?.account){if(this.scope!==null)this.reset();return Promise.reject(unavailable());}
+    const scopeKey=JSON.stringify(scope);
+    if(this.scope!==scopeKey){this.reset();this.scope=scopeKey;}
+    const epoch=this.epoch,revision=JSON.stringify(this.getRevision()),queryKey=[...movieQueryKeys.recommendations(scope),MOVIE_RECOMMENDATION_RANKING_VERSION,MOVIE_RECOMMENDATION_IDENTITY_VERSION,revision,id],key=JSON.stringify(queryKey);
+    let job=this.jobs.get(key);
+    if(!job||job.controller.signal.aborted){
+      job={controller:new AbortController(),consumers:new Set(),settled:false};this.jobs.set(key,job);
+      const current=()=>!this.disposed&&this.epoch===epoch&&!job.controller.signal.aborted&&movieScopeKey(this.getScope())===scopeKey;
+      job.promise=(async()=>{
+        let sdkDeadline;
+        const client=await Promise.race([this.queries(),new Promise(resolve=>{sdkDeadline=setTimeout(()=>resolve(null),500);})]);
+        clearTimeout(sdkDeadline);if(!current())throw cancelled();
+        const run=async({signal:querySignal}={})=>{
+          const input={id,limit:MOVIE_RECOMMENDATION_LIMIT,hidden:scope.hidden||{},hiddenItems:scope.hiddenItems||{}},deadline=new AbortController();
+          const timer=setTimeout(()=>deadline.abort(),this.requestTimeoutMs);timer.unref?.();
+          try{
+            const value=await withRequestSignals([querySignal,job.controller.signal,deadline.signal],combined=>this.request('/api/recommendations/movie',{method:'POST',body:JSON.stringify(input),signal:combined}));
+            return recommendationReply(value,id);
+          }finally{clearTimeout(timer);}
+        };
+        const value=client?await client.fetchQuery({queryKey,queryFn:run,staleTime:force?0:60000}):await run();
+        if(!current())throw cancelled();
+        const cached=(client?.getQueryCache().getAll()||[]).filter(query=>query.queryKey[0]==='arkhen-movie-recommendations');
+        for(const query of cached.filter(query=>!this.jobs.has(JSON.stringify(query.queryKey))).sort((a,b)=>a.state.dataUpdatedAt-b.state.dataUpdatedAt).slice(0,Math.max(0,cached.length-8)))client.removeQueries({queryKey:query.queryKey,exact:true});
+        return value;
+      })().finally(()=>{job.settled=true;if(this.jobs.get(key)===job)this.jobs.delete(key);});
+    }
+    const maximum=Number.isInteger(limit)?Math.min(MOVIE_RECOMMENDATION_LIMIT,Math.max(1,limit)):MOVIE_RECOMMENDATION_LIMIT;
+    return new Promise((resolve,reject)=>{
+      const consumer={};job.consumers.add(consumer);let settled=false;
+      const finish=(error,value)=>{
+        if(settled)return;settled=true;signal?.removeEventListener('abort',abort);job.consumers.delete(consumer);
+        if(!error&&(this.epoch!==epoch||movieScopeKey(this.getScope())!==scopeKey))error=cancelled();
+        if(!job.settled&&!job.consumers.size){job.controller.abort();void this.client?.cancelQueries({queryKey,exact:true});}
+        if(error)reject(error);else resolve({...value,items:value.items.slice(0,maximum)});
+      };
+      const abort=()=>finish(cancelled());signal?.addEventListener('abort',abort,{once:true});
+      job.promise.then(value=>finish(null,value),error=>finish(error?.name==='AbortError'?error:unavailable(error)));
+      if(signal?.aborted)abort();
+    });
+  }
+  invalidate(){void this.client?.invalidateQueries({queryKey:['arkhen-movie-recommendations'],refetchType:'none'});}
+  dispose(){this.disposed=true;this.reset();}
+}

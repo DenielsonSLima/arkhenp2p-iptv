@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PreviewTools } from '../web/preview-tools.js';
 import { renderSeriesPreview } from '../web/series-preview.js';
-import { renderMoviePreview } from '../web/movie-preview.js';
+import { renderMoviePreview } from '../web/filmes/previa.js';
 
 class Element {
   constructor(tag){this.tagName=tag;this.children=[];this.attributes={};this.events={};}

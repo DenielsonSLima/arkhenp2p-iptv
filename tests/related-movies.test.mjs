@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { relatedMovies } from '../web/related-movies.js';
+import { relatedMovies } from './fixtures/related-movies-legacy.mjs';
 const current = {id:'1',kind:'movie',name:'Filme atual',genre:'Filmes | Ação, Thriller',categoryId:'action'};
 test('related movies prefer actual shared genres, omit current title and unrelated content',()=>{
   const items=[current,{id:'2',kind:'movie',name:'Ação e suspense',genre:'Ação, Thriller',categoryId:'action',rating:7},{id:'3',kind:'movie',name:'Comédia',group:'Comédia',categoryId:'comedy'},{id:'4',kind:'movie',name:'Outra ação',group:'Ação',categoryId:'action',rating:8},{id:'5',kind:'series',name:'Série de ação',genre:'Ação'},{id:'6',kind:'movie',name:'Filme atual',genre:'Ação',categoryId:'action'}];

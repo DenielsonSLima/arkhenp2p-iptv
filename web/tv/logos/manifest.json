@@ -1,0 +1,5985 @@
+{
+  "version": 2,
+  "channels": [
+    {
+      "file": "/tv/logos/sem-categoria-verificada/101-dalmatas-24h-076fbb3370399781.webp",
+      "ids": [
+        "411",
+        "504",
+        "612",
+        "640",
+        "700",
+        "945",
+        "1132",
+        "1137",
+        "1186",
+        "1297",
+        "1299",
+        "1300",
+        "1436",
+        "2003",
+        "2379",
+        "2400",
+        "2687",
+        "2795",
+        "2999",
+        "3004",
+        "3071",
+        "3205",
+        "3206",
+        "3319",
+        "3322",
+        "3323",
+        "3326",
+        "3327",
+        "3351",
+        "3358",
+        "3359",
+        "3363",
+        "3364",
+        "3365",
+        "3366",
+        "3372",
+        "3373",
+        "3375",
+        "3376",
+        "3377",
+        "3388",
+        "3389",
+        "3390",
+        "3410",
+        "3414",
+        "3415",
+        "3416",
+        "3418",
+        "3419",
+        "3421",
+        "3423",
+        "3424",
+        "3425",
+        "3426",
+        "3442",
+        "3444",
+        "3445",
+        "3446",
+        "3447",
+        "3448",
+        "3449",
+        "3450",
+        "3451",
+        "3452",
+        "3453",
+        "3454",
+        "3455",
+        "3456",
+        "3458",
+        "3460",
+        "3461",
+        "3462",
+        "3463",
+        "3464",
+        "3465",
+        "3466",
+        "3467",
+        "3468",
+        "3469",
+        "3471",
+        "3472",
+        "3473",
+        "3474",
+        "3475",
+        "3476",
+        "3477",
+        "3478",
+        "3479",
+        "3481",
+        "3556",
+        "3703"
+      ],
+      "names": [
+        "101 Dalmatas 24H",
+        "3 Palavrinhas 24H",
+        "A Grande Família 24H",
+        "A Pantera Cor-de-Rosa 24H",
+        "Alf o Eteimoso 24H",
+        "Apenas Um Show 24H",
+        "As Aventuras de Ladybug 24H",
+        "As Meninas Superpoderosas 24H",
+        "As Trapalhadas de Flapjack 24H",
+        "Baby Shark 24H",
+        "Ben 10 24H",
+        "Black Mirror 24H",
+        "Bob Esponja 24H",
+        "Bob Zoom 24H",
+        "Booba 24h",
+        "Breaking Bad: A Química do Mal 24H HD",
+        "Cadillacs e Dinossauros 24H",
+        "Caverna do Dragão 24H",
+        "Chapolin Colorado 24H",
+        "Chaves 24H",
+        "Chaves Desenho 24H",
+        "Como Eu Conheci Sua Mãe 24H",
+        "Corrida Maluca 24H",
+        "Desenho Coragem, o Cão Covarde 1 24H",
+        "Desenho Coragem, o Cão Covarde 2 24H",
+        "Desenho Dora Aventureira 24H",
+        "Desenho Patrulha Canina 1 24H",
+        "Desenho Patrulha Canina 2 24H",
+        "Desenho Patrulha Canina 3 24H",
+        "Desenho Patrulha Canina 4 24H",
+        "Desenho Patrulha Canina 5 24H",
+        "Desenho Patrulha Canina 6 24H",
+        "Desenhos Bíblicos 24H",
+        "Desenhos da Disney 24H",
+        "Dois Homens e Meio 24H",
+        "Dragon Ball 24H",
+        "Dragon Ball GT 24H",
+        "Dragon Ball Super 24H",
+        "Dragon Ball Z 24H",
+        "Escolhinha do Professor Raimundo 24H",
+        "Eu, a Patroa e as Crianças 24H",
+        "Friends 24H",
+        "Futurama 24H",
+        "Galinha Pintadinha 24H",
+        "Game of Thrones 24H",
+        "Gasparzinho 24H",
+        "He Man 24H",
+        "Homem Aranha 24H",
+        "iCarly 24H",
+        "Largados e Pelados Brasil 24H",
+        "Luluzinha 24H",
+        "MasterChef 24H",
+        "Mundo Bita 24H",
+        "Narcos 24H",
+        "Narcos: México 24H",
+        "Os Flintstones 1 24H",
+        "Os Flintstones 2 24H",
+        "Os Jetsons 24H",
+        "Os Padrinhos Mágicos 1 24H",
+        "Os Padrinhos Mágicos 2 24H",
+        "Os Padrinhos Mágicos 3 24H",
+        "Os Padrinhos Mágicos 4 24H",
+        "Os Padrinhos Mágicos 5 24H",
+        "Os Simpsons 24H",
+        "Papa-Léguas 24H",
+        "Peppa Pig",
+        "Pica Pau 24H",
+        "Pink e o Cérebro 24H",
+        "Pinky e o Cérebro 24H",
+        "PJ Masks 24H",
+        "Pokémon 24H",
+        "Pokémon Filmes e Especiais 24H",
+        "Pokémon Jornadas: A Série 24H",
+        "Rick And Morty 24H",
+        "Rocket Power 24H",
+        "Scooby Doo 24H",
+        "Show da Luna 24H",
+        "Smallville 24H",
+        "Sobrenatural 24H",
+        "South Park 01 24h",
+        "Super Choque 24H",
+        "Super Dragon Ball Heroes 24H",
+        "Teletubbies 24H",
+        "The Big Bang Theory 24H",
+        "Timão e Pumba 24H",
+        "Todo Mundo Odeia o Chris 24H",
+        "Tom e Jerry 24H",
+        "Turma da Mônica 24H",
+        "Turma da Mônica: A Série 24H",
+        "Um Maluco no Pedaço 24H",
+        "Ursinhos Carinhosos 24H"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          28,
+          84,
+          200,
+          89
+        ]
+      },
+      "legacyFile": "/assets/channels/101-dalmatas-24h-076fbb3370399781.webp",
+      "sha256": "076fbb33703997817f4237cb372382428c858250dcb837c610383f30b2778b69",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/3-palavrinhas-24h-6c5de9d8ac61a144.webp",
+      "ids": [
+        "340"
+      ],
+      "names": [
+        "3 Palavrinhas 24H"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          41,
+          93,
+          174,
+          70
+        ]
+      },
+      "legacyFile": "/assets/channels/3-palavrinhas-24h-6c5de9d8ac61a144.webp",
+      "sha256": "6c5de9d8ac61a144a82b51f89e3866038fa1131b38305d5db2cf110cd3d85c37",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/a-casa-das-brasileirinhas-de6cb34101b4e2d5.webp",
+      "ids": [
+        "1112",
+        "1191",
+        "1193",
+        "1201",
+        "1207",
+        "1263",
+        "1264",
+        "1323",
+        "1473",
+        "1539",
+        "1541",
+        "1544",
+        "1545",
+        "1547",
+        "1549",
+        "1553",
+        "1554",
+        "1555",
+        "1556",
+        "1557",
+        "1558",
+        "1559",
+        "1560",
+        "1561",
+        "1562",
+        "1563",
+        "1564",
+        "1565",
+        "1566",
+        "1567",
+        "1568",
+        "1569",
+        "1570",
+        "1571",
+        "1572",
+        "1573",
+        "1574",
+        "1575",
+        "1576",
+        "1577",
+        "1578",
+        "1579",
+        "1580",
+        "1581",
+        "1582",
+        "1583",
+        "1584",
+        "1585",
+        "1586",
+        "1587",
+        "1588",
+        "1589",
+        "1590",
+        "1655",
+        "1659",
+        "1923",
+        "1926",
+        "1929",
+        "1932",
+        "1938",
+        "2000",
+        "2081",
+        "2363",
+        "2579",
+        "2580",
+        "2914",
+        "2916",
+        "2917",
+        "2921",
+        "2922",
+        "2926",
+        "2932",
+        "2976",
+        "2977",
+        "2978",
+        "2979",
+        "3642",
+        "3742",
+        "3743",
+        "3744",
+        "3745",
+        "3746",
+        "3747",
+        "3748",
+        "3749",
+        "3750",
+        "3751",
+        "3752",
+        "3755",
+        "3756",
+        "3757",
+        "3758",
+        "3759",
+        "3769"
+      ],
+      "names": [
+        "A Casa das Brasileirinhas",
+        "Abella Danger",
+        "Adriana Chechik",
+        "Adulto 10",
+        "Adulto 14",
+        "Adulto 2",
+        "Adulto 20",
+        "Adulto 4",
+        "Adulto 5",
+        "Adulto 9",
+        "Alina Lopez",
+        "All Group Sex",
+        "Anal Porno",
+        "Angela White",
+        "Ariana Marie",
+        "Asian Porno",
+        "Asiaticas 1",
+        "Asiaticas 2",
+        "Asiaticas 3",
+        "Asiaticas 4",
+        "August Ames",
+        "Autumn Falls",
+        "Babes TV",
+        "BangBros 1",
+        "BangBros 2",
+        "BangBros 3",
+        "BangBros 4",
+        "Big Ass Porno",
+        "Big Dick Porno",
+        "Big Tits Porno",
+        "Blonde Porno",
+        "Blowjob Porno",
+        "Blue Hustler",
+        "Brandi Love",
+        "Brasileirinhas: Contos do Big",
+        "Brasileirinhas: Contos Eróticos",
+        "Brazzers 1",
+        "Brazzers 2",
+        "Brazzers 3",
+        "Brazzers 4",
+        "Brazzers 5",
+        "Brazzers 6",
+        "Brazzers TV Europe",
+        "Brunette Porno",
+        "Compilation Porn",
+        "Cuckold Porno",
+        "Dani Daniels",
+        "Dani Jensen",
+        "Dorcel TV",
+        "Elsa Jean",
+        "Emily Willis",
+        "Eva Lovia",
+        "Family Strokes",
+        "FAP TV 2",
+        "FAP TV Anal",
+        "FAP TV Compilation",
+        "FAP TV Parody",
+        "Fetish Porno",
+        "Gangbang Porno",
+        "Gay",
+        "Gay Porno",
+        "Gina Valentina",
+        "Hardcore Porno",
+        "Hustler",
+        "Interracial Porno",
+        "Janice Griffith",
+        "Jessa Rhodes",
+        "KinoXXX",
+        "Lana Rhodes",
+        "Latina Porno",
+        "Lena Paul",
+        "Lesbian Porno",
+        "Lisa Ann",
+        "Live Cams Porno",
+        "Madison Ivy",
+        "Mia Malkova",
+        "Milf Porno",
+        "Penthouse Gold",
+        "Penthouse Quickies",
+        "Playboy",
+        "Pornhub",
+        "Pornstar Porno",
+        "Pov Porno",
+        "Private TV",
+        "Russian Porno",
+        "Sex Prive",
+        "Sextreme",
+        "Sexy Hot",
+        "Teen Porno",
+        "Threesome Porno",
+        "Trans",
+        "Vivid Red",
+        "Vênus",
+        "XXL"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          88,
+          62,
+          109,
+          109
+        ]
+      },
+      "legacyFile": "/assets/channels/a-casa-das-brasileirinhas-de6cb34101b4e2d5.webp",
+      "sha256": "de6cb34101b4e2d50fba32f10f7741051220e42cc6c9f8088f4422038f19b0fe",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/a-e-3e43f11bbbfb3326.webp",
+      "ids": [
+        "654",
+        "1914"
+      ],
+      "names": [
+        "A&E",
+        "A&E 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          60,
+          88,
+          133,
+          70
+        ]
+      },
+      "legacyFile": "/assets/channels/a-e-3e43f11bbbfb3326.webp",
+      "sha256": "3e43f11bbbfb3326e08c2bfb4514ec133fb468d2e4680e54fef6c083d9993ff2",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/a-fazenda-18-cam-01-29c9857c9792f5d4.webp",
+      "ids": [
+        "3786",
+        "3788",
+        "3791",
+        "3794",
+        "3797",
+        "3800",
+        "3803"
+      ],
+      "names": [
+        "A Fazenda 18 CAM 01",
+        "A Fazenda 18 CAM 02",
+        "A Fazenda 18 CAM 03",
+        "A Fazenda 18 CAM 04",
+        "A Fazenda 18 CAM 05",
+        "A Fazenda 18 CAM 06",
+        "A Fazenda 18 CAM 07"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          38,
+          65,
+          186,
+          121
+        ]
+      },
+      "legacyFile": "/assets/channels/a-fazenda-18-cam-01-29c9857c9792f5d4.webp",
+      "sha256": "29c9857c9792f5d4e5e4a0a711c1ff3561095d7f7e24d14b2d1d953beed136a8",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/adult-swim-942e8589ff38dbfb.webp",
+      "ids": [
+        "549"
+      ],
+      "names": [
+        "Adult Swim"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 171,
+        "bounds": [
+          10,
+          64,
+          237,
+          44
+        ]
+      },
+      "legacyFile": "/assets/channels/adult-swim-942e8589ff38dbfb.webp",
+      "sha256": "942e8589ff38dbfbf7037ae9d6cea7fbb7d9d7a8e2294d684eb7b72feb90cd2c",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/agro-canal-c80d9a06649c3b57.webp",
+      "ids": [
+        "2514"
+      ],
+      "names": [
+        "Agro Canal"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          42,
+          80,
+          183,
+          108
+        ]
+      },
+      "legacyFile": "/assets/channels/agro-canal-c80d9a06649c3b57.webp",
+      "sha256": "c80d9a06649c3b57977c69949e3dc68e801410290e9e78936b933e2c3d6d470a",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/agromais-4a7b5e7f0dfa59d2.webp",
+      "ids": [
+        "2594"
+      ],
+      "names": [
+        "AgroMais"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          19,
+          38,
+          212,
+          143
+        ]
+      },
+      "legacyFile": "/assets/channels/agromais-4a7b5e7f0dfa59d2.webp",
+      "sha256": "4a7b5e7f0dfa59d2bc3c7f993e1bd151e88690596693cd239947030ff6b707e7",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/amazon-prime-2-bdb060a91ab9626f.webp",
+      "ids": [
+        "303",
+        "306",
+        "308",
+        "3250"
+      ],
+      "names": [
+        "Amazon Prime  2",
+        "Amazon Prime  4",
+        "Amazon Prime 1",
+        "Amazon Prime 3"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          23,
+          95,
+          210,
+          66
+        ]
+      },
+      "legacyFile": "/assets/channels/amazon-prime-2-bdb060a91ab9626f.webp",
+      "sha256": "bdb060a91ab9626fc0d8d64013ff70bad7ec1403a3e800072a7022b7cdfd0198",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/amc-f38d8d7c62260d81.webp",
+      "ids": [
+        "348",
+        "3302"
+      ],
+      "names": [
+        "AMC",
+        "AMC LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          33,
+          74,
+          191,
+          108
+        ]
+      },
+      "legacyFile": "/assets/channels/amc-f38d8d7c62260d81.webp",
+      "sha256": "f38d8d7c62260d81b02dee539a2b85148038acc36fcea2614de4773201bc145b",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/animal-planet-b8671891f56f6bfd.webp",
+      "ids": [
+        "631",
+        "3609"
+      ],
+      "names": [
+        "Animal Planet",
+        "Animal Planet 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          30,
+          84,
+          191,
+          94
+        ]
+      },
+      "legacyFile": "/assets/channels/animal-planet-b8671891f56f6bfd.webp",
+      "sha256": "b8671891f56f6bfd81b1eaa3e95a770a9e324626952d5a400742c6f67cf4080e",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/apple-tv-1-07cbbd3687686979.webp",
+      "ids": [
+        "2779",
+        "3203"
+      ],
+      "names": [
+        "Apple TV 1",
+        "Band Riberao Preto"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          38,
+          52,
+          169,
+          155
+        ]
+      },
+      "legacyFile": "/assets/channels/apple-tv-1-07cbbd3687686979.webp",
+      "sha256": "07cbbd3687686979a977abcf6035bff3e1d1ae9782e4105f2707b0235ce5df93",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/arte-1-9e914d27ed8f3394.webp",
+      "ids": [
+        "649"
+      ],
+      "names": [
+        "Arte 1"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          67,
+          100,
+          128,
+          52
+        ]
+      },
+      "legacyFile": "/assets/channels/arte-1-9e914d27ed8f3394.webp",
+      "sha256": "9e914d27ed8f3394b36cded001f604d547fad743023735530a387a3a055a0086",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/baby-looney-tunes-24h-b4a578ebfa6c871c.webp",
+      "ids": [
+        "1158",
+        "2091",
+        "2401",
+        "3550"
+      ],
+      "names": [
+        "Baby Looney Tunes 24H",
+        "Daniel o Tigre 24H",
+        "Hercules 24H",
+        "One Piece 24H"
+      ],
+      "artwork": {
+        "width": 192,
+        "height": 192,
+        "bounds": [
+          21,
+          63,
+          150,
+          67
+        ]
+      },
+      "legacyFile": "/assets/channels/baby-looney-tunes-24h-b4a578ebfa6c871c.webp",
+      "sha256": "b4a578ebfa6c871c774e050687228136eaedab9d9c20b7248449fc694b1a4318",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/band-bahia-86c333758dcf3c1d.webp",
+      "ids": [
+        "273",
+        "1858",
+        "1861",
+        "1881",
+        "1894",
+        "1897",
+        "1907",
+        "1908",
+        "2093",
+        "2565",
+        "2622",
+        "2686",
+        "3079",
+        "3200",
+        "7010"
+      ],
+      "names": [
+        "Band Bahia",
+        "Band Brasília",
+        "Band Campinas",
+        "Band CE",
+        "Band Curitiba",
+        "Band Minas",
+        "Band Paraíba",
+        "Band RJ",
+        "Band RN",
+        "Band RS",
+        "Band SP",
+        "Band TV Goiânia",
+        "Band TV Tribuna Recife",
+        "Band Uberlândia",
+        "RBA TV"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          50,
+          63,
+          156,
+          125
+        ]
+      },
+      "legacyFile": "/assets/channels/band-bahia-86c333758dcf3c1d.webp",
+      "sha256": "86c333758dcf3c1d5f96fdae03fe6454fc0bcf1b654371207472265b47e61d50",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/band-news-6a1867cb9588a974.webp",
+      "ids": [
+        "540"
+      ],
+      "names": [
+        "Band News"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          42,
+          88,
+          178,
+          75
+        ]
+      },
+      "legacyFile": "/assets/channels/band-news-6a1867cb9588a974.webp",
+      "sha256": "6a1867cb9588a97461ab2dbb17c460e0ee221e2773ff387a19c425db39754e1f",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/band-paulista-74a4cdd429fcd563.webp",
+      "ids": [
+        "3320"
+      ],
+      "names": [
+        "Band Paulista"
+      ],
+      "artwork": {
+        "width": 192,
+        "height": 192,
+        "bounds": [
+          38,
+          47,
+          116,
+          94
+        ]
+      },
+      "legacyFile": "/assets/channels/band-paulista-74a4cdd429fcd563.webp",
+      "sha256": "74a4cdd429fcd56343f3415e18fadd66f32b8d829890dda58ad79da4854a9079",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/band-sports-52c30c0de5f049cb.webp",
+      "ids": [
+        "271"
+      ],
+      "names": [
+        "Band Sports"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          25,
+          86,
+          200,
+          88
+        ]
+      },
+      "legacyFile": "/assets/channels/band-sports-52c30c0de5f049cb.webp",
+      "sha256": "52c30c0de5f049cbac9978a9f6d85707109d25a2f31f9d7479f5f405c1e356c6",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/bis-45dc49ceab09464c.webp",
+      "ids": [
+        "595"
+      ],
+      "names": [
+        "BIS"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          43,
+          87,
+          164,
+          82
+        ]
+      },
+      "legacyFile": "/assets/channels/bis-45dc49ceab09464c.webp",
+      "sha256": "45dc49ceab09464cb81e92d2cababe36f299040c85532f678579cbfdc3416a88",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/bjj-stars-79e896d08e55f95a.webp",
+      "ids": [
+        "2568"
+      ],
+      "names": [
+        "BJJ Stars"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          66,
+          61,
+          124,
+          130
+        ]
+      },
+      "legacyFile": "/assets/channels/bjj-stars-79e896d08e55f95a.webp",
+      "sha256": "79e896d08e55f95a3d52e5dc296b295d0c91b33091c267bd3f3154ae4a6bdab0",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/bloomberg-tv-a055b3e654b49f40.webp",
+      "ids": [
+        "2780"
+      ],
+      "names": [
+        "Bloomberg TV"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 171,
+        "bounds": [
+          31,
+          65,
+          195,
+          41
+        ]
+      },
+      "legacyFile": "/assets/channels/bloomberg-tv-a055b3e654b49f40.webp",
+      "sha256": "a055b3e654b49f406ef630d4ef9741a9e359a9e8b0fd63c308b1e8ecf98298fa",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/bm-c-news-05a4f4dfdc7604a3.webp",
+      "ids": [
+        "3459"
+      ],
+      "names": [
+        "BM&C News"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          46,
+          79,
+          163,
+          97
+        ]
+      },
+      "legacyFile": "/assets/channels/bm-c-news-05a4f4dfdc7604a3.webp",
+      "sha256": "05a4f4dfdc7604a320401a9d01f08c6bab9e0d533d294d397b8fb0629205bfcc",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/boas-novas-16b1375747cab8a7.webp",
+      "ids": [
+        "2552"
+      ],
+      "names": [
+        "Boas Novas"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          2,
+          76,
+          246,
+          103
+        ]
+      },
+      "legacyFile": "/assets/channels/boas-novas-16b1375747cab8a7.webp",
+      "sha256": "16b1375747cab8a7d524d54d2173df137ddd11da71a590e7131729c55ee9bf4f",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/brtvmax-a9b89cffbe5ede2a.webp",
+      "ids": [
+        "2963"
+      ],
+      "names": [
+        "Brtvmax"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          29,
+          100,
+          198,
+          43
+        ]
+      },
+      "legacyFile": "/assets/channels/brtvmax-a9b89cffbe5ede2a.webp",
+      "sha256": "a9b89cffbe5ede2aff8973d115eafbb0c01a630cb24f0ac8d2bc99d527906f4d",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/canal-brasil-50b17f0f60b00f14.webp",
+      "ids": [
+        "393",
+        "1917"
+      ],
+      "names": [
+        "Canal Brasil",
+        "Canal Brasil 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          53,
+          73,
+          159,
+          116
+        ]
+      },
+      "legacyFile": "/assets/channels/canal-brasil-50b17f0f60b00f14.webp",
+      "sha256": "50b17f0f60b00f1460b59ca2db5cdfea52aa436571ce266c93407a2ae526da13",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/canal-do-boi-82cf0f281c37892e.webp",
+      "ids": [
+        "74"
+      ],
+      "names": [
+        "Canal do Boi"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          43,
+          60,
+          157,
+          126
+        ]
+      },
+      "legacyFile": "/assets/channels/canal-do-boi-82cf0f281c37892e.webp",
+      "sha256": "82cf0f281c37892e5fd6827ffa1756eb7a7e4351065d30815401b9954d90b0cf",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/canal-rural-eab1e84533843cf8.webp",
+      "ids": [
+        "88"
+      ],
+      "names": [
+        "Canal Rural"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          37,
+          64,
+          177,
+          122
+        ]
+      },
+      "legacyFile": "/assets/channels/canal-rural-eab1e84533843cf8.webp",
+      "sha256": "eab1e84533843cf8becf86750f642d7d0d2be5f53b30d602d27772145f836fb6",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/canal-terra-viva-a05e30460fe2973f.webp",
+      "ids": [
+        "1904"
+      ],
+      "names": [
+        "Canal Terra Viva"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          36,
+          64,
+          178,
+          109
+        ]
+      },
+      "legacyFile": "/assets/channels/canal-terra-viva-a05e30460fe2973f.webp",
+      "sha256": "a05e30460fe2973fa4236c104a342cc9fc7fa8bbd066ad44319856abc8c8b47d",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/canal-uol-8295f7d08998ea3b.webp",
+      "ids": [
+        "1868"
+      ],
+      "names": [
+        "Canal UOL"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          48,
+          112,
+          159,
+          32
+        ]
+      },
+      "legacyFile": "/assets/channels/canal-uol-8295f7d08998ea3b.webp",
+      "sha256": "8295f7d08998ea3b41f6657ededcebaeae130c5917e74a320e1c037a0f2e0ebd",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/cancao-nova-7af96b645c869de4.webp",
+      "ids": [
+        "668"
+      ],
+      "names": [
+        "Canção Nova"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          62,
+          82,
+          132,
+          111
+        ]
+      },
+      "legacyFile": "/assets/channels/cancao-nova-7af96b645c869de4.webp",
+      "sha256": "7af96b645c869de4a25ca154bd9280ad218220602d415d58ac1734f8fcef3fb2",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/cartoon-network-3c60670f4d139ee5.webp",
+      "ids": [
+        "496"
+      ],
+      "names": [
+        "Cartoon Network"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          43,
+          75,
+          170,
+          105
+        ]
+      },
+      "legacyFile": "/assets/channels/cartoon-network-3c60670f4d139ee5.webp",
+      "sha256": "3c60670f4d139ee55b917ae1dfda23cd5f05efe53bde9bbb88260e01201eedbc",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/cartoonito-61f8605052f78ff1.webp",
+      "ids": [
+        "492",
+        "494"
+      ],
+      "names": [
+        "Cartoonito",
+        "Cartoonito 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          19,
+          103,
+          220,
+          49
+        ]
+      },
+      "legacyFile": "/assets/channels/cartoonito-61f8605052f78ff1.webp",
+      "sha256": "61f8605052f78ff120b7bdd798271b2d7f346bb69d2619c2d9a303eb1073cbd3",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/caze-tv-164aae9c4a5eede9.webp",
+      "ids": [
+        "312",
+        "2628",
+        "2692"
+      ],
+      "names": [
+        "Cazé TV",
+        "Cazé TV 2",
+        "Cazé TV 3"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          64,
+          97,
+          131,
+          71
+        ]
+      },
+      "legacyFile": "/assets/channels/caze-tv-164aae9c4a5eede9.webp",
+      "sha256": "164aae9c4a5eede9f4ec0ddb4364439026e0c8b9e773f155a1c120417144aeba",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/central-tv-brasil-98a88c8fd5b6069c.webp",
+      "ids": [
+        "588",
+        "2646"
+      ],
+      "names": [
+        "Central TV Brasil",
+        "TV Brasil Central"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          35,
+          103,
+          185,
+          50
+        ]
+      },
+      "legacyFile": "/assets/channels/central-tv-brasil-98a88c8fd5b6069c.webp",
+      "sha256": "98a88c8fd5b6069c41d5eb45a6fbfb6eacf90605f36d5eae7f17db9adc99939e",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/cine-sky-01-501e05730430ecc9.webp",
+      "ids": [
+        "2524",
+        "2525",
+        "2526",
+        "2527",
+        "2528",
+        "2529",
+        "2530",
+        "2531",
+        "2532",
+        "2533",
+        "2534",
+        "2535",
+        "2536",
+        "2537",
+        "2538"
+      ],
+      "names": [
+        "Cine SKY 01",
+        "Cine SKY 02",
+        "Cine SKY 03",
+        "Cine SKY 04",
+        "Cine SKY 05",
+        "Cine SKY 06",
+        "Cine SKY 07",
+        "Cine SKY 08",
+        "Cine SKY 09",
+        "Cine SKY 10",
+        "Cine SKY 11",
+        "Cine SKY 12",
+        "Cine SKY 13",
+        "Cine SKY 14",
+        "Cine SKY 15"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          17,
+          96,
+          221,
+          55
+        ]
+      },
+      "legacyFile": "/assets/channels/cine-sky-01-501e05730430ecc9.webp",
+      "sha256": "501e05730430ecc9111c2947c31fa7c02fdd3ceb17fdb637b8c29da6ed47b61d",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/cinemax-537285ee36702491.webp",
+      "ids": [
+        "389"
+      ],
+      "names": [
+        "Cinemax"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          31,
+          96,
+          193,
+          68
+        ]
+      },
+      "legacyFile": "/assets/channels/cinemax-537285ee36702491.webp",
+      "sha256": "537285ee36702491fb03e6e158bf3663df2eb52ff57ee435c7b75ef644761f02",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/cnbc-brasil-8c8b0bd61e572a56.webp",
+      "ids": [
+        "3082"
+      ],
+      "names": [
+        "CNBC Brasil"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 171,
+        "bounds": [
+          54,
+          29,
+          148,
+          117
+        ]
+      },
+      "legacyFile": "/assets/channels/cnbc-brasil-8c8b0bd61e572a56.webp",
+      "sha256": "8c8b0bd61e572a5620922657a39535c4dd053e4cc8c78fcef678194ed47e8fd4",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/cnn-brasil-dd82b9344092eb25.webp",
+      "ids": [
+        "553",
+        "3599"
+      ],
+      "names": [
+        "CNN Brasil",
+        "CNN Brasil 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          62,
+          88,
+          132,
+          90
+        ]
+      },
+      "legacyFile": "/assets/channels/cnn-brasil-dd82b9344092eb25.webp",
+      "sha256": "dd82b9344092eb25080d4f768a494ba2ddbfa26c6bddc35615d671486fde55e1",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/cnn-brasil-money-320eb5653e7a64a1.webp",
+      "ids": [
+        "3083"
+      ],
+      "names": [
+        "CNN Brasil Money"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          36,
+          97,
+          184,
+          64
+        ]
+      },
+      "legacyFile": "/assets/channels/cnn-brasil-money-320eb5653e7a64a1.webp",
+      "sha256": "320eb5653e7a64a1ad22226d842598f049464eb5b55608ffec3836a13cd921c8",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/cnn-internacional-5c9cf6656601e90c.webp",
+      "ids": [
+        "560"
+      ],
+      "names": [
+        "CNN Internacional"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          52,
+          82,
+          152,
+          92
+        ]
+      },
+      "legacyFile": "/assets/channels/cnn-internacional-5c9cf6656601e90c.webp",
+      "sha256": "5c9cf6656601e90cf1ab66ea2183b0c8809743f755589aa431e481b830f9f16a",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/cnt-65b67bdf691bbe10.webp",
+      "ids": [
+        "3072"
+      ],
+      "names": [
+        "CNT"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          59,
+          60,
+          138,
+          135
+        ]
+      },
+      "legacyFile": "/assets/channels/cnt-65b67bdf691bbe10.webp",
+      "sha256": "65b67bdf691bbe109542b49a4bf68e32bd8bab6ebd47d189e8d7784df00f5725",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/combate-594473b64034fb7c.webp",
+      "ids": [
+        "260",
+        "262"
+      ],
+      "names": [
+        "Combate",
+        "Combate 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          19,
+          112,
+          215,
+          32
+        ]
+      },
+      "legacyFile": "/assets/channels/combate-594473b64034fb7c.webp",
+      "sha256": "594473b64034fb7c2da381a07eb539f056199027250c35bd5a3c88eea703dd00",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/curta-1a3d8de6f20c5b9b.webp",
+      "ids": [
+        "643",
+        "644"
+      ],
+      "names": [
+        "Curta!",
+        "Curta! 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          29,
+          110,
+          199,
+          53
+        ]
+      },
+      "legacyFile": "/assets/channels/curta-1a3d8de6f20c5b9b.webp",
+      "sha256": "1a3d8de6f20c5b9bc3403eb2814b8e09e5f3fccfbcc0e57666c298b2804a9d73",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/desimpedidos-1-d35bbf624b42bf44.webp",
+      "ids": [
+        "3281"
+      ],
+      "names": [
+        "Desimpedidos 1"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 171,
+        "bounds": [
+          17,
+          33,
+          223,
+          105
+        ]
+      },
+      "legacyFile": "/assets/channels/desimpedidos-1-d35bbf624b42bf44.webp",
+      "sha256": "d35bbf624b42bf4413dedd942d193134b228a4e0aca4c0027f132993d847c9de",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/discovery-channel-d394b8d646a5e8e2.webp",
+      "ids": [
+        "586"
+      ],
+      "names": [
+        "Discovery Channel"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          18,
+          100,
+          220,
+          56
+        ]
+      },
+      "legacyFile": "/assets/channels/discovery-channel-d394b8d646a5e8e2.webp",
+      "sha256": "d394b8d646a5e8e290dbef8f12a1350a48b0d4ede9d19c77a50f5c6f5099cb3b",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/discovery-home-health-317265ecd74c12bc.webp",
+      "ids": [
+        "562",
+        "3612"
+      ],
+      "names": [
+        "Discovery Home & Health",
+        "Discovery Home & Health 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          43,
+          72,
+          172,
+          111
+        ]
+      },
+      "legacyFile": "/assets/channels/discovery-home-health-317265ecd74c12bc.webp",
+      "sha256": "317265ecd74c12bc64b73fe9e967da84eb9666a3fb717c8454d10e66d0c40236",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/discovery-investigacao-4c0958e8057abd9b.webp",
+      "ids": [
+        "611"
+      ],
+      "names": [
+        "Discovery Investigação"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          49,
+          39,
+          160,
+          178
+        ]
+      },
+      "legacyFile": "/assets/channels/discovery-investigacao-4c0958e8057abd9b.webp",
+      "sha256": "4c0958e8057abd9b521ab24e90eadbb7110ccdbadf0862ef676977eb53305e97",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/discovery-kids-0262d5a514a47542.webp",
+      "ids": [
+        "500",
+        "501"
+      ],
+      "names": [
+        "Discovery Kids",
+        "Discovery Kids 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          59,
+          64,
+          147,
+          121
+        ]
+      },
+      "legacyFile": "/assets/channels/discovery-kids-0262d5a514a47542.webp",
+      "sha256": "0262d5a514a47542bac3c67871b77b91b21718d1130a353b587f38a125aa0906",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/discovery-science-724341b31ca5e8d8.webp",
+      "ids": [
+        "606"
+      ],
+      "names": [
+        "Discovery Science"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          30,
+          68,
+          202,
+          119
+        ]
+      },
+      "legacyFile": "/assets/channels/discovery-science-724341b31ca5e8d8.webp",
+      "sha256": "724341b31ca5e8d82cffc0389ca400eed03569ecce4b7ffcda56289b4d533c23",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/discovery-theater-f58598fa708d11f1.webp",
+      "ids": [
+        "601",
+        "602"
+      ],
+      "names": [
+        "Discovery Theater",
+        "Discovery Theater 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          27,
+          100,
+          207,
+          64
+        ]
+      },
+      "legacyFile": "/assets/channels/discovery-theater-f58598fa708d11f1.webp",
+      "sha256": "f58598fa708d11f16fd43959e1a241d741b58ef008315bd51c959bc026ecf0f0",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/discovery-turbo-da4b157d58988526.webp",
+      "ids": [
+        "596",
+        "599"
+      ],
+      "names": [
+        "Discovery Turbo",
+        "Discovery Turbo 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          25,
+          80,
+          208,
+          95
+        ]
+      },
+      "legacyFile": "/assets/channels/discovery-turbo-da4b157d58988526.webp",
+      "sha256": "da4b157d589885268d4e05d7ba857872a64a80fd00fcaa16e5ddddf70e44ebae",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/discovery-world-353a26e559d62d3a.webp",
+      "ids": [
+        "590"
+      ],
+      "names": [
+        "Discovery World"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          33,
+          88,
+          192,
+          80
+        ]
+      },
+      "legacyFile": "/assets/channels/discovery-world-353a26e559d62d3a.webp",
+      "sha256": "353a26e559d62d3aa67f139a16f0d78075476a77ece9f78e2e57d50f1a81f56f",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/disney-1-0f8ecf3b73b6a080.webp",
+      "ids": [
+        "498",
+        "3436",
+        "3438",
+        "3440",
+        "3482",
+        "3484",
+        "3486",
+        "3488"
+      ],
+      "names": [
+        "Disney+ 1",
+        "Disney+ 2",
+        "Disney+ 3",
+        "Disney+ 4",
+        "Disney+ 5",
+        "Disney+ 6",
+        "Disney+ 7",
+        "Disney+ 8"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          22,
+          70,
+          213,
+          116
+        ]
+      },
+      "legacyFile": "/assets/channels/disney-1-0f8ecf3b73b6a080.webp",
+      "sha256": "0f8ecf3b73b6a0809d9061d933d2f1855012eab25df6e4881b838b3bba40139d",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/dog-tv-4f9efe2f78022234.webp",
+      "ids": [
+        "2631"
+      ],
+      "names": [
+        "Dog TV"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          57,
+          62,
+          141,
+          132
+        ]
+      },
+      "legacyFile": "/assets/channels/dog-tv-4f9efe2f78022234.webp",
+      "sha256": "4f9efe2f780222343e510a25a8bf598ec4bd3a690a59f0c3a868eb38a66c2285",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/dumdum-ae3c318996372973.webp",
+      "ids": [
+        "2561"
+      ],
+      "names": [
+        "DumDum"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          60,
+          59,
+          129,
+          143
+        ]
+      },
+      "legacyFile": "/assets/channels/dumdum-ae3c318996372973.webp",
+      "sha256": "ae3c3189963729735e6b539db8107654ad7e1bc555e55568e3698ca65dbcb788",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/e-11bdf5c517ad09d6.webp",
+      "ids": [
+        "605"
+      ],
+      "names": [
+        "E!"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          99,
+          39,
+          56,
+          178
+        ]
+      },
+      "legacyFile": "/assets/channels/e-11bdf5c517ad09d6.webp",
+      "sha256": "11bdf5c517ad09d6f16f627625479b243310cb37e6c27a06a09b93cef6f1c52a",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/es-axn-a9e1b01d0c158ab5.webp",
+      "ids": [
+        "421",
+        "1915",
+        "3719"
+      ],
+      "names": [
+        "(ES) Axn",
+        "AXN",
+        "AXN 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          22,
+          92,
+          215,
+          71
+        ]
+      },
+      "legacyFile": "/assets/channels/es-axn-a9e1b01d0c158ab5.webp",
+      "sha256": "a9e1b01d0c158ab59fdcf0a6b3c922005c13df760715901666205eddfaf48151",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/es-dazn-espana-ea3d7b49a68d0ebb.webp",
+      "ids": [
+        "335",
+        "3501",
+        "3503",
+        "3505",
+        "3516",
+        "3718"
+      ],
+      "names": [
+        "(ES) Dazn Espana",
+        "DAZN 1",
+        "DAZN 2",
+        "DAZN 3",
+        "DAZN 4",
+        "DAZN 8"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          71,
+          75,
+          115,
+          115
+        ]
+      },
+      "legacyFile": "/assets/channels/es-dazn-espana-ea3d7b49a68d0ebb.webp",
+      "sha256": "ea3d7b49a68d0ebbfab14351f8bd707b6202c8a06028cde1742a31a27e6a1030",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/es-hollywood-c00c272562e3373d.webp",
+      "ids": [
+        "3721"
+      ],
+      "names": [
+        "(ES) Hollywood"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 171,
+        "bounds": [
+          26,
+          66,
+          204,
+          39
+        ]
+      },
+      "legacyFile": "/assets/channels/es-hollywood-c00c272562e3373d.webp",
+      "sha256": "c00c272562e3373d9534735cf7bc9fc67469f1db56da5ea5280cc52bb83b8a8a",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/es-movistar-accion-78a638b7c443a862.webp",
+      "ids": [
+        "3707"
+      ],
+      "names": [
+        "(ES) Movistar Accion"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          28,
+          94,
+          200,
+          68
+        ]
+      },
+      "legacyFile": "/assets/channels/es-movistar-accion-78a638b7c443a862.webp",
+      "sha256": "78a638b7c443a86212c4feb6c6f4e11209fb683493cce8166943146d35d1c482",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/es-movistar-comedia-52c6904421536db1.webp",
+      "ids": [
+        "3709"
+      ],
+      "names": [
+        "(ES) Movistar Comedia"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          33,
+          101,
+          189,
+          54
+        ]
+      },
+      "legacyFile": "/assets/channels/es-movistar-comedia-52c6904421536db1.webp",
+      "sha256": "52c6904421536db15eb4d5a754294aa29f13b5926fc8c7162f37b296fa02525a",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/es-movistar-deportes-b5ae728dd2aa9034.webp",
+      "ids": [
+        "3715"
+      ],
+      "names": [
+        "(ES) Movistar Deportes"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          18,
+          96,
+          220,
+          64
+        ]
+      },
+      "legacyFile": "/assets/channels/es-movistar-deportes-b5ae728dd2aa9034.webp",
+      "sha256": "b5ae728dd2aa903433f2d2a6d1739f812af2154b00ff6fc78ffe83d669d4b9fd",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/es-movistar-drama-cae4554d33c89c32.webp",
+      "ids": [
+        "3710"
+      ],
+      "names": [
+        "(ES) Movistar Drama"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          15,
+          89,
+          226,
+          78
+        ]
+      },
+      "legacyFile": "/assets/channels/es-movistar-drama-cae4554d33c89c32.webp",
+      "sha256": "cae4554d33c89c32b4602c054f013baee827cb53f2081f8f07a58c4ae45552b8",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/es-movistar-estrenos-a09111a7d4e79df3.webp",
+      "ids": [
+        "3712"
+      ],
+      "names": [
+        "(ES) Movistar Estrenos"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          22,
+          89,
+          212,
+          78
+        ]
+      },
+      "legacyFile": "/assets/channels/es-movistar-estrenos-a09111a7d4e79df3.webp",
+      "sha256": "a09111a7d4e79df3c12f044dcab8f89137ea9287b2c466f5e7c9a0df6e0cbbd0",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/es-movistar-f1-6c71c28bf923e493.webp",
+      "ids": [
+        "3716"
+      ],
+      "names": [
+        "(ES)  Movistar F1"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          24,
+          99,
+          208,
+          58
+        ]
+      },
+      "legacyFile": "/assets/channels/es-movistar-f1-6c71c28bf923e493.webp",
+      "sha256": "6c71c28bf923e493ba6b41ee31d088f1bf53272e3888ecea37cdc4e1757d7074",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/es-movistar-golf-7d80727d2b0c6117.webp",
+      "ids": [
+        "3717"
+      ],
+      "names": [
+        "(ES)  Movistar Golf"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          27,
+          85,
+          202,
+          86
+        ]
+      },
+      "legacyFile": "/assets/channels/es-movistar-golf-7d80727d2b0c6117.webp",
+      "sha256": "7d80727d2b0c6117b54c6b8dc9e9c134620e20d944e7ba237747819a334fda39",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/es-movistar-hits-3feeae6f2479b311.webp",
+      "ids": [
+        "3711"
+      ],
+      "names": [
+        "(ES)  Movistar Hits"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          51,
+          73,
+          154,
+          110
+        ]
+      },
+      "legacyFile": "/assets/channels/es-movistar-hits-3feeae6f2479b311.webp",
+      "sha256": "3feeae6f2479b3112273e63c5217e4f222cbf26b59ca15e8e3a3f737eda2e5ea",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/es-movistar-la-liga-07458e6a77c38dde.webp",
+      "ids": [
+        "3713"
+      ],
+      "names": [
+        "(ES) Movistar La Liga"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          22,
+          92,
+          212,
+          72
+        ]
+      },
+      "legacyFile": "/assets/channels/es-movistar-la-liga-07458e6a77c38dde.webp",
+      "sha256": "07458e6a77c38dde11c1b5e5c8830d93e4b1ed28cc5aa3d023a9859a5862a989",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/es-movistar-liga-de-campeones-d53bfd7a83c49e1c.webp",
+      "ids": [
+        "3714"
+      ],
+      "names": [
+        "(ES) Movistar Liga De Campeones"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          29,
+          91,
+          198,
+          74
+        ]
+      },
+      "legacyFile": "/assets/channels/es-movistar-liga-de-campeones-d53bfd7a83c49e1c.webp",
+      "sha256": "d53bfd7a83c49e1c15d9c9eaeb0085d22ae3f733e0a30bdc2041162b0aae8930",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/es-movistar-plus-72c053609b3a6ce5.webp",
+      "ids": [
+        "3708"
+      ],
+      "names": [
+        "(ES)  Movistar Plus"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          34,
+          63,
+          188,
+          130
+        ]
+      },
+      "legacyFile": "/assets/channels/es-movistar-plus-72c053609b3a6ce5.webp",
+      "sha256": "72c053609b3a6ce5c87038b2f5b6121ee2ad258bf8d3bf90c5a9b46e844e8c11",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/es-warner-channel-b766a697764277eb.webp",
+      "ids": [
+        "401",
+        "3227",
+        "3720"
+      ],
+      "names": [
+        "(ES) Warner Channel",
+        "Warner",
+        "Warner LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          47,
+          58,
+          164,
+          158
+        ]
+      },
+      "legacyFile": "/assets/channels/es-warner-channel-b766a697764277eb.webp",
+      "sha256": "b766a697764277eba52d70473c7cd8cc8cfe50c30c3b0360c488d3470f08d6b9",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/espn-2-9a58356316a7ff15.webp",
+      "ids": [
+        "235",
+        "237"
+      ],
+      "names": [
+        "ESPN 2",
+        "ESPN 2 4K"
+      ],
+      "artwork": {
+        "width": 192,
+        "height": 192,
+        "bounds": [
+          22,
+          88,
+          148,
+          29
+        ]
+      },
+      "legacyFile": "/assets/channels/espn-2-9a58356316a7ff15.webp",
+      "sha256": "9a58356316a7ff15f8866a1118255b16f08656dc0fdeeacff273257c47136301",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/espn-3-69ae72c49fa1b975.webp",
+      "ids": [
+        "245",
+        "3605"
+      ],
+      "names": [
+        "ESPN 3",
+        "ESPN 3 4K"
+      ],
+      "artwork": {
+        "width": 192,
+        "height": 192,
+        "bounds": [
+          12,
+          83,
+          159,
+          34
+        ]
+      },
+      "legacyFile": "/assets/channels/espn-3-69ae72c49fa1b975.webp",
+      "sha256": "69ae72c49fa1b9759ca0b3ea3c6800d9e145b6a562a4a2ac65daac749c0496f5",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/espn-4-65cc3967723f0bc3.webp",
+      "ids": [
+        "242"
+      ],
+      "names": [
+        "ESPN 4"
+      ],
+      "artwork": {
+        "width": 192,
+        "height": 192,
+        "bounds": [
+          21,
+          82,
+          160,
+          31
+        ]
+      },
+      "legacyFile": "/assets/channels/espn-4-65cc3967723f0bc3.webp",
+      "sha256": "65cc3967723f0bc362708edae454d84cea49db15504e1001b8192188cc84c6e2",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/espn-5-1e2f8013aed79ce3.webp",
+      "ids": [
+        "264"
+      ],
+      "names": [
+        "ESPN 5"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 171,
+        "bounds": [
+          17,
+          64,
+          223,
+          43
+        ]
+      },
+      "legacyFile": "/assets/channels/espn-5-1e2f8013aed79ce3.webp",
+      "sha256": "1e2f8013aed79ce3ce442359baf476ade92d8afc1719c806f94a0e2c0b815bc3",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/espn-6-d37f95ddf0cd681e.webp",
+      "ids": [
+        "239"
+      ],
+      "names": [
+        "ESPN 6"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          29,
+          109,
+          199,
+          38
+        ]
+      },
+      "legacyFile": "/assets/channels/espn-6-d37f95ddf0cd681e.webp",
+      "sha256": "d37f95ddf0cd681eac39a76c02dbd0d5b852f95b883a353e3f08a5bef66cbbfc",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/espn-63084f8468831915.webp",
+      "ids": [
+        "232",
+        "233"
+      ],
+      "names": [
+        "ESPN",
+        "ESPN 4K"
+      ],
+      "artwork": {
+        "width": 192,
+        "height": 192,
+        "bounds": [
+          36,
+          82,
+          122,
+          31
+        ]
+      },
+      "legacyFile": "/assets/channels/espn-63084f8468831915.webp",
+      "sha256": "63084f84688319154a7ed679a5221c0dae425ecb8a1977d34bc6a90564b32145",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/eventos-extras-2-1feae31fdf992803.webp",
+      "ids": [
+        "3768"
+      ],
+      "names": [
+        "Eventos Extras 2"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          43,
+          67,
+          170,
+          133
+        ]
+      },
+      "legacyFile": "/assets/channels/eventos-extras-2-1feae31fdf992803.webp",
+      "sha256": "1feae31fdf99280394a41228c260856ec9cdddba587501e5e682126dc1f16027",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/f1-car-1-16939aad48e19ab7.webp",
+      "ids": [
+        "461",
+        "1812",
+        "2679",
+        "2752",
+        "3199",
+        "3648",
+        "3650",
+        "3651",
+        "3655",
+        "3656",
+        "3663",
+        "3664",
+        "3665",
+        "3672",
+        "3673",
+        "3674",
+        "3675",
+        "3676",
+        "3677",
+        "3678",
+        "3696"
+      ],
+      "names": [
+        "F1 Car 1",
+        "F1 Car 10",
+        "F1 Car 11",
+        "F1 Car 12",
+        "F1 Car 13",
+        "F1 Car 14",
+        "F1 Car 15",
+        "F1 Car 16",
+        "F1 Car 2",
+        "F1 Car 3",
+        "F1 Car 4",
+        "F1 Car 5",
+        "F1 Car 6",
+        "F1 Car 7",
+        "F1 Car 8",
+        "F1 Car 9",
+        "F1 Data",
+        "F1 Drivers",
+        "F1 Main",
+        "F1 Presentation",
+        "F1 TV Pro"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          28,
+          103,
+          201,
+          52
+        ]
+      },
+      "legacyFile": "/assets/channels/f1-car-1-16939aad48e19ab7.webp",
+      "sha256": "16939aad48e19ab7dde1b10d3f9135545e228f7b4199796624b337cf669fcb76",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/fashion-tv-3cead55f543d050a.webp",
+      "ids": [
+        "2884"
+      ],
+      "names": [
+        "Fashion TV"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          33,
+          67,
+          199,
+          122
+        ]
+      },
+      "legacyFile": "/assets/channels/fashion-tv-3cead55f543d050a.webp",
+      "sha256": "3cead55f543d050a9aa44610d6e780a0ec5dc3455484f9661762ffef8603d352",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/fish-tv-9b60f30ee9f32b05.webp",
+      "ids": [
+        "267"
+      ],
+      "names": [
+        "Fish TV"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          35,
+          98,
+          195,
+          60
+        ]
+      },
+      "legacyFile": "/assets/channels/fish-tv-9b60f30ee9f32b05.webp",
+      "sha256": "9b60f30ee9f32b0540e886f8f509a78ff843d3df2f1229d473b2bbb4255bed8f",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/fla-tv-01a0ad4b3668a1cb.webp",
+      "ids": [
+        "3276"
+      ],
+      "names": [
+        "Fla TV"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          55,
+          48,
+          146,
+          160
+        ]
+      },
+      "legacyFile": "/assets/channels/fla-tv-01a0ad4b3668a1cb.webp",
+      "sha256": "01a0ad4b3668a1cbf380ad0ba37e982dbb73b83120d1a3e6103b7663401c0710",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/flograppling-1-fda14630c8c73d42.webp",
+      "ids": [
+        "1687",
+        "1876",
+        "2674"
+      ],
+      "names": [
+        "Flograppling 1",
+        "Flograppling 2",
+        "Flograppling 3"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          30,
+          118,
+          197,
+          19
+        ]
+      },
+      "legacyFile": "/assets/channels/flograppling-1-fda14630c8c73d42.webp",
+      "sha256": "fda14630c8c73d4282573d0d50239e70fdb9165e8d308a2f3c5c40c428c6e28e",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/food-network-694eacb626d77d04.webp",
+      "ids": [
+        "620"
+      ],
+      "names": [
+        "Food Network"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          48,
+          60,
+          155,
+          157
+        ]
+      },
+      "legacyFile": "/assets/channels/food-network-694eacb626d77d04.webp",
+      "sha256": "694eacb626d77d040c99ce0668f2e6ee13fcf6f6391bb7c04f1fdef7bbe7975f",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/furacao-play-26facaa7508a3bf4.webp",
+      "ids": [
+        "339"
+      ],
+      "names": [
+        "Furacão Play"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          40,
+          87,
+          177,
+          90
+        ]
+      },
+      "legacyFile": "/assets/channels/furacao-play-26facaa7508a3bf4.webp",
+      "sha256": "26facaa7508a3bf4baed5b60d11d4889d6c6ea7e2e8bcbc1813713e68a29bce4",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/futura-f3f517f1fd2a71d1.webp",
+      "ids": [
+        "109"
+      ],
+      "names": [
+        "Futura"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          57,
+          58,
+          142,
+          140
+        ]
+      },
+      "legacyFile": "/assets/channels/futura-f3f517f1fd2a71d1.webp",
+      "sha256": "f3f517f1fd2a71d1195d2742fe965d81fed09da3ddcf495648ffda9204cdd229",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/ge-fast-5bd9ba0c9a36ebec.webp",
+      "ids": [
+        "2748"
+      ],
+      "names": [
+        "GE Fast"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          73,
+          89,
+          110,
+          78
+        ]
+      },
+      "legacyFile": "/assets/channels/ge-fast-5bd9ba0c9a36ebec.webp",
+      "sha256": "5bd9ba0c9a36ebecce4ed917b8ac67129d132cbf0c8de4ccc36eb5c1b3ae26d7",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/ge-tv-3108fea67dc88f82.webp",
+      "ids": [
+        "2619"
+      ],
+      "names": [
+        "GE TV"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          47,
+          52,
+          162,
+          144
+        ]
+      },
+      "legacyFile": "/assets/channels/ge-tv-3108fea67dc88f82.webp",
+      "sha256": "3108fea67dc88f828f8ba7cea04b9aba82e5c7c65d5c0f665ff955a516387494",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/globo-eptv-campinas-6ab3fdb7a552d536.webp",
+      "ids": [
+        "54",
+        "57",
+        "61",
+        "65",
+        "71",
+        "81",
+        "83",
+        "89",
+        "94",
+        "95",
+        "98",
+        "101",
+        "104",
+        "116",
+        "126",
+        "131",
+        "136",
+        "139",
+        "145",
+        "151",
+        "158",
+        "168",
+        "172",
+        "175",
+        "179",
+        "187",
+        "192",
+        "202",
+        "391",
+        "698",
+        "1698",
+        "1699",
+        "1701",
+        "1712",
+        "1715",
+        "1716",
+        "1717",
+        "1721",
+        "1722",
+        "1723",
+        "1724",
+        "1730",
+        "1732",
+        "1733",
+        "1739",
+        "1741",
+        "1744",
+        "1747",
+        "1750",
+        "1753",
+        "1757",
+        "1759",
+        "1762",
+        "1765",
+        "1768",
+        "1770",
+        "1779",
+        "1781",
+        "1787",
+        "1792",
+        "1797",
+        "1798",
+        "1801",
+        "1805",
+        "1806",
+        "1811",
+        "1816",
+        "1818",
+        "2316",
+        "2416",
+        "2418",
+        "2503",
+        "2553",
+        "2586",
+        "2602",
+        "2744",
+        "2761",
+        "2768",
+        "2772",
+        "2791",
+        "3001",
+        "3139",
+        "3311",
+        "3331",
+        "3334",
+        "3401",
+        "3554",
+        "3777"
+      ],
+      "names": [
+        "Globo EPTV Campinas",
+        "Globo EPTV Ribeirão Preto",
+        "Globo EPTV Sul De Minas",
+        "Globo EPTV São Carlos",
+        "Globo Inter TV Alto Litoral",
+        "Globo Inter TV Cabugi",
+        "Globo Inter TV Dos Vales",
+        "Globo Inter TV Grande Minas",
+        "Globo Inter TV Serra Mar",
+        "Globo Minas",
+        "Globo Minas 4k",
+        "Globo Nordeste",
+        "Globo NSC TV Blumenau",
+        "Globo NSC TV Centro Oeste",
+        "Globo NSC TV Chapecó",
+        "Globo NSC TV Criciúma",
+        "Globo NSC TV Florianópolis",
+        "Globo NSC TV Joinville",
+        "Globo RBS TV Caxias Do Sul",
+        "Globo RBS TV Passo Fundo",
+        "Globo RBS TV Pelotas",
+        "Globo RBS TV Porto Alegre",
+        "Globo RBS TV Rio Grande",
+        "Globo RBS TV RS",
+        "Globo RBS TV Santa Maria",
+        "Globo RBS TV Santa Rosa",
+        "Globo Rede Amazônica Boa Vista FHD",
+        "Globo Rede Amazônica Macapá",
+        "Globo Rede Amazônica Manaus",
+        "Globo Rede Amazônica Porto Velho",
+        "Globo Rede Amazônica Rio Branco",
+        "Globo Rede Amazônica Roraima",
+        "Globo RJ",
+        "Globo RJ 4K",
+        "Globo RPC Cascavel",
+        "Globo RPC Curitiba",
+        "Globo RPC Foz Do Iguaçu",
+        "Globo RPC Guarapuava",
+        "Globo RPC Londrina",
+        "Globo RPC Maringá",
+        "Globo Rpc Paranavaí",
+        "Globo RPC TV Paranavaí",
+        "Globo RPC TV Ponta Grossa",
+        "Globo SP",
+        "Globo SP 4K",
+        "Globo TV Anhanguera",
+        "Globo TV Anhanguera Anapolis",
+        "Globo TV Anhanguera Goiás",
+        "Globo TV Anhanguera Palmas",
+        "Globo TV Asa Branca Alagoas",
+        "Globo TV Asa Branca Pernambuco",
+        "Globo TV Bahia",
+        "Globo TV Brasília",
+        "Globo TV Cabo Branco",
+        "Globo TV Centro América",
+        "Globo TV Clube Teresina",
+        "Globo TV Diario Mogi Das Cruzes",
+        "Globo TV Diario Mogi das Cruzes",
+        "Globo TV Fronteira P. Prudente",
+        "Globo TV Gazeta Sul",
+        "Globo TV Gazeta Vitória",
+        "Globo TV Grande Rio",
+        "Globo TV Integração Araxa",
+        "Globo TV Integração Juiz De Fora",
+        "Globo TV Integração Uberaba",
+        "Globo TV Integração Uberlândia",
+        "Globo TV Liberal Belém",
+        "Globo TV Mirante Cocais",
+        "Globo TV Mirante São Luís",
+        "Globo TV Morena",
+        "Globo TV Paraiba",
+        "Globo TV Rio Sul",
+        "Globo TV Santa Cruz",
+        "Globo TV Sergipe",
+        "Globo TV Subaé",
+        "Globo TV Sudoeste",
+        "Globo TV Tapajós",
+        "Globo TV Tem Bauru",
+        "Globo TV Tem Itapetininga",
+        "Globo TV Tem S. J. Rio Preto",
+        "Globo TV Tem Sorocaba",
+        "Globo TV Tribuna Santos",
+        "Globo TV Vanguarda S. J. Dos Campos",
+        "Globo TV Vanguarda Taubate",
+        "Globo TV Verdes Mares",
+        "Globo TV Verdes Mares Ceará",
+        "Rede TV Paraíba",
+        "TV Gazeta"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          52,
+          52,
+          152,
+          152
+        ]
+      },
+      "legacyFile": "/assets/channels/globo-eptv-campinas-6ab3fdb7a552d536.webp",
+      "sha256": "6ab3fdb7a552d536b75b6e0edff01ffb72f35fd820345683420773f81b647303",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/globo-news-1f2369fa484401cf.webp",
+      "ids": [
+        "537"
+      ],
+      "names": [
+        "Globo News"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          26,
+          104,
+          204,
+          48
+        ]
+      },
+      "legacyFile": "/assets/channels/globo-news-1f2369fa484401cf.webp",
+      "sha256": "1f2369fa484401cf880fe18b48e132da46848764edf5a59b631d8cd80e68bfd7",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/globoplay-novelas-ee35436f5d438005.webp",
+      "ids": [
+        "580"
+      ],
+      "names": [
+        "Globoplay Novelas"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          40,
+          97,
+          175,
+          62
+        ]
+      },
+      "legacyFile": "/assets/channels/globoplay-novelas-ee35436f5d438005.webp",
+      "sha256": "ee35436f5d4380056f762f1da028398f4d2ecc6a1e8daf69927026741bd5b933",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/gloob-9d7c9767c0f45147.webp",
+      "ids": [
+        "507",
+        "508"
+      ],
+      "names": [
+        "Gloob",
+        "Gloob 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          26,
+          94,
+          200,
+          71
+        ]
+      },
+      "legacyFile": "/assets/channels/gloob-9d7c9767c0f45147.webp",
+      "sha256": "9d7c9767c0f45147dd8078bd7adb2891c2fa9edd7616e131f0aab36cc472a502",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/gloobinho-97411a29dcbe7ebb.webp",
+      "ids": [
+        "510",
+        "511"
+      ],
+      "names": [
+        "Gloobinho",
+        "Gloobinho 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          35,
+          72,
+          188,
+          114
+        ]
+      },
+      "legacyFile": "/assets/channels/gloobinho-97411a29dcbe7ebb.webp",
+      "sha256": "97411a29dcbe7ebb88eab70fa2b32ab854d9be2e4c54666e6e8c5ef1fe114a38",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/gnt-8d7f651424b3cc9c.webp",
+      "ids": [
+        "583",
+        "3611"
+      ],
+      "names": [
+        "GNT",
+        "GNT 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          33,
+          81,
+          184,
+          97
+        ]
+      },
+      "legacyFile": "/assets/channels/gnt-8d7f651424b3cc9c.webp",
+      "sha256": "8d7f651424b3cc9c7d672e640edb88b97207f0e179c438513f5a8f9cce3406ee",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/goat-1-48c8f2567a2901fd.webp",
+      "ids": [
+        "2849",
+        "2851",
+        "2853"
+      ],
+      "names": [
+        "Goat 1",
+        "Goat 2",
+        "Goat 3"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          63,
+          50,
+          130,
+          162
+        ]
+      },
+      "legacyFile": "/assets/channels/goat-1-48c8f2567a2901fd.webp",
+      "sha256": "48c8f2567a2901fd156a8663541af2f22c774ab6a8ccdb1c52e8918f3db56197",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/gospel-movies-television-885293ae556f6b12.webp",
+      "ids": [
+        "2670"
+      ],
+      "names": [
+        "Gospel Movies Television"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          47,
+          111,
+          162,
+          34
+        ]
+      },
+      "legacyFile": "/assets/channels/gospel-movies-television-885293ae556f6b12.webp",
+      "sha256": "885293ae556f6b1292386b51ec5495415c6472316582a391658d113b8f388dfc",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/h2-fa92d988ab22b9c9.webp",
+      "ids": [
+        "628"
+      ],
+      "names": [
+        "H2"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          56,
+          68,
+          145,
+          128
+        ]
+      },
+      "legacyFile": "/assets/channels/h2-fa92d988ab22b9c9.webp",
+      "sha256": "fa92d988ab22b9c9e99041a33d11d43ec791c4541b6709f1e13bc3d7df29f122",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/hbo-2-f2a73c8bf57e6347.webp",
+      "ids": [
+        "463"
+      ],
+      "names": [
+        "HBO 2"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          37,
+          97,
+          183,
+          56
+        ]
+      },
+      "legacyFile": "/assets/channels/hbo-2-f2a73c8bf57e6347.webp",
+      "sha256": "f2a73c8bf57e6347a9bfd47c746ce890ae5ebca4123c7356936b045eee5b0c3b",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/hbo-82f5f08e0f156b4d.webp",
+      "ids": [
+        "459",
+        "3215"
+      ],
+      "names": [
+        "HBO",
+        "HBO LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          44,
+          93,
+          168,
+          70
+        ]
+      },
+      "legacyFile": "/assets/channels/hbo-82f5f08e0f156b4d.webp",
+      "sha256": "82f5f08e0f156b4d803258990f51b8bdccb21d93477347154feee2e5aa9c0c7e",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/hbo-family-87a157f12f468d9b.webp",
+      "ids": [
+        "482"
+      ],
+      "names": [
+        "HBO Family"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          49,
+          73,
+          158,
+          123
+        ]
+      },
+      "legacyFile": "/assets/channels/hbo-family-87a157f12f468d9b.webp",
+      "sha256": "87a157f12f468d9bbe3b3e100e806c07320955305f9e04e310d1b0e8917bcb09",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/hbo-mundi-69278ddceef625bd.webp",
+      "ids": [
+        "456",
+        "3296"
+      ],
+      "names": [
+        "HBO Mundi",
+        "HBO Mundi LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          43,
+          74,
+          164,
+          112
+        ]
+      },
+      "legacyFile": "/assets/channels/hbo-mundi-69278ddceef625bd.webp",
+      "sha256": "69278ddceef625bd5115ba71432fc9f6433dba08736aec097c3b1d8085e6a003",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/hbo-plus-e39f02e765b00bae.webp",
+      "ids": [
+        "467",
+        "3287"
+      ],
+      "names": [
+        "HBO Plus",
+        "HBO Plus LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          31,
+          70,
+          197,
+          134
+        ]
+      },
+      "legacyFile": "/assets/channels/hbo-plus-e39f02e765b00bae.webp",
+      "sha256": "e39f02e765b00bae9581c92f20c928bfb2378a148e0bd9574c94f54d3114f74a",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/hbo-pop-b77644066232ecf3.webp",
+      "ids": [
+        "479",
+        "3293"
+      ],
+      "names": [
+        "HBO Pop",
+        "HBO Pop LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          39,
+          62,
+          179,
+          131
+        ]
+      },
+      "legacyFile": "/assets/channels/hbo-pop-b77644066232ecf3.webp",
+      "sha256": "b77644066232ecf391a422297a9893b2ff614c325255f5af29efb4e7f84f9a5d",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/hbo-signature-661a45eed84d7679.webp",
+      "ids": [
+        "471",
+        "3299"
+      ],
+      "names": [
+        "HBO Signature",
+        "HBO Signature LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          35,
+          76,
+          194,
+          111
+        ]
+      },
+      "legacyFile": "/assets/channels/hbo-signature-661a45eed84d7679.webp",
+      "sha256": "661a45eed84d767987443dc1827bde8da5b1bb6dbc90ed5040a6d20f73c28d2e",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/hbo-xtreme-9a1064d2a24113fe.webp",
+      "ids": [
+        "475",
+        "3290"
+      ],
+      "names": [
+        "HBO Xtreme",
+        "HBO Xtreme LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          37,
+          62,
+          186,
+          126
+        ]
+      },
+      "legacyFile": "/assets/channels/hbo-xtreme-9a1064d2a24113fe.webp",
+      "sha256": "9a1064d2a24113fe652d412fccac553539ba891357aace26be64abafbeac861c",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/hgtv-9c4f3187e8614be7.webp",
+      "ids": [
+        "636"
+      ],
+      "names": [
+        "HGTV"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          32,
+          77,
+          196,
+          101
+        ]
+      },
+      "legacyFile": "/assets/channels/hgtv-9c4f3187e8614be7.webp",
+      "sha256": "9c4f3187e8614be72326eee9280a61ba0b33a8e4451894174041f8848000fb51",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/history-eb09901329f1eba0.webp",
+      "ids": [
+        "621",
+        "3610"
+      ],
+      "names": [
+        "History",
+        "History 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          72,
+          64,
+          122,
+          128
+        ]
+      },
+      "legacyFile": "/assets/channels/history-eb09901329f1eba0.webp",
+      "sha256": "eb09901329f1eba009d2c5a0bf04826a45aaabe79c82e6f8d4a27ab14ca6a94f",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/igreja-mundial-poder-de-deus-7d629499070607e2.webp",
+      "ids": [
+        "695"
+      ],
+      "names": [
+        "Igreja Mundial Poder de Deus"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          34,
+          99,
+          178,
+          60
+        ]
+      },
+      "legacyFile": "/assets/channels/igreja-mundial-poder-de-deus-7d629499070607e2.webp",
+      "sha256": "7d629499070607e256e6a9db6803bb4a0d77abb873a2600a33831701a96bcf10",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/istv-4a6bfdab61932626.webp",
+      "ids": [
+        "3330"
+      ],
+      "names": [
+        "ISTV"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          59,
+          57,
+          137,
+          139
+        ]
+      },
+      "legacyFile": "/assets/channels/istv-4a6bfdab61932626.webp",
+      "sha256": "4a6bfdab619326265bf6605980b2b1018ade65c2f2efeec1095cd0e845491580",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/jovem-pan-news-ef2cf2c3fcb52758.webp",
+      "ids": [
+        "548",
+        "3600"
+      ],
+      "names": [
+        "Jovem Pan News",
+        "Jovem Pan News 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          22,
+          105,
+          212,
+          46
+        ]
+      },
+      "legacyFile": "/assets/channels/jovem-pan-news-ef2cf2c3fcb52758.webp",
+      "sha256": "ef2cf2c3fcb52758ed807a6b642d0b740c150a50e89a7de999c368313f8ca08e",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/lifetime-fcc6a9fed97db28c.webp",
+      "ids": [
+        "626"
+      ],
+      "names": [
+        "Lifetime"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          21,
+          103,
+          217,
+          66
+        ]
+      },
+      "legacyFile": "/assets/channels/lifetime-fcc6a9fed97db28c.webp",
+      "sha256": "fcc6a9fed97db28c2fd47b859432cf3993db46427fc36e5aa1574a66850313dc",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/liga-futsal-1-1449a53b727e1721.webp",
+      "ids": [
+        "2520",
+        "2521",
+        "2522",
+        "2523"
+      ],
+      "names": [
+        "Liga Futsal 1",
+        "Liga Futsal 2",
+        "Liga Futsal 3",
+        "Liga Futsal 4"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          36,
+          88,
+          184,
+          66
+        ]
+      },
+      "legacyFile": "/assets/channels/liga-futsal-1-1449a53b727e1721.webp",
+      "sha256": "1449a53b727e17215405c152a16177d8f4558effcacee3b3ec1b63283ef683f2",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/malhacao-fast-ee27deabf2ad12a1.webp",
+      "ids": [
+        "2903"
+      ],
+      "names": [
+        "Malhação Fast"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          15,
+          91,
+          223,
+          71
+        ]
+      },
+      "legacyFile": "/assets/channels/malhacao-fast-ee27deabf2ad12a1.webp",
+      "sha256": "ee27deabf2ad12a13b607c8001b2f6e308436a4f14e9306daea2895dea1775a6",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/max-1-dcd9fcf4288ba4c7.webp",
+      "ids": [
+        "697",
+        "2664",
+        "2681",
+        "2690",
+        "2906",
+        "3097",
+        "3098",
+        "3099",
+        "3100",
+        "3101",
+        "3102",
+        "3103",
+        "3428",
+        "3433",
+        "3434",
+        "3435",
+        "6640",
+        "7050"
+      ],
+      "names": [
+        "Max 1",
+        "Max 2",
+        "Max 3",
+        "Max 4",
+        "Max 5",
+        "MAX 6",
+        "Max 6",
+        "MAX 7",
+        "Max 7",
+        "MAX 8",
+        "Max 8",
+        "Max A",
+        "Max B",
+        "Max C",
+        "Max D",
+        "Max E",
+        "Max F",
+        "Max G"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          33,
+          102,
+          190,
+          53
+        ]
+      },
+      "legacyFile": "/assets/channels/max-1-dcd9fcf4288ba4c7.webp",
+      "sha256": "dcd9fcf4288ba4c7abc0a4ecf2ef7a0357d7e11c02f3431cd497b9dd65f188c5",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/megapix-e2176dea29196a70.webp",
+      "ids": [
+        "409",
+        "3230"
+      ],
+      "names": [
+        "Megapix",
+        "Megapix LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          36,
+          96,
+          183,
+          59
+        ]
+      },
+      "legacyFile": "/assets/channels/megapix-e2176dea29196a70.webp",
+      "sha256": "e2176dea29196a700051956c279e55f4a4a4556e8a7775fa9e5661baaf7db959",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/modo-viagem-cb13de24d49c4b23.webp",
+      "ids": [
+        "577"
+      ],
+      "names": [
+        "Modo Viagem"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          38,
+          94,
+          184,
+          80
+        ]
+      },
+      "legacyFile": "/assets/channels/modo-viagem-cb13de24d49c4b23.webp",
+      "sha256": "cb13de24d49c4b2329e7e6c5200b1c12298c9dfb1114a0b84a12072c8d6ff404",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/mr-olympia-ef997a5589570bef.webp",
+      "ids": [
+        "2683"
+      ],
+      "names": [
+        "Mr. Olympia"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          52,
+          29,
+          159,
+          206
+        ]
+      },
+      "legacyFile": "/assets/channels/mr-olympia-ef997a5589570bef.webp",
+      "sha256": "ef997a5589570befe4b718ac78467427b2076c744d4a57d87ac5ac0ee312f395",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/multishow-cb693302e0839ee1.webp",
+      "ids": [
+        "556"
+      ],
+      "names": [
+        "Multishow"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          34,
+          86,
+          183,
+          93
+        ]
+      },
+      "legacyFile": "/assets/channels/multishow-cb693302e0839ee1.webp",
+      "sha256": "cb693302e0839ee156e6f01358f6c8982d79d37c83510fe054eb7fdafac7112a",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/music-box-f29ced71760ab6dd.webp",
+      "ids": [
+        "638"
+      ],
+      "names": [
+        "Music Box"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          30,
+          96,
+          187,
+          65
+        ]
+      },
+      "legacyFile": "/assets/channels/music-box-f29ced71760ab6dd.webp",
+      "sha256": "f29ced71760ab6ddd332f4d213898909ea8282431bb8641db05be7d7bba4378f",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/musicas-classicas-24h-d23175032fc85028.webp",
+      "ids": [
+        "1102",
+        "3546",
+        "3547",
+        "3549",
+        "3552",
+        "3553",
+        "3766"
+      ],
+      "names": [
+        "Músicas Classicas 24H",
+        "Músicas Gospel  24H",
+        "Músicas Hits 24H",
+        "Músicas Mpb 24H",
+        "Músicas Rock 24H",
+        "Músicas Samba e Pagode 24H",
+        "Músicas Sertanejo 24H"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          75,
+          74,
+          106,
+          108
+        ]
+      },
+      "legacyFile": "/assets/channels/musicas-classicas-24h-d23175032fc85028.webp",
+      "sha256": "d23175032fc8502841877429360240af60d433489d927cb8994907a610e036ec",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/nba-a-7e17b2ede3c174b7.webp",
+      "ids": [
+        "439",
+        "441",
+        "444",
+        "447",
+        "450",
+        "453",
+        "2377",
+        "2383",
+        "2386",
+        "2389",
+        "2392",
+        "2395",
+        "3087",
+        "3088",
+        "3089",
+        "3090",
+        "3091",
+        "3092",
+        "3093",
+        "3094",
+        "3095",
+        "3096"
+      ],
+      "names": [
+        "NBA A",
+        "NBA B",
+        "NBA C",
+        "NBA D",
+        "NBA E",
+        "NBA F",
+        "NBA G",
+        "NBA H",
+        "NBA I",
+        "NBA J",
+        "NBA League Pass 1",
+        "NBA League Pass 10",
+        "NBA League Pass 11",
+        "NBA League Pass 12",
+        "NBA League Pass 2",
+        "NBA League Pass 3",
+        "NBA League Pass 4",
+        "NBA League Pass 5",
+        "NBA League Pass 6",
+        "NBA League Pass 7",
+        "NBA League Pass 8",
+        "NBA League Pass 9"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          20,
+          106,
+          210,
+          45
+        ]
+      },
+      "legacyFile": "/assets/channels/nba-a-7e17b2ede3c174b7.webp",
+      "sha256": "7e17b2ede3c174b7b0002921c36e7f9ab305fb5876dda06c1e73c519511e1c4b",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/nfl-01-6f127d068984f14c.webp",
+      "ids": [
+        "593",
+        "608",
+        "2090",
+        "3680",
+        "3682",
+        "3683",
+        "3684",
+        "3694",
+        "7156",
+        "7164"
+      ],
+      "names": [
+        "NFL 01",
+        "NFL 02",
+        "NFL 03",
+        "NFL 04",
+        "NFL 05",
+        "NFL 06",
+        "NFL 07",
+        "NFL 08",
+        "NFL 09",
+        "NFL 10"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          69,
+          49,
+          118,
+          158
+        ]
+      },
+      "legacyFile": "/assets/channels/nfl-01-6f127d068984f14c.webp",
+      "sha256": "6f127d068984f14cd43bcbf939863c343393a33420055d41d1fab458eaa224dd",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/nhk-02a879de121e7d23.webp",
+      "ids": [
+        "2592"
+      ],
+      "names": [
+        "NHK"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          47,
+          104,
+          162,
+          48
+        ]
+      },
+      "legacyFile": "/assets/channels/nhk-02a879de121e7d23.webp",
+      "sha256": "02a879de121e7d235bf9d17832092d56d8e01a77da9ff7c77358b91129881fcd",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/novo-tempo-ebff1fdecd214b5d.webp",
+      "ids": [
+        "671"
+      ],
+      "names": [
+        "Novo Tempo"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          44,
+          64,
+          168,
+          129
+        ]
+      },
+      "legacyFile": "/assets/channels/novo-tempo-ebff1fdecd214b5d.webp",
+      "sha256": "ebff1fdecd214b5d532c40aaa8a7dbb21f5b91f97fed7aebcef5297c588ac4ba",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/off-5a705416b2ca11d9.webp",
+      "ids": [
+        "568",
+        "3601"
+      ],
+      "names": [
+        "Off",
+        "Off 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          49,
+          74,
+          158,
+          108
+        ]
+      },
+      "legacyFile": "/assets/channels/off-5a705416b2ca11d9.webp",
+      "sha256": "5a705416b2ca11d9039c979f0b7795e38eff24a57b7af6642c58dcc22205733e",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/onefootball-1-2beaaeed5b4f7ac3.webp",
+      "ids": [
+        "350",
+        "3523",
+        "3526",
+        "3538"
+      ],
+      "names": [
+        "Onefootball 1",
+        "OneFootball 2",
+        "Onefootball 3",
+        "Onefootball 4"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          29,
+          113,
+          208,
+          29
+        ]
+      },
+      "legacyFile": "/assets/channels/onefootball-1-2beaaeed5b4f7ac3.webp",
+      "sha256": "2beaaeed5b4f7ac323017bed02c80ea8adc014594ea55b4cb14bb0072c863d73",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/pai-eterno-3e71794aa1989a2d.webp",
+      "ids": [
+        "673"
+      ],
+      "names": [
+        "Pai Eterno"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          36,
+          64,
+          184,
+          123
+        ]
+      },
+      "legacyFile": "/assets/channels/pai-eterno-3e71794aa1989a2d.webp",
+      "sha256": "3e71794aa1989a2d31e5b66fec8f9fd6bcf463e6dfd3c53c86408ec93794b8b5",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/paramount-1-022e52bcfe256883.webp",
+      "ids": [
+        "354",
+        "359",
+        "364",
+        "367",
+        "3772"
+      ],
+      "names": [
+        "Paramount+ 1",
+        "Paramount+ 2",
+        "Paramount+ 3",
+        "Paramount+ 4",
+        "Paramount+ 5"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          35,
+          111,
+          194,
+          45
+        ]
+      },
+      "legacyFile": "/assets/channels/paramount-1-022e52bcfe256883.webp",
+      "sha256": "022e52bcfe256883201da1741e3591c4682869d3e87804cdf2e79a909c8f5e84",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/premiere-2-a5d8e6551ad8f2e8.webp",
+      "ids": [
+        "275",
+        "279",
+        "281",
+        "283",
+        "285",
+        "287",
+        "289",
+        "291",
+        "293",
+        "295",
+        "297",
+        "299",
+        "301",
+        "1910",
+        "1912"
+      ],
+      "names": [
+        "Premiere 2",
+        "Premiere 2 4k",
+        "Premiere 3",
+        "Premiere 3 4k",
+        "Premiere 4",
+        "Premiere 4 4k",
+        "Premiere 5",
+        "Premiere 5 4k",
+        "Premiere 6",
+        "Premiere 6 4k",
+        "Premiere 7",
+        "Premiere 7 4k",
+        "Premiere 8",
+        "Premiere Clubes",
+        "Premiere Clubes 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          27,
+          111,
+          202,
+          34
+        ]
+      },
+      "legacyFile": "/assets/channels/premiere-2-a5d8e6551ad8f2e8.webp",
+      "sha256": "a5d8e6551ad8f2e83b4c8bc98b8dcedc61ecaf926ea174fdefbc9874d82f0ece",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/prime-box-ea2941c5f24bd34f.webp",
+      "ids": [
+        "648"
+      ],
+      "names": [
+        "Prime Box"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          34,
+          95,
+          185,
+          65
+        ]
+      },
+      "legacyFile": "/assets/channels/prime-box-ea2941c5f24bd34f.webp",
+      "sha256": "ea2941c5f24bd34f10c250573f2b803e607537d4066ac482997b009e987549d8",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/rcn67-6f3fd34dd1477a36.webp",
+      "ids": [
+        "3086"
+      ],
+      "names": [
+        "RCN67"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          56,
+          49,
+          144,
+          158
+        ]
+      },
+      "legacyFile": "/assets/channels/rcn67-6f3fd34dd1477a36.webp",
+      "sha256": "6f3fd34dd1477a36b00cb8301c594f4f595eb508bc54243608dfb5b8da0c8bf5",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/record-ndtv-itajai-946dcd234e9c19d9.webp",
+      "ids": [
+        "178",
+        "185",
+        "191",
+        "197",
+        "200",
+        "204",
+        "206",
+        "403",
+        "1200",
+        "1872",
+        "1885",
+        "1887",
+        "1890",
+        "1921",
+        "2317",
+        "2517",
+        "2548",
+        "2587",
+        "2589",
+        "2651",
+        "2660",
+        "2904",
+        "2912",
+        "3269",
+        "3272",
+        "3540",
+        "3613"
+      ],
+      "names": [
+        "Record NDTV Itajai",
+        "Record Paranaíba",
+        "Record RIC TV Curitiba",
+        "Record TV Atalaia",
+        "Record TV BA",
+        "Record TV Bauru",
+        "Record TV Belém",
+        "Record TV Brasília",
+        "Record TV Cabralia",
+        "Record TV Campinas",
+        "Record TV Cidade",
+        "Record TV Cuiabá",
+        "Record TV GO",
+        "Record TV Interior RJ",
+        "Record TV Interior SP",
+        "Record TV Manaus",
+        "Record TV MG",
+        "Record TV NDTV Blumenau",
+        "Record TV NDTV Florianópolis",
+        "Record TV Paraíba",
+        "Record TV Recife",
+        "Record TV Rio Preto",
+        "Record TV RJ",
+        "Record TV RS",
+        "Record TV SP",
+        "Record TV SP 4K",
+        "Record TV Vitória"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          52,
+          53,
+          155,
+          150
+        ]
+      },
+      "legacyFile": "/assets/channels/record-ndtv-itajai-946dcd234e9c19d9.webp",
+      "sha256": "946dcd234e9c19d9f6c3e2fbdc2dc31b135e497e282e751f3f885d7527cbe2a4",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/record-tv-ndtv-joinville-6d2f96025dc57ac7.webp",
+      "ids": [
+        "3081",
+        "3781"
+      ],
+      "names": [
+        "Record TV NDTV Joinville",
+        "Record TV Tropical"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          71,
+          67,
+          114,
+          114
+        ]
+      },
+      "legacyFile": "/assets/channels/record-tv-ndtv-joinville-6d2f96025dc57ac7.webp",
+      "sha256": "6d2f96025dc57ac73255949c6b1f4b71a83c8d01665e86332b9f7c029cc072d1",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/record-tv-news-522c5bad156ddfc1.webp",
+      "ids": [
+        "543",
+        "545"
+      ],
+      "names": [
+        "Record TV News",
+        "Record TV News 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          28,
+          96,
+          201,
+          76
+        ]
+      },
+      "legacyFile": "/assets/channels/record-tv-news-522c5bad156ddfc1.webp",
+      "sha256": "522c5bad156ddfc180ed5a12c826519fd82d6aa87a124ddeb4e125b79a23c869",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/record-tv-pajucara-al-a6803e4997e79a7f.webp",
+      "ids": [
+        "3704"
+      ],
+      "names": [
+        "Record TV Pajucara AL"
+      ],
+      "artwork": {
+        "width": 192,
+        "height": 192,
+        "bounds": [
+          39,
+          40,
+          116,
+          112
+        ]
+      },
+      "legacyFile": "/assets/channels/record-tv-pajucara-al-a6803e4997e79a7f.webp",
+      "sha256": "a6803e4997e79a7f4aa02c3e0d7218d44c744ca82ac32a005069ca7290a15da8",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/red-bull-tv-d32b73cb8c5e8ac0.webp",
+      "ids": [
+        "2846"
+      ],
+      "names": [
+        "Red Bull TV"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          39,
+          74,
+          179,
+          117
+        ]
+      },
+      "legacyFile": "/assets/channels/red-bull-tv-d32b73cb8c5e8ac0.webp",
+      "sha256": "d32b73cb8c5e8ac0f6968202afb5aca5579912a7ec0e6a8ca2ff8c32212e9f65",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/rede-brasil-701f343f9f53e7b9.webp",
+      "ids": [
+        "117"
+      ],
+      "names": [
+        "Rede Brasil"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          53,
+          52,
+          137,
+          147
+        ]
+      },
+      "legacyFile": "/assets/channels/rede-brasil-701f343f9f53e7b9.webp",
+      "sha256": "701f343f9f53e7b9ffdaf0765fd58e727eb4e6c9729a9a61999c9121167de4a7",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/rede-genesis-fec024b547356657.webp",
+      "ids": [
+        "693"
+      ],
+      "names": [
+        "Rede Gênesis"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          35,
+          73,
+          185,
+          106
+        ]
+      },
+      "legacyFile": "/assets/channels/rede-genesis-fec024b547356657.webp",
+      "sha256": "fec024b5473566570e734b7855edc50312b693fd8f27ffc46a3f283dceec2dcf",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/rede-gospel-8059b489c52050d7.webp",
+      "ids": [
+        "687"
+      ],
+      "names": [
+        "Rede Gospel"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          36,
+          67,
+          184,
+          112
+        ]
+      },
+      "legacyFile": "/assets/channels/rede-gospel-8059b489c52050d7.webp",
+      "sha256": "8059b489c52050d755a0390b339dbbfa72875cfff48118057f4b124072f4380b",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/rede-mais-familia-fhd-8aa11a01d69a1cdb.webp",
+      "ids": [
+        "2360"
+      ],
+      "names": [
+        "Rede Mais Família FHD"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          31,
+          68,
+          192,
+          122
+        ]
+      },
+      "legacyFile": "/assets/channels/rede-mais-familia-fhd-8aa11a01d69a1cdb.webp",
+      "sha256": "8aa11a01d69a1cdb0c4aeec20c3fdc45e443d4f068e92ca8167e115ab44640e2",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/rede-minas-b60cc832abde117e.webp",
+      "ids": [
+        "224"
+      ],
+      "names": [
+        "Rede Minas"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          36,
+          112,
+          184,
+          32
+        ]
+      },
+      "legacyFile": "/assets/channels/rede-minas-b60cc832abde117e.webp",
+      "sha256": "b60cc832abde117ed8611ce6acf3d0b2390d434f6fc792125c24bb839dac10e4",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/rede-seculo-21-5cbe7f985720185d.webp",
+      "ids": [
+        "684"
+      ],
+      "names": [
+        "Rede Século 21"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          48,
+          56,
+          167,
+          127
+        ]
+      },
+      "legacyFile": "/assets/channels/rede-seculo-21-5cbe7f985720185d.webp",
+      "sha256": "5cbe7f985720185d06dc5011361c29f092d973b787739a366a2d142762d1870b",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/rede-super-5e01da3399cac61c.webp",
+      "ids": [
+        "1681"
+      ],
+      "names": [
+        "Rede Super"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          45,
+          56,
+          166,
+          143
+        ]
+      },
+      "legacyFile": "/assets/channels/rede-super-5e01da3399cac61c.webp",
+      "sha256": "5e01da3399cac61c31e7d6a81ef24b0bab9033073cfe524fbff309846f04ba0c",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/rede-tv-2f7c44f3a8827c3d.webp",
+      "ids": [
+        "125",
+        "130"
+      ],
+      "names": [
+        "Rede TV",
+        "Rede TV 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          34,
+          88,
+          188,
+          80
+        ]
+      },
+      "legacyFile": "/assets/channels/rede-tv-2f7c44f3a8827c3d.webp",
+      "sha256": "2f7c44f3a8827c3d5fb4c6d83a25f70d3a5c288a448ac3a69a21d8f6cc59d12a",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/rede-vida-a76c89fdb08f6821.webp",
+      "ids": [
+        "677"
+      ],
+      "names": [
+        "Rede Vida"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          50,
+          47,
+          156,
+          140
+        ]
+      },
+      "legacyFile": "/assets/channels/rede-vida-a76c89fdb08f6821.webp",
+      "sha256": "a76c89fdb08f68218581291f93f1e5aa82c6ca8a5f1b8aba938602e8dc43cbf4",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/rit-42ad33167e14d533.webp",
+      "ids": [
+        "2550"
+      ],
+      "names": [
+        "RIT"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          31,
+          78,
+          181,
+          99
+        ]
+      },
+      "legacyFile": "/assets/channels/rit-42ad33167e14d533.webp",
+      "sha256": "42ad33167e14d5333ca5f22451d3b8f8f87c1876ccf8e8708d966209434bcd7b",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/sabor-e-arte-b2e89ec3b467280c.webp",
+      "ids": [
+        "3698"
+      ],
+      "names": [
+        "Sabor e Arte"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          32,
+          102,
+          192,
+          52
+        ]
+      },
+      "legacyFile": "/assets/channels/sabor-e-arte-b2e89ec3b467280c.webp",
+      "sha256": "b2e89ec3b467280cacbe75b831aa64c58269aba1d6eba4feedb512ca87227fce",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/sbt-amazonas-72111b0657ef289d.webp",
+      "ids": [
+        "46",
+        "58",
+        "147",
+        "153",
+        "160",
+        "351",
+        "541",
+        "615",
+        "1935",
+        "2318",
+        "2461",
+        "2507",
+        "2543",
+        "2613",
+        "2616",
+        "2618",
+        "2655",
+        "2657",
+        "2793",
+        "3078",
+        "3121"
+      ],
+      "names": [
+        "SBT Amazonas",
+        "SBT Brasília",
+        "SBT Florianópolis",
+        "SBT Paraíba",
+        "SBT Pará",
+        "SBT Rede Massa",
+        "SBT Ribeirão Preto",
+        "SBT RJ",
+        "SBT RS",
+        "SBT SP",
+        "SBT SP 4K",
+        "SBT TH+ Interior",
+        "SBT TV Alterosa MG",
+        "SBT TV Aratu Bahia",
+        "SBT TV Difusora Caxias",
+        "SBT TV Jangadeiro",
+        "SBT TV Jangadeiro 4K",
+        "SBT TV Jornal Pernambuco",
+        "SBT TV Jornal Recife",
+        "SBT TV Ponta Negra",
+        "SBT TV Serra Dourada"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          60,
+          59,
+          132,
+          132
+        ]
+      },
+      "legacyFile": "/assets/channels/sbt-amazonas-72111b0657ef289d.webp",
+      "sha256": "72111b0657ef289d2d88088e3a1b2080b1e13c6fda8b523e7c85fe72156e5f3e",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/sbt-novelas-c8f057cc521f3b22.webp",
+      "ids": [
+        "3003",
+        "3008"
+      ],
+      "names": [
+        "SBT+ Novelas",
+        "SBT+ Tvzyn"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          55,
+          61,
+          147,
+          132
+        ]
+      },
+      "legacyFile": "/assets/channels/sbt-novelas-c8f057cc521f3b22.webp",
+      "sha256": "c8f057cc521f3b224bb90a5367867716745dd3a1f9bce35269270fc775d246df",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/sbt-scc-1-bb36d19add624472.webp",
+      "ids": [
+        "3204",
+        "3420",
+        "3604",
+        "3649"
+      ],
+      "names": [
+        "SBT SCC 1",
+        "SBT SCC 2",
+        "SBT SCC 3",
+        "SBT SCC 4"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          23,
+          104,
+          208,
+          49
+        ]
+      },
+      "legacyFile": "/assets/channels/sbt-scc-1-bb36d19add624472.webp",
+      "sha256": "bb36d19add624472c7766dbbce19d90c5a40cc1527f24092a867ad9f10f9ba47",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/sbt-tv-ponta-verde-85e692115210e6c5.webp",
+      "ids": [
+        "3705"
+      ],
+      "names": [
+        "Sbt TV Ponta Verde"
+      ],
+      "artwork": {
+        "width": 192,
+        "height": 192,
+        "bounds": [
+          45,
+          44,
+          99,
+          99
+        ]
+      },
+      "legacyFile": "/assets/channels/sbt-tv-ponta-verde-85e692115210e6c5.webp",
+      "sha256": "85e692115210e6c528078de0d357810ae4879e7bd935780b425df06c007c98a2",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/sbt-tv-sim-es-63d687fe272996bf.webp",
+      "ids": [
+        "3007"
+      ],
+      "names": [
+        "SBT TV Sim ES"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          51,
+          105,
+          154,
+          38
+        ]
+      },
+      "legacyFile": "/assets/channels/sbt-tv-sim-es-63d687fe272996bf.webp",
+      "sha256": "63d687fe272996bf2bf1859b9782fb9de9d0b27ec47c7e1be777bc3b5135a96b",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/sbt-vitoriosa-532b5cf785620dda.webp",
+      "ids": [
+        "3135"
+      ],
+      "names": [
+        "SBT Vitoriosa"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 171,
+        "bounds": [
+          44,
+          27,
+          167,
+          119
+        ]
+      },
+      "legacyFile": "/assets/channels/sbt-vitoriosa-532b5cf785620dda.webp",
+      "sha256": "532b5cf785620dda85d78ae90992954a83a95523945ebac0c403800f6e26849a",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/sony-a0ce3862bcd77c5a.webp",
+      "ids": [
+        "397",
+        "1918",
+        "3308"
+      ],
+      "names": [
+        "Sony",
+        "Sony 4K",
+        "SONY LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          44,
+          112,
+          169,
+          32
+        ]
+      },
+      "legacyFile": "/assets/channels/sony-a0ce3862bcd77c5a.webp",
+      "sha256": "a0ce3862bcd77c5ab889f4c4ac9d56cd1746eea664b7ea0970a7facc312fcd61",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/sony-movies-1e00b8ff0f485854.webp",
+      "ids": [
+        "2745"
+      ],
+      "names": [
+        "Sony Movies"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          42,
+          42,
+          172,
+          172
+        ]
+      },
+      "legacyFile": "/assets/channels/sony-movies-1e00b8ff0f485854.webp",
+      "sha256": "1e00b8ff0f485854226547e76c5d75f5107679fca304eac30f887001bf2823c3",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/space-84d45d521904765a.webp",
+      "ids": [
+        "405",
+        "407",
+        "3239"
+      ],
+      "names": [
+        "Space",
+        "Space 4K",
+        "Space LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          37,
+          108,
+          181,
+          43
+        ]
+      },
+      "legacyFile": "/assets/channels/space-84d45d521904765a.webp",
+      "sha256": "84d45d521904765a971e284c68cb9081049f388f40f9502f11a32d171ae25f11",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/sportv-2-778fb348e56cf1e2.webp",
+      "ids": [
+        "252",
+        "254"
+      ],
+      "names": [
+        "SporTV 2",
+        "SporTV 2 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          33,
+          105,
+          193,
+          46
+        ]
+      },
+      "legacyFile": "/assets/channels/sportv-2-778fb348e56cf1e2.webp",
+      "sha256": "778fb348e56cf1e206e1f5960ff7be0ed96c74a1042719050e2689f54c160294",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/sportv-3-a4ae8f00fb553347.webp",
+      "ids": [
+        "256",
+        "258"
+      ],
+      "names": [
+        "SporTV 3",
+        "SporTV 3 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          35,
+          106,
+          192,
+          44
+        ]
+      },
+      "legacyFile": "/assets/channels/sportv-3-a4ae8f00fb553347.webp",
+      "sha256": "a4ae8f00fb553347a51a9dc636b452643f558eebe07b0aa882e9f93ef739cec8",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/sportv-4-d13989cec10dd5e4.webp",
+      "ids": [
+        "3338"
+      ],
+      "names": [
+        "SporTv 4"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          55,
+          111,
+          146,
+          34
+        ]
+      },
+      "legacyFile": "/assets/channels/sportv-4-d13989cec10dd5e4.webp",
+      "sha256": "d13989cec10dd5e49ab2c6857b7fa571a29154425b03b0c714d3b483dcad1a68",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/sportv-4bf4fc21f649bc9b.webp",
+      "ids": [
+        "248",
+        "250"
+      ],
+      "names": [
+        "SporTV",
+        "SporTV 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          33,
+          102,
+          190,
+          52
+        ]
+      },
+      "legacyFile": "/assets/channels/sportv-4bf4fc21f649bc9b.webp",
+      "sha256": "4bf4fc21f649bc9b515ca2b8cfd4797dbdfd0d0d63201f7a6b1c595e0d73057b",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/sporty-net-1-ec7beea22c77615f.webp",
+      "ids": [
+        "325",
+        "326",
+        "327",
+        "328"
+      ],
+      "names": [
+        "Sporty Net 1",
+        "SportyNet 2",
+        "SportyNet 3",
+        "SportyNet 4"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          33,
+          109,
+          189,
+          38
+        ]
+      },
+      "legacyFile": "/assets/channels/sporty-net-1-ec7beea22c77615f.webp",
+      "sha256": "ec7beea22c77615f0211ae536957a2e6ff320c9fa9096a9717f774a1939c4823",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/studio-universal-4fe15124ec2980b6.webp",
+      "ids": [
+        "432",
+        "434",
+        "3221"
+      ],
+      "names": [
+        "Studio Universal",
+        "Studio Universal 4K",
+        "Studio Universal LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          31,
+          84,
+          193,
+          91
+        ]
+      },
+      "legacyFile": "/assets/channels/studio-universal-4fe15124ec2980b6.webp",
+      "sha256": "4fe15124ec2980b60380aa8f633236e29b55ac0c85b0b22d905ed672fa4e99d6",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tcm-8883356ec5789c5f.webp",
+      "ids": [
+        "429"
+      ],
+      "names": [
+        "TCM"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          51,
+          58,
+          156,
+          156
+        ]
+      },
+      "legacyFile": "/assets/channels/tcm-8883356ec5789c5f.webp",
+      "sha256": "8883356ec5789c5fe1794538e1ec9282259e8c9d381862ceaa06810bb7c9e1d8",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/telecine-action-leg-555b57d8d78ad7ac.webp",
+      "ids": [
+        "519",
+        "2781",
+        "3670"
+      ],
+      "names": [
+        "Telecine Action",
+        "Telecine Action 4K",
+        "Telecine Action LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          43,
+          108,
+          171,
+          28
+        ]
+      },
+      "legacyFile": "/assets/channels/telecine-action-leg-555b57d8d78ad7ac.webp",
+      "sha256": "555b57d8d78ad7acbd17ae74f59c316b2c6ba0efd18447218eb7772705c6f380",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/telecine-cult-80002f9a521d2992.webp",
+      "ids": [
+        "522",
+        "2759",
+        "3212"
+      ],
+      "names": [
+        "Telecine Cult",
+        "Telecine Cult 4K",
+        "Telecine Cult LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          25,
+          84,
+          213,
+          74
+        ]
+      },
+      "legacyFile": "/assets/channels/telecine-cult-80002f9a521d2992.webp",
+      "sha256": "80002f9a521d29923e53369b93db11ccc5116c1208b5d0bc042cf464cb34f7ce",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/telecine-fun-d7a270bb1c0fb85a.webp",
+      "ids": [
+        "525",
+        "2760",
+        "3305"
+      ],
+      "names": [
+        "Telecine Fun",
+        "Telecine Fun 4K",
+        "Telecine Fun LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          25,
+          104,
+          200,
+          46
+        ]
+      },
+      "legacyFile": "/assets/channels/telecine-fun-d7a270bb1c0fb85a.webp",
+      "sha256": "d7a270bb1c0fb85a7ff058589c6cf0422c1d67d912f27d7fa30458501b4f7890",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/telecine-pipoca-45ed5fe8971e177f.webp",
+      "ids": [
+        "528",
+        "2782",
+        "3245"
+      ],
+      "names": [
+        "Telecine Pipoca",
+        "Telecine Pipoca 4K",
+        "Telecine Pipoca LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          16,
+          113,
+          228,
+          37
+        ]
+      },
+      "legacyFile": "/assets/channels/telecine-pipoca-45ed5fe8971e177f.webp",
+      "sha256": "45ed5fe8971e177f875bb036471b6ab3d627b7ce546285b83041a95da0d80448",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/telecine-premium-fe908061a6d44c7b.webp",
+      "ids": [
+        "531",
+        "2783",
+        "3242"
+      ],
+      "names": [
+        "Telecine Premium",
+        "Telecine Premium 4K",
+        "Telecine Premium LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          25,
+          119,
+          204,
+          28
+        ]
+      },
+      "legacyFile": "/assets/channels/telecine-premium-fe908061a6d44c7b.webp",
+      "sha256": "fe908061a6d44c7b7d649ddbc8fd85084610df18266732a697db95f25a76c2a5",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/telecine-touch-826b53da3f3df503.webp",
+      "ids": [
+        "534",
+        "3218"
+      ],
+      "names": [
+        "Telecine Touch",
+        "Telecine Touch LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          25,
+          115,
+          204,
+          35
+        ]
+      },
+      "legacyFile": "/assets/channels/telecine-touch-826b53da3f3df503.webp",
+      "sha256": "826b53da3f3df503fb7ba54166bc5468e09850b3d5098287fa23fd5619cec811",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tl-novelas-ba8b173701e7f6c9.webp",
+      "ids": [
+        "3582"
+      ],
+      "names": [
+        "TL Novelas"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          24,
+          77,
+          208,
+          102
+        ]
+      },
+      "legacyFile": "/assets/channels/tl-novelas-ba8b173701e7f6c9.webp",
+      "sha256": "ba8b173701e7f6c9442ccca4a2df1112372d3efad368cf6fe2ab4059e71c4f38",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tlc-eae2ce22ede9145d.webp",
+      "ids": [
+        "653"
+      ],
+      "names": [
+        "TLC"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          49,
+          97,
+          153,
+          74
+        ]
+      },
+      "legacyFile": "/assets/channels/tlc-eae2ce22ede9145d.webp",
+      "sha256": "eae2ce22ede9145db3b3c8348d60afb3571385e5572bfbaf9b583a07d7f394fa",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tnt-1f6cd7ba3b61fba8.webp",
+      "ids": [
+        "417",
+        "419",
+        "3236"
+      ],
+      "names": [
+        "TNT",
+        "TNT 4K",
+        "TNT LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          56,
+          56,
+          144,
+          145
+        ]
+      },
+      "legacyFile": "/assets/channels/tnt-1f6cd7ba3b61fba8.webp",
+      "sha256": "1f6cd7ba3b61fba885d5e368154f6e306b6107725779b1738a503326afe65ded",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tnt-novelas-fb1985c6e45e1f1b.webp",
+      "ids": [
+        "2546"
+      ],
+      "names": [
+        "TNT Novelas"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          73,
+          58,
+          110,
+          140
+        ]
+      },
+      "legacyFile": "/assets/channels/tnt-novelas-fb1985c6e45e1f1b.webp",
+      "sha256": "fb1985c6e45e1f1b193903b8083cfae02a20be5ea4b01f6b2179c9df6768e162",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tnt-series-d5707c8f8d9aae8c.webp",
+      "ids": [
+        "413",
+        "415"
+      ],
+      "names": [
+        "TNT Series",
+        "TNT Series 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          72,
+          58,
+          112,
+          140
+        ]
+      },
+      "legacyFile": "/assets/channels/tnt-series-d5707c8f8d9aae8c.webp",
+      "sha256": "d5707c8f8d9aae8cfda8ffcb35c0766d4a0cbc47a2d93fb23bb11d23dcb0152d",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tooncast-c502791776896a42.webp",
+      "ids": [
+        "513"
+      ],
+      "names": [
+        "Tooncast"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          26,
+          98,
+          201,
+          51
+        ]
+      },
+      "legacyFile": "/assets/channels/tooncast-c502791776896a42.webp",
+      "sha256": "c502791776896a4235422f9d88a6fbbd1ff836bc0e75bbb6f558c26f8a9351a1",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/trace-brazuca-abc6a86ed1ec3e17.webp",
+      "ids": [
+        "662"
+      ],
+      "names": [
+        "Trace Brazuca"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          12,
+          99,
+          223,
+          85
+        ]
+      },
+      "legacyFile": "/assets/channels/trace-brazuca-abc6a86ed1ec3e17.webp",
+      "sha256": "abc6a86ed1ec3e17ef731935a1797a079d9f9d632a5e2b2ea285ae98dd6b7ccc",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/travel-box-8dd19b4c7d228257.webp",
+      "ids": [
+        "660"
+      ],
+      "names": [
+        "Travel Box"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          24,
+          99,
+          199,
+          61
+        ]
+      },
+      "legacyFile": "/assets/channels/travel-box-8dd19b4c7d228257.webp",
+      "sha256": "8dd19b4c7d22825734bce0f8749b7d8c9b9273b86706d1e2d33cac47f29924e1",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-a-critica-531b938a70bc03ee.webp",
+      "ids": [
+        "2770"
+      ],
+      "names": [
+        "TV A Crítica"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          64,
+          67,
+          128,
+          122
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-a-critica-531b938a70bc03ee.webp",
+      "sha256": "531b938a70bc03eea45b8df77ee72d6d3fcbfe9ddd5831a2578f797da4771c3a",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-aparecida-f21aaf27a0b2411f.webp",
+      "ids": [
+        "681"
+      ],
+      "names": [
+        "TV Aparecida"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          62,
+          47,
+          133,
+          142
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-aparecida-f21aaf27a0b2411f.webp",
+      "sha256": "f21aaf27a0b2411f2c91bfa581e0985ca6f48d307482cd36180b1ba08c64714d",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-brasil-1cf4a97972b8f144.webp",
+      "ids": [
+        "213"
+      ],
+      "names": [
+        "TV Brasil"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          19,
+          98,
+          220,
+          60
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-brasil-1cf4a97972b8f144.webp",
+      "sha256": "1cf4a97972b8f14441bed21da0ed7fb37b1608de97409172ae4857a18259cb03",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-camara-9205ce342f8458d7.webp",
+      "ids": [
+        "221"
+      ],
+      "names": [
+        "TV Câmara"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          52,
+          79,
+          152,
+          138
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-camara-9205ce342f8458d7.webp",
+      "sha256": "9205ce342f8458d74723b63da012b2b7eb51e86bb9cee382334315f57653caba",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-cidade-verde-8b2b490c6d6acd5f.webp",
+      "ids": [
+        "1902"
+      ],
+      "names": [
+        "TV Cidade Verde"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          24,
+          71,
+          208,
+          133
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-cidade-verde-8b2b490c6d6acd5f.webp",
+      "sha256": "8b2b490c6d6acd5fb66c12bb383c7aeffd290d44aff32547487dbb3b4ba3ec80",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-cultura-a57783693c025301.webp",
+      "ids": [
+        "219"
+      ],
+      "names": [
+        "Tv Cultura"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          60,
+          69,
+          136,
+          118
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-cultura-a57783693c025301.webp",
+      "sha256": "a57783693c025301469a1da9a2724a3f2ef1a1ae235367eeaf09e4b95418f27e",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-diario-593b7409244c4873.webp",
+      "ids": [
+        "209"
+      ],
+      "names": [
+        "TV Diário"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          27,
+          57,
+          202,
+          129
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-diario-593b7409244c4873.webp",
+      "sha256": "593b7409244c48735e9cdf958c90954b79e4de5e7e84806213c771f5126139d8",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-escola-c2136066de59eff8.webp",
+      "ids": [
+        "216"
+      ],
+      "names": [
+        "TV Escola"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          35,
+          59,
+          186,
+          145
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-escola-c2136066de59eff8.webp",
+      "sha256": "c2136066de59eff8e7a1357dc2a6aa7749d466d9ca14d18b56094d1dc8048ab3",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-evangelizar-76d2d4a6f3b016ac.webp",
+      "ids": [
+        "690"
+      ],
+      "names": [
+        "TV Evangelizar"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          25,
+          55,
+          206,
+          136
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-evangelizar-76d2d4a6f3b016ac.webp",
+      "sha256": "76d2d4a6f3b016acefc77aea1a2e7ca561d472a890146f137a4287a12bb7c037",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-feliz-8d40fa353f4ad6be.webp",
+      "ids": [
+        "3644"
+      ],
+      "names": [
+        "Tv feliz"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          46,
+          89,
+          164,
+          78
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-feliz-8d40fa353f4ad6be.webp",
+      "sha256": "8d40fa353f4ad6be8c04387506b6fbceccff3a89cd9eebcce795f52b0aab5302",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-justica-1e72fc9d49113c53.webp",
+      "ids": [
+        "208"
+      ],
+      "names": [
+        "TV Justiça"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          44,
+          107,
+          167,
+          50
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-justica-1e72fc9d49113c53.webp",
+      "sha256": "1e72fc9d49113c537aa20457e7ce3faefdf117d9473e7db4b4075d1ef8bc78bc",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-maanaim-f4d89354c5d744e1.webp",
+      "ids": [
+        "490"
+      ],
+      "names": [
+        "TV Maanaim"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          16,
+          52,
+          228,
+          158
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-maanaim-f4d89354c5d744e1.webp",
+      "sha256": "f4d89354c5d744e1dbbe7be67bac151b9f2ec45acd6d8dfb147da06a53d4612b",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-nordestina-da20356ede5c9598.webp",
+      "ids": [
+        "2765"
+      ],
+      "names": [
+        "TV Nordestina"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 171,
+        "bounds": [
+          17,
+          26,
+          222,
+          120
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-nordestina-da20356ede5c9598.webp",
+      "sha256": "da20356ede5c95988d415a9e4fffe404d9cf8f9d25a7861426285628b5c708f7",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-nsports-1-d260f1371831ea82.webp",
+      "ids": [
+        "321",
+        "3490",
+        "3492",
+        "3494"
+      ],
+      "names": [
+        "TV NSports 1",
+        "TV NSports 2",
+        "TV NSports 3",
+        "TV NSports 4"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          20,
+          103,
+          216,
+          44
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-nsports-1-d260f1371831ea82.webp",
+      "sha256": "d260f1371831ea8288139dcb9a38cbc3a6342ca83f630da8505cd896ded19d88",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-padre-cicero-51fbee065587a508.webp",
+      "ids": [
+        "3202"
+      ],
+      "names": [
+        "TV padre Cícero"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 183,
+        "bounds": [
+          41,
+          13,
+          171,
+          156
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-padre-cicero-51fbee065587a508.webp",
+      "sha256": "51fbee065587a508e14a53709e4cff7e01b2844cc93788dfeb502afd916d1470",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-plenitude-518f497f6d5f8a0a.webp",
+      "ids": [
+        "2746"
+      ],
+      "names": [
+        "TV Plenitude"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          11,
+          95,
+          234,
+          65
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-plenitude-518f497f6d5f8a0a.webp",
+      "sha256": "518f497f6d5f8a0af6a2510f06c0a99590b3f74503ffc03e8d5d3539d3d12de1",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-ra-tim-bum-55445931260003a1.webp",
+      "ids": [
+        "516"
+      ],
+      "names": [
+        "TV Rá-Tim-Bum"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          53,
+          52,
+          144,
+          149
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-ra-tim-bum-55445931260003a1.webp",
+      "sha256": "55445931260003a11f40ebc67023c286e82a7d31da594434e7229dce7f56b39f",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-rio-grande-7a8e7436cd473e5d.webp",
+      "ids": [
+        "2766"
+      ],
+      "names": [
+        "TV Rio Grande"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          22,
+          46,
+          215,
+          152
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-rio-grande-7a8e7436cd473e5d.webp",
+      "sha256": "7a8e7436cd473e5dc84e1c79b4bd4fa1744cdab9a2177ee8fecd7eb386a5653a",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tv-senado-80bbee2730b5a858.webp",
+      "ids": [
+        "228"
+      ],
+      "names": [
+        "TV Senado"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          39,
+          95,
+          178,
+          66
+        ]
+      },
+      "legacyFile": "/assets/channels/tv-senado-80bbee2730b5a858.webp",
+      "sha256": "80bbee2730b5a8580690250db886b2cbc96e31884e7820e1ebd8d20950d1bd18",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/tve-bahia-fde9ad5e6c8bb7ce.webp",
+      "ids": [
+        "1906"
+      ],
+      "names": [
+        "TVE Bahia"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          40,
+          83,
+          177,
+          90
+        ]
+      },
+      "legacyFile": "/assets/channels/tve-bahia-fde9ad5e6c8bb7ce.webp",
+      "sha256": "fde9ad5e6c8bb7cef7bc6c1490a5fce6b4597f62be2f70eb81174dec20231ad7",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/ufc-61a8b667eb7f26a0.webp",
+      "ids": [
+        "384"
+      ],
+      "names": [
+        "UFC"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          39,
+          98,
+          177,
+          60
+        ]
+      },
+      "legacyFile": "/assets/channels/ufc-61a8b667eb7f26a0.webp",
+      "sha256": "61a8b667eb7f26a084762b8d6798bf4e0aea5c64aedcca6aa7e3d8ea455b3531",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/universal-tv-89e833e53e0d7448.webp",
+      "ids": [
+        "425",
+        "427",
+        "3224"
+      ],
+      "names": [
+        "Universal TV",
+        "Universal TV 4K",
+        "Universal TV LEG"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          49,
+          83,
+          166,
+          91
+        ]
+      },
+      "legacyFile": "/assets/channels/universal-tv-89e833e53e0d7448.webp",
+      "sha256": "89e833e53e0d74486766502701b9f399dcebf2e5d425f3ff6d2d4e6abff3b905",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/usa-network-d56effc0a6a6b821.webp",
+      "ids": [
+        "357",
+        "363"
+      ],
+      "names": [
+        "USA Network",
+        "USA Network 4K"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 171,
+        "bounds": [
+          35,
+          32,
+          187,
+          108
+        ]
+      },
+      "legacyFile": "/assets/channels/usa-network-d56effc0a6a6b821.webp",
+      "sha256": "d56effc0a6a6b821ccf92c3a89122d54c4a82b2c1025bf6a21427ca2f78754b3",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/xsports-475a2a74bd727822.webp",
+      "ids": [
+        "1414"
+      ],
+      "names": [
+        "Xsports"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          36,
+          114,
+          184,
+          28
+        ]
+      },
+      "legacyFile": "/assets/channels/xsports-475a2a74bd727822.webp",
+      "sha256": "475a2a74bd727822037b5bc006753a9fd2e29296200881c9d22b318a3bd82391",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    },
+    {
+      "file": "/tv/logos/sem-categoria-verificada/zapping-sports-d5738c297a24caf8.webp",
+      "ids": [
+        "2900"
+      ],
+      "names": [
+        "Zapping Sports"
+      ],
+      "artwork": {
+        "width": 256,
+        "height": 256,
+        "bounds": [
+          46,
+          101,
+          164,
+          54
+        ]
+      },
+      "legacyFile": "/assets/channels/zapping-sports-d5738c297a24caf8.webp",
+      "sha256": "d5738c297a24caf8adc308a5804e945c7c26426c721881036b137d2c0754bd2b",
+      "categoryIds": [],
+      "primaryCategoryId": null
+    }
+  ],
+  "categories": [],
+  "legacyAliases": {
+    "/assets/channels/101-dalmatas-24h-076fbb3370399781.webp": "/tv/logos/sem-categoria-verificada/101-dalmatas-24h-076fbb3370399781.webp",
+    "/assets/channels/3-palavrinhas-24h-6c5de9d8ac61a144.webp": "/tv/logos/sem-categoria-verificada/3-palavrinhas-24h-6c5de9d8ac61a144.webp",
+    "/assets/channels/a-casa-das-brasileirinhas-de6cb34101b4e2d5.webp": "/tv/logos/sem-categoria-verificada/a-casa-das-brasileirinhas-de6cb34101b4e2d5.webp",
+    "/assets/channels/a-e-3e43f11bbbfb3326.webp": "/tv/logos/sem-categoria-verificada/a-e-3e43f11bbbfb3326.webp",
+    "/assets/channels/a-fazenda-18-cam-01-29c9857c9792f5d4.webp": "/tv/logos/sem-categoria-verificada/a-fazenda-18-cam-01-29c9857c9792f5d4.webp",
+    "/assets/channels/adult-swim-942e8589ff38dbfb.webp": "/tv/logos/sem-categoria-verificada/adult-swim-942e8589ff38dbfb.webp",
+    "/assets/channels/agro-canal-c80d9a06649c3b57.webp": "/tv/logos/sem-categoria-verificada/agro-canal-c80d9a06649c3b57.webp",
+    "/assets/channels/agromais-4a7b5e7f0dfa59d2.webp": "/tv/logos/sem-categoria-verificada/agromais-4a7b5e7f0dfa59d2.webp",
+    "/assets/channels/amazon-prime-2-bdb060a91ab9626f.webp": "/tv/logos/sem-categoria-verificada/amazon-prime-2-bdb060a91ab9626f.webp",
+    "/assets/channels/amc-f38d8d7c62260d81.webp": "/tv/logos/sem-categoria-verificada/amc-f38d8d7c62260d81.webp",
+    "/assets/channels/animal-planet-b8671891f56f6bfd.webp": "/tv/logos/sem-categoria-verificada/animal-planet-b8671891f56f6bfd.webp",
+    "/assets/channels/apple-tv-1-07cbbd3687686979.webp": "/tv/logos/sem-categoria-verificada/apple-tv-1-07cbbd3687686979.webp",
+    "/assets/channels/arte-1-9e914d27ed8f3394.webp": "/tv/logos/sem-categoria-verificada/arte-1-9e914d27ed8f3394.webp",
+    "/assets/channels/baby-looney-tunes-24h-b4a578ebfa6c871c.webp": "/tv/logos/sem-categoria-verificada/baby-looney-tunes-24h-b4a578ebfa6c871c.webp",
+    "/assets/channels/band-bahia-86c333758dcf3c1d.webp": "/tv/logos/sem-categoria-verificada/band-bahia-86c333758dcf3c1d.webp",
+    "/assets/channels/band-news-6a1867cb9588a974.webp": "/tv/logos/sem-categoria-verificada/band-news-6a1867cb9588a974.webp",
+    "/assets/channels/band-paulista-74a4cdd429fcd563.webp": "/tv/logos/sem-categoria-verificada/band-paulista-74a4cdd429fcd563.webp",
+    "/assets/channels/band-sports-52c30c0de5f049cb.webp": "/tv/logos/sem-categoria-verificada/band-sports-52c30c0de5f049cb.webp",
+    "/assets/channels/bis-45dc49ceab09464c.webp": "/tv/logos/sem-categoria-verificada/bis-45dc49ceab09464c.webp",
+    "/assets/channels/bjj-stars-79e896d08e55f95a.webp": "/tv/logos/sem-categoria-verificada/bjj-stars-79e896d08e55f95a.webp",
+    "/assets/channels/bloomberg-tv-a055b3e654b49f40.webp": "/tv/logos/sem-categoria-verificada/bloomberg-tv-a055b3e654b49f40.webp",
+    "/assets/channels/bm-c-news-05a4f4dfdc7604a3.webp": "/tv/logos/sem-categoria-verificada/bm-c-news-05a4f4dfdc7604a3.webp",
+    "/assets/channels/boas-novas-16b1375747cab8a7.webp": "/tv/logos/sem-categoria-verificada/boas-novas-16b1375747cab8a7.webp",
+    "/assets/channels/brtvmax-a9b89cffbe5ede2a.webp": "/tv/logos/sem-categoria-verificada/brtvmax-a9b89cffbe5ede2a.webp",
+    "/assets/channels/canal-brasil-50b17f0f60b00f14.webp": "/tv/logos/sem-categoria-verificada/canal-brasil-50b17f0f60b00f14.webp",
+    "/assets/channels/canal-do-boi-82cf0f281c37892e.webp": "/tv/logos/sem-categoria-verificada/canal-do-boi-82cf0f281c37892e.webp",
+    "/assets/channels/canal-rural-eab1e84533843cf8.webp": "/tv/logos/sem-categoria-verificada/canal-rural-eab1e84533843cf8.webp",
+    "/assets/channels/canal-terra-viva-a05e30460fe2973f.webp": "/tv/logos/sem-categoria-verificada/canal-terra-viva-a05e30460fe2973f.webp",
+    "/assets/channels/canal-uol-8295f7d08998ea3b.webp": "/tv/logos/sem-categoria-verificada/canal-uol-8295f7d08998ea3b.webp",
+    "/assets/channels/cancao-nova-7af96b645c869de4.webp": "/tv/logos/sem-categoria-verificada/cancao-nova-7af96b645c869de4.webp",
+    "/assets/channels/cartoon-network-3c60670f4d139ee5.webp": "/tv/logos/sem-categoria-verificada/cartoon-network-3c60670f4d139ee5.webp",
+    "/assets/channels/cartoonito-61f8605052f78ff1.webp": "/tv/logos/sem-categoria-verificada/cartoonito-61f8605052f78ff1.webp",
+    "/assets/channels/caze-tv-164aae9c4a5eede9.webp": "/tv/logos/sem-categoria-verificada/caze-tv-164aae9c4a5eede9.webp",
+    "/assets/channels/central-tv-brasil-98a88c8fd5b6069c.webp": "/tv/logos/sem-categoria-verificada/central-tv-brasil-98a88c8fd5b6069c.webp",
+    "/assets/channels/cine-sky-01-501e05730430ecc9.webp": "/tv/logos/sem-categoria-verificada/cine-sky-01-501e05730430ecc9.webp",
+    "/assets/channels/cinemax-537285ee36702491.webp": "/tv/logos/sem-categoria-verificada/cinemax-537285ee36702491.webp",
+    "/assets/channels/cnbc-brasil-8c8b0bd61e572a56.webp": "/tv/logos/sem-categoria-verificada/cnbc-brasil-8c8b0bd61e572a56.webp",
+    "/assets/channels/cnn-brasil-dd82b9344092eb25.webp": "/tv/logos/sem-categoria-verificada/cnn-brasil-dd82b9344092eb25.webp",
+    "/assets/channels/cnn-brasil-money-320eb5653e7a64a1.webp": "/tv/logos/sem-categoria-verificada/cnn-brasil-money-320eb5653e7a64a1.webp",
+    "/assets/channels/cnn-internacional-5c9cf6656601e90c.webp": "/tv/logos/sem-categoria-verificada/cnn-internacional-5c9cf6656601e90c.webp",
+    "/assets/channels/cnt-65b67bdf691bbe10.webp": "/tv/logos/sem-categoria-verificada/cnt-65b67bdf691bbe10.webp",
+    "/assets/channels/combate-594473b64034fb7c.webp": "/tv/logos/sem-categoria-verificada/combate-594473b64034fb7c.webp",
+    "/assets/channels/curta-1a3d8de6f20c5b9b.webp": "/tv/logos/sem-categoria-verificada/curta-1a3d8de6f20c5b9b.webp",
+    "/assets/channels/desimpedidos-1-d35bbf624b42bf44.webp": "/tv/logos/sem-categoria-verificada/desimpedidos-1-d35bbf624b42bf44.webp",
+    "/assets/channels/discovery-channel-d394b8d646a5e8e2.webp": "/tv/logos/sem-categoria-verificada/discovery-channel-d394b8d646a5e8e2.webp",
+    "/assets/channels/discovery-home-health-317265ecd74c12bc.webp": "/tv/logos/sem-categoria-verificada/discovery-home-health-317265ecd74c12bc.webp",
+    "/assets/channels/discovery-investigacao-4c0958e8057abd9b.webp": "/tv/logos/sem-categoria-verificada/discovery-investigacao-4c0958e8057abd9b.webp",
+    "/assets/channels/discovery-kids-0262d5a514a47542.webp": "/tv/logos/sem-categoria-verificada/discovery-kids-0262d5a514a47542.webp",
+    "/assets/channels/discovery-science-724341b31ca5e8d8.webp": "/tv/logos/sem-categoria-verificada/discovery-science-724341b31ca5e8d8.webp",
+    "/assets/channels/discovery-theater-f58598fa708d11f1.webp": "/tv/logos/sem-categoria-verificada/discovery-theater-f58598fa708d11f1.webp",
+    "/assets/channels/discovery-turbo-da4b157d58988526.webp": "/tv/logos/sem-categoria-verificada/discovery-turbo-da4b157d58988526.webp",
+    "/assets/channels/discovery-world-353a26e559d62d3a.webp": "/tv/logos/sem-categoria-verificada/discovery-world-353a26e559d62d3a.webp",
+    "/assets/channels/disney-1-0f8ecf3b73b6a080.webp": "/tv/logos/sem-categoria-verificada/disney-1-0f8ecf3b73b6a080.webp",
+    "/assets/channels/dog-tv-4f9efe2f78022234.webp": "/tv/logos/sem-categoria-verificada/dog-tv-4f9efe2f78022234.webp",
+    "/assets/channels/dumdum-ae3c318996372973.webp": "/tv/logos/sem-categoria-verificada/dumdum-ae3c318996372973.webp",
+    "/assets/channels/e-11bdf5c517ad09d6.webp": "/tv/logos/sem-categoria-verificada/e-11bdf5c517ad09d6.webp",
+    "/assets/channels/es-axn-a9e1b01d0c158ab5.webp": "/tv/logos/sem-categoria-verificada/es-axn-a9e1b01d0c158ab5.webp",
+    "/assets/channels/es-dazn-espana-ea3d7b49a68d0ebb.webp": "/tv/logos/sem-categoria-verificada/es-dazn-espana-ea3d7b49a68d0ebb.webp",
+    "/assets/channels/es-hollywood-c00c272562e3373d.webp": "/tv/logos/sem-categoria-verificada/es-hollywood-c00c272562e3373d.webp",
+    "/assets/channels/es-movistar-accion-78a638b7c443a862.webp": "/tv/logos/sem-categoria-verificada/es-movistar-accion-78a638b7c443a862.webp",
+    "/assets/channels/es-movistar-comedia-52c6904421536db1.webp": "/tv/logos/sem-categoria-verificada/es-movistar-comedia-52c6904421536db1.webp",
+    "/assets/channels/es-movistar-deportes-b5ae728dd2aa9034.webp": "/tv/logos/sem-categoria-verificada/es-movistar-deportes-b5ae728dd2aa9034.webp",
+    "/assets/channels/es-movistar-drama-cae4554d33c89c32.webp": "/tv/logos/sem-categoria-verificada/es-movistar-drama-cae4554d33c89c32.webp",
+    "/assets/channels/es-movistar-estrenos-a09111a7d4e79df3.webp": "/tv/logos/sem-categoria-verificada/es-movistar-estrenos-a09111a7d4e79df3.webp",
+    "/assets/channels/es-movistar-f1-6c71c28bf923e493.webp": "/tv/logos/sem-categoria-verificada/es-movistar-f1-6c71c28bf923e493.webp",
+    "/assets/channels/es-movistar-golf-7d80727d2b0c6117.webp": "/tv/logos/sem-categoria-verificada/es-movistar-golf-7d80727d2b0c6117.webp",
+    "/assets/channels/es-movistar-hits-3feeae6f2479b311.webp": "/tv/logos/sem-categoria-verificada/es-movistar-hits-3feeae6f2479b311.webp",
+    "/assets/channels/es-movistar-la-liga-07458e6a77c38dde.webp": "/tv/logos/sem-categoria-verificada/es-movistar-la-liga-07458e6a77c38dde.webp",
+    "/assets/channels/es-movistar-liga-de-campeones-d53bfd7a83c49e1c.webp": "/tv/logos/sem-categoria-verificada/es-movistar-liga-de-campeones-d53bfd7a83c49e1c.webp",
+    "/assets/channels/es-movistar-plus-72c053609b3a6ce5.webp": "/tv/logos/sem-categoria-verificada/es-movistar-plus-72c053609b3a6ce5.webp",
+    "/assets/channels/es-warner-channel-b766a697764277eb.webp": "/tv/logos/sem-categoria-verificada/es-warner-channel-b766a697764277eb.webp",
+    "/assets/channels/espn-2-9a58356316a7ff15.webp": "/tv/logos/sem-categoria-verificada/espn-2-9a58356316a7ff15.webp",
+    "/assets/channels/espn-3-69ae72c49fa1b975.webp": "/tv/logos/sem-categoria-verificada/espn-3-69ae72c49fa1b975.webp",
+    "/assets/channels/espn-4-65cc3967723f0bc3.webp": "/tv/logos/sem-categoria-verificada/espn-4-65cc3967723f0bc3.webp",
+    "/assets/channels/espn-5-1e2f8013aed79ce3.webp": "/tv/logos/sem-categoria-verificada/espn-5-1e2f8013aed79ce3.webp",
+    "/assets/channels/espn-6-d37f95ddf0cd681e.webp": "/tv/logos/sem-categoria-verificada/espn-6-d37f95ddf0cd681e.webp",
+    "/assets/channels/espn-63084f8468831915.webp": "/tv/logos/sem-categoria-verificada/espn-63084f8468831915.webp",
+    "/assets/channels/eventos-extras-2-1feae31fdf992803.webp": "/tv/logos/sem-categoria-verificada/eventos-extras-2-1feae31fdf992803.webp",
+    "/assets/channels/f1-car-1-16939aad48e19ab7.webp": "/tv/logos/sem-categoria-verificada/f1-car-1-16939aad48e19ab7.webp",
+    "/assets/channels/fashion-tv-3cead55f543d050a.webp": "/tv/logos/sem-categoria-verificada/fashion-tv-3cead55f543d050a.webp",
+    "/assets/channels/fish-tv-9b60f30ee9f32b05.webp": "/tv/logos/sem-categoria-verificada/fish-tv-9b60f30ee9f32b05.webp",
+    "/assets/channels/fla-tv-01a0ad4b3668a1cb.webp": "/tv/logos/sem-categoria-verificada/fla-tv-01a0ad4b3668a1cb.webp",
+    "/assets/channels/flograppling-1-fda14630c8c73d42.webp": "/tv/logos/sem-categoria-verificada/flograppling-1-fda14630c8c73d42.webp",
+    "/assets/channels/food-network-694eacb626d77d04.webp": "/tv/logos/sem-categoria-verificada/food-network-694eacb626d77d04.webp",
+    "/assets/channels/furacao-play-26facaa7508a3bf4.webp": "/tv/logos/sem-categoria-verificada/furacao-play-26facaa7508a3bf4.webp",
+    "/assets/channels/futura-f3f517f1fd2a71d1.webp": "/tv/logos/sem-categoria-verificada/futura-f3f517f1fd2a71d1.webp",
+    "/assets/channels/ge-fast-5bd9ba0c9a36ebec.webp": "/tv/logos/sem-categoria-verificada/ge-fast-5bd9ba0c9a36ebec.webp",
+    "/assets/channels/ge-tv-3108fea67dc88f82.webp": "/tv/logos/sem-categoria-verificada/ge-tv-3108fea67dc88f82.webp",
+    "/assets/channels/globo-eptv-campinas-6ab3fdb7a552d536.webp": "/tv/logos/sem-categoria-verificada/globo-eptv-campinas-6ab3fdb7a552d536.webp",
+    "/assets/channels/globo-news-1f2369fa484401cf.webp": "/tv/logos/sem-categoria-verificada/globo-news-1f2369fa484401cf.webp",
+    "/assets/channels/globoplay-novelas-ee35436f5d438005.webp": "/tv/logos/sem-categoria-verificada/globoplay-novelas-ee35436f5d438005.webp",
+    "/assets/channels/gloob-9d7c9767c0f45147.webp": "/tv/logos/sem-categoria-verificada/gloob-9d7c9767c0f45147.webp",
+    "/assets/channels/gloobinho-97411a29dcbe7ebb.webp": "/tv/logos/sem-categoria-verificada/gloobinho-97411a29dcbe7ebb.webp",
+    "/assets/channels/gnt-8d7f651424b3cc9c.webp": "/tv/logos/sem-categoria-verificada/gnt-8d7f651424b3cc9c.webp",
+    "/assets/channels/goat-1-48c8f2567a2901fd.webp": "/tv/logos/sem-categoria-verificada/goat-1-48c8f2567a2901fd.webp",
+    "/assets/channels/gospel-movies-television-885293ae556f6b12.webp": "/tv/logos/sem-categoria-verificada/gospel-movies-television-885293ae556f6b12.webp",
+    "/assets/channels/h2-fa92d988ab22b9c9.webp": "/tv/logos/sem-categoria-verificada/h2-fa92d988ab22b9c9.webp",
+    "/assets/channels/hbo-2-f2a73c8bf57e6347.webp": "/tv/logos/sem-categoria-verificada/hbo-2-f2a73c8bf57e6347.webp",
+    "/assets/channels/hbo-82f5f08e0f156b4d.webp": "/tv/logos/sem-categoria-verificada/hbo-82f5f08e0f156b4d.webp",
+    "/assets/channels/hbo-family-87a157f12f468d9b.webp": "/tv/logos/sem-categoria-verificada/hbo-family-87a157f12f468d9b.webp",
+    "/assets/channels/hbo-mundi-69278ddceef625bd.webp": "/tv/logos/sem-categoria-verificada/hbo-mundi-69278ddceef625bd.webp",
+    "/assets/channels/hbo-plus-e39f02e765b00bae.webp": "/tv/logos/sem-categoria-verificada/hbo-plus-e39f02e765b00bae.webp",
+    "/assets/channels/hbo-pop-b77644066232ecf3.webp": "/tv/logos/sem-categoria-verificada/hbo-pop-b77644066232ecf3.webp",
+    "/assets/channels/hbo-signature-661a45eed84d7679.webp": "/tv/logos/sem-categoria-verificada/hbo-signature-661a45eed84d7679.webp",
+    "/assets/channels/hbo-xtreme-9a1064d2a24113fe.webp": "/tv/logos/sem-categoria-verificada/hbo-xtreme-9a1064d2a24113fe.webp",
+    "/assets/channels/hgtv-9c4f3187e8614be7.webp": "/tv/logos/sem-categoria-verificada/hgtv-9c4f3187e8614be7.webp",
+    "/assets/channels/history-eb09901329f1eba0.webp": "/tv/logos/sem-categoria-verificada/history-eb09901329f1eba0.webp",
+    "/assets/channels/igreja-mundial-poder-de-deus-7d629499070607e2.webp": "/tv/logos/sem-categoria-verificada/igreja-mundial-poder-de-deus-7d629499070607e2.webp",
+    "/assets/channels/istv-4a6bfdab61932626.webp": "/tv/logos/sem-categoria-verificada/istv-4a6bfdab61932626.webp",
+    "/assets/channels/jovem-pan-news-ef2cf2c3fcb52758.webp": "/tv/logos/sem-categoria-verificada/jovem-pan-news-ef2cf2c3fcb52758.webp",
+    "/assets/channels/lifetime-fcc6a9fed97db28c.webp": "/tv/logos/sem-categoria-verificada/lifetime-fcc6a9fed97db28c.webp",
+    "/assets/channels/liga-futsal-1-1449a53b727e1721.webp": "/tv/logos/sem-categoria-verificada/liga-futsal-1-1449a53b727e1721.webp",
+    "/assets/channels/malhacao-fast-ee27deabf2ad12a1.webp": "/tv/logos/sem-categoria-verificada/malhacao-fast-ee27deabf2ad12a1.webp",
+    "/assets/channels/max-1-dcd9fcf4288ba4c7.webp": "/tv/logos/sem-categoria-verificada/max-1-dcd9fcf4288ba4c7.webp",
+    "/assets/channels/megapix-e2176dea29196a70.webp": "/tv/logos/sem-categoria-verificada/megapix-e2176dea29196a70.webp",
+    "/assets/channels/modo-viagem-cb13de24d49c4b23.webp": "/tv/logos/sem-categoria-verificada/modo-viagem-cb13de24d49c4b23.webp",
+    "/assets/channels/mr-olympia-ef997a5589570bef.webp": "/tv/logos/sem-categoria-verificada/mr-olympia-ef997a5589570bef.webp",
+    "/assets/channels/multishow-cb693302e0839ee1.webp": "/tv/logos/sem-categoria-verificada/multishow-cb693302e0839ee1.webp",
+    "/assets/channels/music-box-f29ced71760ab6dd.webp": "/tv/logos/sem-categoria-verificada/music-box-f29ced71760ab6dd.webp",
+    "/assets/channels/musicas-classicas-24h-d23175032fc85028.webp": "/tv/logos/sem-categoria-verificada/musicas-classicas-24h-d23175032fc85028.webp",
+    "/assets/channels/nba-a-7e17b2ede3c174b7.webp": "/tv/logos/sem-categoria-verificada/nba-a-7e17b2ede3c174b7.webp",
+    "/assets/channels/nfl-01-6f127d068984f14c.webp": "/tv/logos/sem-categoria-verificada/nfl-01-6f127d068984f14c.webp",
+    "/assets/channels/nhk-02a879de121e7d23.webp": "/tv/logos/sem-categoria-verificada/nhk-02a879de121e7d23.webp",
+    "/assets/channels/novo-tempo-ebff1fdecd214b5d.webp": "/tv/logos/sem-categoria-verificada/novo-tempo-ebff1fdecd214b5d.webp",
+    "/assets/channels/off-5a705416b2ca11d9.webp": "/tv/logos/sem-categoria-verificada/off-5a705416b2ca11d9.webp",
+    "/assets/channels/onefootball-1-2beaaeed5b4f7ac3.webp": "/tv/logos/sem-categoria-verificada/onefootball-1-2beaaeed5b4f7ac3.webp",
+    "/assets/channels/pai-eterno-3e71794aa1989a2d.webp": "/tv/logos/sem-categoria-verificada/pai-eterno-3e71794aa1989a2d.webp",
+    "/assets/channels/paramount-1-022e52bcfe256883.webp": "/tv/logos/sem-categoria-verificada/paramount-1-022e52bcfe256883.webp",
+    "/assets/channels/premiere-2-a5d8e6551ad8f2e8.webp": "/tv/logos/sem-categoria-verificada/premiere-2-a5d8e6551ad8f2e8.webp",
+    "/assets/channels/prime-box-ea2941c5f24bd34f.webp": "/tv/logos/sem-categoria-verificada/prime-box-ea2941c5f24bd34f.webp",
+    "/assets/channels/rcn67-6f3fd34dd1477a36.webp": "/tv/logos/sem-categoria-verificada/rcn67-6f3fd34dd1477a36.webp",
+    "/assets/channels/record-ndtv-itajai-946dcd234e9c19d9.webp": "/tv/logos/sem-categoria-verificada/record-ndtv-itajai-946dcd234e9c19d9.webp",
+    "/assets/channels/record-tv-ndtv-joinville-6d2f96025dc57ac7.webp": "/tv/logos/sem-categoria-verificada/record-tv-ndtv-joinville-6d2f96025dc57ac7.webp",
+    "/assets/channels/record-tv-news-522c5bad156ddfc1.webp": "/tv/logos/sem-categoria-verificada/record-tv-news-522c5bad156ddfc1.webp",
+    "/assets/channels/record-tv-pajucara-al-a6803e4997e79a7f.webp": "/tv/logos/sem-categoria-verificada/record-tv-pajucara-al-a6803e4997e79a7f.webp",
+    "/assets/channels/red-bull-tv-d32b73cb8c5e8ac0.webp": "/tv/logos/sem-categoria-verificada/red-bull-tv-d32b73cb8c5e8ac0.webp",
+    "/assets/channels/rede-brasil-701f343f9f53e7b9.webp": "/tv/logos/sem-categoria-verificada/rede-brasil-701f343f9f53e7b9.webp",
+    "/assets/channels/rede-genesis-fec024b547356657.webp": "/tv/logos/sem-categoria-verificada/rede-genesis-fec024b547356657.webp",
+    "/assets/channels/rede-gospel-8059b489c52050d7.webp": "/tv/logos/sem-categoria-verificada/rede-gospel-8059b489c52050d7.webp",
+    "/assets/channels/rede-mais-familia-fhd-8aa11a01d69a1cdb.webp": "/tv/logos/sem-categoria-verificada/rede-mais-familia-fhd-8aa11a01d69a1cdb.webp",
+    "/assets/channels/rede-minas-b60cc832abde117e.webp": "/tv/logos/sem-categoria-verificada/rede-minas-b60cc832abde117e.webp",
+    "/assets/channels/rede-seculo-21-5cbe7f985720185d.webp": "/tv/logos/sem-categoria-verificada/rede-seculo-21-5cbe7f985720185d.webp",
+    "/assets/channels/rede-super-5e01da3399cac61c.webp": "/tv/logos/sem-categoria-verificada/rede-super-5e01da3399cac61c.webp",
+    "/assets/channels/rede-tv-2f7c44f3a8827c3d.webp": "/tv/logos/sem-categoria-verificada/rede-tv-2f7c44f3a8827c3d.webp",
+    "/assets/channels/rede-vida-a76c89fdb08f6821.webp": "/tv/logos/sem-categoria-verificada/rede-vida-a76c89fdb08f6821.webp",
+    "/assets/channels/rit-42ad33167e14d533.webp": "/tv/logos/sem-categoria-verificada/rit-42ad33167e14d533.webp",
+    "/assets/channels/sabor-e-arte-b2e89ec3b467280c.webp": "/tv/logos/sem-categoria-verificada/sabor-e-arte-b2e89ec3b467280c.webp",
+    "/assets/channels/sbt-amazonas-72111b0657ef289d.webp": "/tv/logos/sem-categoria-verificada/sbt-amazonas-72111b0657ef289d.webp",
+    "/assets/channels/sbt-novelas-c8f057cc521f3b22.webp": "/tv/logos/sem-categoria-verificada/sbt-novelas-c8f057cc521f3b22.webp",
+    "/assets/channels/sbt-scc-1-bb36d19add624472.webp": "/tv/logos/sem-categoria-verificada/sbt-scc-1-bb36d19add624472.webp",
+    "/assets/channels/sbt-tv-ponta-verde-85e692115210e6c5.webp": "/tv/logos/sem-categoria-verificada/sbt-tv-ponta-verde-85e692115210e6c5.webp",
+    "/assets/channels/sbt-tv-sim-es-63d687fe272996bf.webp": "/tv/logos/sem-categoria-verificada/sbt-tv-sim-es-63d687fe272996bf.webp",
+    "/assets/channels/sbt-vitoriosa-532b5cf785620dda.webp": "/tv/logos/sem-categoria-verificada/sbt-vitoriosa-532b5cf785620dda.webp",
+    "/assets/channels/sony-a0ce3862bcd77c5a.webp": "/tv/logos/sem-categoria-verificada/sony-a0ce3862bcd77c5a.webp",
+    "/assets/channels/sony-movies-1e00b8ff0f485854.webp": "/tv/logos/sem-categoria-verificada/sony-movies-1e00b8ff0f485854.webp",
+    "/assets/channels/space-84d45d521904765a.webp": "/tv/logos/sem-categoria-verificada/space-84d45d521904765a.webp",
+    "/assets/channels/sportv-2-778fb348e56cf1e2.webp": "/tv/logos/sem-categoria-verificada/sportv-2-778fb348e56cf1e2.webp",
+    "/assets/channels/sportv-3-a4ae8f00fb553347.webp": "/tv/logos/sem-categoria-verificada/sportv-3-a4ae8f00fb553347.webp",
+    "/assets/channels/sportv-4-d13989cec10dd5e4.webp": "/tv/logos/sem-categoria-verificada/sportv-4-d13989cec10dd5e4.webp",
+    "/assets/channels/sportv-4bf4fc21f649bc9b.webp": "/tv/logos/sem-categoria-verificada/sportv-4bf4fc21f649bc9b.webp",
+    "/assets/channels/sporty-net-1-ec7beea22c77615f.webp": "/tv/logos/sem-categoria-verificada/sporty-net-1-ec7beea22c77615f.webp",
+    "/assets/channels/studio-universal-4fe15124ec2980b6.webp": "/tv/logos/sem-categoria-verificada/studio-universal-4fe15124ec2980b6.webp",
+    "/assets/channels/tcm-8883356ec5789c5f.webp": "/tv/logos/sem-categoria-verificada/tcm-8883356ec5789c5f.webp",
+    "/assets/channels/telecine-action-leg-555b57d8d78ad7ac.webp": "/tv/logos/sem-categoria-verificada/telecine-action-leg-555b57d8d78ad7ac.webp",
+    "/assets/channels/telecine-cult-80002f9a521d2992.webp": "/tv/logos/sem-categoria-verificada/telecine-cult-80002f9a521d2992.webp",
+    "/assets/channels/telecine-fun-d7a270bb1c0fb85a.webp": "/tv/logos/sem-categoria-verificada/telecine-fun-d7a270bb1c0fb85a.webp",
+    "/assets/channels/telecine-pipoca-45ed5fe8971e177f.webp": "/tv/logos/sem-categoria-verificada/telecine-pipoca-45ed5fe8971e177f.webp",
+    "/assets/channels/telecine-premium-fe908061a6d44c7b.webp": "/tv/logos/sem-categoria-verificada/telecine-premium-fe908061a6d44c7b.webp",
+    "/assets/channels/telecine-touch-826b53da3f3df503.webp": "/tv/logos/sem-categoria-verificada/telecine-touch-826b53da3f3df503.webp",
+    "/assets/channels/tl-novelas-ba8b173701e7f6c9.webp": "/tv/logos/sem-categoria-verificada/tl-novelas-ba8b173701e7f6c9.webp",
+    "/assets/channels/tlc-eae2ce22ede9145d.webp": "/tv/logos/sem-categoria-verificada/tlc-eae2ce22ede9145d.webp",
+    "/assets/channels/tnt-1f6cd7ba3b61fba8.webp": "/tv/logos/sem-categoria-verificada/tnt-1f6cd7ba3b61fba8.webp",
+    "/assets/channels/tnt-novelas-fb1985c6e45e1f1b.webp": "/tv/logos/sem-categoria-verificada/tnt-novelas-fb1985c6e45e1f1b.webp",
+    "/assets/channels/tnt-series-d5707c8f8d9aae8c.webp": "/tv/logos/sem-categoria-verificada/tnt-series-d5707c8f8d9aae8c.webp",
+    "/assets/channels/tooncast-c502791776896a42.webp": "/tv/logos/sem-categoria-verificada/tooncast-c502791776896a42.webp",
+    "/assets/channels/trace-brazuca-abc6a86ed1ec3e17.webp": "/tv/logos/sem-categoria-verificada/trace-brazuca-abc6a86ed1ec3e17.webp",
+    "/assets/channels/travel-box-8dd19b4c7d228257.webp": "/tv/logos/sem-categoria-verificada/travel-box-8dd19b4c7d228257.webp",
+    "/assets/channels/tv-a-critica-531b938a70bc03ee.webp": "/tv/logos/sem-categoria-verificada/tv-a-critica-531b938a70bc03ee.webp",
+    "/assets/channels/tv-aparecida-f21aaf27a0b2411f.webp": "/tv/logos/sem-categoria-verificada/tv-aparecida-f21aaf27a0b2411f.webp",
+    "/assets/channels/tv-brasil-1cf4a97972b8f144.webp": "/tv/logos/sem-categoria-verificada/tv-brasil-1cf4a97972b8f144.webp",
+    "/assets/channels/tv-camara-9205ce342f8458d7.webp": "/tv/logos/sem-categoria-verificada/tv-camara-9205ce342f8458d7.webp",
+    "/assets/channels/tv-cidade-verde-8b2b490c6d6acd5f.webp": "/tv/logos/sem-categoria-verificada/tv-cidade-verde-8b2b490c6d6acd5f.webp",
+    "/assets/channels/tv-cultura-a57783693c025301.webp": "/tv/logos/sem-categoria-verificada/tv-cultura-a57783693c025301.webp",
+    "/assets/channels/tv-diario-593b7409244c4873.webp": "/tv/logos/sem-categoria-verificada/tv-diario-593b7409244c4873.webp",
+    "/assets/channels/tv-escola-c2136066de59eff8.webp": "/tv/logos/sem-categoria-verificada/tv-escola-c2136066de59eff8.webp",
+    "/assets/channels/tv-evangelizar-76d2d4a6f3b016ac.webp": "/tv/logos/sem-categoria-verificada/tv-evangelizar-76d2d4a6f3b016ac.webp",
+    "/assets/channels/tv-feliz-8d40fa353f4ad6be.webp": "/tv/logos/sem-categoria-verificada/tv-feliz-8d40fa353f4ad6be.webp",
+    "/assets/channels/tv-justica-1e72fc9d49113c53.webp": "/tv/logos/sem-categoria-verificada/tv-justica-1e72fc9d49113c53.webp",
+    "/assets/channels/tv-maanaim-f4d89354c5d744e1.webp": "/tv/logos/sem-categoria-verificada/tv-maanaim-f4d89354c5d744e1.webp",
+    "/assets/channels/tv-nordestina-da20356ede5c9598.webp": "/tv/logos/sem-categoria-verificada/tv-nordestina-da20356ede5c9598.webp",
+    "/assets/channels/tv-nsports-1-d260f1371831ea82.webp": "/tv/logos/sem-categoria-verificada/tv-nsports-1-d260f1371831ea82.webp",
+    "/assets/channels/tv-padre-cicero-51fbee065587a508.webp": "/tv/logos/sem-categoria-verificada/tv-padre-cicero-51fbee065587a508.webp",
+    "/assets/channels/tv-plenitude-518f497f6d5f8a0a.webp": "/tv/logos/sem-categoria-verificada/tv-plenitude-518f497f6d5f8a0a.webp",
+    "/assets/channels/tv-ra-tim-bum-55445931260003a1.webp": "/tv/logos/sem-categoria-verificada/tv-ra-tim-bum-55445931260003a1.webp",
+    "/assets/channels/tv-rio-grande-7a8e7436cd473e5d.webp": "/tv/logos/sem-categoria-verificada/tv-rio-grande-7a8e7436cd473e5d.webp",
+    "/assets/channels/tv-senado-80bbee2730b5a858.webp": "/tv/logos/sem-categoria-verificada/tv-senado-80bbee2730b5a858.webp",
+    "/assets/channels/tve-bahia-fde9ad5e6c8bb7ce.webp": "/tv/logos/sem-categoria-verificada/tve-bahia-fde9ad5e6c8bb7ce.webp",
+    "/assets/channels/ufc-61a8b667eb7f26a0.webp": "/tv/logos/sem-categoria-verificada/ufc-61a8b667eb7f26a0.webp",
+    "/assets/channels/universal-tv-89e833e53e0d7448.webp": "/tv/logos/sem-categoria-verificada/universal-tv-89e833e53e0d7448.webp",
+    "/assets/channels/usa-network-d56effc0a6a6b821.webp": "/tv/logos/sem-categoria-verificada/usa-network-d56effc0a6a6b821.webp",
+    "/assets/channels/xsports-475a2a74bd727822.webp": "/tv/logos/sem-categoria-verificada/xsports-475a2a74bd727822.webp",
+    "/assets/channels/zapping-sports-d5738c297a24caf8.webp": "/tv/logos/sem-categoria-verificada/zapping-sports-d5738c297a24caf8.webp"
+  },
+  "provenance": {
+    "logoSource": "wplay-p2p-apk-11.9.0d",
+    "idNamespace": "native-channel-id",
+    "sourceManifestSha256": "42b387c383f7dfdb93916f72f91b4f5bcc2dee879ccf4189b12252b93ebc1b75",
+    "logoSnapshotAt": "2026-10-14T00:55:05.972Z",
+    "categorySource": "unavailable",
+    "categorySnapshotAt": null,
+    "categoryEvidence": "no-verified-category-snapshot"
+  },
+  "stats": {
+    "sourceProvider": "wplay-p2p-apk-11.9.0d",
+    "idNamespace": "native-channel-id",
+    "generatedAt": "2026-10-14T00:55:05.972Z",
+    "catalogChannels": 760,
+    "sourceGroups": 217,
+    "channelsWithoutSource": 0,
+    "downloadedSources": 204,
+    "failedDownloads": 13,
+    "optimizedSources": 204,
+    "failedOptimizations": 0,
+    "uniqueLogos": 202,
+    "deduplicatedSources": 2,
+    "channelsCovered": 746,
+    "channelsWithoutLocalLogo": 14,
+    "sourceBytes": 3581834,
+    "optimizedBytes": 1428898,
+    "maxDimension": 256,
+    "quality": 84,
+    "method": 6,
+    "concurrency": 4,
+    "downloadTimeoutMs": 15000,
+    "maxDownloadBytes": 5242880,
+    "organizedLogos": 202,
+    "verifiedCategories": 0,
+    "categorizedChannels": 0,
+    "unverifiedChannels": 746,
+    "primaryCategoryLogos": 0,
+    "unclassifiedLogos": 202,
+    "duplicateCategoryImageBytes": 0,
+    "legacyFilesRetained": true
+  }
+}
