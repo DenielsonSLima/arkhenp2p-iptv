@@ -2,9 +2,9 @@
 
 ## MEM-SHARED-021 — Login aceito e sessão ausente na Vercel
 
-Estado: publicado e conferido online; indisponibilidade cloud recuperada. Data:18/10/2026.
+Estado: nova correção em validação; cloud recuperada. Data:18/10/2026.
 
-Map por processo perdia sessão; checkpoint privado AESGCM/lease/fence resolveu distribuição, mas DTO parental completo excedia teto e fila serializava leituras.2a42ea1 compacta provas e libera lease antes de metadata/capas, valida epoch antes de flush e mantém ações mutáveis exclusivas;74 testes dirigidos. Supabase DB/Auth/RESTUNHEALTHY também causou timeout, depois retornou saudável. Safari confirmou entrada, Filmes/Séries e capas online após12:04BRT; amostra de sessões até7.329B, semleases ativas. Fonte:[incidente, evidência e limites](../vercel-session-incident-20261018.md). Auth transitório:[limites](../auth-movie-transient-failures-20261018.md).
+Checkpoint AESGCM/lease/fence preserva sessão entre instâncias; DTO parental mínimo evita excesso. Cloud recuperou, Safari confirmou catálogos após12:04BRT, mas15:19–15:23:30UTC mostrouBUSY em TV/capas: liberar lease ainda exigia adquiri-la antes. Nova RPCread service-only lê checkpoint semlease; epoch validado antes de resposta/stream. Somente segmentos registrados de duração positiva leem semwriter; manifestos/seleção/Auth/PIN continuam exclusivos. Falha de segmento mescla cooldown no DTO fresco, nunca no snapshot antigo. Reprodução online desta correção ainda pendente. Fonte:[incidente](../vercel-session-incident-20261018.md); [Auth transitório](../auth-movie-transient-failures-20261018.md).
 
 ## MEM-SHARED-020 — Ícones do Safari
 

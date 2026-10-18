@@ -53,10 +53,12 @@ function operation(envelope) {
     arkhen_runtime_session_acquire: [...common, 'p_create'],
     arkhen_runtime_session_renew: [...common, 'p_fence'],
     arkhen_runtime_session_commit: [...common, 'p_fence', 'p_revision', 'p_cipher', 'p_release', 'p_media_epoch'],
-    arkhen_runtime_session_media: ['p_session_hash', 'p_media_epoch']
+    arkhen_runtime_session_media: ['p_session_hash', 'p_media_epoch'],
+    arkhen_runtime_session_read: ['p_session_hash']
   };
   if (!Object.hasOwn(allowed, rpc) || !keys(args, allowed[rpc])
     || typeof args.p_session_hash !== 'string' || !HASH.test(args.p_session_hash)) throw failure(400, 'GATEWAY_ARGUMENTS_REJECTED');
+  if (rpc === 'arkhen_runtime_session_read') return {rpc, args};
   if (rpc === 'arkhen_runtime_session_media') {
     if (typeof args.p_media_epoch !== 'string' || !HASH.test(args.p_media_epoch)) throw failure(400, 'GATEWAY_ARGUMENTS_REJECTED');
     return {rpc, args};
@@ -74,6 +76,12 @@ function operation(envelope) {
 }
 
 function validResult(rpc, value) {
+  if (rpc === 'arkhen_runtime_session_read') {
+    if (keys(value, ['missing']) && value.missing === true) return true;
+    return keys(value, ['cipher', 'mediaEpoch', 'expiresAt', 'revision']) && cipher(value.cipher)
+      && (value.mediaEpoch === null || typeof value.mediaEpoch === 'string' && HASH.test(value.mediaEpoch))
+      && iso(value.expiresAt) && integer(value.revision);
+  }
   if (rpc === 'arkhen_runtime_session_media') return keys(value, ['ok']) && typeof value.ok === 'boolean';
   if (rpc === 'arkhen_runtime_session_acquire') {
     if (keys(value, ['missing']) && value.missing === true) return true;

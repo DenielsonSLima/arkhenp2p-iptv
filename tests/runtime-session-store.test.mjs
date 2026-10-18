@@ -27,6 +27,7 @@ class FakeCloud{
   async runtimeSessionRPC(operation,args){
     this.calls.push({operation,hasCipher:args.p_cipher!=null,release:args.p_release});
     const row=this.row,now=Date.now();
+    if(operation==='read')return row.cipher?{cipher:row.cipher,mediaEpoch:row.mediaEpoch??null}:{missing:true};
     if(operation==='acquire'){
       if(row.owner&&row.owner!==args.p_owner&&row.leaseUntil>now){this.busyCount++;this.busy.resolve();return {busy:true,retryAfterMs:250};}
       row.owner=args.p_owner;row.fence++;row.leaseUntil=now+90000;
@@ -185,4 +186,130 @@ test('readonly validation transport failure fails closed without releasing its p
   assert.equal(error.status,503);assert.equal(error.code,'RUNTIME_SESSION_UNAVAILABLE');
   assert.deepEqual(res.json(),{code:'RUNTIME_SESSION_UNAVAILABLE'});assert.equal(res.ends,1);assert.equal(res.getHeader('location'),undefined);
   assert.equal(captures,1);assert.equal(cloud.row.cipher,previous);assert.equal(cloud.row.owner,null);
+});
+
+const seedAuthenticated=async cloud=>{
+  await seed(cloud,authenticatedState());
+  await new RuntimeSessionStore({cloud}).run(request(),new FakeResponse(),readOptions,async()=>{});
+  assert.match(cloud.row.mediaEpoch,/^[a-f0-9]{64}$/);
+  cloud.calls.length=0;cloud.busyCount=0;
+};
+
+test('twenty direct readers bypass a held writer lease without acquiring or changing its durable state',async()=>{
+  const cloud=new FakeCloud();await seedAuthenticated(cloud);
+  const entered=deferred(),release=deferred(),writerResponse=new FakeResponse();
+  const writer=new RuntimeSessionStore({cloud}).run(request(),writerResponse,readOptions,async state=>{
+    state.counter=9;state.events.push('writer');entered.resolve();await release.promise;reply(writerResponse,{written:true});
+  });
+  await entered.promise;let captures=0;
+  try{
+    const responses=await Promise.all(Array.from({length:20},async(_,index)=>{
+      const res=new FakeResponse();
+      await new RuntimeSessionStore({cloud}).run(request(),res,{...readOptions,readOnly:true,capture:state=>{captures++;return state;}},async state=>{
+        const context=runtimeSessionContext();assert.equal(context.readOnly,true);context.assert();
+        assert.equal(state.client.playback,null);assert.equal(state.counter,0);
+        await Promise.resolve();state.counter=100+index;state.events.push('local-read');reply(res,{index,seenCounter:0});
+      });
+      return res;
+    }));
+    assert.equal(captures,0);assert.equal(cloud.busyCount,0);assert.notEqual(cloud.row.owner,null);
+    assert.equal(cloud.calls.filter(call=>call.operation==='read').length,20);
+    assert.equal(cloud.calls.filter(call=>call.operation==='acquire').length,1);
+    assert.equal(cloud.calls.filter(call=>call.operation==='commit').length,0);
+    for(let index=0;index<responses.length;index++){
+      assert.equal(responses[index].statusCode,200);assert.deepEqual(responses[index].json(),{index,seenCounter:0});
+    }
+  }finally{release.resolve();await writer;}
+  const durable=await new RuntimeSessionStore({cloud}).openCipher(cloud.row.cipher,sessionHash);
+  assert.equal(durable.counter,9);assert.deepEqual(durable.events,['writer']);
+});
+
+test('a writer PIN or logout change revokes direct readers before their body or redirect can escape',async t=>{
+  for(const change of ['pin','logout'])await t.test(change,async()=>{
+    const cloud=new FakeCloud();await seedAuthenticated(cloud);
+    const entered=deferred(),finish=deferred(),res=new FakeResponse();let captures=0;
+    const reader=failedResponse(new RuntimeSessionStore({cloud}),request(),res,{...readOptions,readOnly:true,capture:state=>{captures++;return state;}},async()=>{
+      assert.equal(runtimeSessionContext().readOnly,true);entered.resolve();await finish.promise;
+      res.writeHead(200,{'Location':'/stale-direct-reader','Content-Length':'1000'});res.end(JSON.stringify({privateOldData:true}));
+    });
+    await entered.promise;
+    await new RuntimeSessionStore({cloud}).run(request(),new FakeResponse(),readOptions,async state=>{
+      if(change==='pin')state.parental.unlocked=true;
+      else{state.authGeneration++;state.client=null;state.loggedOut=true;}
+    });
+    finish.resolve();const error=await reader;
+    assert.equal(error.code,'RUNTIME_SESSION_SCOPE_CHANGED');assert.equal(res.statusCode,503);
+    assert.deepEqual(res.json(),{code:'RUNTIME_SESSION_SCOPE_CHANGED'});assert.equal(res.getHeader('location'),undefined);
+    assert.equal(res.getHeader('content-length'),undefined);assert.equal(captures,0);assert.equal(cloud.busyCount,0);
+  });
+});
+
+test('a false reader selector re-acquires a lease and restores the later writer state before executing',async()=>{
+  const cloud=new FakeCloud();await seedAuthenticated(cloud);
+  const entered=deferred(),finish=deferred(),writerResponse=new FakeResponse(),fallbackResponse=new FakeResponse();
+  const writer=new RuntimeSessionStore({cloud}).run(request(),writerResponse,readOptions,async state=>{
+    state.counter=5;entered.resolve();await finish.promise;reply(writerResponse,{written:true});
+  });
+  await entered.promise;const selectedStates=[];
+  const fallback=new RuntimeSessionStore({cloud}).run(request(),fallbackResponse,{...readOptions,readOnly:state=>{
+    selectedStates.push(state);return false;
+  }},async state=>{
+    assert.equal(runtimeSessionContext().readOnly,false);assert.notEqual(state,selectedStates[0]);
+    assert.equal(state.counter,5);state.counter++;reply(fallbackResponse,{counter:state.counter});
+  });
+  await cloud.busy.promise;finish.resolve();await Promise.all([writer,fallback]);
+  assert.ok(selectedStates.length>=1);assert.equal(selectedStates[0].counter,0);assert.equal(cloud.calls.filter(call=>call.operation==='read').length,1);
+  assert.ok(cloud.calls.filter(call=>call.operation==='acquire').length>=2);assert.equal(fallbackResponse.statusCode,200);
+  assert.deepEqual(fallbackResponse.json(),{counter:6});
+  assert.equal((await new RuntimeSessionStore({cloud}).openCipher(cloud.row.cipher,sessionHash)).counter,6);
+});
+
+test('a missing direct-reader checkpoint remains anonymous without taking a lease',async()=>{
+  const cloud=new FakeCloud(),res=new FakeResponse();let captures=0;
+  await new RuntimeSessionStore({cloud}).run(request(),res,{...options,readOnly:true,capture:state=>{captures++;return state;}},async state=>{
+    assert.equal(state.client,undefined);reply(res,{connected:false});
+  });
+  assert.deepEqual(res.json(),{connected:false});assert.equal(captures,0);
+  assert.deepEqual(cloud.calls.map(call=>call.operation),['read']);assert.equal(cloud.row.owner,null);
+});
+
+test('a connected direct reader without a valid persisted epoch fails closed before its operation',async()=>{
+  const cloud=new FakeCloud();await seed(cloud,authenticatedState());cloud.row.mediaEpoch='a'.repeat(64);const res=new FakeResponse();
+  await assert.rejects(new RuntimeSessionStore({cloud}).run(request(),res,{...readOptions,readOnly:true},()=>assert.fail('Unvalidated reader ran')),{status:503});
+  assert.equal(res.ends,0);assert.equal(cloud.calls.some(call=>call.operation==='acquire'),false);
+});
+
+test('a legacy null epoch upgrades under a writer lease instead of granting an unvalidated direct read',async()=>{
+  const cloud=new FakeCloud();await seed(cloud,authenticatedState());const res=new FakeResponse();
+  await new RuntimeSessionStore({cloud}).run(request(),res,{...readOptions,readOnly:true},async()=>{
+    assert.equal(runtimeSessionContext().readOnly,false);assert.notEqual(cloud.row.owner,null);reply(res,{upgraded:true});
+  });
+  assert.deepEqual(res.json(),{upgraded:true});assert.equal(cloud.calls.filter(call=>call.operation==='read').length,1);
+  assert.equal(cloud.calls.filter(call=>call.operation==='acquire').length,1);assert.match(cloud.row.mediaEpoch,/^[a-f0-9]{64}$/);
+});
+
+test('a direct streaming reader validates before headers and retains revocation protection while its body is open',async()=>{
+  const cloud=new FakeCloud();await seedAuthenticated(cloud);
+  const started=deferred(),revoked=deferred(),store=new RuntimeSessionStore({cloud}),res=new FakeResponse();let captures=0,revokedBySignal=false;
+  // The production guard unrefs its timer. This fixture has no open HTTP
+  // socket to keep Node alive, so retain a bounded test-only deadline.
+  const guardDeadline=setTimeout(()=>revoked.resolve(),5000);
+  const streaming=store.run(request(),res,{...readOptions,readOnly:true,capture:state=>{captures++;return state;}},async()=>{
+    const context=runtimeSessionContext();assert.equal(context.readOnly,true);
+    await context.beforeStreaming();
+    assert.ok(cloud.calls.some(call=>call.operation==='media'));assert.equal(res.headersSent,false);
+    assert.equal(store.readers.size,1);
+    context.signal.addEventListener('abort',()=>{revokedBySignal=true;res.destroyed=true;revoked.resolve();},{once:true});
+    res.writeHead(200,{'Content-Type':'video/mp4'});res.write('authorized initial bytes');started.resolve();
+    await revoked.promise;context.assert();assert.fail('Revoked streaming reader continued');
+  });
+  const rejected=assert.rejects(streaming,{status:503});
+  await started.promise;
+  await new RuntimeSessionStore({cloud}).run(request(),new FakeResponse(),readOptions,async state=>{state.parental.unlocked=true;});
+  try{await rejected;}finally{clearTimeout(guardDeadline);}
+  assert.equal(revokedBySignal,true);
+  assert.equal(captures,0);assert.equal(res.destroyed,true);assert.equal(res.ends,0);
+  assert.equal(Buffer.concat(res.body).toString(),'authorized initial bytes');assert.equal(store.readers.size,0);
+  assert.equal(cloud.busyCount,0);assert.equal(cloud.calls.filter(call=>call.operation==='read').length,1);
+  assert.ok(cloud.calls.filter(call=>call.operation==='media').length>=2);
 });
