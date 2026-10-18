@@ -1,16 +1,18 @@
 # TV ao vivo
 
-17/10/2026 — Contrato local: [segmentos OTT com token rotativo](../tv-web-segment-identity-20261017.md). Bytes iguais e URIs instáveis comprovados; correção ativada. Continuidade audiovisual pendente.
+## MEM-LIVE-028 — Metadados e relógio no rodapé
+
+Estado: implementação local; inspeção/sintaxe, sem testes/navegador. Data:18/10/2026.
+
+TV mostra número configurado, programa (ou canal sem EPG), resolução medida atual e relógio local HH:mm nos controles. Não usar ranking de qualidade como medição; limpar dimensões durante troca. Relógio suspende oculto e encerra com player. Três agentes. Fonte:[decisões e arquivos](../tv-player-metadata-clock-20261018.md).
 
 ## MEM-LIVE-027 — Cinco canais na Home e abertura de TV
 
-Estado: código local ativado/testes sintéticos; SQL anterior aplicada/readback. Data: 17/10/2026 UTC.
+Estado: código local ativado/testes sintéticos; SQL aplicada/readback anterior. Data:17/10/2026UTC.
 
-Um destaque semanal+até4recentes; Globo padrão sem histórico inventado, preservando região/filtros. Pedido posterior remove prévia: logo, borda branca e apenas programa atual. Logos mantêm a área3:2 exigida por logoGeometry (84×56/63×42); cálculo conferido em cinco assets, sem navegador. EPG até5IDs usa grade compartilhada. Home reutiliza catálogo completo durante refresh; RPC revalida publicação/filtros/conta. Erro mantém cards e aviso compacto.
+Destaque semanal+até4recentes, Globo padrão sem histórico inventado; região/filtros preservados. Pedido posterior remove prévia: logo, borda branca, programa atual. Área3:2 logos conferida em cinco assets sem navegador. EPG até5IDs compartilhado; RPC revalida publicação/filtros/conta. Erro conserva cards e aviso.
 
-Fontes coalescidas, prazo40s e STOP obrigatório. Validação parental reutiliza catálogo nativo sem consulta cloud/login extra;39regressões passaram. Ativada: metadados reais em5–6s na primeira consulta,2–5ms na repetição; abertura fria/estabilidade Safari pendentes. [Evidências](../tv-source-discovery-20261017.md).
-
-Fontes: [revisão atual](../tv-playback-recovery-20261017.md), [SQL/rollout anterior](../home-tv-five-cards-20261017.md). Versão remota21613 corresponde ao arquivo20723; SQL não mudou nesta revisão.
+Fontes coalescidas40s/STOP; parental reutiliza catálogo nativo sem cloud/login extra.39regressões; metadados reais5–6s frio,2–5ms repetição. Abertura fria/estabilidade Safari pendentes. Fontes:[revisão](../tv-playback-recovery-20261017.md), [descoberta](../tv-source-discovery-20261017.md), [SQL/rollout](../home-tv-five-cards-20261017.md). Versão remota21613 corresponde ao arquivo20723, SQL sem mudança.
 
 ## MEM-LIVE-026 — Destaque semanal da Home por intervalos datados
 

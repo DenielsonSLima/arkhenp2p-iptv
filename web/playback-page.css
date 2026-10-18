@@ -177,7 +177,7 @@ body.player-page {
   margin-bottom: 13px;
 }
 
-.player-page .ip-live-program-line span:last-child {
+.player-page .ip-live-program-time {
   color: #d3dbe6;
 }
 
@@ -399,8 +399,8 @@ body.player-page {
 }
 .player-page .ip-live-information :is(.ip-schedule, .ip-neighbor-schedule) { gap: 8px; margin-top: 12px; padding-top: 11px; }
 .player-page .ip-live-information .ip-neighbor-schedule { gap: 6px; }
-.player-page .ip-live-program-line span:first-child { font-size: clamp(24px, 2vw, 30px); }
-.player-page .ip-live-program-line span:last-child { font-size: 18px; }
+.player-page :is(.ip-live-program-name, .ip-live-channel-number) { font-size: clamp(24px, 2vw, 30px); }
+.player-page .ip-live-program-time { font-size: 18px; }
 
 @media (max-width: 900px) and (min-width: 651px) {
   .player-page .ip-information.ip-live-information { --ip-channel-gutter: max(84px, calc(env(safe-area-inset-left) + 64px), calc(env(safe-area-inset-right) + 64px)); }
@@ -409,13 +409,13 @@ body.player-page {
   .player-page .ip-information.ip-live-information { padding: max(76px, calc(env(safe-area-inset-top) + 64px)) max(16px, env(safe-area-inset-right), env(safe-area-inset-left)) 23px; }
   .player-page .ip-live-information :is(.ip-schedule, .ip-neighbor-schedule) { display: flex; gap: 6px; margin-top: 10px; padding-top: 8px; }
   .player-page .ip-live-program-line { gap: 12px; margin-bottom: 10px; }
-  .player-page .ip-live-program-line span:first-child { font-size: 18px; }
-  .player-page .ip-live-program-line span:last-child { font-size: 13px; }
+  .player-page :is(.ip-live-program-name, .ip-live-channel-number) { font-size: 18px; }
+  .player-page .ip-live-program-time { font-size: 13px; }
 }
 @media (max-height: 500px) and (orientation: landscape) {
   .player-page .ip-information.ip-live-information { --ip-channel-gutter: max(calc(var(--player-gutter) + 64px), calc(env(safe-area-inset-left) + 64px), calc(env(safe-area-inset-right) + 64px)); padding: max(16px, env(safe-area-inset-top)) var(--ip-channel-gutter) 17px; }
   .player-page .ip-live-information :is(.ip-schedule, .ip-neighbor-schedule) { display: flex; margin-top: 8px; padding-top: 8px; }
   .player-page .ip-live-program-line { margin-bottom: 8px; }
-  .player-page .ip-live-program-line span:first-child { font-size: 18px; }
-  .player-page .ip-live-program-line span:last-child { font-size: 13px; }
+  .player-page :is(.ip-live-program-name, .ip-live-channel-number) { font-size: 18px; }
+  .player-page .ip-live-program-time { font-size: 13px; }
 }

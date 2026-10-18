@@ -10,6 +10,8 @@ import {TVPlayerNavigation} from '../tv/player/navegacao.js';
 import {tvHasPlayableVideo,observeTVPlaybackReadiness} from '../tv/player/estado-media.js';
 import {numberedChannels} from '../tv/player/canais.js';
 import {TVPlayerGuide} from '../tv/player/grade.js';
+import {livePlaybackMetadata} from '../tv/player/metadados.js';
+import {TVPlayerClock} from '../tv/player/relogio.js';
 import {handlePlayerKeydown} from './teclado.js';
 export {numberedChannels, channelNeighbors} from '../tv/player/canais.js';
 
@@ -75,7 +77,10 @@ export class ImmersivePlayer {
 
     this.controls = element('div', 'ip-controls'); this.controls.setAttribute('role', 'group'); this.controls.setAttribute('aria-label', 'Controles do vídeo');
     this.liveTimeline = element('div', 'ip-live-timeline'); this.liveTimeline.hidden = true;
-    const programLine = element('div', 'ip-live-program-line'); this.liveProgramName = element('span'); this.liveProgramTime = element('span'); programLine.append(this.liveProgramName, this.liveProgramTime);
+    const programLine = element('div', 'ip-live-program-line'), programCopy = element('div', 'ip-live-program-copy');
+    this.liveChannelNumber = element('span', 'ip-live-channel-number'); this.liveProgramName = element('span', 'ip-live-program-name');
+    this.liveResolution = element('span', 'ip-live-resolution'); this.liveProgramTime = element('span', 'ip-live-program-time');
+    programCopy.append(this.liveChannelNumber, this.liveProgramName, this.liveResolution); programLine.append(programCopy, this.liveProgramTime);
     this.liveProgress = element('progress', 'ip-live-progress'); this.liveProgress.max = 100; this.liveProgress.value = 0; this.liveProgress.setAttribute('aria-label', 'Tempo do programa atual');
     this.liveTimeline.append(programLine, this.liveProgress);
     this.seekRow = element('div', 'ip-seek-row'); this.seek = element('input', 'ip-seek'); this.seek.type = 'range'; this.seek.min = '0'; this.seek.max = '1'; this.seek.step = '.25'; this.seek.value = '0'; this.seek.disabled = true; this.seek.setAttribute('aria-label', 'Posição no vídeo');
@@ -87,10 +92,11 @@ export class ImmersivePlayer {
     this.volumeControl=new VolumeControl({video:this.video,onChange:value=>this.options.onVolumeChange?.(value),notify:message=>this.options.toast?.(message),onAction:()=>this.reveal()});
     this.volumeButton=this.volumeControl.button;this.volume=this.volumeControl.input;
     const spacer = element('span', 'ip-control-spacer');
+    this.tvClock = new TVPlayerClock();
     this.nextButton = control('Próximo episódio', 'next', () => this.options.onNextEpisode?.()); this.nextButton.hidden = true;
     this.settingsButton = control('Abrir ajustes de reprodução', 'settings', () => { this.tools.hidden = !this.tools.hidden; this.settingsButton.setAttribute('aria-expanded', String(!this.tools.hidden)); this.settingsButton.setAttribute('aria-label', this.tools.hidden ? 'Abrir ajustes de reprodução' : 'Fechar ajustes de reprodução'); this.reveal(); }); this.settingsButton.hidden = true; this.settingsButton.setAttribute('aria-expanded', 'false');
     this.fullscreenButton = control('Entrar em tela cheia', 'expand', () => this.toggleFullscreen());
-    bottom.append(this.playButton, this.live, this.time, this.volumeControl.root, spacer, this.nextButton, this.settingsButton, this.fullscreenButton);
+    bottom.append(this.playButton, this.live, this.time, this.volumeControl.root, spacer, this.tvClock.root, this.nextButton, this.settingsButton, this.fullscreenButton);
     this.controls.append(this.liveTimeline, this.seekRow, bottom);
     this.tools = element('div', 'ip-tools-slot'); this.tools.hidden = true;
     this.root.append(this.loading, this.error, this.info, this.closeButton, this.typed, this.tools, this.controls); this.stage.append(this.root);
@@ -98,12 +104,13 @@ export class ImmersivePlayer {
   bind() {
     for (const event of ['loadstart', 'waiting']) this.listen(this.video, event, () => { if (this.current && !(this.current.awaitingPlay && this.video.paused) && !(event === 'waiting' && this.video.paused)) this.setLoading(true, event === 'waiting' ? this.current.item.kind === 'live' ? 'Aguardando a transmissão' : 'Retomando seu vídeo' : 'Preparando sua sessão'); });
     for (const event of ['loadeddata', 'canplay']) this.listen(this.video, event, () => { if (this.current?.awaitingPlay && this.video.paused) this.setLoading(false); });
-    const playing=()=>{if(!this.current||this.current.failed)return;this.current.awaitingPlay=false;this.error.hidden=true;this.recordStart();this.setLoading(false);this.updateControls();};
+    const playing=()=>{if(!this.current||this.current.failed)return;this.current.mediaMetadataReady=true;this.current.awaitingPlay=false;this.error.hidden=true;this.recordStart();this.setLoading(false);this.updateControls();};
     this.listen(this.video,'playing',()=>{if(this.current?.item.kind!=='live')playing();});
     const disposeReadiness=observeTVPlaybackReadiness({video:this.video,getOwner:()=>this.current?.item.kind==='live'&&!this.current.failed?this.current:null,onReady:playing});
     // bind() also has small event-only fixtures without the full constructor.
     (this.disposers ||= []).push(disposeReadiness);
-    for (const event of ['loadedmetadata', 'durationchange', 'timeupdate', 'progress', 'pause', 'play', 'ended']) this.listen(this.video, event, () => { if (this.current) { this.updateControls(); if (this.video.paused || this.video.ended) this.reveal(); } });
+    for (const event of ['loadstart', 'emptied']) this.listen(this.video, event, () => { if(this.current){this.current.mediaMetadataReady=false;this.updateLiveMetadata();} });
+    for (const event of ['loadedmetadata', 'resize', 'durationchange', 'timeupdate', 'progress', 'pause', 'play', 'ended']) this.listen(this.video, event, () => { if (this.current) { this.updateControls(); if (this.video.paused || this.video.ended) this.reveal(); } });
     // The transport controller owns retries and terminal failures. A media
     // element error during HLS recovery must not create a competing overlay.
     this.listen(this.video, 'error', () => { if(!this.options?.managedErrors)this.setFailure('Leitura do vídeo indisponível. Tente novamente ou escolha outra fonte.'); });
@@ -126,7 +133,8 @@ export class ImmersivePlayer {
     const source = this.channelEntries().find(entry => String(entry.item.id) === String(item.id));
     const startedAt = performance.now();
     const continuing=item.kind==='live'&&continuation&&Number.isFinite(continuation.startedAt)&&Number.isFinite(continuation.loadStartedAt);
-    this.current = {item, episode, channelNumber: channelNumber ?? source?.number ?? null, loading: true, failed: false, startedAt:continuing?continuation.startedAt:startedAt, loadStartedAt:continuing?continuation.loadStartedAt:startedAt, recorded:continuing?Boolean(continuation.recorded):false};
+    this.current = {item, episode, channelNumber: channelNumber ?? source?.number ?? null, mediaMetadataReady:false, loading: true, failed: false, startedAt:continuing?continuation.startedAt:startedAt, loadStartedAt:continuing?continuation.loadStartedAt:startedAt, recorded:continuing?Boolean(continuation.recorded):false};
+    this.tvClock.setActive(item.kind==='live');
     this.programs=initialProgram;
     this.playbackLoader.attach({item, episode});
     if(this.channelSwitchActive)this.playbackLoader.hide({immediate:true});
@@ -144,6 +152,7 @@ export class ImmersivePlayer {
     return {startedAt:current.startedAt,loadStartedAt:current.loading?current.loadStartedAt:performance.now(),recorded:current.recorded};
   }
   reset() {
+    this.tvClock?.reset();
     this.playbackLoader?.reset();
     this.episodeSkip?.reset();
     this.tvNavigation?.reset();this.tvGuide?.reset();
@@ -155,7 +164,7 @@ export class ImmersivePlayer {
   setChannels(channels) {
     this.channels = numberedChannels(channels);
     if (this.current?.item.kind === 'live') { const found = this.channels.find(entry => String(entry.item.id) === String(this.current.item.id)); if (found) this.current.channelNumber = found.number; }
-    this.tvNavigation.sync();this.renderChannelNeighbors();
+    this.tvNavigation.sync();this.renderChannelNeighbors();this.renderProgram();
   }
   setTools(node) { this.tools.replaceChildren(); if (node) this.tools.append(node); this.tools.append(this.episodeSkip.panel); this.tools.hidden = true; this.settingsButton.hidden = !node && !this.current?.episode; this.settingsButton.setAttribute('aria-expanded', 'false'); }
   setEpisodeSequence({episode}) {
@@ -185,9 +194,23 @@ export class ImmersivePlayer {
   renderProgram() {
     if(!this.current)return;
     this.tvGuide.setContext({current:this.current,programs:this.programs});
-    const program=this.current.item.kind==='live'?programWindow(this.programs).current:null;this.liveTimeline.hidden=!program;
+    const live=this.current.item.kind==='live',program=live?programWindow(this.programs).current:null;this.liveTimeline.hidden=!live;
     this.liveTimeline.dataset.stale=String(Boolean(this.programs?.stale));
-    if(program){this.liveProgramName.textContent=program.title;this.liveProgramTime.textContent=[program.startLabel,program.endLabel].filter(Boolean).join(' — ');this.liveProgress.value=this.programs.progressPercent;}
+    this.liveProgress.hidden=!program;this.liveProgramTime.hidden=!program;
+    this.liveProgramName.textContent=program?.title||text(this.current.item.name)||'Programação não informada';
+    this.liveProgramName.title=this.liveProgramName.textContent;
+    this.liveProgramTime.textContent=program?[program.startLabel,program.endLabel].filter(Boolean).join(' — '):'';
+    if(program)this.liveProgress.value=this.programs.progressPercent;
+    this.updateLiveMetadata();
+  }
+  updateLiveMetadata() {
+    if(this.current?.item.kind!=='live'||!this.liveResolution)return;
+    const active=this.tvNavigation.context().active;
+    const metadata=livePlaybackMetadata({current:this.current,video:this.video,channelNumber:active?.number});
+    this.liveChannelNumber.textContent=metadata.channel;this.liveChannelNumber.hidden=!metadata.channel;
+    this.liveChannelNumber.setAttribute('aria-label',`Canal ${metadata.channel}`);
+    this.liveResolution.textContent=metadata.resolution;this.liveResolution.title=metadata.description;
+    this.liveResolution.setAttribute('aria-label',metadata.description);this.liveResolution.dataset.measured=String(metadata.measured);
   }
   setChannelSwitchActive(active) {
     this.channelSwitchActive=Boolean(active);this.root.classList.toggle('ip-channel-switching',this.channelSwitchActive);
@@ -218,7 +241,7 @@ export class ImmersivePlayer {
   acceptPreparedPlayback(){
     if(!this.current||this.current.failed||this.video.paused||this.video.readyState<2)return;
     if(this.current.item.kind==='live'&&(!tvHasPlayableVideo(this.video)||this.video.seeking))return;
-    this.current.awaitingPlay=false;this.error.hidden=true;this.recordStart();this.setLoading(false);this.updateControls();
+    this.current.mediaMetadataReady=true;this.current.awaitingPlay=false;this.error.hidden=true;this.recordStart();this.setLoading(false);this.updateControls();
   }
   waitForPlay({ready = true} = {}) {
     if (!this.current) return;
@@ -236,6 +259,7 @@ export class ImmersivePlayer {
   }
   updateControls() {
     if (!this.current) return;
+    this.updateLiveMetadata();
     this.playbackControl.update();
     const live = this.current.item.kind === 'live', duration = this.video.duration;
     this.live.hidden = !live; this.time.hidden = live; this.seekRow.hidden = live;
@@ -274,5 +298,5 @@ export class ImmersivePlayer {
     catch{this.options.toast?.('Não foi possível avançar este vídeo agora.');return false;}
   }
   keydown(event) { handlePlayerKeydown(this,event); }
-  destroy() { this.reset(); this.tvGuide.destroy();this.volumeControl.destroy();this.playbackControl.destroy(); this.episodeSkip.destroy(); this.disposers.forEach(dispose => dispose()); this.disposers = []; this.root.remove(); this.stage.classList.remove('immersive-stage'); }
+  destroy() { this.reset(); this.tvClock.destroy();this.tvGuide.destroy();this.volumeControl.destroy();this.playbackControl.destroy(); this.episodeSkip.destroy(); this.disposers.forEach(dispose => dispose()); this.disposers = []; this.root.remove(); this.stage.classList.remove('immersive-stage'); }
 }
