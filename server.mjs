@@ -11,8 +11,9 @@ const hosted=process.env.VERCEL==='1';
 const cloud=createRuntimeCloud({executable,onConfigurationError:event=>console.error('[cloud-configuration]',JSON.stringify(event))});
 const connection=executable&&!hosted?undefined:hosted&&process.env.IPTV_SERVER&&process.env.IPTV_USERNAME&&process.env.IPTV_PASSWORD?
   {server:process.env.IPTV_SERVER,username:process.env.IPTV_USERNAME,password:process.env.IPTV_PASSWORD}:{};
-export const server=createApp({cloud,connection,sessionStore:hosted?new RuntimeSessionStore({cloud}):null,...(executable?{
+export const server=createApp({cloud,connection,sessionStore:hosted?new RuntimeSessionStore({cloud}):null,...(executable||hosted?{
   onPlaybackError:event=>console.error('[playback-error]',JSON.stringify(event)),
+}:{}),...(executable?{
   onPlaybackTransport:event=>console.info('[tv-transport]',JSON.stringify(event))
 }:{})});
 // Vercel imports the entrypoint and owns the listener. Direct local execution
