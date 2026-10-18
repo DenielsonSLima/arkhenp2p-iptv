@@ -288,6 +288,54 @@ test('a legacy null epoch upgrades under a writer lease instead of granting an u
   assert.equal(cloud.calls.filter(call=>call.operation==='acquire').length,1);assert.match(cloud.row.mediaEpoch,/^[a-f0-9]{64}$/);
 });
 
+test('buffered metadata waits beyond the streaming poll interval without polling but validates once before flush',async()=>{
+  const cloud=new FakeCloud();await seedAuthenticated(cloud);
+  const store=new RuntimeSessionStore({cloud}),res=new FakeResponse();let signal;
+  await store.run(request(),res,{...readOptions,readOnly:true},async()=>{
+    signal=runtimeSessionContext().signal;
+    assert.equal(store.readers.size,1);
+    reply(res,{privateMetadata:true});
+    await new Promise(resolve=>setTimeout(resolve,2700));
+    assert.equal(signal.aborted,false);assert.equal(res.headersSent,false);assert.equal(res.ends,0);
+    assert.equal(cloud.calls.filter(call=>call.operation==='media').length,0);
+  });
+  assert.equal(signal.aborted,false);assert.deepEqual(res.json(),{privateMetadata:true});
+  assert.equal(cloud.calls.filter(call=>call.operation==='media').length,1);
+  assert.equal(cloud.calls.some(call=>['acquire','renew','commit'].includes(call.operation)),false);
+  assert.equal(store.readers.size,0);
+});
+
+test('a registered buffered reader is revoked by a local writer before its final validation without remote polling',async()=>{
+  const cloud=new FakeCloud();await seedAuthenticated(cloud);
+  const store=new RuntimeSessionStore({cloud}),res=new FakeResponse(),entered=deferred(),finish=deferred();let signal;
+  const pending=failedResponse(store,request(),res,{...readOptions,readOnly:true},async()=>{
+    signal=runtimeSessionContext().signal;
+    assert.equal(store.readers.size,1);
+    res.writeHead(200,{'Location':'/private-buffered-data','Content-Length':'1000'});res.end('private metadata');
+    entered.resolve();await finish.promise;
+  });
+  await entered.promise;
+  await store.run(request(),new FakeResponse(),readOptions,async state=>{state.parental.unlocked=true;});
+  assert.equal(signal.aborted,true);assert.equal(res.headersSent,false);assert.equal(res.ends,0);
+  assert.equal(cloud.calls.filter(call=>call.operation==='media').length,0);
+  finish.resolve();const error=await pending;
+  assert.equal(error.status,503);assert.equal(res.statusCode,503);
+  assert.equal(res.getHeader('location'),undefined);assert.equal(res.getHeader('content-length'),undefined);
+  assert.match(res.json().code,/^RUNTIME_SESSION_/);assert.equal(store.readers.size,0);
+});
+
+test('a buffered direct reader cannot flush if its mandatory final remote validation is unavailable',async()=>{
+  const cloud=new FakeCloud();await seedAuthenticated(cloud);
+  const res=new FakeResponse(),store=new RuntimeSessionStore({cloud});
+  const error=await failedResponse(store,request(),res,{...readOptions,readOnly:true},async()=>{
+    reply(res,{privateMetadata:true});cloud.rejectMedia=true;
+    assert.equal(cloud.calls.filter(call=>call.operation==='media').length,0);
+  });
+  assert.equal(error.code,'RUNTIME_SESSION_UNAVAILABLE');assert.equal(res.statusCode,503);
+  assert.deepEqual(res.json(),{code:'RUNTIME_SESSION_UNAVAILABLE'});
+  assert.equal(cloud.calls.filter(call=>call.operation==='media').length,1);assert.equal(store.readers.size,0);
+});
+
 test('a direct streaming reader validates before headers and retains revocation protection while its body is open',async()=>{
   const cloud=new FakeCloud();await seedAuthenticated(cloud);
   const started=deferred(),revoked=deferred(),store=new RuntimeSessionStore({cloud}),res=new FakeResponse();let captures=0,revokedBySignal=false;
