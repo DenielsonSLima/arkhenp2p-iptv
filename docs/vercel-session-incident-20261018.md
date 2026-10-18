@@ -1,6 +1,6 @@
 # Entrada aceita e sessão perdida na Vercel
 
-Data: 18/10/2026. Estado: correção distribuída implementada; schema e Edge ativados no projeto autorizado. Aplicação publicada no commit523c8b1 e produção READY. Validação estática e leitura de metadados; sem testes, navegador, login ou reprodução.
+Data: 18/10/2026. Estado: sessão distribuída publicada; falha posterior de tamanho confirmada e correção compacta preparada. A publicação anterior READY não certificou o carregamento completo. Evidências e etapas abaixo têm escopos e horários próprios.
 
 ## Evidência do incidente
 
@@ -49,3 +49,14 @@ Localmente, o Map e o transporte existentes continuam inalterados. No modo Verce
 Revisão independente de SQL, Edge, criptografia, snapshots, concorrência, cancelamento, headers e backoff; checagens de sintaxe e diff. Schema aplicado pela Management API, Edge publicada por CLI com project-ref explícito. Readback às 13:48:19 UTC confirmou RLS ligada, nenhum SELECT anon/authenticated e as quatro funções invoker executáveis somente por service_role. A função `arkhen-session` está ACTIVE versão1, com autenticação HMAC e segredo presente (somente nome conferido). A configuração sensível da Vercel foi provisionada com autorização explícita. O primeiro readback SQL falhou por connection timeout; uma amostra posterior encontrou nove conexões, seis clientes ociosos e zero temporários. Saúde DB/Auth/REST positiva nessa leitura não descarta os504 das capturas nem prova recuperação sustentada. Métricas de sistema retornaram403; nenhuma tentativa com outra chave foi feita. Não foram feitos testes, navegação automatizada, login real ou transmissão. Deploy`dpl_mqPcwEgzF37L9zrje9wqxq899YdS`, commit`523c8b147dcbea6e6dfe33cbb5989419cb368c9d`, confirmado READY e alvo de produção via CLI autenticada. Instalação e status READY não certificam a experiência de reprodução nem eliminam os limites de duração/transferência da Vercel.
 
 Fontes: `lib/runtime-session-store.mjs`, `lib/runtime-session-state.mjs`, `lib/runtime-session-context.mjs`, `lib/app-server.mjs`, `lib/supabase-cloud.mjs`, hooks privados dos provedores WPLAY e a migration/função indicadas. Referências: [estado de serviços Vercel](https://vercel.com/kb/guide/vercel-services-fluid-compute), [deploy de funções Supabase](https://supabase.com/docs/guides/functions/deploy), [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security).
+
+
+## Catálogo 503 após a sessão distribuída: causa confirmada
+
+Janela Vercel14:21:21–14:24:21UTC (11:21–11:24BRT), produção48675cf: diagnóstico sanitizado mostrou `RUNTIME_SESSION_TOO_LARGE` no catálogo e `RUNTIME_SESSION_BUSY` em requisições concorrentes de Home, grade, revisão e sessão. A sessão pôde responder200/connected/ready, e uma leitura isolada do catálogo TV devolveu JSON. Isso não certifica o carregamento da página completa. As capturas posteriores mantêm falhas503 e diferenças entre localhost e produção.
+
+O DTO parental copiava objetos completos dos catálogos, incluindo apresentação e descrições. O checkpoint cifrado excedia o teto3MiB, impedindo entregar o JSON que já estava pronto. O catch ainda repetia a captura/compressão inviável antes de liberar a lease, ampliando a espera das outras chamadas. O Map local não passa por esse teto, explicando a divergência observada sem atribuí-la a credenciais WPLAY recusadas.
+
+A correção exporta provas mínimas por título/categoria, vínculos episódio→série e imagem→proprietários. Mantém classificação, negação de desconhecidos, PIN/cooldown e o lookup autorizado. Snapshots anteriores são compactados na restauração. A serialização ocorre uma vez por checkpoint; tamanho inválido não provoca recaptura, e requisição já cancelada não adquire lease. Diagnóstico informa somente código, fase, bytes e teto. Limites e RPCs não foram ampliados; cálculo de recomendações permanece no banco.
+
+Validação local dirigida:19 testes sintéticos passaram, incluindo fixture20mil títulos (12mil Filmes/8mil Séries) com metadados aleatórios: antigo>3MiB, novo≈1,23MB. Roundtrip com cliente WPLAY real sem rede preservou episódio autorizado; teste de duas instâncias preservou ambas as alterações e liberação da lease. Verificou-se descarte de falso200 em falha de persistência. Não houve reprodução de vídeo. Esta fixture preenche o parental; não mede catálogos privados grandes nos hooks `rawItems`/`nativeVOD` do fallback, que continuam um limite separado. Confirmação do deploy e do fluxo online deve ser registrada após a operação real.
