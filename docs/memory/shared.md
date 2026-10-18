@@ -2,9 +2,9 @@
 
 ## MEM-SHARED-021 — Login aceito e sessão ausente na Vercel
 
-Estado: nova correção em validação; cloud recuperada. Data:18/10/2026.
+Estado: publicado; reprodução online pontual confirmada. Data:18/10/2026.
 
-Checkpoint AESGCM/lease/fence preserva sessão; DTO parental mínimo evita excesso. Após cloud recuperar, filaBUSY em TV/capas exigiu RPCread service-only semlease e validação de epoch antes da resposta. Segmentos registrados leem semwriter; manifestos/seleção/Auth/PIN são exclusivos. Cooldown de falha mescla DTO fresco. Teste Safari posterior revelou409LIVE_SOURCE_CHANGED: IDweb dependia da URL temporária. Correção usa canal/item/variante/rótulo/qualidade; preserva IDs nativos/OTT e recusa fonte ausente. Renovar lista após deploy. Quadros online ainda pendentes. Fonte:[incidente](../vercel-session-incident-20261018.md); [Auth transitório](../auth-movie-transient-failures-20261018.md).
+Checkpoint AESGCM/lease/fence e DTO parental mínimo preservam sessão. FilaBUSY exigiu RPCread service-only semlease e validação de epoch; segmentos registrados leem semwriter, manifestos/seleção/Auth/PIN são exclusivos. Cooldown mescla DTO fresco. Safari revelou409LIVE_SOURCE_CHANGED: IDweb usava URL temporária. fbe5a4f usa canal/item/variante/rótulo/qualidade; IDs nativos/OTT e recusa de fonte ausente preservados. Após renovar lista, Safari online mostrou cenas avançando e1920×1080 medidos às13:41BRT. Preparação inicial lenta e timeout residual não resolvidos; prova pontual não certifica todos os canais/capas. Fonte:[incidente](../vercel-session-incident-20261018.md); [Auth transitório](../auth-movie-transient-failures-20261018.md).
 
 ## MEM-SHARED-020 — Ícones do Safari
 
