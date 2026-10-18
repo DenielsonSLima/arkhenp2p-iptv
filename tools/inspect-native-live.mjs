@@ -1,4 +1,4 @@
-import {WplayProviderClient,WPLAY_AUTH_URLS} from '../lib/wplay-provider.mjs';
+import {WplayProviderClient,WPLAY_AUTH_URLS} from '../lib/wplay/conexao/provedor-nativo.mjs';
 import {readWplayCredentials,safeCode} from './wplay-tool-input.mjs';
 const client=new WplayProviderClient({...await readWplayCredentials(),authURLs:[WPLAY_AUTH_URLS[1]]});
 try{

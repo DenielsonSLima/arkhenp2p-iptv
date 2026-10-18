@@ -1,5 +1,5 @@
 import {readWplayCredentials,safeCode} from './wplay-tool-input.mjs';
-import {WplayProviderClient,WPLAY_AUTH_URLS,wplayServiceURL} from '../lib/wplay-provider.mjs';
+import {WplayProviderClient,WPLAY_AUTH_URLS,wplayServiceURL} from '../lib/wplay/conexao/provedor-nativo.mjs';
 const label=v=>typeof v==='string'?v:typeof v==='object'&&v?v.init??v.i18n?.en??'':'';
 const safe=v=>String(label(v)).replace(/[\r\n]/g,' ').slice(0,100);
 const emit=v=>console.log(JSON.stringify(v));

@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='utf-8'?>
+<manifest xmlns:ns0="http://schemas.android.com/apk/res/android" ns0:versionCode="1190" ns0:versionName="11.9.0d" ns0:installLocation="auto" ns0:compileSdkVersion="35" ns0:compileSdkVersionCodename="15" package="io.wareztv.android.one" platformBuildVersionCode="35" platformBuildVersionName="15">
+    <uses-sdk ns0:minSdkVersion="21" ns0:targetSdkVersion="35" />
+    <uses-permission ns0:name="android.permission.INTERNET" />
+    <uses-permission ns0:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission ns0:name="android.permission.READ_OWNER_DATA" />
+    <uses-permission ns0:name="android.permission.WRITE_OWNER_DATA" />
+    <uses-permission ns0:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission ns0:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission ns0:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission ns0:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission ns0:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission ns0:name="android.permission.WAKE_LOCK" />
+    <uses-permission ns0:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission ns0:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission ns0:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission ns0:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission ns0:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-feature ns0:name="android.software.leanback" ns0:required="false" />
+    <uses-feature ns0:name="android.hardware.touchscreen" ns0:required="false" />
+    <queries>
+        <package ns0:name="com.google.android.gms.policy_cast_dynamite" />
+    </queries>
+    <permission ns0:name="io.wareztv.android.one.CountlyPush.BROADCAST_PERMISSION" ns0:protectionLevel="signature" />
+    <permission ns0:name="io.wareztv.android.one.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" ns0:protectionLevel="signature" />
+    <uses-permission ns0:name="io.wareztv.android.one.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+    <uses-permission ns0:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <application ns0:theme="@style/AppTheme" ns0:label="@string/app_name" ns0:icon="@mipmap/hdplayer_icon" ns0:name="org.bitspark.android.SpkApplication" ns0:testOnly="false" ns0:allowBackup="true" ns0:hardwareAccelerated="true" ns0:largeHeap="true" ns0:banner="@drawable/banner" ns0:extractNativeLibs="true" ns0:usesCleartextTraffic="true" ns0:appComponentFactory="androidx.core.app.CoreComponentFactory">
+        <activity ns0:theme="@style/ThemeSplash" ns0:label="@string/app_name" ns0:name="org.bitspark.android.Spark" ns0:exported="true" ns0:launchMode="singleTask" ns0:screenOrientation="landscape" ns0:configChanges="screenSize|orientation|keyboardHidden|locale" ns0:windowSoftInputMode="adjustPan|stateHidden">
+            <intent-filter>
+                <action ns0:name="android.intent.action.MAIN" />
+                <category ns0:name="android.intent.category.LAUNCHER" />
+                <category ns0:name="android.intent.category.DEFAULT" />
+                <category ns0:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+            <intent-filter>
+                <action ns0:name="android.intent.action.MAIN" />
+                <category ns0:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <receiver ns0:label="start" ns0:name="org.bitspark.android.broadcast.ActionReceiver" ns0:exported="true">
+            <intent-filter>
+                <action ns0:name="android.intent.action.BOOT_COMPLETED" />
+                <action ns0:name="android.intent.action.SCREEN_OFF" />
+                <action ns0:name="android.intent.action.SCREEN_ON" />
+                <action ns0:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action ns0:name="android.intent.action.TIME_SET" />
+            </intent-filter>
+        </receiver>
+        <service ns0:name="com.tvbus.engine.TVService" />
+        <service ns0:name="org.bitspark.android.offline.VodOfflineDownloadService" ns0:exported="false" ns0:foregroundServiceType="dataSync" />
+        <activity ns0:theme="@style/Theme.activity" ns0:name="org.bitspark.android.match.tv.GameDetailActivity" ns0:launchMode="singleTask" ns0:screenOrientation="landscape" />
+        <activity ns0:theme="@style/Theme.activity" ns0:name="org.bitspark.android.match.phone.PhoneGameDetailActivity" ns0:launchMode="singleTask" ns0:screenOrientation="landscape" />
+        <activity ns0:theme="@style/Theme.activity" ns0:name="org.bitspark.android.match.phone.PhoneEventsScheduleActivity" ns0:launchMode="singleTask" ns0:screenOrientation="landscape" />
+        <activity ns0:theme="@style/Theme.activity" ns0:name="org.bitspark.android.match.tv.GamePlayActivity" ns0:launchMode="singleTask" ns0:screenOrientation="landscape" />
+        <activity ns0:theme="@style/Theme.activity" ns0:name="org.bitspark.android.match.phone.PhoneGamePlayActivity" ns0:launchMode="singleTask" ns0:screenOrientation="landscape" />
+        <activity ns0:theme="@style/Theme.activity" ns0:name="org.bitspark.android.match.phone.PhoneLeagueEventsActivity" ns0:launchMode="singleTask" ns0:screenOrientation="landscape" ns0:windowFullscreen="true" />
+        <activity ns0:theme="@style/Theme.activity" ns0:name="org.bitspark.android.match.phone.PhoneRankingActivity" ns0:launchMode="singleTask" ns0:screenOrientation="landscape" />
+        <activity ns0:theme="@style/Theme.activity" ns0:name="org.bitspark.android.match.tv.EventsScheduleActivity" ns0:launchMode="singleTask" ns0:screenOrientation="landscape" />
+        <activity ns0:theme="@style/Theme.activity" ns0:name="org.bitspark.android.match.tv.LeagueEventsActivity" ns0:launchMode="singleTask" ns0:screenOrientation="landscape" />
+        <activity ns0:theme="@style/Theme.activity" ns0:name="org.bitspark.android.match.tv.RankingActivity" ns0:launchMode="singleTask" ns0:screenOrientation="landscape" />
+        <activity ns0:theme="@style/Theme.activity" ns0:name="org.bitspark.android.payment.PaymentActivity" ns0:exported="false" ns0:launchMode="singleTask" ns0:screenOrientation="landscape" />
+        <provider ns0:name="androidx.core.content.FileProvider" ns0:exported="false" ns0:authorities="io.wareztv.android.one.provider" ns0:grantUriPermissions="true">
+            <meta-data ns0:name="android.support.FILE_PROVIDER_PATHS" ns0:resource="@xml/provider_paths" />
+        </provider>
+        <meta-data ns0:name="design_width_in_dp" ns0:value="960" />
+        <meta-data ns0:name="design_height_in_dp" ns0:value="540" />
+        <meta-data ns0:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME" ns0:value="org.bitspark.android.utils.CastOptionsProvider" />
+        <meta-data ns0:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule" ns0:value="GlideModule" />
+        <receiver ns0:name="com.google.android.gms.cast.framework.media.MediaIntentReceiver" ns0:exported="false" />
+        <service ns0:name="com.google.android.gms.cast.framework.ReconnectionService" ns0:exported="false" />
+        <activity ns0:theme="@android:style/Theme.Translucent.NoTitleBar" ns0:name="com.google.android.gms.common.api.GoogleApiActivity" ns0:exported="false" />
+        <meta-data ns0:name="com.google.android.gms.version" ns0:value="@integer/google_play_services_version" />
+        <activity ns0:theme="@android:style/Theme.Translucent.NoTitleBar" ns0:name="ly.count.android.sdk.messaging.CountlyPushActivity" ns0:exported="false" ns0:taskAffinity=".CountlyPushActivity" ns0:excludeFromRecents="true" ns0:noHistory="true" />
+        <activity ns0:theme="@android:style/Theme.Translucent.NoTitleBar" ns0:name="ly.count.android.sdk.TransparentActivity" ns0:configChanges="smallestScreenSize|screenSize|screenLayout|orientation" />
+        <provider ns0:name="androidx.startup.InitializationProvider" ns0:exported="false" ns0:authorities="io.wareztv.android.one.androidx-startup">
+            <meta-data ns0:name="androidx.emoji2.text.EmojiCompatInitializer" ns0:value="androidx.startup" />
+            <meta-data ns0:name="androidx.lifecycle.ProcessLifecycleInitializer" ns0:value="androidx.startup" />
+            <meta-data ns0:name="androidx.profileinstaller.ProfileInstallerInitializer" ns0:value="androidx.startup" />
+        </provider>
+        <provider ns0:name="me.jessyan.autosize.InitProvider" ns0:exported="false" ns0:multiprocess="true" ns0:authorities="io.wareztv.android.one.autosize-init-provider" />
+        <service ns0:name="androidx.room.MultiInstanceInvalidationService" ns0:exported="false" ns0:directBootAware="true" />
+        <receiver ns0:name="androidx.profileinstaller.ProfileInstallReceiver" ns0:permission="android.permission.DUMP" ns0:enabled="true" ns0:exported="true" ns0:directBootAware="false">
+            <intent-filter>
+                <action ns0:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+            </intent-filter>
+            <intent-filter>
+                <action ns0:name="androidx.profileinstaller.action.SKIP_FILE" />
+            </intent-filter>
+            <intent-filter>
+                <action ns0:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+            </intent-filter>
+            <intent-filter>
+                <action ns0:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+            </intent-filter>
+        </receiver>
+        <service ns0:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery" ns0:exported="false">
+            <meta-data ns0:name="backend:com.google.android.datatransport.cct.CctBackendFactory" ns0:value="cct" />
+        </service>
+        <service ns0:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService" ns0:permission="android.permission.BIND_JOB_SERVICE" ns0:exported="false" />
+        <receiver ns0:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver" ns0:exported="false" />
+    </application>
+</manifest>

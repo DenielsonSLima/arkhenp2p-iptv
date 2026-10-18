@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DailyGames, gameChannels, gameDisplay, gamesDate } from '../web/daily-games.js';
+import { DailyGames, gameChannels, gameDisplay, gamesDate } from '../web/tv/jogos/agenda.js';
 
 const NOW=Date.parse('2026-10-14T15:00:00Z');
 const flush=()=>new Promise(resolve=>setImmediate(resolve));

@@ -523,8 +523,13 @@ test('a failed replacement playlist ends after one bootstrap retry without a ses
     await first.text();
     mock.expireAllResolvedPlaylists(403);
     const failed = await fetch(`${mock.base}/api/play/live/101/index.m3u8`, { headers: { Cookie: cookie } });
-    assert.equal(failed.status, 502);
-    assertPrivate(await failed.json(), mock.origin);
+    // The API preserves an upstream authorization denial; it must not turn
+    // that terminal response into a generic transport error and retry loop.
+    assert.equal(failed.status, 403);
+    const failure = await failed.json();
+    assert.equal(failure.code, 'PLAYBACK_UPSTREAM_HTTP');
+    assert.equal(failure.upstreamStatus, 403);
+    assertPrivate(failure, mock.origin);
     assert.equal(mock.requests.filter(request => request.path === `/live/${username}/${password}/101.m3u8`).length, 2);
     assert.equal(mock.requests.filter(request => /^\/redirect-session\/\d+\/index\.m3u8$/.test(request.path)).length, 3);
   } finally { await mock.close(); }

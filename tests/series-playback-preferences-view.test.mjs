@@ -30,12 +30,12 @@ test('series automation has a distinct settings route and the three honestly lab
   const calls=[];SettingsTools.prototype.restoreRoute.call({open:(...args)=>calls.push(args)});assert.deepEqual(calls,[['series-playback',undefined,false]]);
 });
 
-test('the default preserves the complete episode without verified credits and keeps approximate timing opt-in',t=>{
+test('the default waits for credits markers and keeps approximate timing opt-in',t=>{
   const f=view(t);assert.equal(f.checks[0].checked,true);assert.equal(f.checks[1].checked,true);assert.equal(f.seconds.value,'30');
   assert.equal(f.options[1].children[0].checked,true);assert.equal(f.seconds.disabled,true);
   assert.match(f.summary.textContent,/quando o episódio terminar/);
   assert.match(seriesPlaybackSummary({autoNext:true,nextMode:'offset',endOffsetSeconds:30}),/aproximado.*pode incluir cenas/);
-  assert.match(f.section.children.filter(child=>child.className==='settings-series-toggle')[1].children[1].children[1].textContent,/Nenhuma abertura é adivinhada/);
+  assert.match(f.section.children.filter(child=>child.className==='settings-series-toggle')[1].children[1].children[1].textContent,/5 segundos.*cancelar ou pular agora/);
   assert.match(seriesPlaybackSummary({autoNext:true,nextMode:'markers'}),/quando o episódio terminar/);
 });
 

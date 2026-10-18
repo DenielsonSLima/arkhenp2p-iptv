@@ -108,6 +108,38 @@ test('cloud errors preserve connected local behavior and cache misses remain exp
   assert.doesNotMatch(JSON.stringify(f.runtime.fields(f.state)),/private|secret/);
 });
 
+test('failed bootstrap retries are bounded for the same account even as provider proof refreshes',async()=>{
+  const f=fixture();let clock=Date.now(),attempts=0;
+  f.runtime.now=()=>clock;f.cloud.bootstrap=async()=>{attempts++;throw Object.assign(new Error('private upstream text'),{code:'CLOUD_TIMEOUT',cloudStage:'arkhen_identity_lookup',elapsedMs:15000});};
+  try{
+    await f.runtime.attach(f.state,f.session,f.client);
+    assert.deepEqual(f.runtime.fields(f.state).cloudStatus,{state:'unavailable',code:'CLOUD_TIMEOUT',stage:'arkhen_identity_lookup',elapsedMs:15000});
+    for(let count=0;count<100;count++){f.client.authenticatedAt++;await f.runtime.attach(f.state,f.session,f.client);}
+    assert.equal(attempts,1);
+    clock+=30000;await f.runtime.attach(f.state,f.session,f.client);assert.equal(attempts,2);
+    clock+=30000;await f.runtime.attach(f.state,f.session,f.client);assert.equal(attempts,2);
+    clock+=30000;await f.runtime.attach(f.state,f.session,f.client);assert.equal(attempts,3);
+    f.session.account.status='Disabled';await f.runtime.attach(f.state,f.session,f.client);
+    assert.equal(f.state.cloudStatus.code,'CLOUD_PROVIDER_VALIDATION_REQUIRED');assert.equal(attempts,3,'A retry cooldown cannot suppress a provider denial.');
+    assert.doesNotMatch(JSON.stringify(f.runtime.fields(f.state)),/private|upstream/);
+  }finally{f.runtime.close();}
+});
+
+test('temporary artwork reference or classification transport failures remain unavailable instead of parental denials',async()=>{
+  const f=fixture();await f.runtime.attach(f.state,f.session,f.client);let reads=0;
+  const ref='e'.repeat(64),missing='f'.repeat(64);
+  f.cloud.request=async path=>{reads++;if(path.includes('/catalog_artwork_refs?'))throw Object.assign(new Error('private token URL'),{code:'CLOUD_TIMEOUT',cloudStage:'artwork_reference',elapsedMs:5000});return [];};
+  try{
+    await assert.rejects(f.runtime.parentalArtworkItem(f.state,ref),error=>error.status===503&&error.code==='CLOUD_ARTWORK_UNAVAILABLE'&&error.cloudStage==='artwork_reference'&&error.elapsedMs===5000&&!/private|token|URL/.test(error.message));
+    await assert.rejects(f.runtime.parentalArtworkItem(f.state,ref),{status:503});assert.equal(reads,1,'Concurrent cards reuse a short unavailable lookup instead of querying continuously.');
+    f.cloud.request=async()=>[];assert.equal(await f.runtime.parentalArtworkItem(f.state,missing),null,'An actually unknown hash remains unauthorized.');
+    f.cloud.request=async path=>path.includes('/catalog_artwork_refs?')?[{media_type:'movies',media_id:'42',field:'poster'}]:Promise.reject(Object.assign(new Error('private SQL'),{code:'CLOUD_TIMEOUT'}));
+    await assert.rejects(f.runtime.parentalArtworkItem(f.state,'1'.repeat(64)),{status:503,code:'CLOUD_ARTWORK_UNAVAILABLE'});
+    f.runtime.detach(f.state);await assert.rejects(f.runtime.parentalArtworkItem(f.state,'2'.repeat(64)),{status:503});
+    assert.equal(await f.runtime.parentalArtworkItem(f.state,'invalid'),null);
+  }finally{f.runtime.close();}
+});
+
 test('cached cloud sessions are revoked and RLS status updated when the provider account becomes disabled or expired',async()=>{
   for(const change of [{status:'Disabled'},{expiresAt:'2000-01-01T00:00:00Z'}]){
     const f=fixture();await f.runtime.attach(f.state,f.session,f.client);Object.assign(f.session.account,change);
@@ -179,13 +211,21 @@ test('cloud catalog pages use the viewer JWT and share only the same partition a
   assert.equal(await f.runtime.catalogPage(f.state,'movies',{cursor:-2}),null);assert.equal(requests.length,3);
 });
 
-test('a failed complete refresh retains server data and original freshness but reports failure to the browser',async t=>{
+test('a failed complete refresh retains server data while all readers share a failure cooldown before recovery',async t=>{
   const f=fixture();t.after(()=>f.runtime.close());await f.runtime.attach(f.state,f.session,f.client);
+  let clock=Date.now(),failedReads=0;f.runtime.now=()=>clock;
   f.cloud.request=async path=>catalogReadFixture({items:[{id:'one',kind:'movie'}]})(path);
   const first=await f.runtime.catalog(f.state,'movies'),entry=[...f.runtime.reads.values()].find(value=>value.data===first),expires=entry.expiresAt;
-  f.cloud.request=async()=>{throw new Error('database unavailable');};
+  f.cloud.request=async()=>{failedReads++;throw new Error('database unavailable');};
   assert.equal(await f.runtime.catalog(f.state,'movies',{fresh:true}),null,'A failed read cannot look like a successful fresh fetch and extend browser TTL.');
-  assert.equal(entry.expiresAt,expires);assert.equal(await f.runtime.catalog(f.state,'movies'),first);
+  const failed=[...f.runtime.reads.values()].find(value=>value.failed);
+  assert.equal(entry.expiresAt,expires);assert.equal(failed.data,first,'The last complete snapshot remains retained for recovery.');
+  assert.equal(failed.expiresAt,clock+30000);assert.equal(failedReads,1);
+  for(const fresh of [false,true,false,true])assert.equal(await f.runtime.catalog(f.state,'movies',{fresh}),null);
+  assert.equal(failedReads,1,'Explicit reloads cannot defeat the shared database failure cooldown.');
+  clock+=30001;f.cloud.request=async path=>catalogReadFixture({items:[{id:'recovered',kind:'movie'}]})(path);
+  const recovered=await f.runtime.catalog(f.state,'movies');assert.equal(recovered.items[0].id,'recovered');
+  assert.equal([...f.runtime.reads.values()].find(value=>value.data===recovered).failed,false);
 });
 
 test('another active viewer retries once when the owner of a shared catalog read logs out',async t=>{
@@ -219,6 +259,33 @@ test('cold artwork uses one global opaque lookup and one item detail without enu
   await f.runtime.attach(f.state,f.session,f.client);assert.equal(details,0);
   const [a,b]=await Promise.all([f.runtime.ensureImageSource(f.state,ref),f.runtime.ensureImageSource(f.state,ref)]);
   assert.match(a.source,/fresh-private-token/);assert.equal(a,b);assert.equal(details,1);assert.equal(lookups,1);f.runtime.close();
+});
+
+test('lazy recovery of an already-authorized poster propagates a transient reference outage without inventing a missing image',async()=>{
+  const f=fixture();await f.runtime.attach(f.state,f.session,f.client);let reads=0;
+  f.client.catalog=()=>assert.fail('A cover recovery cannot enumerate a provider catalog.');
+  f.client.artworkMetadata=()=>assert.fail('A failed reference lookup cannot start provider details.');
+  f.cloud.request=async()=>{reads++;throw Object.assign(new Error('private upstream token'),{code:'CLOUD_TIMEOUT',cloudStage:'artwork_reference',elapsedMs:5000});};
+  try{
+    const results=await Promise.allSettled([
+      f.runtime.ensureImageSource(f.state,'e'.repeat(64)),
+      f.runtime.ensureImageSource(f.state,'e'.repeat(64)),
+    ]);
+    assert.equal(reads,1);
+    for(const result of results){
+      assert.equal(result.status,'rejected');
+      assert.equal(result.reason.status,503);assert.equal(result.reason.code,'CLOUD_ARTWORK_UNAVAILABLE');
+      assert.equal(result.reason.cloudStage,'artwork_reference');assert.equal(result.reason.elapsedMs,5000);
+      assert.doesNotMatch(result.reason.message,/private|upstream|token/);
+    }
+    assert.equal(f.runtime.imageRequests.size,0,'Settled failures release the shared flight without an unhandled rejected cleanup promise.');
+    f.cloud.request=async()=>[];
+    assert.equal(await f.runtime.ensureImageSource(f.state,'f'.repeat(64)),null,'A successfully missing reference stays missing.');
+    assert.equal(await f.runtime.ensureImageSource(f.state,'invalid'),null,'An invalid hash never receives a source.');
+    f.cloud.request=async()=>[{media_type:'movies',media_id:'42',field:'poster'}];
+    f.client.artworkMetadata=async()=>{throw Object.assign(new Error('Missing provider poster'),{status:404});};
+    assert.equal(await f.runtime.ensureImageSource(f.state,'1'.repeat(64)),null,'A genuinely unavailable provider poster keeps its existing absence behavior.');
+  }finally{f.runtime.close();}
 });
 
 test('artwork details with a different canonical image cannot satisfy an opaque shared reference',async()=>{

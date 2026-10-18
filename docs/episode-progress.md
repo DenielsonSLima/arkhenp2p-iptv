@@ -1,6 +1,6 @@
 # Progresso por episódio
 
-`web/episode-progress.js` mantém posições independentes por série e episódio. A biblioteca anterior guarda somente o último episódio de cada série e continua sendo usada para a seção “Continuar assistindo”. O novo store complementa essa biblioteca.
+`web/serie/progresso.js` mantém posições independentes por série e episódio. A biblioteca guarda somente o último episódio de cada série e continua sendo usada para a seção “Continuar assistindo”. O store por episódio complementa essa biblioteca e conserva suas chaves e seu formato de persistência.
 
 ```js
 const episodes = new EpisodeProgressStore({read, save});

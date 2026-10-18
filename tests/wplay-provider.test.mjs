@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
-import { WplayProviderClient, wplayAuthForm, wplayServiceURL } from '../lib/wplay-provider.mjs';
+import { WplayProviderClient, wplayAuthForm, wplayServiceURL } from '../lib/wplay/conexao/provedor-nativo.mjs';
 
 const username='usuário+fixture',password='senha & fixture';
 

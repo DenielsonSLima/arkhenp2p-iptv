@@ -3,7 +3,11 @@ import assert from 'node:assert/strict';
 import {mkdtemp,readFile,rm,writeFile,mkdir} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {SKIPDB_LICENSE,SKIPDB_CACHE_MS,normalizeSkipDBDump,loadSkipDBDump,applySkipDBRows,syncSeriesMarkers} from '../lib/skipdb-markers.mjs';
+import {SKIPDB_LICENSE,SKIPDB_CACHE_MS} from '../lib/serie/marcadores/contrato.mjs';
+import {normalizeSkipDBDump} from '../lib/serie/marcadores/normalizacao.mjs';
+import {loadSkipDBDump} from '../lib/serie/marcadores/skipdb.mjs';
+import {applySkipDBRows} from '../lib/serie/marcadores/supabase.mjs';
+import {syncSeriesMarkers} from '../lib/serie/marcadores/orquestrador.mjs';
 
 const registry=[{slug:'test-series',title:'Test Series',imdbId:'tt1234567',tmdbId:123,aliases:['Test Series']}];
 const retrievedAt='2026-10-15T10:00:00Z';

@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
-import { WplayPlaybackProviderClient } from '../lib/wplay-playback.mjs';
-import { WplayWebPlayback, WPLAY_WEB_ORIGIN, resolveWplayWebLiveItem } from '../lib/wplay-web-playback.mjs';
-import { WplayOTTProviderClient, WPLAY_OTT_RPC } from '../lib/wplay-ott-provider.mjs';
+import { WplayPlaybackProviderClient } from '../lib/wplay/conexao/reproducao.mjs';
+import { WplayWebPlayback, WPLAY_WEB_ORIGIN, resolveWplayWebLiveItem } from '../lib/wplay/ao-vivo/transporte-web.mjs';
+import { WplayOTTProviderClient, WPLAY_OTT_RPC } from '../lib/wplay/ott/provedor.mjs';
 import { accountLibrarySession } from '../lib/account-library.mjs';
-import { encodeRPC } from '../lib/ott-rpc.mjs';
+import { encodeRPC } from '../lib/wplay/ott/rpc.mjs';
 import { readBody } from '../lib/upstream.mjs';
 
 const deferred = () => { let resolve; const promise = new Promise(ok => { resolve = ok; }); return { promise, resolve }; };
@@ -45,8 +45,8 @@ async function fixture(items, { loginGate, catalogGate, playbackGate, loginError
   } };
 }
 
-function nativeClient(mock, { webPlayback = true, bridge = null } = {}) {
-  const client = new WplayPlaybackProviderClient({ username: ' native-fixture ', password: ' synthetic-password ' }, { webPlayback, webPlaybackFactory: mock.createClient, bridge });
+function nativeClient(mock, { webPlayback = true } = {}) {
+  const client = new WplayPlaybackProviderClient({ username: ' native-fixture ', password: ' synthetic-password ' }, { webPlayback, webPlaybackFactory: mock.createClient });
   client.libraryProvider = 'wplay'; client.authInfo = { service: { auth_url_sdk: 'https://sdk.example/auth' } };
   client.session = { connected: true, account: { status: 'Active', provider: 'wplay' } }; client.connect = async () => client.session;
   const items = [live('405', 'Globo SP'), live('406', 'Globo RJ'), live('407', 'São Paulo')];
@@ -55,15 +55,16 @@ function nativeClient(mock, { webPlayback = true, bridge = null } = {}) {
   return client;
 }
 
-test('complete labels preserve regions, indices and accents; HD/default quality comes from the same unique provider ID', async () => {
+test('complete labels preserve regions, indices and accents; highest default quality comes from the same unique provider ID', async () => {
   const mock = await fixture([channel('sp', 'Globo SP'), channel('rj', 'Globo RJ'), channel('farm17', 'A Fazenda 17'), channel('farm18', 'A Fazenda 18'), channel('accent', 'São Paulo'), channel('default', 'Default', ['FHD', 'SD'])]);
   const transport = new WplayWebPlayback({ username: 'fixture', password: 'synthetic' }, { createClient: mock.createClient });
   try {
-    assert.match((await transport.start(live('405', ' GLOBO   SP '))).pathname, /sp-HD/);
+    assert.match((await transport.start(live('405', ' GLOBO   SP '))).pathname, /sp-FHD/);
     const catalog = await mock.client.catalog('live'), resolve = name => resolveWplayWebLiveItem(live('1', name), mock.client, catalog);
-    assert.equal(resolve('Globo RJ').name, 'Globo RJ HD'); assert.equal(resolve('Globo SP FHD').name, 'Globo SP FHD');
-    assert.equal(resolve('A Fazenda 18').name, 'A Fazenda 18 HD'); assert.equal(resolve('Default').name, 'Default FHD');
-    assert.equal(resolve('Sa\u0303o Paulo').name, 'São Paulo HD');
+    assert.equal(resolve('Globo RJ').name, 'Globo RJ FHD'); assert.equal(resolve('Globo SP FHD').name, 'Globo SP FHD');
+    assert.equal(resolve('Globo SP HD').name, 'Globo SP FHD');
+    assert.equal(resolve('A Fazenda 18').name, 'A Fazenda 18 FHD'); assert.equal(resolve('Default').name, 'Default FHD');
+    assert.equal(resolve('Sa\u0303o Paulo').name, 'São Paulo FHD');
     for (const name of ['Globo', 'Globo MG', 'A Fazenda 1', 'Sao Paulo']) assert.throws(() => resolve(name), { code: 'WPLAY_WEB_CHANNEL_NOT_FOUND' });
     assert.equal(mock.factories[0].server, WPLAY_WEB_ORIGIN);
   } finally { await transport.close(); await mock.close(); }
@@ -76,8 +77,25 @@ test('different raw IDs with identical complete labels are rejected; category du
     assert.equal(mock.client.liveSource, null); assert.equal(mock.requests.some(request => request.url.pathname.startsWith('/live/')), false);
     const catalog = await mock.client.catalog('live');
     const one = catalog.items.filter(item => mock.client.rawItems.get(`live:${item.id}`).id === 'one');
-    assert.equal(resolveWplayWebLiveItem(live('405', 'Globo SP'), mock.client, { items: [...one, ...one] }).name, 'Globo SP HD');
+    assert.equal(resolveWplayWebLiveItem(live('405', 'Globo SP'), mock.client, { items: [...one, ...one] }).name, 'Globo SP FHD');
   } finally { await client.logout(); await mock.close(); }
+});
+
+test('web starts at highest 4K while explicit FHD stays selected and SD-only keeps its real source', async () => {
+  const mock=await fixture([channel('sp','Globo SP',['4K','FHD','HD']),channel('rj','Globo RJ',['SD'])]),client=nativeClient(mock);
+  try{
+    const sources=await client.liveSources('405');
+    assert.equal(sources.sources.find(source=>source.id===sources.selectedSourceId)?.quality,'4K');
+    const fhd=sources.sources.find(source=>source.quality==='FHD'),uhd=sources.sources.find(source=>source.quality==='4K');
+    assert.equal(fhd.available,true);assert.equal(uhd.available,true);
+    const selected=await client.playbackURL('live','405',null,{attempt:'explicit-fhd',sourceId:fhd.id});
+    assert.match(selected.pathname,/sp-FHD/);
+    assert.equal((await client.liveSources('405')).selectedSourceId,fhd.id);
+    const catalog=await mock.client.catalog('live');
+    assert.equal(resolveWplayWebLiveItem(live('405','Globo SP 4K'),mock.client,catalog).name,'Globo SP 4K');
+    assert.equal(resolveWplayWebLiveItem(live('405','Globo SP'),mock.client,catalog,{nativeItem:{subTitle:'FHD'}}).name,'Globo SP 4K');
+    assert.equal(resolveWplayWebLiveItem(live('406','Globo RJ'),mock.client,catalog).name,'Globo RJ SD');
+  }finally{await client.logout();await mock.close();}
 });
 
 test('native HTTP and all VOD keep their own transport and never initialize OTT; constructor defaults off', async () => {
@@ -93,19 +111,18 @@ test('native HTTP and all VOD keep their own transport and never initialize OTT;
     client.episodes.set('3', { source: { address: 'tvbus://vod-must-not-use-web' } });
     await assert.rejects(client.playbackURL('series', '3'), { code: 'WPLAY_NATIVE_ENGINE_REQUIRED' }); assert.equal(factories, 0);
     const off = nativeClient(mock, { webPlayback: false });
-    await assert.rejects(off.playbackURL('live', '405'), { code: 'NATIVE_BRIDGE_UNAVAILABLE' }); assert.equal(factories, 0); await off.logout();
+    await assert.rejects(off.playbackURL('live', '405'), { code: 'LIVE_SOURCE_UNAVAILABLE' }); assert.equal(factories, 0); await off.logout();
   } finally { await client.logout(); }
 });
 
-test('web TV preserves native owner/catalog/library IDs, prefers web over an optional bridge, and reuses sid/gen', async () => {
-  const mock = await fixture([channel('opaque-web-sp', 'Globo SP')]); let starts = 0;
-  const bridge = { async stop() {}, async close() {}, acceptsMediaURL() { return false; }, async start() { starts++; throw new Error('Android must not start'); } };
-  const client = nativeClient(mock, { bridge }), nativeSession = client.session, auth = client.authInfo;
+test('web TV preserves native owner/catalog/library IDs and reuses its own sid/gen', async () => {
+  const mock = await fixture([channel('opaque-web-sp', 'Globo SP')]);
+  const client = nativeClient(mock), nativeSession = client.session, auth = client.authInfo;
   const before = accountLibrarySession(nativeSession, client.config, client.libraryProvider);
   try {
     const first = await client.playbackURL('live', '405'); client.beginPlayback('live:405');
     assert.equal((await client.playbackURL('live', '405')).href, first.href);
-    assert.equal(first.searchParams.get('gen'), '1'); assert.ok(first.searchParams.get('sid')); assert.equal(starts, 0);
+    assert.equal(first.searchParams.get('gen'), '1'); assert.ok(first.searchParams.get('sid'));
     assert.equal(client.playback.key, 'live:405'); assert.equal(client.libraryProvider, 'wplay'); assert.equal(client.session, nativeSession); assert.equal(client.authInfo, auth);
     assert.deepEqual(accountLibrarySession(nativeSession, client.config, client.libraryProvider), before);
     assert.equal(mock.factories.length, 1); assert.equal(mock.factories[0].username, 'native-fixture'); assert.equal(mock.factories[0].password, 'synthetic-password');
@@ -140,9 +157,9 @@ test('channel changes preserve official remote stop sid/gen and never restart a 
     assert.equal(second.searchParams.get('sid'), first.searchParams.get('sid')); assert.equal(second.searchParams.get('gen'), '2');
     assert.equal(client.isWebMediaURL(first), false); assert.equal(client.isWebMediaURL(second), true);
     const stops = () => mock.requests.filter(request => request.method === 'POST' && request.url.pathname.startsWith('/live/'));
-    assert.equal(stops().length, 1); assert.match(stops()[0].url.pathname, /sp-HD/); assert.equal(stops()[0].url.searchParams.get('gen'), '1'); assert.equal(stops()[0].url.searchParams.get('stop'), '1');
+    assert.equal(stops().length, 1); assert.match(stops()[0].url.pathname, /sp-FHD/); assert.equal(stops()[0].url.searchParams.get('gen'), '1'); assert.equal(stops()[0].url.searchParams.get('stop'), '1');
     await client.playbackURL('live', '406'); assert.equal(stops().length, 1);
-    await client.stopPlayback(); assert.equal(stops().length, 2); assert.match(stops()[1].url.pathname, /rj-HD/); assert.equal(stops()[1].url.searchParams.get('gen'), '2');
+    await client.stopPlayback(); assert.equal(stops().length, 2); assert.match(stops()[1].url.pathname, /rj-FHD/); assert.equal(stops()[1].url.searchParams.get('gen'), '2');
   } finally { await client.logout(); await mock.close(); }
 });
 
@@ -176,7 +193,7 @@ test('one startup deadline aborts a slow OTT catalog and permits a clean retry',
   try{
     await assert.rejects(transport.start(live('405','Globo SP')),{code:'WPLAY_WEB_START_TIMEOUT',status:504});
     assert.equal(transport.active,false);assert.equal(mock.requests.some(request=>request.url.pathname.startsWith('/live/')),false);
-    catalogGate.resolve();const source=await transport.start(live('405','Globo SP'));assert.match(source.pathname,/sp-HD/);assert.equal(transport.active,true);
+    catalogGate.resolve();const source=await transport.start(live('405','Globo SP'));assert.match(source.pathname,/sp-FHD/);assert.equal(transport.active,true);
   }finally{catalogGate.resolve();await transport.close();await mock.close();}
 });
 
@@ -185,9 +202,9 @@ test('a late web playback response is stopped before the next channel can own me
   const pending = client.playbackURL('live', '405'), rejected = assert.rejects(pending, { code: 'PLAYBACK_CANCELLED' });
   try {
     await mock.playbackEntered.promise; const next = client.playbackURL('live', '406'); playbackGate.resolve(); await rejected;
-    const source = await next; assert.match(source.pathname, /rj-HD/); assert.equal(source.searchParams.get('gen'), '2'); assert.equal(client.isWebMediaURL(source), true);
+    const source = await next; assert.match(source.pathname, /rj-FHD/); assert.equal(source.searchParams.get('gen'), '2'); assert.equal(client.isWebMediaURL(source), true);
     const stops = mock.requests.filter(request => request.method === 'POST' && request.url.pathname.startsWith('/live/'));
-    assert.equal(stops.length, 1); assert.match(stops[0].url.pathname, /sp-HD/);
+    assert.equal(stops.length, 1); assert.match(stops[0].url.pathname, /sp-FHD/);
   } finally { playbackGate.resolve(); await client.logout(); await mock.close(); }
 });
 
@@ -210,14 +227,14 @@ test('web authentication failure is sanitized and does not replace native authen
   } finally { await client.logout(); await mock.close(); }
 });
 
-test('web failure never starts an old configured Android bridge, including VOD without HTTP', async () => {
-  const mock = await fixture([channel('sp', 'Globo SP')], { loginError: true }); let starts = 0;
-  const bridge = { async stop() {}, async close() {}, acceptsMediaURL() { return false; }, async start() { starts++; throw new Error('Android must not start'); } };
-  const client = nativeClient(mock, { bridge });
+test('web failure preserves provider ownership and VOD without HTTP remains unavailable', async () => {
+  const mock = await fixture([channel('sp', 'Globo SP')], { loginError: true });
+  const client = nativeClient(mock), session = client.session;
   try {
     await assert.rejects(client.playbackURL('live', '405'), { code: 'WPLAY_WEB_AUTH_REJECTED' });
     client.episodes.set('3', { source: { address: 'tvbus://vod-must-not-start-android' } });
-    await assert.rejects(client.playbackURL('series', '3'), { code: 'WPLAY_NATIVE_ENGINE_REQUIRED' }); assert.equal(starts, 0);
+    await assert.rejects(client.playbackURL('series', '3'), { code: 'WPLAY_NATIVE_ENGINE_REQUIRED' });
+    assert.equal(client.session, session);
   } finally { await client.logout(); await mock.close(); }
 });
 

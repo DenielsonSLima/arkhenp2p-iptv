@@ -20,7 +20,7 @@ function fixture(t,{storage,local={},initialGroups=[],remote=snapshot(),connect,
     getCollections:()=>groups,applyCollections:value=>{groups=value;bridge.settingsChanged();},defaultPreferences:{audio:{mode:'original'}},onUpdate:(value,changes)=>calls.push(['update',value,bridge.applying,changes]),storage,now:()=>NOW,refreshSession,schedule,cancel,pageTarget});
   t.after(()=>bridge.stop({flush:false}));
   return {bridge,cloud,calls,favorites,history,episodes,get preferences(){return preferences;},get groups(){return groups;},setGroups(value){groups=value;},setPreferences(value){preferences=value;},
-    emit(value){current=value;listener(value);},account(id,user){generation++;session={connected:true,account:{libraryId:id.repeat(64)},cloud:{userId:user}};},setSnapshot:value=>{current=value;}};
+    emit(value){current=value;listener(value);},account(id,user){generation++;session={connected:true,account:{libraryId:id.repeat(64)},cloud:{userId:user}};},setSession:value=>{session=value;},setSnapshot:value=>{current=value;}};
 }
 
 test('account start imports exact episode progress and seeds missing preferences without feedback writes',async t=>{
@@ -103,4 +103,15 @@ test('a progress-only snapshot emits its exact projection once and never rewrite
   f.emit(next);const changes=f.calls.find(([name])=>name==='update')[3];assert.equal(changes.initial,false);assert.deepEqual(changes.progress,['series']);assert.deepEqual(changes.favorites,[]);
   assert.equal(f.calls.some(([name])=>['saveFavorites','preference','collection'].includes(name)),false);
   f.calls.length=0;f.emit(next);assert.equal(f.calls.some(([name])=>name==='update'),false);
+});
+
+test('a missing bootstrap forwards its fixed diagnostic fields and keeps one retry without hydrating an empty library',async t=>{
+  const jobs=new Map(),observed=[],f=fixture(t,{schedule:(callback,delay)=>{jobs.set(1,{callback,delay});return 1;},cancel:id=>jobs.delete(id)});
+  f.setSession({connected:true,account:{libraryId:'a'.repeat(64)},cloud:null,
+    cloudStatus:{state:'unavailable',code:'CLOUD_TIMEOUT',stage:'arkhen_identity_lookup',remoteStatus:504,elapsedMs:15003,payload:'private must not be forwarded'}});
+  f.cloud.resume=async value=>{observed.push(value);return null;};
+  assert.equal(await f.bridge.start(),null);
+  assert.deepEqual(observed,[{libraryId:'a'.repeat(64),pending:false,code:'CLOUD_TIMEOUT',stage:'arkhen_identity_lookup',remoteStatus:504,elapsedMs:15003}]);
+  assert.equal(jobs.size,1);assert.equal(jobs.get(1).delay,30000);assert.equal(f.favorites.size,1);
+  assert.equal(f.calls.some(([name])=>['connect','hydrate','syncLocal','saveFavorites'].includes(name)),false);
 });

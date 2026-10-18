@@ -1,5 +1,5 @@
 import {readWplayCredentials,safeCode} from './wplay-tool-input.mjs';
-import {WplayProviderClient,WPLAY_AUTH_URLS} from '../lib/wplay-provider.mjs';
+import {WplayProviderClient,WPLAY_AUTH_URLS} from '../lib/wplay/conexao/provedor-nativo.mjs';
 
 const id=process.argv[2],type=process.argv[3]||'series';
 if(!/^\d{1,12}$/.test(id||'')||!['movie','series'].includes(type))throw new Error('INVALID_TARGET');

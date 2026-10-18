@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {EpisodeProgressStore, episodePlaybackProgress} from '../web/episode-progress.js';
-import {renderSeriesPreview,episodeArtworkSources} from '../web/series-preview.js';
+import {EpisodeProgressStore, episodePlaybackProgress} from '../web/serie/progresso.js';
+import {renderSeriesPreview} from '../web/serie/previa.js';
+import {episodeArtworkSources} from '../web/serie/capa.js';
 
 const item = {id:'series-12', kind:'series', name:'Série', poster:'/api/image?ref=private'};
 const episode = (id, extra = {}) => ({id:String(id), season:1, number:Number(id) || 1, ...extra});

@@ -2,7 +2,7 @@ import {SERIES_PLAYBACK_DEFAULTS} from '../../series-playback-preferences.js';
 
 export const SERIES_AUTOPLAY_CHOICES = [
   {mode:'offset', label:'Antes do fim', description:'Usa os créditos marcados. Sem marcação, inicia a contagem nos últimos segundos configurados abaixo.'},
-  {mode:'markers', label:'Somente créditos marcados', description:'Antecipa com uma marcação salva para este episódio. Sem marcação, aguarda o vídeo terminar.'},
+  {mode:'markers', label:'Somente créditos marcados', description:'Usa os horários disponíveis para este episódio. Sem marcação, aguarda o vídeo terminar.'},
   {mode:'ended', label:'Quando terminar', description:'Reproduz o episódio inteiro e só depois mostra a contagem para o próximo.'}
 ];
 const node = (tag, className = '', text) => {const element=document.createElement(tag);element.className=className;if(text!==undefined)element.textContent=text;return element;};
@@ -25,7 +25,7 @@ export function renderSeriesPlaybackPreferences(container, {controller, toast} =
     input.addEventListener('change',()=>save({[key]:input.checked}));return input;
   };
   checkbox('autoNext','Reproduzir o próximo episódio','Ativado por padrão. A contagem dura 5 segundos e pode ser cancelada para este episódio.');
-  checkbox('autoSkipOpening','Pular aberturas marcadas automaticamente','Só avança quando início e fim da abertura estiverem marcados neste episódio. Nenhuma abertura é adivinhada.');
+  checkbox('autoSkipOpening','Pular aberturas marcadas automaticamente','Mostra uma contagem de 5 segundos nos horários disponíveis para este episódio. Você pode cancelar ou pular agora.');
   const choices=node('fieldset','settings-series-options');choices.append(node('legend','','Quando iniciar o próximo episódio'));const radios=[];
   for(const {mode,label,description} of SERIES_AUTOPLAY_CHOICES){
     const row=node('label','settings-series-option'),input=node('input');input.type='radio';input.name='series-next-mode';input.value=mode;
@@ -37,7 +37,7 @@ export function renderSeriesPlaybackPreferences(container, {controller, toast} =
   const seconds=node('input');seconds.type='number';seconds.min='5';seconds.max='300';seconds.step='1';seconds.inputMode='numeric';seconds.setAttribute('aria-label','Segundos antes do fim do episódio');
   const field=node('span','settings-series-offset-field');field.append(seconds,node('span','','segundos'));offset.append(offsetCopy,field);section.append(offset);
   const summary=node('p','settings-series-summary');summary.setAttribute('role','status');summary.setAttribute('aria-live','polite');
-  section.append(summary,node('p','settings-series-explainer','Marque início e fim da abertura e o início dos créditos nos ajustes do player. As marcações pertencem à sua conta e à versão desse episódio; não se aplicam automaticamente aos outros episódios.'));
+  section.append(summary,node('p','settings-series-explainer','As marcações são buscadas quando o episódio começa e reutilizadas neste aparelho. Nos ajustes do player, você pode corrigir os horários desse episódio. Cenas após os créditos são preservadas quando identificadas.'));
   const attribution=node('p','settings-note','Marcações comunitárias fornecidas pelo '),source=node('a','','SkipDB');
   source.href='https://skipdb.tv';source.target='_blank';source.rel='noopener noreferrer';
   const openData=node('a','','dados abertos e licença');openData.href='/series-markers/open-data/skipdb.json';openData.target='_blank';openData.rel='noopener noreferrer';

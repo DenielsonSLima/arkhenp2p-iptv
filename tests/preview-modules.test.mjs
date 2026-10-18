@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { computeSeriesStats, allSeriesEpisodes } from '../web/series-preview.js';
+import {computeSeriesStats} from '../web/serie/temporadas.js';
+import {allSeriesEpisodes} from '../web/serie/episodios.js';
 import { movieWithPlaybackDuration } from '../web/filmes/duracao.js';
 
 test('series statistics count all received seasons and episodes without using declared totals or runtime',()=>{

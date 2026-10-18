@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {QueryClient} from '@tanstack/query-core';
 import {MovieRecommendationsModel} from '../web/filmes/tanstack-query.js';
+import {MovieSuggestionSession} from '../web/filmes/recomendacoes/sessao.js';
 const movie={id:'10',kind:'movie',name:'Filme'},entry=id=>({id:String(id),kind:'movie',name:'Sugestão '+id});
 const response=(sourceId='10')=>({schemaVersion:1,rankingVersion:2,identityVersion:2,source:'rpc',sourceId,revision:'catalog',revisionLibrary:null,personalized:true,items:[entry(9),entry(2),entry(7),entry(5)]});
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
@@ -45,4 +46,41 @@ test('unavailable cloud and adult content never trigger a recommendation request
   const f=fixture(t);f.setScope(null);await assert.rejects(f.model.lookup(movie),{code:'MOVIE_RECOMMENDATIONS_UNAVAILABLE'});
   f.setScope({account:'A'});await assert.rejects(f.model.lookup({...movie,isAdult:true}),{code:'MOVIE_RECOMMENDATIONS_UNAVAILABLE'});
   const controller=new AbortController();controller.abort();await assert.rejects(f.model.lookup(movie,{signal:controller.signal}),{name:'AbortError'});assert.equal(f.calls.length,0);
+});
+
+test('peek retains a validated RPC result after 503, scoped by source, owner, filters and provider',async t=>{
+  let fail=false;const f=fixture(t,{request:async()=>{if(fail)throw Object.assign(new Error('offline'),{status:503,code:'CLOUD_UNAVAILABLE'});return response();}});
+  await f.model.lookup(movie);assert.deepEqual(f.model.peek(movie).items.map(item=>item.id),['9','2','7','5']);
+  fail=true;f.setRevision(2);await assert.rejects(f.model.lookup(movie),{status:503});
+  assert.deepEqual(f.model.peek(movie,{limit:2}).items.map(item=>item.id),['9','2']);
+  assert.equal(f.model.peek({...movie,id:'20'}),null);
+  for(const update of [{account:'B'},{epoch:2},{providerKey:'other'},{project:'other'},{scopeHash:'other'}, {hidden:{movies:['drama']}},{hiddenItems:{movies:['9']}}]){
+    f.setScope({account:'A',project:'fixed',providerKey:'p',scopeHash:'s',hidden:{},hiddenItems:{},...update});
+    assert.equal(f.model.peek(movie),null,JSON.stringify(update));
+  }
+  f.setScope(null);assert.equal(f.model.peek(movie),null);
+});
+
+test('TV and series preferences share the same movie cache without a request or invalidation',async t=>{
+  const f=fixture(t);await f.model.lookup(movie);
+  f.setScope({account:'A',project:'fixed',providerKey:'p',scopeHash:'s',hidden:{live:['news'],series:['drama']},hiddenItems:{live:['90'],series:['92']}});
+  assert.equal(f.model.peek(movie).items.length,4);await f.model.lookup(movie);assert.equal(f.calls.length,1);
+});
+
+
+test('real query cache and destination keep source A cards during 503 after A to B to A, then recover independently',async t=>{
+  let failed=false,scope={account:'A',project:'fixed',providerKey:'p',scopeHash:'s',hidden:{},hiddenItems:{}};
+  const f=fixture(t,{getScope:()=>scope,request:async(_path,{body})=>{
+    const {id}=JSON.parse(body);if(failed)throw Object.assign(new Error('unavailable'),{code:'CLOUD_UNAVAILABLE',status:503});
+    return response(id);
+  }});
+  const session=new MovieSuggestionSession({getScope:()=>({generation:1,scope}),lookup:(item,options)=>f.model.lookup(item,options),readCached:item=>f.model.peek(item)});
+  t.after(()=>session.reset());
+  await session.select(movie);await session.select({...movie,id:'20'});
+  f.setRevision(2);failed=true;const retry=session.select(movie);
+  assert.deepEqual(session.state.items.map(item=>item.id),['9','2','7','5']);assert.equal(session.state.loading,true);
+  await retry;assert.equal(session.state.loading,false);assert.equal(session.state.failure.status,503);assert.equal(session.state.items.length,4);
+  failed=false;await session.select(movie,{force:true});assert.equal(session.state.error,null);assert.equal(session.state.items.length,4);
+  scope={...scope,account:'B'};failed=true;await session.select(movie);
+  assert.equal(session.state.items.length,0);assert.equal(session.state.failure.status,503);
 });

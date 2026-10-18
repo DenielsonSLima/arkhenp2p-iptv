@@ -19,7 +19,7 @@ test('a source moved to cloud collection cannot be registered or claimed by the 
 });
 function fixture(type='catalog',{payload={},rpc,client:clientOverrides={}}={}){
   const calls=[],jobs=[{id:'d243589c-25c5-4db0-b9aa-c087ace3d180',provider_key:scope.providerKey,scope_hash:scope.scopeHash,job_type:type,payload,attempts:1}],timers=new Map();let timerId=0;
-  const cloud={ready:Promise.resolve(true),enabled:true,async rpc(name,args){calls.push({name,args});const override=await rpc?.(name,args);if(override!==undefined)return override;if(name==='arkhen_claim_cache_jobs')return jobs.splice(0,1);if(name==='arkhen_renew_cache_job')return true;return null;}};
+  const cloud={ready:Promise.resolve(true),enabled:true,async rpc(name,args){calls.push({name,args});const override=await rpc?.(name,args);if(override!==undefined)return override;if(name==='arkhen_claim_cache_jobs')return jobs.splice(0,1);if(name==='arkhen_renew_cache_job')return true;if(name==='arkhen_epg_snapshot_state')return {state:'missing'};if(name==='arkhen_epg_snapshot_stage')return {state:'sealed'};if(name==='arkhen_epg_snapshot_publish')return {state:'published'};return null;}};
   const client={config:{server:'https://auth.example',password:'private-provider-password'},session:{connected:true,account:{status:'Active',expiresAt:'2026-11-01T00:00:00Z'}},authenticatedAt:now,
     catalog:async type=>catalog(type),catalogPage:async()=>assert.fail('No paged catalog expected'),epg:async()=>epg(),games:async()=>game(),
     stopPlayback:()=>assert.fail('The worker must not interrupt user playback'),...clientOverrides};
@@ -88,15 +88,15 @@ test('unregistering an authenticated source during its request prevents publicat
   f.worker.unregisterSource(f.client);release(catalog());assert.equal((await run).errorCode,'CACHE_SOURCE_UNAVAILABLE');assert.equal(f.published('arkhen_publish_catalog').length,0);
 });
 
-test('EPG uses at most two client lookups at once and publishes one global batch for five minutes',async()=>{
+test('non-native EPG collection uses at most two lookups and seals one complete snapshot before atomic publication',async()=>{
   let active=0,max=0,lookups=0;
   const f=fixture('epg',{client:{catalog:async()=>({categories:[],items:[1,2,3,4].map(id=>({id:String(id)}))}),epg:async()=>{active++;max=Math.max(max,active);lookups++;await new Promise(resolve=>setImmediate(resolve));active--;return epg();}}});
   const result=await f.worker.tick();assert.equal(result.succeeded,true);assert.equal(max,2);assert.equal(lookups,4);
-  const batches=f.published('arkhen_publish_epg_batch');assert.equal(batches.length,1);assert.equal(batches[0].args.p_channels.length,4);assert.equal(batches[0].args.p_expires_at,'2026-10-15T12:05:00.000Z');
+  const staged=f.published('arkhen_epg_snapshot_stage');assert.equal(staged.length,1);assert.equal(staged[0].args.p_channels.length,4);assert.equal(staged[0].args.p_fetched_at,new Date(now).toISOString());assert.match(staged[0].args.p_content_hash,/^[a-f0-9]{64}$/);assert.equal(f.published('arkhen_epg_snapshot_publish').length,1);assert.equal(f.published('arkhen_publish_epg_batch').length,0);
 });
 
 test('an EPG lookup failure preserves the previous global guide instead of publishing an incomplete batch',async()=>{
-  const f=fixture('epg',{client:{epg:async()=>{throw new Error('private-url-token');}}});const result=await f.worker.tick();assert.equal(result.succeeded,false);assert.equal(f.published('arkhen_publish_epg_batch').length,0);assert.equal(f.finish().args.p_error_code,'CACHE_REFRESH_FAILED');
+  const f=fixture('epg',{client:{epg:async()=>{throw new Error('private-url-token');}}});const result=await f.worker.tick();assert.equal(result.succeeded,false);assert.equal(f.published('arkhen_epg_snapshot_stage').length,0);assert.equal(f.published('arkhen_epg_snapshot_publish').length,0);assert.equal(f.finish().args.p_error_code,'CACHE_REFRESH_FAILED');
 });
 
 test('games publish sanitized global metadata for sixty seconds and unavailable source clients claim no jobs',async()=>{
@@ -107,4 +107,15 @@ test('games publish sanitized global metadata for sixty seconds and unavailable 
 
 test('start is idempotent, stop cancels local timers and unregister never closes a shared client',()=>{
   const f=fixture();f.worker.start();f.worker.start();assert.equal(f.timers.size,1);f.worker.stop();assert.equal(f.timers.size,0);f.worker.unregisterSource(f.client);assert.equal(f.worker.sources.size,0);
+});
+
+
+test('a sealed EPG candidate resumes publication without recapturing provider metadata',async()=>{
+ const f=fixture('epg',{rpc:async name=>name==='arkhen_epg_snapshot_state'?{state:'sealed'}:undefined,client:{catalog:()=>assert.fail('A sealed capture is reused.'),epg:()=>assert.fail('No per-channel recapture.')}});
+ assert.equal((await f.worker.tick()).succeeded,true);assert.equal(f.published('arkhen_epg_snapshot_stage').length,0);assert.equal(f.published('arkhen_epg_snapshot_publish').length,1);
+});
+
+test('an unsealed or rejected EPG candidate is never published as a completed guide',async()=>{
+ const f=fixture('epg',{rpc:async name=>name==='arkhen_epg_snapshot_stage'?{state:'invalid'}:undefined});
+ assert.equal((await f.worker.tick()).errorCode,'CACHE_EPG_PUBLICATION_INCOMPLETE');assert.equal(f.published('arkhen_epg_snapshot_publish').length,0);assert.equal(f.finish().args.p_success,false);
 });

@@ -21,7 +21,9 @@ export function createMarkerSyncHandler({environment=name=>globalThis.Deno?.env?
       const result=await pipeline({store,fetch:request,skipdbKey:environment('SKIPDB_API_KEY')||'',introdbKey:environment('INTRODB_API_KEY')||''});
       const sourceProgress=!result.dumpComplete&&(result.published>0||result.rawCopied||result.rawStaged>0);
       const lookupProgress=result.identities>0||result.unresolved>0||result.inventories>0||result.episodesChecked>0;
-      if(waitUntil&&(sourceProgress||lookupProgress)){
+      // Keep routine work on the cron cadence rather than creating a chain of
+      // 11-second invocations whenever a large source or lookup queue exists.
+      if(environment('ARKHEN_SYNC_CONTINUATIONS_ENABLED')==='true'&&result.state==='ready'&&waitUntil&&(sourceProgress||lookupProgress)){
         waitUntil((async()=>{await sleep(11000);try{const response=await request(url.replace(/\/$/,'')+'/functions/v1/series-markers-sync',{method:'POST',headers:{'Content-Type':'application/json','x-arkhen-marker-secret':environment('ARKHEN_MARKER_SYNC_SECRET')},body:'{}',signal:AbortSignal.timeout(55000)});await response.body?.cancel?.();}catch{}})());
       }
       return json(result,result.state==='failed'?503:200);

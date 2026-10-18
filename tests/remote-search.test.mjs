@@ -60,3 +60,24 @@ test('cache is bounded and cleared when visibility preferences change',async()=>
   const {controller,calls,scope}=harness();for(let i=0;i<24;i++)await controller.search(`filme${i}`,{immediate:true});assert.equal(controller.client.getQueryCache().getAll().length,20);
   scope.hidden.movies.push('8');await controller.search('filme23',{immediate:true});assert.equal(calls.length,25);assert.equal(controller.client.getQueryCache().getAll().length,1);controller.reset();assert.equal(controller.client.getQueryCache().getAll().length,0);
 });
+
+test('search cancellation and reset preserve a borrowed series cache and its active metadata request',async()=>{
+  const {controller}=harness(),client=await controller.queries(),pending=deferred();let seriesSignal;
+  const cachedKey=['arkhen-series','details','fixture-account',1,'42'],activeKey=['arkhen-series','details','fixture-account',1,'43'];
+  client.setQueryData(cachedKey,{id:'42',kind:'series'});
+  const active=client.fetchQuery({queryKey:activeKey,queryFn:({signal})=>{seriesSignal=signal;return pending.promise;}});
+  await controller.search('filme',{immediate:true});controller.cancel();assert.equal(seriesSignal.aborted,false);
+  controller.reset();assert.equal(seriesSignal.aborted,false);assert.deepEqual(client.getQueryData(cachedKey),{id:'42',kind:'series'});
+  assert.equal(client.getQueryCache().getAll().some(query=>query.queryKey[0]==='arkhen-global-search'),false);
+  pending.resolve({id:'43',kind:'series'});assert.deepEqual(await active,{id:'43',kind:'series'});client.clear();
+});
+
+test('search cache pruning counts only search queries and never evicts a series or another domain',async()=>{
+  const {controller}=harness(),client=await controller.queries();
+  for(let index=0;index<25;index++)client.setQueryData(['arkhen-series','details','fixture-account',1,String(index)],{id:String(index),kind:'series'});
+  client.setQueryData(['other-domain'],{keep:true});
+  for(let index=0;index<24;index++)await controller.search('filme'+index,{immediate:true});
+  const queries=client.getQueryCache().getAll();assert.equal(queries.filter(query=>query.queryKey[0]==='arkhen-global-search').length,20);
+  assert.equal(queries.filter(query=>query.queryKey[0]==='arkhen-series').length,25);assert.deepEqual(client.getQueryData(['other-domain']),{keep:true});
+  controller.reset();assert.equal(client.getQueryCache().getAll().length,26);client.clear();
+});

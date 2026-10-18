@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {createWplayHttpSource,sharedImageReference,publicWplayURL,wplayTokenURL,wplayTimestamp,cloudGamesOffset,cloudGamesOptions} from '../supabase/functions/arkhen-catalog-sync/wplay-http.mjs';
-import {normalizeWplayEPG} from '../lib/wplay-epg.mjs';
-import {normalizeWplayGames} from '../lib/wplay-games.mjs';
+import {normalizeWplayEPG} from '../lib/wplay/ao-vivo/grade.mjs';
+import {normalizeWplayGames} from '../lib/wplay/ao-vivo/jogos.mjs';
 
 const resolveDns=async()=>['93.184.215.14'];
 const NOW=Date.parse('2026-10-15T01:30:00Z'),providerKey='a'.repeat(64),scopeHash='b'.repeat(64),scope={providerKey,scopeHash};

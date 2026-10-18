@@ -2,7 +2,6 @@ const messages={
   LIVE_RATE_LIMITED:'O provedor limitou esta transmissão. Aguarde antes de tentar novamente.',
   PLAYBACK_RATE_LIMITED:'O provedor limitou esta transmissão. Aguarde antes de tentar novamente.',
   ENGINE_STOPPED:'O serviço de reprodução interrompeu este canal. Aguarde e tente novamente.',
-  ORIGINAL_ENGINE_CONFIGURATION:'A configuração do serviço de reprodução precisa ser verificada.',
   LIVE_SOURCE_UNAVAILABLE:'O provedor não informou uma fonte compatível para este canal.',
   WPLAY_WEB_UNAVAILABLE:'O player web WPLAY está indisponível no momento. Tente novamente ou escolha outro canal.',
   WPLAY_WEB_START_TIMEOUT:'O player web WPLAY demorou para preparar este canal. Tente novamente.',
@@ -11,18 +10,11 @@ const messages={
   WPLAY_WEB_AUTH_REJECTED:'O player web WPLAY não autorizou este acesso. Sua conta e sua biblioteca continuam conectadas.',
   WPLAY_WEB_CHANNEL_NOT_FOUND:'Este canal ainda não foi encontrado no player web WPLAY. Escolha outro canal.',
   WPLAY_WEB_CHANNEL_AMBIGUOUS:'Há canais com o mesmo nome no player web WPLAY. Não foi possível identificar este canal com segurança.',
-  NATIVE_BRIDGE_UNAVAILABLE:'Este canal precisa do serviço P2P local, que não está disponível neste dispositivo.',
-  NATIVE_BRIDGE_CONFIGURATION:'O serviço P2P local precisa ser configurado neste dispositivo para reproduzir este canal.',
-  WPLAY_NATIVE_ENGINE_REQUIRED:'Este canal precisa do serviço P2P local, que não está disponível neste dispositivo.',
-  ENGINE_NOT_INITIALIZED:'O serviço P2P local ainda não está pronto para reproduzir este canal.',
-  NATIVE_ACCOUNT_MISMATCH:'A conta do serviço P2P local é diferente da conta conectada. Entre com a mesma conta para assistir.',
-  NATIVE_ENGINE_CERTIFICATION_REQUIRED:'O serviço P2P recusou a autorização deste dispositivo para reproduzir o canal.',
-  NATIVE_BRIDGE_BUSY:'O serviço P2P local está em uso por outra sessão. Encerre essa reprodução para assistir aqui.',
-  NATIVE_ENGINE_FAILED:'O serviço P2P local não conseguiu iniciar este canal. Tente novamente ou escolha outro canal.'
+  WPLAY_NATIVE_ENGINE_REQUIRED:'O provedor não informou uma fonte HTTP compatível para este vídeo.'
 };
 export function localPlaybackMessage(code){
   if(Object.hasOwn(messages,code))return messages[code];
-  return typeof code==='string'&&/^(?:ENGINE_[A-Z_]+|NATIVE_[A-Z_]+|EXTERNAL_CHANNEL_CHANGE|JAVA_CALL_FAILED)$/.test(code)?'O serviço de reprodução interrompeu esta fonte. Aguarde e tente novamente.':null;
+  return null;
 }
 
 function responseBody(data){

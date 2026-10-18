@@ -81,8 +81,8 @@ function subscribe(task, signal, cancelledValue) {
 
 // Interactive pages and background completion share requests and one concurrency budget.
 export class CatalogPager {
-  constructor({request, getCatalog, onData, onChange = () => {}, onProgress = () => {}, isCategoryAllowed = () => true, limit = 4}) {
-    Object.assign(this, {request, getCatalog, onData, onChange, onProgress, isCategoryAllowed, limit:bounded(limit,4)});
+  constructor({request, getCatalog, onData, onChange = () => {}, onProgress = () => {}, isCategoryAllowed = () => true, isActive = () => true, limit = 4}) {
+    Object.assign(this, {request, getCatalog, onData, onChange, onProgress, isCategoryAllowed, isActive, limit:bounded(limit,4)});
     this.pending = new Map(); this.errors = new Map(); this.epochs = new Map();
     this.completions = new Map(); this.progress = new Map();
     this.metadataPending = new Set();
@@ -113,6 +113,7 @@ export class CatalogPager {
     return '';
   }
   async load(type, category = '__all', {initialOnly = false, signal} = {}) {
+    if(!this.isActive())return [];
     const choices = this.choices(type, category, initialOnly).slice(0, this.limit);
     return Promise.allSettled(choices.map(state => this.#page(type, state, signal)));
   }
@@ -152,16 +153,17 @@ export class CatalogPager {
     this.errors.delete(key);
     task.promise = Promise.resolve().then(async () => {
       const activeSignal = task.controller.signal;
+      if(!this.isActive()){task.controller.abort();throw abortError();}
       const queued = this.#acquire(activeSignal);
       if (queued) await queued;
       try {
-        if (activeSignal.aborted) throw abortError();
+        if (activeSignal.aborted||!this.isActive()) throw abortError();
         if(isCompleteCatalog(this.getCatalog(type)))return this.getCatalog(type);
         const pagination=this.getCatalog(type)?.pagination;
         const shared=pagination?.source==='supabase';
         const extra=shared?`&paged=1&snapshot=${encodeURIComponent(pagination.snapshotId)}&cursor=${Number(current.nextCursor??-1)}`:'';
         const response = await this.request(`/api/catalog?type=${encodeURIComponent(type)}&category=${encodeURIComponent(state.id)}&page=${page}${extra}`, {signal:activeSignal});
-        if ((this.epochs.get(type) || 0) === epoch && !activeSignal.aborted) this.onData(type, mergeCatalogPage(this.getCatalog(type), response));
+        if ((this.epochs.get(type) || 0) === epoch && !activeSignal.aborted&&this.isActive()) this.onData(type, mergeCatalogPage(this.getCatalog(type), response));
         return response;
       } finally {this.#release();}
     }).catch(error => {
@@ -195,6 +197,7 @@ export class CatalogPager {
   }
   /** Complete metadata for every source category, including categories hidden in the UI. */
   complete(type, {signal, retries = 1, concurrency = 3} = {}) {
+    if(!this.isActive())return Promise.resolve({status:'cancelled'});
     let task = this.completions.get(type);
     if (task && !task.controller.signal.aborted) return subscribe(task,signal,() => ({...task.latest,status:'cancelled'}));
     task = {controller:new AbortController(), consumers:new Set(), settled:false, epoch:this.epochs.get(type) || 0, failures:new Map(), latest:null};
@@ -202,7 +205,7 @@ export class CatalogPager {
     this.#report(type,task,'loading');
     task.promise = Promise.resolve().then(async () => {
       const working = new Set(), activeSignal = task.controller.signal;
-      const active = () => !activeSignal.aborted && (this.epochs.get(type) || 0) === task.epoch;
+      const active = () => !activeSignal.aborted && this.isActive() && (this.epochs.get(type) || 0) === task.epoch;
       const maxRetries = Math.max(0,Math.min(2,Math.floor(Number(retries) || 0)));
       const worker = async () => {
         while (active()) {
@@ -244,11 +247,12 @@ export class CatalogPager {
     return subscribe(task,signal,() => ({...task.latest,status:'cancelled'}));
   }
   async hydrateRemembered(favorites, history) {
+    if(!this.isActive())return;
     const items = rememberedTitles(this.getCatalog, favorites, history);
     const epochs = new Map(this.epochs);
     const controller = new AbortController(), deadline = setTimeout(() => controller.abort(), 6000);
     const worker = async () => {
-      while (items.length && !controller.signal.aborted) {
+      while (items.length && !controller.signal.aborted&&this.isActive()) {
         const item = items.shift(), type = item.kind === 'movie' ? 'movies' : 'series';
         if ((this.epochs.get(type) || 0) !== (epochs.get(type) || 0)) continue;
         const task = {type,controller:new AbortController()}, cancel = () => task.controller.abort();
@@ -259,9 +263,9 @@ export class CatalogPager {
           const queued = this.#acquire(task.controller.signal);
           if (queued) await queued;
           acquired = true;
-          if (task.controller.signal.aborted) throw abortError();
+          if (task.controller.signal.aborted||!this.isActive()) throw abortError();
           const details = await this.request(`/api/details?type=${item.kind}&id=${encodeURIComponent(item.id)}`, {signal:task.controller.signal});
-          if (!details?.name || (this.epochs.get(type) || 0) !== (epochs.get(type) || 0)) continue;
+          if (!details?.name || task.controller.signal.aborted||!this.isActive()||(this.epochs.get(type) || 0) !== (epochs.get(type) || 0)) continue;
           const catalog = this.getCatalog(type);
           this.onData(type, mergeCatalogPage(catalog, {categories:[], items:[{...withoutSessionArtwork(item),...details,id:item.id,kind:item.kind}],pagination:catalog.pagination}));
           this.onChange(type);

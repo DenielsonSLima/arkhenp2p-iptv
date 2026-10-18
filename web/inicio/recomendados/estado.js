@@ -1,7 +1,7 @@
 /** Presentation of a server-owned recommendation shelf, including outages.
  * No local recommendation candidates, genres or scores are calculated here. */
 export function homeRecommendationState({data=null,loading=false,error=null,available=false}={}){
-  if(data?.recommendations&&!loading&&!error)return {phase:'empty',message:'Explore outros títulos para encontrar novas sugestões.',retry:false};
+  if(Array.isArray(data?.recommendations?.items)&&!loading&&!error)return {phase:'empty',message:'Explore outros títulos para encontrar novas sugestões.',retry:false};
   if(loading)return {phase:'loading',message:'Preparando sugestões para você…',retry:false};
   return {phase:available?'error':'unavailable',message:'As recomendações estão temporariamente indisponíveis.',retry:true};
 }

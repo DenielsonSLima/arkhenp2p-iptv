@@ -193,3 +193,10 @@ test('database statement timeout is identifiable without exposing its SQL or raw
   const cloud=new SupabaseCloud({config,fetch:async()=>Response.json({code:'57014',message:'statement details secret SQL'},{status:500})});
   await assert.rejects(cloud.rpc('arkhen_publish_epg_batch',{}),error=>error.code==='CLOUD_DATABASE_TIMEOUT'&&!/secret|SQL|details/.test(error.message));
 });
+
+test('cloud failures retain only a fixed phase and measured elapsed time for bootstrap/artwork diagnosis',async()=>{
+  const cloud=new SupabaseCloud({config,fetch:async()=>{throw new Error('private provider URL and credential');}});
+  for(const [path,stage]of [['/rest/v1/rpc/arkhen_identity_lookup','arkhen_identity_lookup'],['/rest/v1/catalog_artwork_refs?ref=eq.fixture-private','artwork_reference'],['/rest/v1/catalog_media?media_id=eq.fixture-private','artwork_classification']]){
+    await assert.rejects(cloud.request(path),error=>error.code==='CLOUD_UNAVAILABLE'&&error.cloudStage===stage&&Number.isInteger(error.elapsedMs)&&error.elapsedMs>=0&&!/private|credential|provider URL/.test(error.message));
+  }
+});

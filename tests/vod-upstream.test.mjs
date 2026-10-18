@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import {requestVODUpstream} from '../lib/vod-upstream.mjs';
-import {WplayPlaybackProviderClient} from '../lib/wplay-playback.mjs';
+import {WplayPlaybackProviderClient} from '../lib/wplay/conexao/reproducao.mjs';
 import {readBody} from '../lib/upstream.mjs';
 
 function reply(status){return {status,body:{destroyed:false,destroy(){this.destroyed=true;}}};}

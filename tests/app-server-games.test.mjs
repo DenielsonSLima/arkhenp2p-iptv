@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createApp} from '../lib/app-server.mjs';
-import {WplayPlaybackProviderClient} from '../lib/wplay-playback.mjs';
+import {WplayPlaybackProviderClient} from '../lib/wplay/conexao/reproducao.mjs';
 import {ProviderClient, ProviderError} from '../lib/provider.mjs';
 
 test('games are authenticated, route validated options, preserve unsupported-provider absence and hide private upstream errors', async t => {
@@ -10,7 +10,7 @@ test('games are authenticated, route validated options, preserve unsupported-pro
   t.mock.method(ProviderClient.prototype,'connect',async function(){this.session={connected:true,account:{provider:'xtream'}};return this.session;});
   let fail=false;
   t.mock.method(WplayPlaybackProviderClient.prototype,'games',async function(options){calls.push(options);if(fail)throw new ProviderError('Não foi possível carregar os jogos do serviço agora. Tente novamente.','WPLAY_GAMES_UNAVAILABLE',502);return {available:true,date:options.date,timeZone:options.timeZone,games:[]};});
-  const app=createApp({connection:{server:'https://fixture.example'},nativeBridge:null});
+  const app=createApp({connection:{server:'https://fixture.example'}});
   await new Promise((resolve,reject)=>{app.once('error',reject);app.listen(0,'127.0.0.1',resolve);});
   t.after(async()=>{app.closeAllConnections?.();await app.shutdown();});
   const base=`http://127.0.0.1:${app.address().port}`,route='/api/games?date=2026-10-14&timezone=America%2FMaceio&lang=pt';

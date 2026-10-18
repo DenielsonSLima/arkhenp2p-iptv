@@ -22,7 +22,7 @@ export class NeighborProgramFeeds{
           status:data?.status||(this.guide?.state.loading?'loading':this.guide?.state.error?'error':'unavailable')});
       }
     };
-    if(Object.values(selection).some(Boolean)&&this.guide)this.unsubscribe=this.guide.subscribe(emit);else emit();
+    if(Object.values(selection).some(Boolean)&&this.guide)this.unsubscribe=this.guide.subscribe(emit,{ids:Object.values(selection).filter(Boolean)});else emit();
   }
   stop(){this.unsubscribe?.();this.unsubscribe=null;this.selection={previous:null,next:null};}
   destroy(){this.stop();this.namespace=null;}

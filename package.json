@@ -6,10 +6,6 @@
   "scripts": {
     "dev": "node server.mjs",
     "start": "node server.mjs",
-    "start:p2p": "node tools/start-p2p.mjs",
-    "check:p2p": "node tools/check-p2p.mjs",
-    "prepare:p2p:tools": "node tools/prepare-p2p-tools.mjs",
-    "prepare:p2p:sdk": "node tools/prepare-p2p-sdk.mjs",
     "build:cloud": "node tools/build-cloud.mjs",
     "build:shaka": "node tools/build-shaka.mjs",
     "supabase:project": "node tools/supabase-project.mjs",

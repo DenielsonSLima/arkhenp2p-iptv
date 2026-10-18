@@ -1,5 +1,6 @@
 import {isAdultCategory,isAdultItem} from './parental-classification.js';
 import {sanitizeCatalogReadModel} from './catalog-read-model.js';
+import {catalogMatchesPublication,normalizeCatalogPublication,compareCatalogRevisions} from './catalog-revision.js';
 
 export const CATALOG_CACHE_TTL_MS=86400000;
 export const CATALOG_CACHE_RECORD_VERSION=2;
@@ -16,10 +17,11 @@ function scopeOf(value){
   return {project:url.origin,providerKey:value.providerKey.toLowerCase(),scopeHash:value.scopeHash.toLowerCase(),type:value.type,includeAdult:value.includeAdult};
 }
 const cacheKey=scope=>JSON.stringify(['arkhen-catalog',1,scope.project,scope.providerKey,scope.scopeHash,scope.type,scope.includeAdult]);
+const verificationKey=scope=>JSON.stringify(['arkhen-catalog-verified',1,scope.project,scope.providerKey,scope.scopeHash,scope.type,scope.includeAdult]);
 // Keep the database/store/key unchanged. Old v1 snapshots may lack publication
 // identity; ignore them on read and atomically replace them on the next valid
 // download, without inheriting their old timestamp/revision as a write fence.
-function newer(previous,next){if(previous?.version!==next.version)return !Number.isSafeInteger(previous?.version)||previous.version<next.version;const oldRevision=Date.parse(previous?.catalog?.pagination?.revisionAt),revision=Date.parse(next.catalog?.pagination?.revisionAt);return !(previous?.savedAt>next.savedAt||Number.isFinite(oldRevision)&&Number.isFinite(revision)&&revision<oldRevision);}
+function newer(previous,next){if(previous?.version!==next.version)return !Number.isSafeInteger(previous?.version)||previous.version<next.version;const order=compareCatalogRevisions(next.catalog?.pagination?.revisionAt,previous?.catalog?.pagination?.revisionAt);return !(previous?.savedAt>next.savedAt||Number.isFinite(order)&&order<0);}
 
 /** Explicit global metadata allowlist. No account, favorites, credentials,
  * playback sources or session-bound artwork enters the catalog database. */
@@ -46,6 +48,7 @@ export function sanitizeCatalogCache(catalog,{type,includeAdult=false}={}){
   const pagination={mode:'complete',source:'supabase'};
   if(/^[a-f0-9-]{36}$/i.test(catalog.pagination?.snapshotId||''))pagination.snapshotId=catalog.pagination.snapshotId;
   if(Number.isFinite(Date.parse(catalog.pagination?.revisionAt)))pagination.revisionAt=new Date(catalog.pagination.revisionAt).toISOString();
+  if(Number.isFinite(Date.parse(catalog.pagination?.expiresAt)))pagination.expiresAt=new Date(catalog.pagination.expiresAt).toISOString();
   const result={catalogComplete:true,categories:includeAdult?categories:categories.filter(category=>!isAdultCategory(category)),items,pagination};
   const readModel=sanitizeCatalogReadModel(catalog.readModel,result,{type,includeAdult});if(readModel)result.readModel=readModel;
   return result;
@@ -71,7 +74,17 @@ export class CatalogCache{
   constructor({storage=new IndexedDBCatalogStorage(),now=Date.now,ttlMs=CATALOG_CACHE_TTL_MS}={}){Object.assign(this,{storage,now,ttlMs});this.writes=new Map();this.epochs=new Map();}
   async read(value){
     const scope=scopeOf(value);if(!scope)return null;const key=cacheKey(scope),epoch=this.epochs.get(key)||0;
-    try{await this.writes.get(key)?.catch(()=>{});const record=await this.storage.get(key);if((this.epochs.get(key)||0)!==epoch||record?.version!==CATALOG_CACHE_RECORD_VERSION||cacheKey(scopeOf(record.scope)||{})!==key||!Number.isFinite(record.savedAt)||record.savedAt>this.now()+60000)return null;const catalog=sanitizeCatalogCache(record.catalog,scope);if(!catalog)return null;return {catalog,savedAt:record.savedAt,fresh:this.now()-record.savedAt<this.ttlMs};}catch{return null;}
+    try{
+      await this.writes.get(key)?.catch(()=>{});const record=await this.storage.get(key);
+      if((this.epochs.get(key)||0)!==epoch||record?.version!==CATALOG_CACHE_RECORD_VERSION||cacheKey(scopeOf(record.scope)||{})!==key||!Number.isFinite(record.savedAt)||record.savedAt>this.now()+60000)return null;
+      const catalog=sanitizeCatalogCache(record.catalog,scope);if(!catalog)return null;
+      // This small record never rewrites the catalog or changes its byte age.
+      // A missing/evicted verification simply requires another header check.
+      let check=null;try{check=await this.storage.get(verificationKey(scope));}catch{/* Keep the complete snapshot if only verification metadata was evicted. */}
+      if((this.epochs.get(key)||0)!==epoch)return null;
+      const verifiedAt=check?.version===1&&cacheKey(scopeOf(check.scope)||{})===key&&Number.isFinite(check.verifiedAt)&&check.verifiedAt>=record.savedAt&&check.verifiedAt<=this.now()+60000&&catalogMatchesPublication(catalog,check.publication,scope)?check.verifiedAt:0;
+      return {catalog,savedAt:record.savedAt,verifiedAt,fresh:this.now()-Math.max(record.savedAt,verifiedAt)<this.ttlMs};
+    }catch{return null;}
   }
   write(value,data,{fetchedAt=this.now()}={}){
     const scope=scopeOf(value),catalog=scope&&sanitizeCatalogCache(data,scope);if(!scope||!catalog||!Number.isFinite(fetchedAt)||fetchedAt>this.now()+60000)return Promise.resolve(false);
@@ -79,6 +92,16 @@ export class CatalogCache{
     const pending=(this.writes.get(key)||Promise.resolve()).catch(()=>{}).then(async()=>{if((this.epochs.get(key)||0)!==epoch)return false;try{if(this.storage.putIfNewer)return await this.storage.putIfNewer(key,record);const previous=await this.storage.get(key);if(!newer(previous,record)||(this.epochs.get(key)||0)!==epoch)return false;await this.storage.put(key,record);return true;}catch{return false;}});
     this.writes.set(key,pending);void pending.finally(()=>{if(this.writes.get(key)===pending)this.writes.delete(key);});return pending;
   }
-  async clear(value){const scope=scopeOf(value);if(!scope)return false;const key=cacheKey(scope);this.epochs.set(key,(this.epochs.get(key)||0)+1);try{await this.writes.get(key)?.catch(()=>{});await this.storage.delete(key);return true;}catch{return false;}}
+  verify(value,publication,{verifiedAt=this.now()}={}){
+    const scope=scopeOf(value),normalized=scope&&normalizeCatalogPublication(publication,scope);
+    if(!normalized||!Number.isFinite(verifiedAt)||verifiedAt>this.now()+60000||verifiedAt<=0)return Promise.resolve(false);
+    const key=cacheKey(scope),epoch=this.epochs.get(key)||0;
+    const pending=(this.writes.get(key)||Promise.resolve()).catch(()=>{}).then(async()=>{
+      if((this.epochs.get(key)||0)!==epoch)return false;
+      try{await this.storage.put(verificationKey(scope),{version:1,scope,publication:normalized,verifiedAt});return true;}catch{return false;}
+    });
+    this.writes.set(key,pending);void pending.finally(()=>{if(this.writes.get(key)===pending)this.writes.delete(key);});return pending;
+  }
+  async clear(value){const scope=scopeOf(value);if(!scope)return false;const key=cacheKey(scope);this.epochs.set(key,(this.epochs.get(key)||0)+1);try{await this.writes.get(key)?.catch(()=>{});await Promise.all([this.storage.delete(key),this.storage.delete(verificationKey(scope))]);return true;}catch{return false;}}
   async clearAdult(scope){const results=await Promise.all(TYPES.map(type=>this.clear({...scope,type,includeAdult:true})));return results.every(Boolean);}
 }

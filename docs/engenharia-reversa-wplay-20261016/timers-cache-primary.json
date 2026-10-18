@@ -1,0 +1,25 @@
+{
+  "kind": "direct-static-dex-literal-assignment",
+  "apk_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+  "dex_sha256": "1337876f9237570f6c5b60961a6a505bfb1d3e2dda8a89a0c923d986ff8044d2",
+  "dex": "classes2.dex",
+  "code_item_offset": "0x19e69c",
+  "complete_decoder_for_this_code_item": true,
+  "assignments": [
+    {
+      "field": "Lorg/bitspark/android/h;->g:I",
+      "value": -1,
+      "instruction_offset": "0x19e6c8"
+    },
+    {
+      "field": "Lorg/bitspark/android/h;->h:I",
+      "value": 1800000,
+      "instruction_offset": "0x19e6d2"
+    },
+    {
+      "field": "Lorg/bitspark/android/h;->i:I",
+      "value": 1209600000,
+      "instruction_offset": "0x19e6dc"
+    }
+  ]
+}

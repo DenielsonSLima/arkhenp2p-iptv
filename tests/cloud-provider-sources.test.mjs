@@ -4,7 +4,7 @@ import {randomBytes,createHash} from 'node:crypto';
 import {sealSource,openSource,publicProviderURL,assertPublicProviderDestination} from '../supabase/functions/_shared/provider-sources.mjs';
 import {createWplayGateway} from '../supabase/functions/arkhen-backend/wplay-gateway.mjs';
 import {sharedImageReference} from '../supabase/functions/arkhen-catalog-sync/wplay-http.mjs';
-import {wplayAuthForm,wplayUserAgent,wplayDevice} from '../lib/wplay-provider.mjs';
+import {wplayAuthForm,wplayUserAgent,wplayDevice} from '../lib/wplay/conexao/provedor-nativo.mjs';
 
 const providerKey='a'.repeat(64),scopeHash='b'.repeat(64),sourceId='c'.repeat(64),key=randomBytes(32).toString('base64url');
 const server='https://auth1.wareztv.io/api/v2/auth',serviceKey='sb_secret_fixture_only_12345678901234567890';
@@ -32,14 +32,14 @@ test('DNS aliases and mixed public/private DNS responses are refused before prov
 });
 
 test('cloud authentication uses the fixed provider host and saves only an expiring encrypted service capability',async()=>{
- const calls=[];let saved;
- const gateway=createWplayGateway({environment:name=>name==='ARKHEN_SOURCE_ENCRYPTION_KEY'?key:undefined,fetch:async(url,options)=>{
+ const now=Date.now(),calls=[];let saved;
+ const gateway=createWplayGateway({now:()=>now,environment:name=>name==='ARKHEN_SOURCE_ENCRYPTION_KEY'?key:undefined,fetch:async(url,options)=>{
   calls.push({url,options});
-  if(url===server){assert.equal(options.headers.apikey,undefined);return Response.json({code:0,user:{end_time:Math.floor(Date.now()/1000)+86400},service:{token:'fixture-provider-token',ch_url:'https://catalog.example.com/channels',auth_url_sdk:'https://engine.example.com/only-local'}});}
+  if(url===server){assert.equal(options.headers.apikey,undefined);return Response.json({code:0,user:{end_time:now/1000+86400},service:{token:'fixture-provider-token',ch_url:'https://catalog.example.com/channels',auth_url_sdk:'https://engine.example.com/only-local'}});}
   assert.ok(url.endsWith('/rest/v1/rpc/arkhen_source_put'));saved=JSON.parse(options.body);return Response.json(null);
  }});
  const result=await gateway({path:'/providers/wplay/auth',method:'POST',body:authBody()},serviceKey);
- assert.equal(result.cloudCollector,true);assert.equal(result.payload.code,0);assert.equal(calls.length,2);assert.ok(Date.parse(saved.p_expires_at)<=Date.now()+7200000);assert.ok(Date.parse(saved.p_expires_at)>Date.now()+7000000);
+ assert.equal(result.cloudCollector,true);assert.equal(result.payload.code,0);assert.equal(calls.length,2);assert.equal(Date.parse(saved.p_expires_at),now+23400000);
  assert.doesNotMatch(JSON.stringify(saved),/fixture-account|fixture-password|fixture-provider-token|catalog.example|engine.example/);
  const decoded=await openSource({provider_key:saved.p_provider_key,scope_hash:saved.p_scope_hash,source_id:saved.p_source_id,cipher:saved.p_cipher,expires_at:saved.p_expires_at},key);
  assert.deepEqual(Object.keys(decoded).sort(),['expiresAt','provider','service','userAgent','validatedAt']);assert.equal(decoded.service.token,'fixture-provider-token');assert.equal(decoded.service.auth_url_sdk,undefined);
@@ -47,7 +47,7 @@ test('cloud authentication uses the fixed provider host and saves only an expiri
 
 test('the import window never exceeds the verified account or provider JWT expiry',async()=>{
  const now=Date.now();
- for(const [accountMs,tokenMs,expected] of [[600000,1800000,600000],[3600000,900000,900000],[86400000,10800000,7200000]]){
+ for(const [accountMs,tokenMs,expected] of [[600000,1800000,600000],[3600000,900000,900000],[86400000,10800000,10800000],[86400000,86400000,23400000]]){
   let saved;const token='e30.'+Buffer.from(JSON.stringify({exp:(now+tokenMs)/1000})).toString('base64url')+'.fixture';
   const gateway=createWplayGateway({environment:()=>key,now:()=>now,fetch:async(url,options)=>{
    if(url===server)return Response.json({code:0,user:{end_time:(now+accountMs)/1000},service:{token,ch_url:'https://catalog.example.com/channels'}});

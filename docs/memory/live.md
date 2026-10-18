@@ -1,16 +1,64 @@
 # TV ao vivo
 
-## MEM-LIVE-010 — Recuperação EPG sem dependência do bootstrap cloud
+17/10/2026 — Contrato local: [segmentos OTT com token rotativo](../tv-web-segment-identity-20261017.md). Bytes iguais e URIs instáveis comprovados; correção ativada. Continuidade audiovisual pendente.
 
-Estado: implementação local e leitura remota agregada; sem execução da recuperação na sessão real. Data: 16/10/2026.
+## MEM-LIVE-027 — Cinco canais na Home e abertura de TV
 
-O conector anterior exigia JWT cloud até para metadados EPG e as duas rotas usavam somente a projeção central. `TvGuideProvider` agora compartilha uma captura completa WPLAY por provedor/escopo durante seis horas, usando o token existente, sem `connect()`/login/engine. Catálogo da conta, `epgSameAs` antes de `chid`, PIN e geração Auth filtram a projeção backend. O guard das duas rotas EPG conserva a validação de status/expiração/24h e não renova login por polling.
+Estado: código local ativado/testes sintéticos; SQL anterior aplicada/readback. Data: 17/10/2026 UTC.
 
-Leitura remota de 16/10 às 03:55:22 UTC confirmou projeção sem adulto com 659 canais/565 programas atuais, apesar de o registry continuar legado e sem primeira captura nova. Portanto, banco sem snapshot novo não equivale a banco sem programação; falha de entrega/estado de UI deve ser investigada separadamente. As contagens são históricas, não limites fixos.
+Um destaque semanal+até4recentes; Globo padrão sem histórico inventado, preservando região/filtros. Pedido posterior remove prévia: logo, borda branca e apenas programa atual. Logos mantêm a área3:2 exigida por logoGeometry (84×56/63×42); cálculo conferido em cinco assets, sem navegador. EPG até5IDs usa grade compartilhada. Home reutiliza catálogo completo durante refresh; RPC revalida publicação/filtros/conta. Erro mantém cards e aviso compacto.
 
-Parse parcial não certifica captura completa, não substitui snapshot anterior íntegro e não transforma canal ausente em lista vazia confirmada. Worker usa um arquivo integral recente por job WPLAY; o limite SQL de 15min impede reutilizar para publicação uma captura de leitor com seis horas. Um GET adicional do publicador permanece possível, sem N+1 por canal ou timestamp artificial. Nenhuma tabela, RLS, migration ou infra remota foi alterada.
+Fontes coalescidas, prazo40s e STOP obrigatório. Validação parental reutiliza catálogo nativo sem consulta cloud/login extra;39regressões passaram. Ativada: metadados reais em5–6s na primeira consulta,2–5ms na repetição; abertura fria/estabilidade Safari pendentes. [Evidências](../tv-source-discovery-20261017.md).
 
-Fonte: [causa, leituras agregadas, interfaces e limites](../tv-epg-recovery-20261016.md), `lib/tv/grade-provedor.mjs`, `lib/tv/conector-supabase.mjs`, `lib/wplay-epg.mjs`, `lib/shared-cache-worker.mjs` e integração EPG de `lib/app-server.mjs`. Verificação: sintaxe e bundle estático, sem testes, navegador, requisição WPLAY, reprodução ou restart.
+Fontes: [revisão atual](../tv-playback-recovery-20261017.md), [SQL/rollout anterior](../home-tv-five-cards-20261017.md). Versão remota21613 corresponde ao arquivo20723; SQL não mudou nesta revisão.
+
+## MEM-LIVE-026 — Destaque semanal da Home por intervalos datados
+
+Estado: schema aplicado/readback confirmado. Data: 17/10/2026 UTC, 16/10 local.
+
+Migration14445 usa168h exatas, buckets privados horários e interseção nas bordas; até169 buckets/canal. Limpeza limitada512 por batida, sem cron. Acumulado antigo não permite backfill semanal; recentes permanecem. Revalidação ativa após60s não cria polling. A seleção/apresentação seguinte está em027.
+
+Fonte: [contrato e hashes](../home-movie-recovery-20261017.md). Substitui o cálculo vitalício de021.
+
+## MEM-LIVE-025 — EPG por subconjunto e janela válida
+
+Estado: SQL aplicada/readback informado; cliente local com33testes sintéticos, sem prova audiovisual. Data: 17/10/2026 UTC.
+
+Migration20261017011816 filtra canais antes do lookup, mantém janela por revisão/fuso/fronteira e calcula progresso SQL sob demanda. Clock inativo; publicação e captura6h preservadas. Readback confirmou hashes/RLS/grants; CPU não certificada. Cliente une cards/favoritos/player/vizinhos. Revisão posterior preserva até2.000 janelas por ID em RAM/LRU, com validade do servidor, vazios autoritativos e limpeza por revisão/conta/PIN/epoch. Voltar à seleção válida não consulta novamente. Player prioriza janela compartilhada sobre DTO vazio da abertura. Não retoma catálogo durante vídeo, não persiste no disco nem calcula programa no cliente.
+
+Fontes: [SQL/rollback](../tv-epg-on-demand-20261017.md), [cache por canal e limites](../tv-guide-memory-cache-20261017.md). Testes não certificam ativação Node/navegador.
+
+## MEM-LIVE-024 — Publicação EPG primeiro
+
+Estado: correção local e testes sintéticos; sem prova remota. Data: 16/10/2026.
+
+O conector consultava WPLAY mesmo com RPC saudável. Agora prioriza snapshot fresco/completo; recuperação integral existente só começa se ausente/degradado ou após1s pendente. Isso não garante latência total nem deduplicação entre instâncias. Mantidos IDs, revisão da expansão24h, conta/PIN e coleta6h. APK baixa grade geral;30min é default DEX, não política remota medida. RPC/backend calcula programação; UI compartilha consulta. Timers padrão usam globalThis para preservar receptor. Removido plano TV obsoleto, atualizados testes legados e resumidas entradas históricas para caber no recuperador.
+
+Fonte: [estratégia e validação](../epg-architecture-cleanup-20261016.md), [APK](../wplay/epg-apk-20261016.md). Evidência:1.085 testes aprovados e bundles ESM. Sem navegador, mídia, SQL remoto ou deploy.
+
+## MEM-LIVE-023 — APK WPLAY: dados locais, versões e limites
+
+Estado: engenharia reversa estática sem execução Android/login/mídia/teste. Data: 16/10/2026, extrações em 17/10 UTC.
+
+Dossiê separa WPLAY 11.9.0d de BinStream 12.0.3 por hashes e inventários DEX/ELF. Extrações genéricas históricas de outra versão não validam corpos/offsets. No primário, catálogo HTTP tem cache manual apesar de NO_CACHE; EPG usa epg.data, mapa e LRU. Defaults DEX: live automático -1, EPG de 30 minutos, cache de 14 dias; TTL não é cadência. JNI/lifecycle protegido e conta efetiva permanecem lacunas. Busca literal negativa de Supabase não revela backend do fornecedor. Engines, decoder, offline e metadados são separados; nenhuma medição de RAM/tráfego ou recriação de ponte decorre disso.
+
+Fonte: [dossiê e hashes canônicos](../engenharia-reversa-wplay-20261016/README.md). REA/JADX focado e leitura direta, sem executar alvo.
+
+## MEM-LIVE-022 — Projeção incremental e cálculo por canal
+
+Estado: histórico remoto com hashes conferidos, sucedido por MEM-LIVE-025. Data: 16/10/2026, readbacks em 17/10 UTC.
+
+Migrations 20261017002040/20261017003830 reutilizam janelas até qualquer início/fim e calculam canais vencidos via LATERAL/PK, conservando empates, lacunas, fuso e DTO. Ainda regravavam progresso por minuto; etapa 025 elimina esse custo global. Reconstruções tiveram timeouts; não atribuir tempo a nó SQL nem certificar mídia por sucesso natural.
+
+Fonte: [relatório e limites](../supabase-load-optimization-20261016.md), peer e readback. Sem teste, navegador ou reprodução nessa etapa.
+
+## MEM-LIVE-010 — EPG sem bloqueio pelo bootstrap cloud
+
+Estado: implementação local e leitura agregada histórica, sem prova audiovisual. Data: 16/10/2026.
+
+`TvGuideProvider` reaproveita captura WPLAY por provedor/escopo por seis horas com token existente, sem login/engine por polling. Catálogo, `epgSameAs` antes de `chid`, PIN e geração filtram a projeção backend. Rotas mantêm status/expiração da conta. Uma leitura histórica confirmou programas na projeção legada; não usar suas contagens como estado atual.
+
+Resposta parcial não substitui captura completa nem confirma ausência de canal. O publicador exige captura recente conforme seu contrato (15min na SQL inicial), podendo fazer um GET integral adicional; não baixa por canal. Fontes: [recuperação EPG](../tv-epg-recovery-20261016.md), `lib/tv/{grade-provedor,conector-supabase}.mjs`, `lib/wplay/ao-vivo/grade.mjs`, `lib/shared-cache-worker.mjs`.
 
 ## MEM-LIVE-007 — Backend modular de TV e limite do APK
 
@@ -20,7 +68,7 @@ Estado: contrato implementado localmente; inspeção/sintaxe/bundle estático, s
 
 IDs de fonte/canal, autorização, cancelamento, intenção de abertura e STOP/sid/gen/429 foram preservados. TVBus, TVCarS e HTTP não são intercambiáveis. O APK do SHA conhecido foi inventariado com REA; a inspeção Android de classes ficou bloqueada pelo JAR JADX externo ausente. A evidência histórica de `sources[índice].address` não demonstra que o APK inicie na maior qualidade, nem que rótulo4K seja dimensão medida.
 
-Fontes: [relatório de módulos e evidência](../tv-backend-modules-20261016.md), `lib/tv/conector-supabase.mjs`, `lib/tv/fontes.mjs`, `lib/tv/inventario-fontes-wplay.mjs`, `lib/tv/resolver-web.mjs`, `lib/tv/transporte-web.mjs`, `lib/cloud-runtime.mjs`.
+Fontes: [relatório de módulos e evidência](../tv-backend-modules-20261016.md), `lib/tv/conector-supabase.mjs`, `lib/wplay/ao-vivo/fontes.mjs`, `lib/wplay/ao-vivo/inventario-fontes.mjs`, `lib/wplay/ao-vivo/resolver-web.mjs`, `lib/wplay/ao-vivo/transporte-web.mjs`, `lib/cloud-runtime.mjs`.
 
 ## MEM-LIVE-001 — Sessão e identidade da fonte
 
@@ -28,60 +76,47 @@ Estado: contrato. Data: 15/10/2026.
 
 Preferir HTTP real entregue pelo provedor. `tvbus://`, `tvcars://` e HTTP são contratos diferentes; APK não implica emulação Android obrigatória. Fontes alternativas pertencem ao mesmo canal comprovado; nome completo, número e região conservam significado. Stop/sid/generation e cancelamento impedem respostas antigas de reviver transmissão. Uma conexão tem uma reprodução ativa; EPG não controla esse ciclo.
 
-Fontes: [contrato WPLAY](../wplay-playback-contract.md), `lib/live-playback-session.mjs`, `lib/wplay-web-playback.mjs`, [revisão local](../tv-home-recovery-20261015.md).
+Fontes: [contrato WPLAY](../wplay-playback-contract.md), `lib/live-playback-session.mjs`, `lib/wplay/ao-vivo/transporte-web.mjs`, [revisão local](../tv-home-recovery-20261015.md).
 
 ## MEM-LIVE-002 — EPG anterior e causa da nova etapa
 
-Estado: evidência do código anterior à integração desta etapa. Data: 15/10/2026.
+Estado: histórico superado pelo guia em lote (MEM-LIVE-003/022). Data: 15/10/2026.
 
-`SharedLiveEPG` coalescia leituras por escopo em lotes de até 80 IDs; o fallback WPLAY reaproveitava guia global por sessão durante cinco minutos. O coletor Edge baixava EPG antes de ler `epgDone`, publicava lotes visíveis e buscava novamente após yield. Isso permite misturar épocas upstream. `epg_programs` recebia upserts sem reconciliar remoções; não é uma fonte segura para a nova projeção sem corrigir essa semântica.
-
-Fontes: `lib/shared-live-epg.mjs`, `lib/wplay-epg.mjs`, `supabase/functions/arkhen-catalog-sync/collector.mjs`, `supabase/migrations/20261015095103_arkhen_shared_metadata_set_based.sql`. Reconfirmar o código atual, pois a substituição está em andamento.
+O código anterior misturava captura upstream e publicação em lotes; `epg_programs` recebia upserts sem reconciliação de remoções. Não restaurar esse caminho nem consultas por card para satisfazer testes antigos. Fonte: [guia global](../tv-guide-global.md), migration `20261015095103_arkhen_shared_metadata_set_based.sql` e histórico do coletor.
 
 ## MEM-LIVE-003 — Grade em lote e coleta separada
 
-Estado: contrato em implementação; publicação parcial do banco registrada em MEM-LIVE-005. Data: 15/10/2026.
+Estado: contrato; atualizações posteriores em MEM-LIVE-022. Data: 15/10/2026.
 
-Integração planejada: `/api/tv/guide` → `cloudRuntime.tvGuide(state,{ids,includeAdult,timeZone})` → `arkhen_tv_guide(p_provider_key,p_scope_hash,p_channel_ids,p_include_adult,p_time_zone)`. O lote contém somente canais elegíveis do catálogo publicado; 659 seguros de 760 totais foi uma observação histórica, nunca um limite fixo.
+`/api/tv/guide` usa `arkhen_tv_guide` por provedor/partição/PIN/fuso e canais elegíveis. Snapshot completo e sanitizado é coletado separadamente da projeção temporal; consulta/tick não chama WPLAY. Falha preserva o snapshot anterior. A validade do guia não renova a autorização privada do coletor.
 
-A implementação de backend nesta rodada usa candidato privado sanitizado/selado em `arkhen_private.epg_snapshot_candidates`, registry compacto/RLS `public.epg_cache_versions` e projeção compartilhada por escopo, adulto, fuso e minuto em `arkhen_private.epg_projection_cache`. Coleta de seis horas é distinta da projeção por minuto: leitura/tick não chama WPLAY. Snapshot anterior permanece durante falha. Fonte privada expirada não é renovada pela validade do guia; publicação de candidato completo deve prescindir de novo fetch.
+O DTO entrega revisão, relógio do servidor, próximo refresh, idade/horizonte e mapa por ID com anterior/atual/próximo, progresso e próxima mudança. Realtime acompanha registry compacto; não publica payloads grandes. Campos finais pertencem ao código atual, sem repetir inventário no corpus.
 
-DTO combinado nesta etapa: `schemaVersion`, `revision`, `projectionVersion`, `asOf`, `serverTime`, `nextRefreshAt`, `sourceNextRefreshAt`, `snapshotFetchedAt`, `snapshotExpiresAt`, `horizonEnd`, `stale`; `channels[id]` possui `list` limitada a três, `window:{previous,current,next}`, `progressPercent`, `elapsedSeconds`, `remainingSeconds`, `nextChangeAt` e `status`. Confirme nomes finais no código antes de consumir. Realtime acompanha registry, não payloads da grade.
-
-Fonte de implementação: `supabase/migrations/20261016022551_arkhen_tv_guide_snapshots.sql` e integração de `lib/cloud-runtime.mjs`. Arquivo local não comprova integração Edge ou coleta concluída; a evidência remota específica está em MEM-LIVE-005.
+Fontes: [guia global](../tv-guide-global.md), migration `20261016022551_arkhen_tv_guide_snapshots.sql`, `lib/tv/conector-supabase.mjs`, `web/tv/tanstack-query.js`. Instalação, coleta e reprodução são evidências diferentes.
 
 ## MEM-LIVE-004 — Qualidade declarada, medida e automática
 
-Estado: contrato em implementação nesta rodada. Data: 15/10/2026.
+Estado: código local ativado e testes sintéticos; sem mídia/navegador. Data: 17/10/2026 UTC.
 
-Descritores de fonte expostos à UI: `{id,label,quality?,declaredHeight?,bitrateBps?,videoCodec?,available}`; não contêm URL. Manter fontes disponíveis de qualidade desconhecida, distinguir declaração do provedor de `videoWidth/videoHeight` observados e preservar seleção manual. Automática inicia pelo maior nível realmente declarado em `hls.levels`, usando índice válido e mantendo ABR ativo; não inventar resolução ou usar `Infinity` como índice.
+TV abre na maior fonte declarada/nível compatível. Quatro esperas em30s abrem aviso cancelável5s. Redução só no mesmoID; variantes de outroID são manuais. Navegação/pausa/seek/hidden/falha cancelam. Preferências restauradas não buscam nem desfazem redução. Atalhos modificados não sintonizam. Byte ranges normalizados sóTV; logs passivos limitados. `playing` exige vídeo pronto; erro atrasado/owner terminal não reabre. Nativo controla fontes expostas; ABR internoSafari sem API de nível. VOD isolado.
 
-Troca automática entre fontes exige mesma identidade de canal, orçamento limitado e proteção contra fontes já visitadas. 401, 403, 429 e falha de parada não autorizam percorrer alternativas. A integração final depende dos módulos de player e transporte desta rodada; não há certificação de reprodução real nesta memória.
+Fontes, testes e limites: [diagnóstico integrado](../tv-playback-recovery-20261017.md), `web/tv/player/qualidade-adaptativa.js`. Substitui ABR livre e default HD anteriores; não certifica início real em 3–4s.
 
-Fontes: `web/player-tools.js`, `web/adaptive-quality.js`, [API HLS.js](https://github.com/video-dev/hls.js/blob/master/docs/API.md), [contrato WPLAY](../wplay-playback-contract.md).
+## MEM-LIVE-005 — Publicação inicial parcial do guia
 
-## MEM-LIVE-005 — Publicação parcial do guia global
+Estado: histórico; recusa de deploy resolvida posteriormente em MEM-LIVE-006. Data: 15/10/2026 local, 16/10 UTC.
 
-Estado: histórico de aplicação e leitura remota, sem certificação da integração completa. Data: 15/10/2026 local; conferência às 02:27:49 UTC de 16/10.
+A migration `20261016022551` teve readback após timeout de aplicação; não foi reenviada. Registry/RLS/staging foram confirmados, mas a primeira leitura ainda era legada, sem nova captura completa. A recusa inicial403 de Edge não descreve o estado posterior. `serverTime` precisa ser renovado na resposta sem alterar `asOf`.
 
-A migration EPG foi registrada remotamente como `20261016022551`. Uma chamada de aplicação excedeu o deadline HTTP de30s; o readback confirmou schema/histórico, sem reenviar DDL. A conferência confirmou RLS, RPC exclusiva do servidor, registry autenticado, staging privado, remoção dos payloads grandes da publicação Realtime e cron de projeção ativo. A cadência configurada passou a21.600s.
+Fonte: [registro do guia global](../tv-guide-global.md). Contagens/saúde dessa leitura não certificam o estado remoto atual.
 
-O corte conserva os caches anteriores em revisão explicitamente legada e desatualizada, com horizonte nulo e zero programas certificados como captura nova. A leitura observou760 canais legados, nenhum manifesto novo e nenhuma fonte cifrada vigente. Essas contagens são observações datadas; não comprovam uma primeira coleta completa.
+## MEM-LIVE-006 — Publicação Edge inicial
 
-Deploy de `arkhen-backend`/`arkhen-catalog-sync` recusado com403 por ausência de `edge_functions_write` na credencial administrativa atual; sessãoCLI alternativa inválida. Não houve nova versão Edge confirmada. A integração depende de credencial autorizada para deploy e fonte WPLAY válida. `serverTime` deve ser renovado a cada resposta, preservando `asOf`, para o cliente não atrasar boundaries ao receber cache antigo.
+Estado: histórico de publicação, sem prova de coleta ou mídia. Data: 16/10/2026.
 
-Fontes: [registro do guia global](../tv-guide-global.md), `supabase/migrations/20261016022551_arkhen_tv_guide_snapshots.sql`, `lib/tv-guide-runtime.mjs`. Sem testes, navegador, reprodução ou reinício nesta etapa.
+Readback administrativo confirmou `arkhen-backend` e `arkhen-catalog-sync` ACTIVE/v9, resolvendo a recusa anterior. Versões posteriores pertencem ao [relatório de carga](../supabase-load-optimization-20261016.md). Deploy não prova job concluído; coleta exige fonte autorizada vigente.
 
-## MEM-LIVE-006 — Publicação Edge do guia global
-
-Estado: histórico de publicação remota confirmada; sem certificação da coleta ou reprodução. Data: 16/10/2026.
-
-Às 03:03:46 UTC, a Management API confirmou `arkhen-backend` e `arkhen-catalog-sync` como `ACTIVE`, versão9, atualizados às 03:03:24.934 UTC no projeto autorizado. A credencial CI específica de Edge resolveu a recusa de permissão registrada em MEM-LIVE-005; a credencial SQL não foi alterada. Não houve teste, UI, playback ou nova escrita SQL nesta etapa.
-
-Publicação de código não confirma execução de job nem leitura da biblioteca entre aparelhos. A ausência de fonte cifrada limita o coletor Edge; não prova impedimento da RPC de serviço direta nem do worker local autenticado. Esses caminhos devem ser diagnosticados separadamente.
-
-Fontes: [registro do guia global](../tv-guide-global.md), `supabase/functions/arkhen-backend/handler.mjs`, `supabase/functions/arkhen-catalog-sync/epg-collector.mjs`. Evidência: retorno de deploy CLI e readback somente leitura de versões/timestamps/status pela Management API, sem payloads de contas.
-
+Fonte: [registro do guia global](../tv-guide-global.md), `supabase/functions/arkhen-catalog-sync/epg-collector.mjs`.
 
 ## MEM-LIVE-008 — Orquestração isolada da TV
 
@@ -151,17 +186,13 @@ A abertura cortava programas por chamar scrollToNow automaticamente. A criação
 
 Fontes: web/minha-lista/grade-tv.js, linha-tempo.js, grade-tv.css e [contrato do guia](../tv-guide-global.md). Evidência estática, sem testes, navegador, rede, mídia ou reinício.
 
-## MEM-LIVE-014 — Entrega da programação posterior ao próximo
+## MEM-LIVE-014 — Programação posterior ao próximo
 
-Estado: implementação local, sem ativação remota ou verificação funcional. Data: 16/10/2026.
+Estado: implementação local, sem prova visual. Data: 16/10/2026.
 
-O limite observado na apresentação não se resolve apenas com zoom: a RPC antiga projeta somente anterior/atual/próximo a partir de `provider_epg_cache.payload.list`. O frontend já aceita `schedule` com até 128 eventos. O conector passa a ler as listas dos canais autorizados em lotes de 80, com registry antes/depois e mesma revisão/fetchedAt/expiry da RPC não legada, sem nova coleta por canal. Cache compartilhado limitado conserva somente metadados sanitizados e distingue IDs carregados de IDs ainda ausentes em outro escopo adulto.
+A RPC projeta anterior/atual/próximo; a UI aceita até128 eventos em `schedule`. O conector expande somente IDs autorizados, em lotes80, conferindo registry antes/depois e mesma revisão/fetchedAt/expiry. Cache distingue IDs carregados de ausentes. Acrescenta schedule/afterNext sem substituir os slots/progresso da RPC; legado usa revisão/flags próprias. Captura parcial ou antiga não rebaixa uma completa/fresca.
 
-Na captura certificada, preserva window/list/progresso/asOf e acrescenta schedule/afterNext da mesma revisão. A captura legada usa substituição inteira com revisão própria e flags de legado/obsolescência, whitelist de IDs e preservação de slots existentes. Uma alternativa precisa conter mais eventos reais, e não somente um array de dois programas. O horizonte projetado passa de seis para 24 horas, mantendo 128 eventos por canal e coleta compartilhada de seis horas. A espera adicional é de até 120 ms e há retry curto somente durante expansão pendente; fonte parcial/mais antiga não rebaixa captura completa e fresca.
-
-Não houve mudança de layout nesta correção de entrega. `server.mjs` importa os módulos uma vez: refresh do navegador não aplica backend novo; shutdown/reinício limpa as sessões em memória. Sintaxe/bundle local não comprovam carregamento do código pelo processo ativo nem quantidade de programas na fonte atual.
-
-Fontes: `lib/tv/grade-programacao-publicada.mjs`, `lib/tv/conector-supabase.mjs`, `lib/tv/grade-legada.mjs`, `supabase/migrations/20261016022551_arkhen_tv_guide_snapshots.sql`, `web/tv/canais/programacao.js`, `server.mjs`, `lib/app-server.mjs`, [contrato do guia](../tv-guide-global.md). Verificação limitada a inspeção e compilação estática; sem testes, navegador, consulta de dados remotos, alteração SQL ou deploy nesta etapa.
+Horizonte de apresentação24h, coleta compartilhada6h, expansão com espera inicial até120ms e retry curto enquanto pendente. Não é nova coleta por card. Fontes: `lib/tv/{grade-programacao-publicada,conector-supabase,grade-legada}.mjs`, `web/tv/canais/programacao.js`, [contrato do guia](../tv-guide-global.md). Backend precisa estar carregado pelo Node; compilação não certifica dados atuais.
 
 ## MEM-LIVE-015 — Player modular e prévia independente do canal ativo
 
@@ -188,23 +219,19 @@ Com até24h, fit comprimia programas. Padrão agora Com rolagem:400px/h desktop,
 Fontes: web/minha-lista/grade-tv.js, grade-tv.css e [contrato](../tv-guide-global.md). Revisão/sintaxe/bundle, sem testes, navegador, mídia, rede, restart ou alteração backend.
 
 
-## MEM-LIVE-018 — Visual por origem da troca e limite da continuidade
+## MEM-LIVE-018 — Origem da troca e limite anterior de continuidade
 
-Estado: correção local e análise de viabilidade, sem prova audiovisual. Data: 16/10/2026.
+Estado: histórico; limite de implementação superado por MEM-LIVE-020. Data: 16/10/2026.
 
-Origem percorre Navigation→ImmersivePlayer→app: zap (↑↓/Channel/Page) e número usam openPlayer padrão; só preview confirmado (←→/OK ou clique no cabeçalho lateral) usa preparação/barra discreta. Prévia sem confirmação não abre fonte. Corrige a aplicação anterior da barra a qualquer troca.
+Zap/número usam abertura padrão; somente prévia lateral confirmada usa preparação/barra discreta. Prévia sem confirmação não abre fonte. A análise anterior concluiu que transferMedia/clone/primeiro fragmento não certificam standby decodificado; a continuidade posterior usa dois elementos locais com migração explícita e buffer finito.
 
-Continuidade de vídeo antigo até alvo decodificado NÃO está implementada. HLS1.6.13 stopLoad preserva buffer local finito, mas stopPlayback destrói MSE/src. transferMedia conserva o mesmo elemento e não promove buffer de standby. App/controles/WebAudio retêm vídeo fixo; continuidade real exige dois elementos e migração explícita de controles/áudio/eventos. Um upstream pode ser mantido drenando buffer antigo após STOP, mas não garante cobrir abertura. Pré-fetch de fragmento não prova quadro decodificado; HLS nativo não tem mecanismo equivalente no código atual. Não usar clone/captureStream/transfer como falsa solução.
+Fontes: `web/tv/player/navegacao.js`, `web/player/orquestrador.js`, `web/app.js`, [continuidade](../../web/player/troca-canal/continuidade/README.md). Sem prova audiovisual nesta análise.
 
-Fontes: web/tv/player/navegacao.js, web/player/orquestrador.js, web/app.js, web/assets/vendor/hls.min.js, web/audio-processing.js e [limites](../../web/player/troca-canal/README.md). Revisão, sintaxe e bundle; sem testes, navegador, reprodução, rede ou reinício.
+## MEM-LIVE-019 — Armazenamento para zapping
 
-## MEM-LIVE-019 — Análise de armazenamento temporário para zapping
+Estado: histórico de análise, complementado por MEM-LIVE-020. Data: 16/10/2026.
 
-Estado: análise de código/documentação oficial, sem implementação de continuidade. Data: 16/10/2026.
-
-Reunião recomenda buffer local e eventual RAM privada antes de Storage para poucos segundos. Provider já guarda segmentos até32MiB/60s, limpos no STOP; preservá-los exigiria namespace antigo sóleitura, sem acesso upstream. Supabase guarda arquivos, mas não elimina captura/limite de fontes nem migração dos dois vídeos locais. Janela5s renovada dos vizinhos continua exigindo recebê-los. Primeiro fragmento não comprova quadro pronto; buffer antigo é finito. Dois slots locais com uma fonte remota são desenho viável a investigar; garantia ilimitada depende de simultaneidade remota comprovada.
-
-Fontes: [análise e fontes oficiais](../tv-player-continuity-options-20261016.md), lib/provider.mjs, lib/app-server.mjs, web/app.js. Sem mídia/rede da conta ou reinício.
+Buffer local finito é preferível a Storage para poucos segundos. Storage não elimina captura, limite de fontes ou migração de vídeo; atualizar vizinhos exige recebê-los. Primeiro fragmento não prova quadro decodificado. Fonte: [análise de continuidade](../tv-player-continuity-options-20261016.md). Sem mídia real.
 
 ## MEM-LIVE-020 — Continuidade com dois vídeos locais
 
@@ -214,22 +241,10 @@ Confirmação lateral usa standby silencioso após STOP; adota elemento/HLS/atte
 
 Fonte: [contrato](../../web/player/troca-canal/continuidade/README.md). Quatro agentes; sintaxe/bundle. Sem testes, navegador ou mídia. APIs gratuitas na [análise](../tv-player-continuity-options-20261016.md).
 
-## MEM-LIVE-021 — Quatro canais privados da Home e tempo por batimentos
+## MEM-LIVE-021 — Quatro canais privados da Home
 
-Estado: implementação local revisada; commit SQL e readback de schema confirmados pelo integrador. Sem validação funcional da RPC ou reprodução. Data: 16/10/2026.
+Estado: implementação e readback históricos, sucedidos por026/027. Data: 16/10/2026.
 
-A faixa da Home pertence a `web/inicio/lista-canais/`: contrato, serviços, cache/query, Realtime, batimentos do player, visualização/CSS e prévia. O backend fica em `lib/tv/home-{request,conector-supabase,orquestrador}.mjs`, com `POST /api/tv/home` e `POST /api/tv/watch-heartbeat`. Reutiliza sessão/JWT, validação de conta, catálogo e socket Supabase existentes; não abre um SDK de autenticação nem coleta ou consulta fontes por canal para montar a faixa. A RPC Home de Filmes/Séries permanece independente.
+Módulo lista-canais e lib/tv/home-* usam RPC privada, JWT/socket existentes e revisão por proprietário sem transmitir histórico. Heartbeat exige playing real da intenção principal, nunca preview/adulto; backend mede com relógio próprio, lease/seq e crédito máximo20s. Prévia tem STOP confirmado antes da próxima fonte; estatística final é melhor esforço. RLS/ACL foram conferidos; isso não comprova mídia.
 
-`arkhen_home_tv` retorna `schemaVersion:1`, `source:'rpc'`, revisão privada, geração publicada, `mostWatchedId` e até quatro `items:{item,reason,watchedSeconds,lastWatchedAt}`. O banco escolhe um canal com tempo acumulado positivo e até três recentes distintos, excluindo o primeiro. Sem tempo positivo não há destaque nem prévia; podem existir apenas recentes. `user_progress` de TV, salvo pelo `playing` real com tempo zero, pode fornecer recência após validar dono/provedor, forma, tombstone e catálogo atual; posição/duração antigas nunca viram segundos. Não completar vagas com favoritos ou canais aleatórios. Catálogo ativo, disponibilidade da conta, ocultações e adulto de mídia/metadados/categorias são filtrados antes dos limites. PIN desbloqueado nunca permite adulto nesta faixa ou medição.
-
-A migration `20261016054432_arkhen_private_tv_watch_home.sql` mantém tempo e lease em `arkhen_private`, com RLS e sem acesso direto autenticado. As RPCs derivam `auth.uid()` e validam a partição da conta; a única tabela publicada em Realtime é `public.user_tv_watch_versions`, com leitura apenas do proprietário e sem IDs de canal, duração ou payload. Eventos desse registro e progresso live legado invalidam somente a consulta dos quatro cards.
-
-O wrapper confirmou COMMIT com retorno `[]`. Um readback somente de schema confirmou RLS nas três tabelas; tempo e sessões privados sem SELECT/INSERT/UPDATE autenticados e fora do Realtime; registry público com SELECT autenticado apenas, política de proprietário/partição e publicação Realtime. As duas RPCs são definer, com `search_path` vazio, limite SQL de3s, EXECUTE autenticado e recusa anônima; Home usa JIT desligado e heartbeat tem espera de lock limitada a500ms. Essa evidência confirma instalação e permissões, sem executar as RPCs privadas.
-
-UUID e sequência dos batimentos pertencem ao backend, vinculados à intenção/attempt atual de finalidade `playback`; `preview` é recusada. O SQL usa seu relógio, sem posição, duração, timestamp ou segundos fornecidos pelo navegador. Primeiro batimento e retomada abrem medição com zero; intervalos anteriores de playing têm crédito máximo de20s, lacunas maiores que35s não são preenchidas. Lease serializado por proprietário/partição, sequência idempotente e sessões aposentadas impedem dupla contagem. Batimentos normais têm15s; pausa, espera, erro, parada ou documento oculto encerram o estado. Essa é medição pelo protocolo de eventos reais do player, não certificação audiovisual independente pelo banco.
-
-Prévia só do destaque, em vídeo separado/silencioso e visível na Home. Não salva histórico nem emite batimentos. STOP confirmado precede uma nova fonte principal; tentativa antiga não pode parar a nova. O integrador concluiu as guardas apontadas na revisão: fechamento capturado no backend e ordenado antes de STOP/nova intenção, com orçamento de6s e falha de telemetria sem impedir o player; `confirmPlaying` na adoção de vídeo já tocando; prova de avanço ao recuperar o contexto cloud. A prévia não repete STOP automaticamente (`retryStop:false`), conserva contador de abertura e só inicia após a liberação do carregamento de entrada. São correções de integração local, sem alterar a fórmula SQL nem comprovar execução audiovisual.
-
-Fontes: [contrato frontend](../../web/inicio/lista-canais/README.md), [backend](../tv-home-backend-20261016.md), migration citada, `web/app.js`, `lib/live-playback-session.mjs`; confirmação do integrador do COMMIT, readback e conclusão das guardas nesta rodada. Evidência: leitura de código, duas revisões independentes da SQL e conferência remota somente de schema. Sem execução funcional das RPCs, testes, navegador, mídia ou consulta de biblioteca pessoal nesta etapa.
-
-Complemento operacional de MEM-LIVE-021 (16/10/2026): servidor local reiniciado em localhost:4173 mantendo a configuração existente da engine. Bundle estático JS/CSS, sintaxe e diff sem erros. Não houve teste automatizado, navegação ou reprodução pela equipe.
+Fontes: [contrato](../../web/inicio/lista-canais/README.md), [backend](../tv-home-backend-20261016.md), migration20261016054432.

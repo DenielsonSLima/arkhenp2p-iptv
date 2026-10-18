@@ -11,9 +11,9 @@ const channel=value=>value?.kind==='live'&&/^\d{1,12}$/.test(String(value.id??''
  * stays in the established live pipeline; this module does not download a
  * second catalogue or load movies/series to enumerate channels. */
 export class TVChannelList{
-  constructor({repository,loadCatalog,getCatalog,getScope=()=>null,isVisible=()=>true,isCategoryAllowed=()=>true,
+  constructor({repository,loadCatalog,getCatalog,getScope=()=>null,isVisible=()=>true,isCategoryAllowed=()=>true,isActive=()=>!globalThis.document?.hidden,
     getNumber=()=>null,getFavorites=()=>[],onChange=()=>{}}={}){
-    Object.assign(this,{repository,loadCatalog,getCatalog,getScope,isVisible,isCategoryAllowed,getNumber,getFavorites,onChange});
+    Object.assign(this,{repository,loadCatalog,getCatalog,getScope,isVisible,isCategoryAllowed,isActive,getNumber,getFavorites,onChange});
     this.scope=null;this.epoch=0;this.pending=null;this.revalidatePending=false;this.indexes=new WeakMap();this.listeners=new Set();
   }
   #synchronize(){const key=scopeKey(this.getScope());if(key!==this.scope){this.reset();this.scope=key;}return key;}
@@ -54,6 +54,7 @@ export class TVChannelList{
   subscribe(listener){this.listeners.add(listener);listener(this.snapshot());return()=>this.listeners.delete(listener);}
   load({force=false,revalidate=false}={}){
     const scope=this.#synchronize();if(!scope||typeof this.loadCatalog!=='function')return Promise.resolve(null);
+    if(revalidate&&!force&&!this.isActive()){this.revalidatePending=true;return Promise.resolve(this.snapshot());}
     if(this.pending){if(revalidate)this.revalidatePending=true;return this.pending.promise;}
     const ticket={scope,epoch:this.epoch,promise:null};this.pending=ticket;
     ticket.promise=Promise.resolve().then(()=>{
@@ -69,6 +70,7 @@ export class TVChannelList{
     });return ticket.promise;
   }
   invalidate({reload=false}={}){this.indexes=new WeakMap();return reload?this.load({revalidate:true}):this.#publish();}
+  resume(){if(!this.isActive()||!this.revalidatePending)return;this.revalidatePending=false;return this.load({revalidate:true});}
   reset(){this.epoch++;this.scope=null;this.pending=null;this.revalidatePending=false;this.indexes=new WeakMap();}
   dispose(){this.reset();this.listeners.clear();}
 }

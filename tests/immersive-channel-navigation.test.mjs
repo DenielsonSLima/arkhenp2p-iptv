@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {ImmersivePlayer, channelNeighbors, numberedChannels} from '../web/immersive-player.js';
+import {ImmersivePlayer} from '../web/player/orquestrador.js'
+import {TVPlayerNavigation} from '../web/tv/player/navegacao.js';
+import {TVPlayerGuide} from '../web/tv/player/grade.js';
+import {channelNeighbors, numberedChannels} from '../web/tv/player/canais.js';
 
 const channel = (id, number, name=`Canal ${id}`) => ({number, item:{kind:'live', id:String(id), name}});
 const entries = [channel(10,3), channel(20,17), channel(30,24)];
@@ -36,7 +39,8 @@ test('empty and single-channel lists do not repeat the playing channel as its ow
 function playerHarness(selected=entries[1]) {
   const switched=[],revealed=[];
   const player={current:current(selected),tools:{hidden:true,contains:()=>false},keyboardMode:false,blockedByDialog:()=>false,channelEntries:()=>entries,
-    reveal:()=>revealed.push(true),switchChannel:entry=>switched.push(entry),navigateChannel:ImmersivePlayer.prototype.navigateChannel};
+    typed:{hidden:true},tvGuide:{nodes:[]},reveal:()=>revealed.push(true),switchChannel:entry=>switched.push(entry),navigateChannel:ImmersivePlayer.prototype.navigateChannel};
+  player.tvNavigation=new TVPlayerNavigation({getChannels:()=>player.channelEntries(),getCurrent:()=>player.current,onCommit:entry=>player.switchChannel(entry)});
   return {player,switched,revealed};
 }
 function key(key, extra={}) {
@@ -73,23 +77,49 @@ test('channel commands preserve focused inputs, menus, open settings and modal d
   }
 });
 
+test('modified screenshot keys cannot arm a numbered-channel zap',t=>{
+  const scheduled=[];t.mock.method(globalThis,'setTimeout',callback=>{scheduled.push(callback);return 1;});
+  for(const modifiers of [{shiftKey:true},{shiftKey:true,metaKey:true},{shiftKey:true,ctrlKey:true}]){
+    const view=playerHarness();Object.assign(view.player,{digits:'',typedNumber:{},renderChannelNeighbors:()=>{},commitDigits:()=>view.switched.push('number')});
+    const event=key('3',modifiers);ImmersivePlayer.prototype.keydown.call(view.player,event);
+    assert.equal(event.prevented,false);assert.equal(view.player.digits,'');
+  }
+  assert.equal(scheduled.length,0);
+});
+
+test('an explicit unmodified channel number still commits the selected numbered channel once',t=>{
+  const scheduled=[];t.mock.method(globalThis,'setTimeout',callback=>{scheduled.push(callback);return 1;});
+  const view=playerHarness();Object.assign(view.player,{digits:'',typedNumber:{},renderChannelNeighbors:()=>{},commitDigits:ImmersivePlayer.prototype.commitDigits});
+  const event=key('3');ImmersivePlayer.prototype.keydown.call(view.player,event);
+  assert.equal(event.prevented,true);assert.equal(scheduled.length,1);assert.equal(view.switched.length,0);
+  scheduled[0]();assert.deepEqual(view.switched,[entries[0]]);assert.equal(view.player.digits,'');
+});
+
+test('the quality notice owns its keyboard interaction without previewing or tuning a channel',t=>{
+  const scheduled=[];t.mock.method(globalThis,'setTimeout',callback=>{scheduled.push(callback);return 1;});
+  for(const button of ['3','ArrowUp','ArrowRight','Enter',' ']){
+    const view=playerHarness();Object.assign(view.player,{digits:'',typedNumber:{},renderChannelNeighbors:()=>{},commitDigits:()=>view.switched.push('number')});
+    const event=key(button,{target:{closest:selector=>selector.includes('.tv-quality-notice')?{}:null}});
+    ImmersivePlayer.prototype.keydown.call(view.player,event);assert.equal(event.prevented,false);assert.equal(view.switched.length,0);assert.equal(view.player.tvNavigation.previewId,null);
+  }
+  assert.equal(scheduled.length,0);
+});
+
 function attributeNode() {return {attributes:{},setAttribute(name,value){this.attributes[name]=value;}};}
 
-test('neighbor cards expose real numbers and names without starting playback while rendering', () => {
-  const view=playerHarness(),classes=new Set();
-  view.player.info={classList:{toggle(name,on){on?classes.add(name):classes.delete(name);}}};
-  view.player.channelNeighborNodes=Object.fromEntries([['previous','Canal anterior'],['next','Próximo canal']].map(([side,label])=>[side,{label,button:attributeNode(),number:attributeNode(),name:attributeNode()}]));
-  ImmersivePlayer.prototype.renderChannelNeighbors.call(view.player);
-  const previous=view.player.channelNeighborNodes.previous,next=view.player.channelNeighborNodes.next;
-  assert.ok(classes.has('ip-live-information'));
-  assert.equal(previous.number.textContent,'003');assert.equal(previous.name.textContent,'Canal 10');
-  assert.equal(next.number.textContent,'024');assert.equal(next.name.textContent,'Canal 30');
-  assert.equal(next.button.attributes['aria-label'],'Próximo canal: 024, Canal 30');
-  assert.equal(next.button.disabled,false);assert.equal(view.switched.length,0);
-  view.player.channelEntries=()=>[entries[1]];
-  ImmersivePlayer.prototype.renderChannelNeighbors.call(view.player);
-  assert.equal(previous.button.disabled,true);assert.equal(next.button.disabled,true);assert.equal(next.number.textContent,'');
-  view.player.current={item:{kind:'movie',id:'42',name:'Filme'}};
-  ImmersivePlayer.prototype.renderChannelNeighbors.call(view.player);
-  assert.equal(classes.has('ip-live-information'),false);assert.equal(previous.button.hidden,true);assert.equal(next.button.hidden,true);
+test('TV guide cards expose canonical numbers and names and rendering never tunes media',()=>{
+ const view=playerHarness(),classes=new Set(),contexts=[];
+ view.player.info={classList:{toggle(name,on){on?classes.add(name):classes.delete(name);}}};view.player.tvGuide={setContext:value=>contexts.push(value)};
+ ImmersivePlayer.prototype.renderChannelNeighbors.call(view.player);assert.ok(classes.has('ip-live-information'));assert.equal(contexts[0].current,view.player.current);assert.equal(view.switched.length,0);
+ const slot=()=>({button:{...attributeNode(),dataset:{}},label:{},number:{},name:{},logo:{replaceChildren(){}},schedule:{},status:{},programs:Object.fromEntries(['previous','current','next'].map(period=>[period,{row:{},title:{},time:{}}]))});
+ const guide={navigation:view.player.tvNavigation,current:view.player.current,slots:{previous:slot(),current:slot(),next:slot()},metadata:{start:()=>{},peek:()=>null,status:()=> 'unavailable'}};
+ TVPlayerGuide.prototype.render.call(guide);assert.equal(guide.slots.previous.number.textContent,'003');assert.equal(guide.slots.previous.name.textContent,'Canal 10');assert.equal(guide.slots.next.number.textContent,'024');assert.equal(guide.slots.next.button.attributes['aria-label'],'Assistir canal 024, Canal 30');assert.equal(view.switched.length,0);
+ guide.programs={window:{current:null},status:'loading'};
+ guide.metadata.peek=id=>id==='20'?{window:{current:{title:'Programa atualizado',startLabel:'13:00'}}}:null;
+ TVPlayerGuide.prototype.render.call(guide);assert.equal(guide.slots.current.programs.current.title.textContent,'Programa atualizado','The empty opening DTO cannot mask a later shared window.');
+ guide.programs={window:{current:{title:'Programa antigo'}}};guide.metadata.peek=id=>id==='20'?{window:{current:null}}:null;
+ TVPlayerGuide.prototype.render.call(guide);assert.equal(guide.slots.current.programs.current.row.hidden,true,'An authoritative empty window cannot resurrect the opening programme.');
+ view.player.channelEntries=()=>[entries[1]];TVPlayerGuide.prototype.render.call(guide);assert.equal(guide.slots.previous.button.disabled,true);assert.equal(guide.slots.next.button.disabled,true);
+ view.player.current={item:{kind:'movie',id:'42',name:'Filme'}};guide.current=view.player.current;ImmersivePlayer.prototype.renderChannelNeighbors.call(view.player);TVPlayerGuide.prototype.render.call(guide);
+ assert.equal(classes.has('ip-live-information'),false);assert.equal(guide.slots.previous.button.hidden,true);assert.equal(guide.slots.next.button.hidden,true);
 });

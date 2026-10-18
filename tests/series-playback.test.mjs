@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {EpisodeSkipController, EpisodeSkipStore, nextEpisodeTrigger} from '../web/episode-skip.js';
 import {SeriesPlaybackPreferences, SERIES_PLAYBACK_DEFAULTS, normalizeSeriesPlaybackPreferences} from '../web/series-playback-preferences.js';
 import {EpisodeMarkerCatalog} from '../web/series-markers/index.js';
-import {EpisodeMarkerReader} from '../web/series-markers/reader.js';
+import {EpisodeMarkerReader} from '../web/serie/marcadores/orquestrador.js';
 import {readFile} from 'node:fs/promises';
 
 const namespace='a'.repeat(64);

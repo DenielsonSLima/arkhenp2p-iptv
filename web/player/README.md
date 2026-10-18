@@ -1,6 +1,6 @@
 # Player visual compartilhado
 
-`../immersive-player.js` é a entrada de compatibilidade. A implementação visual fica nesta pasta; a sessão e a fonte continuam sob uma única composição em `../app.js`.
+`orquestrador.js` é a entrada canônica consumida pelo aplicativo. A fachada antiga da raiz foi removida após migrar os consumidores. A sessão e a fonte continuam sob uma única composição em `../app.js`.
 
 | Arquivo | Responsabilidade |
 | --- | --- |

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {PlaybackLoader, transferMbps} from '../web/playback-loader.js';
-import {ImmersivePlayer} from '../web/immersive-player.js';
+import {ImmersivePlayer} from '../web/player/orquestrador.js';
 
 class Node extends EventTarget {
   constructor() { super(); this.dataset = {}; this.attributes = new Map(); this.children = []; this.hidden = false; this.style = {setProperty() {}}; }
@@ -140,6 +140,7 @@ test('immersive integration waits for playing and permits manual play after brow
 
 test('transport-managed media errors do not interrupt recovery and a terminal failure stays visible until a new attempt',t=>{
   const {video}=setup(t);let failures=0,loads=0;
+  Object.assign(video,{paused:false,ended:false,readyState:3,videoWidth:1920,videoHeight:1080});
   const player={video,options:{managedErrors:true},current:{item:{kind:'live'},loading:true},error:{hidden:false},
     listen:(target,event,callback)=>{if(target===video)target.addEventListener(event,callback);},
     setFailure:()=>{failures++;},setLoading:()=>{loads++;},recordStart(){},updateControls(){}};

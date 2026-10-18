@@ -123,8 +123,10 @@ test('only valid live catalogue items can resolve channel logos', async () => {
 test('manifest loading is optional and failed fetch, HTTP or JSON responses return an empty resolver', async () => {
   let requested;
   const good = await loadChannelLogos(async (path, options) => {requested = {path, options}; return {ok: true, json: async () => ({version: 1, channels: [{file: bbc, ids: ['20'], names: ['BBC One']}]})};});
-  assert.deepEqual(requested, {path: '/assets/channels/manifest.json', options: {cache: 'no-store'}});
+  assert.deepEqual(requested, {path: '/tv/logos/manifest.json', options: {cache: 'no-store'}});
   assert.equal(good.resolve(channel('20', 'BBC One')), bbc);
+  const paths=[],legacy=await loadChannelLogos(async path=>{paths.push(path);return path.startsWith('/tv/')?{ok:false}:{ok:true,json:async()=>({version:1,channels:[{file:bbc,ids:['20'],names:['BBC One']}]})};});
+  assert.deepEqual(paths,['/tv/logos/manifest.json','/assets/channels/manifest.json']);assert.equal(legacy.resolve(channel('20','BBC One')),bbc);
   for (const fetchFn of [null, async () => {throw new Error('offline');}, async () => ({ok: false}), async () => ({ok: true, json: async () => {throw new Error('bad JSON');}})]) {
     const empty = await loadChannelLogos(fetchFn); assert.equal(empty.resolve(channel('20', 'BBC One')), '');
   }

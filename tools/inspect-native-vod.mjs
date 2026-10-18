@@ -3,7 +3,7 @@
 // Exactly one selected auth server, one tag list, one category page, and
 // optionally one title detail. No streams, remote logout, or persisted secrets.
 import { readWplayCredentials, safeCode } from './wplay-tool-input.mjs';
-import { WplayProviderClient, WPLAY_AUTH_URLS, wplayServiceURL } from '../lib/wplay-provider.mjs';
+import { WplayProviderClient, WPLAY_AUTH_URLS, wplayServiceURL } from '../lib/wplay/conexao/provedor-nativo.mjs';
 import { requestUpstream, readBody, validUpstreamURL } from '../lib/upstream.mjs';
 
 const MAX_BYTES=8*1024*1024, TOTAL_MS=45000, IDLE_MS=10000;

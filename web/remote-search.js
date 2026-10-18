@@ -39,8 +39,8 @@ export class RemoteSearch {
       this.client=new QueryClient({defaultOptions:{queries:{retry:0,staleTime:30_000,gcTime:Infinity,refetchOnWindowFocus:false,refetchOnReconnect:false,networkMode:'always',structuralSharing:false}}});return this.client;
     }).catch(()=>null);return this.clientPromise;
   }
-  cancel(){clearTimeout(this.timer);this.timer=null;this.epoch++;this.pending?.controller.abort();this.pending=null;void this.client?.cancelQueries();if(['queued','loading','more'].includes(this.state.phase))this.state={...this.state,phase:this.state.data?'ready':'idle'};}
-  reset(){this.cancel();this.client?.clear();this.scope=null;this.state=empty();}
+  cancel(){clearTimeout(this.timer);this.timer=null;this.epoch++;this.pending?.controller.abort();this.pending=null;void this.client?.cancelQueries({queryKey:['arkhen-global-search']});if(['queued','loading','more'].includes(this.state.phase))this.state={...this.state,phase:this.state.data?'ready':'idle'};}
+  reset(){this.cancel();this.client?.removeQueries({queryKey:['arkhen-global-search']});this.scope=null;this.state=empty();}
   search(input,{type='all',immediate=false,force=false}={}){
     const query=normalizeSearchText(input).slice(0,120),nextScope=scopeKey(this.getScope());type=TYPES.has(type)?type:'all';
     if(this.scope!==null&&this.scope!==nextScope)this.reset();this.scope=nextScope;
@@ -89,7 +89,7 @@ export class RemoteSearch {
         const items=[...previous.items,...data.items],keys=new Set(items.map(item=>`${item.kind}:${item.id}`));if(keys.size!==items.length)throw new Error('SEARCH_DUPLICATE_PAGE');data={...data,items};
       }
       this.state={...this.state,data,phase:'ready',error:null};this.emit();
-      const queries=client?.getQueryCache().getAll()||[];for(const query of queries.slice(0,Math.max(0,queries.length-20)))client.removeQueries({queryKey:query.queryKey,exact:true});
+      const queries=(client?.getQueryCache().getAll()||[]).filter(query=>query.queryKey?.[0]==='arkhen-global-search');for(const query of queries.slice(0,Math.max(0,queries.length-20)))client.removeQueries({queryKey:query.queryKey,exact:true});
       return data;
     }catch(error){if(current()){this.state={...this.state,phase:'error',error:errorMessage(error)};this.emit();}return null;}
     finally{if(this.pending===ticket)this.pending=null;}

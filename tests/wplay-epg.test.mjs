@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import {gzipSync} from 'node:zlib';
-import {WplayProviderClient} from '../lib/wplay-provider.mjs';
-import {epgTimestamp,normalizeWplayEPG,WPLAY_EPG_MAX_BYTES,WPLAY_EPG_CACHE_MS,WPLAY_EPG_FAILURE_BACKOFF_MS} from '../lib/wplay-epg.mjs';
+import {WplayProviderClient} from '../lib/wplay/conexao/provedor-nativo.mjs';
+import {epgTimestamp,normalizeWplayEPG,WPLAY_EPG_MAX_BYTES,WPLAY_EPG_CACHE_MS,WPLAY_EPG_FAILURE_BACKOFF_MS} from '../lib/wplay/ao-vivo/grade.mjs';
 
 const program=(name='Programa &amp; atual',time='2026-10-14T10:00:00.000Z',endTime='2026-10-14T11:00:00.000Z')=>
   ({id:'private-id',name,time,endTime,playbackUrl:'https://replay.example/private-token',extra:'private'});

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { EpisodeSkipStore, EpisodeSkipController, validateSkipMarkers, activeSkipActions } from '../web/episode-skip.js';
+import {SeriesPlaybackPreferences} from '../web/series-playback-preferences.js';
 
 const context = (seriesId = '100', episodeId = '200', sourceFingerprint = '/api/play/series/200.mp4') => ({seriesId, episodeId, sourceFingerprint,namespace:'a'.repeat(64)});
 const memoryStorage = () => {
@@ -152,4 +153,164 @@ test('controller resets stale episode actions, ignores changed editions and remo
   let updates = 0; controller.update = () => updates++;
   controller.destroy(); video.dispatchEvent(new Event('timeupdate')); assert.equal(updates, 0);
   assert.equal(controller.panel.removed, true); assert.equal(controller.overlay.removed, true);
+});
+
+const playableEpisode={item:{kind:'series',id:'100'},episode:{id:'200',season:1,number:1},sourceFingerprint:'logical-edition'};
+function publicReference(context,segments={intro:{start:10,end:40,source:'SkipDB'},outro:{start:550,end:600,source:'IntroDB'}}){
+  const identity={imdbId:'tt0903747',season:context.episode.season,episode:context.episode.number,duration:context.duration};
+  return {status:'reference',markers:null,reference:{schemaVersion:1,...identity,status:'reference',segments},
+    binding:{...identity,mediaId:String(context.item.id),episodeId:String(context.episode.id),sourceFingerprint:context.sourceFingerprint}};
+}
+test('on-demand player waits for playing, deduplicates updates and honors disabled automation',async()=>{
+  let count=0,next=0;const f=controllerFixture({requirePlayback:true,getEpisodeMarkers:context=>{count++;assert.equal(context.playing,true);return publicReference(context);},
+    hasNextEpisode:()=>true,onNextEpisode:()=>next++,preferences:{getPreferences:()=>({autoSkipOpening:false,autoNext:false})}});
+  Object.assign(f.video,{paused:false,readyState:4});f.controller.attach(playableEpisode);
+  for(const type of ['loadedmetadata','durationchange','timeupdate'])f.video.dispatchEvent(new Event(type));
+  assert.equal(count,0);f.video.currentTime=15;f.video.dispatchEvent(new Event('playing'));assert.equal(count,1);
+  for(let i=0;i<10;i++)f.video.dispatchEvent(new Event('timeupdate'));assert.equal(count,1);
+  assert.equal(f.controller.openingButton.hidden,false);assert.equal(f.controller.openingCountdownPanel.hidden,true);
+  assert.equal(f.video.currentTime,15);assert.deepEqual(f.controller.state().marks,{});
+  assert.equal(f.controller.skipOpening(),true);assert.equal(f.video.currentTime,40);
+  f.video.currentTime=560;f.controller.update();assert.equal(f.controller.creditsButton.textContent,'Próximo episódio');
+  assert.equal(f.controller.countdownPanel.hidden,true);assert.equal(next,0);
+  f.controller.skipCredits();assert.equal(next,1);f.controller.destroy();
+});
+
+test('credits preserve the API end and explicit post-credit scenes, even if outro extends to file end',()=>{
+  for(const explicit of [false,true]){
+    let next=0;const parts={outro:{start:550,end:explicit?600:580,source:'IntroDB'},...(explicit?{post_credits:{start:580,end:595,source:'IntroDB'}}:{})};
+    const f=controllerFixture({requirePlayback:true,getEpisodeMarkers:context=>publicReference(context,parts),hasNextEpisode:()=>true,onNextEpisode:()=>next++});
+    Object.assign(f.video,{paused:false,readyState:4});f.controller.attach(playableEpisode);f.video.dispatchEvent(new Event('playing'));
+    f.video.currentTime=560;f.controller.update();assert.equal(f.controller.creditsButton.textContent,'Pular créditos');
+    assert.equal(f.controller.skipCredits(),true);assert.equal(f.video.currentTime,580);assert.equal(next,0);
+    assert.equal(f.controller.creditsButton.hidden,true);f.controller.destroy();
+  }
+});
+
+test('switching episode cancels the lookup and ignores its late response',async()=>{
+  const jobs=[];const f=controllerFixture({requirePlayback:true,getEpisodeMarkers:context=>new Promise(resolve=>jobs.push({context,resolve}))});
+  Object.assign(f.video,{paused:false,readyState:4,currentTime:15});f.controller.attach(playableEpisode);f.video.dispatchEvent(new Event('playing'));
+  f.controller.attach({...playableEpisode,episode:{id:'201',season:1,number:2}});assert.equal(jobs[0].context.signal.aborted,true);
+  jobs[0].resolve(publicReference(jobs[0].context));await Promise.resolve();assert.equal(f.controller.openingButton.hidden,true);assert.equal(jobs.length,1);
+  f.video.dispatchEvent(new Event('playing'));assert.equal(jobs.length,2);
+  jobs[1].resolve(publicReference(jobs[1].context));await Promise.resolve();assert.equal(f.controller.openingButton.hidden,false);f.controller.destroy();
+});
+
+test('a runtime change while paused discards old references before playback can start a new lookup',()=>{
+  let calls=0;const f=controllerFixture({requirePlayback:true,getEpisodeMarkers:context=>{calls++;return publicReference(context);}});
+  Object.assign(f.video,{paused:false,readyState:4,currentTime:15});f.controller.attach(playableEpisode);f.video.dispatchEvent(new Event('playing'));
+  assert.equal(f.controller.openingButton.hidden,false);f.video.paused=true;f.video.dispatchEvent(new Event('pause'));
+  f.video.duration=620;f.video.dispatchEvent(new Event('durationchange'));
+  assert.equal(f.controller.openingButton.hidden,true);assert.equal(f.controller.skipOpening(),false);assert.equal(calls,1);
+  f.video.paused=false;f.video.dispatchEvent(new Event('playing'));assert.equal(calls,2);f.controller.destroy();
+});
+
+test('a foreign episode binding is rejected and manual opening calibration overrides community reference',()=>{
+  const f=controllerFixture({getEpisodeMarkers:context=>({...publicReference({...context,episode:{id:'201',season:1,number:2}})})});
+  f.controller.attach(playableEpisode);f.video.currentTime=15;f.controller.update();assert.equal(f.controller.skipOpening(),false);f.controller.destroy();
+  const manual=controllerFixture({getEpisodeMarkers:publicReference});manual.controller.attach(playableEpisode);
+  manual.video.currentTime=15;manual.controller.mark('openingStart');assert.equal(manual.controller.skipOpening(),false);
+  manual.video.currentTime=45;manual.controller.mark('openingEnd');manual.video.currentTime=20;
+  assert.equal(manual.controller.skipOpening(),true);assert.equal(manual.video.currentTime,45);manual.controller.destroy();
+});
+
+function automaticReferenceFixture({segments,hasNext=true,onSeek,getEpisodeMarkers}={}){
+  let now=0,serial=0,namespace='a'.repeat(64);const timers=new Map(),next=[],preferences=new SeriesPlaybackPreferences({storage:null});
+  const f=controllerFixture({requirePlayback:true,preferences,getNamespace:()=>namespace,
+    getEpisodeMarkers:getEpisodeMarkers|| (context=>publicReference(context,segments)),onSeek,
+    hasNextEpisode:()=>hasNext,onNextEpisode:options=>next.push(options),now:()=>now,
+    schedule:(run,delay)=>{const id=++serial;timers.set(id,{at:now+delay,run});return id;},cancel:id=>timers.delete(id)});
+  Object.assign(f.video,{paused:false,seeking:false,readyState:4,ended:false});f.controller.attach(playableEpisode);
+  const event=name=>f.video.dispatchEvent(new Event(name));event('playing');
+  return {...f,event,next,preferences,timers,account:value=>{namespace=value;},at:value=>{f.video.currentTime=value;event('timeupdate');},
+    advance(ms){const end=now+ms;for(;;){const job=[...timers].filter(([,task])=>task.at<=end).sort((a,b)=>a[1].at-b[1].at)[0];if(!job)break;timers.delete(job[0]);now=job[1].at;job[1].run();}now=end;}};
+}
+
+test('community intro and final credits use the default visible five-second countdown exactly once',()=>{
+  let calls=0;const f=automaticReferenceFixture({getEpisodeMarkers:context=>{calls++;return publicReference(context);}});
+  f.at(10);
+  for(const seconds of [5,4,3,2,1]){
+    assert.equal(f.controller.openingCountdownTitle.textContent,`Pular abertura em ${seconds}s`);
+    assert.equal(f.video.currentTime,10);f.advance(1000);
+  }
+  assert.equal(f.video.currentTime,40);assert.equal(f.controller.openingCountdownPanel.hidden,true);
+  assert.deepEqual(f.controller.state().marks,{},'Automatic use does not turn a reference into verified/manual marks.');
+  f.at(550);
+  for(const seconds of [5,4,3,2,1]){
+    assert.equal(f.controller.countdownTitle.textContent,`Próximo episódio em ${seconds}s`);
+    assert.equal(f.next.length,0);f.advance(1000);
+  }
+  assert.deepEqual(f.next,[{automatic:true,reason:'credits',approximate:false}]);
+  f.event('ended');f.advance(15000);assert.equal(f.next.length,1);assert.equal(calls,1);f.controller.destroy();
+});
+
+test('automatic credits preserve post-credit content and the last episode seeks its end',()=>{
+  for(const explicit of [false,true]){
+    const segments={outro:{start:550,end:explicit?600:580,source:'IntroDB'},...(explicit?{post_credits:{start:580,end:595,source:'IntroDB'}}:{})};
+    const f=automaticReferenceFixture({segments});f.at(550);
+    assert.equal(f.controller.countdownTitle.textContent,'Pular créditos em 5s');
+    assert.equal(f.controller.playNextButton.textContent,'Pular agora');
+    f.advance(4999);assert.equal(f.video.currentTime,550);f.advance(1);
+    assert.equal(f.video.currentTime,580);assert.equal(f.next.length,0);
+    f.advance(10000);assert.equal(f.next.length,0);f.controller.destroy();
+  }
+  const last=automaticReferenceFixture({hasNext:false});last.at(550);last.advance(5000);
+  assert.equal(last.video.currentTime,600);assert.equal(last.next.length,0);last.controller.destroy();
+});
+
+test('community countdowns pause for pause, buffering and seeking, and resume only on playing',()=>{
+  for(const type of ['opening','credits']){
+    const f=automaticReferenceFixture();f.at(type==='opening'?10:550);f.advance(2000);
+    f.video.paused=true;f.event('pause');f.advance(30000);
+    f.video.paused=false;f.event('playing');f.advance(1000);f.event('waiting');f.advance(30000);
+    f.video.seeking=true;f.event('seeking');f.video.seeking=false;f.event('seeked');f.advance(30000);
+    assert.equal(f.video.currentTime,type==='opening'?10:550);assert.equal(f.next.length,0);
+    f.event('playing');f.advance(1999);assert.equal(f.next.length,0);assert.equal(f.video.currentTime,type==='opening'?10:550);
+    f.advance(1);assert.equal(type==='opening'?f.video.currentTime:f.next.length,type==='opening'?40:1);f.controller.destroy();
+  }
+});
+
+test('community countdown cancellation persists and immediate actions keep manual provenance',()=>{
+  const f=automaticReferenceFixture();f.at(10);f.advance(1000);f.controller.cancelOpeningButton.dispatchEvent(new Event('click'));
+  f.advance(10000);assert.equal(f.video.currentTime,10);assert.equal(f.controller.openingCountdownPanel.hidden,true);
+  f.controller.openingButton.dispatchEvent(new Event('click'));assert.equal(f.video.currentTime,40);
+  f.at(550);f.advance(1000);f.controller.cancelNextButton.dispatchEvent(new Event('click'));f.advance(10000);assert.equal(f.next.length,0);
+  f.controller.creditsButton.dispatchEvent(new Event('click'));assert.deepEqual(f.next,[{automatic:false,reason:'credits',approximate:false}]);f.controller.destroy();
+  const immediate=automaticReferenceFixture();immediate.at(10);immediate.controller.skipOpeningNowButton.dispatchEvent(new Event('click'));
+  assert.equal(immediate.video.currentTime,40);immediate.at(550);immediate.controller.playNextButton.dispatchEvent(new Event('click'));
+  assert.deepEqual(immediate.next,[{automatic:false,reason:'credits',approximate:false}]);immediate.advance(10000);assert.equal(immediate.next.length,1);immediate.controller.destroy();
+});
+
+test('disabling automation or selecting ended suppresses community countdowns while manual actions remain',()=>{
+  const f=automaticReferenceFixture();f.at(10);f.preferences.setPreferences({autoSkipOpening:false});f.advance(10000);
+  assert.equal(f.video.currentTime,10);assert.equal(f.controller.openingButton.hidden,false);
+  f.at(550);f.preferences.setPreferences({autoNext:false});f.advance(10000);assert.equal(f.next.length,0);assert.equal(f.controller.creditsButton.hidden,false);
+  f.preferences.setPreferences({autoNext:true,nextMode:'ended'});f.advance(10000);assert.equal(f.next.length,0);
+  f.video.currentTime=600;f.video.ended=true;f.event('ended');f.advance(5000);assert.equal(f.next.length,1);f.controller.destroy();
+});
+
+test('late community references start a full countdown and short or departed windows cannot jump into content',async()=>{
+  let resolve;const f=automaticReferenceFixture({getEpisodeMarkers:()=>new Promise(done=>resolve=done)});
+  f.at(15);f.advance(30000);assert.equal(f.controller.openingCountdownPanel.hidden,true);
+  resolve(publicReference({...playableEpisode,duration:600}));await Promise.resolve();assert.equal(f.controller.openingCountdownTitle.textContent,'Pular abertura em 5s');
+  f.advance(4999);assert.equal(f.video.currentTime,15);f.advance(1);assert.equal(f.video.currentTime,40);f.controller.destroy();
+  const short=automaticReferenceFixture();short.at(37);short.advance(10000);assert.equal(short.video.currentTime,37);assert.equal(short.controller.openingCountdownPanel.hidden,true);short.controller.destroy();
+  const scene=automaticReferenceFixture({segments:{outro:{start:550,end:580,source:'IntroDB'}}});
+  scene.at(578);scene.advance(1000);scene.at(580);scene.advance(10000);assert.equal(scene.video.currentTime,580);assert.equal(scene.next.length,0);scene.controller.destroy();
+});
+
+test('account, episode, source and runtime changes revoke community countdowns and stale timers',()=>{
+  for(const type of ['opening','credits'])for(const change of ['account','episode','source','duration']){
+    const f=automaticReferenceFixture();f.at(type==='opening'?10:550);const stale=[...f.timers.values()][0].run;f.advance(1000);
+    if(change==='account')f.account('b'.repeat(64));
+    else if(change==='duration'){f.video.paused=true;f.event('pause');f.video.duration=620;f.event('durationchange');}
+    else f.controller.attach({...playableEpisode,...(change==='source'?{sourceFingerprint:'another-source'}:{episode:{id:'201',season:1,number:2}})});
+    stale();f.advance(10000);assert.equal(f.video.currentTime,type==='opening'?10:550);assert.equal(f.next.length,0);f.controller.destroy();
+  }
+});
+
+test('a pending asynchronous credits seek is never submitted twice',async()=>{
+  let resolve;const seeks=[],f=automaticReferenceFixture({segments:{outro:{start:550,end:580,source:'IntroDB'}},onSeek:target=>{seeks.push(target);return new Promise(done=>resolve=done);}});
+  f.at(550);f.advance(20000);assert.deepEqual(seeks,[580]);assert.equal(f.next.length,0);
+  resolve(true);await Promise.resolve();f.advance(10000);assert.deepEqual(seeks,[580]);f.controller.destroy();
 });

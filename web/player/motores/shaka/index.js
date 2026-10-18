@@ -1,6 +1,7 @@
 import {shakaConfiguration} from './configuracao.js';
 import {readShakaTracks, audioIdentity, sameAudioCandidates} from './faixas.js';
 import {hlsErrorFromShaka, localMediaURL} from './erros.js';
+import {readNativePlaybackFailure} from './erros-nativos.js';
 
 const finite = value => typeof value === 'number' && Number.isFinite(value);
 const cancelled = () => new DOMException('A abertura deste motor foi encerrada.', 'AbortError');
@@ -17,10 +18,11 @@ function settledBarrier(promises) {
 
 /** Construct with the already loaded, locally vendored Shaka namespace and
  * real HLS.js enums. This module neither fetches a library nor opens a source. */
-export function createShakaHlsClass({shaka, HlsClass} = {}) {
+export function createShakaHlsClass({shaka, HlsClass, readNativeFailure = readNativePlaybackFailure} = {}) {
   if (!shaka?.Player || !HlsClass?.Events || !HlsClass?.ErrorTypes || !HlsClass?.ErrorDetails) throw new TypeError('Os motores de reprodução precisam estar disponíveis.');
   let retirement = Promise.resolve();
   const byMedia = new WeakMap();
+  const mediaOwner = new WeakMap();
 
   return class ShakaHlsAdapter {
     static Events = HlsClass.Events;
@@ -108,7 +110,8 @@ export function createShakaHlsClass({shaka, HlsClass} = {}) {
     _maybeStart(startTime) {
       if (this._destroyed || this._stopped || !this.media || !this.url || this._operation) return;
       const ticket = {epoch: ++this._epoch, media: this.media, url: this.url, player: null, listeners: [], loaded: false,
-        reported: false, network: null, requestFilter: null, responseFilter: null, retired: false};
+        reported: false, network: null, requestFilter: null, responseFilter: null, retired: false,
+        controller: new AbortController(), nativeErrorPending: false};
       this._operation = ticket;
       const barrier = settledBarrier([retirement, byMedia.get(ticket.media) || Promise.resolve(), this._stopBarrier]);
       ticket.startBarrier = barrier;
@@ -119,6 +122,7 @@ export function createShakaHlsClass({shaka, HlsClass} = {}) {
       try {
         await barrier;
         if (!this._current(ticket)) return;
+        mediaOwner.set(ticket.media, ticket);
         ticket.player = new shaka.Player();
         this._bind(ticket);
         await ticket.player.attach(ticket.media);
@@ -200,9 +204,47 @@ export function createShakaHlsClass({shaka, HlsClass} = {}) {
       catch { this._localFailure(); }
     }
     _error(ticket, error) {
-      if (!this._current(ticket)) return;
+      if (!this._current(ticket) || ticket.reported || ticket.nativeErrorPending) return;
+      const native = error?.code === shaka.util?.Error?.Code?.VIDEO_ERROR && this._nativeMedia(ticket);
+      if (native) {
+        ticket.nativeErrorPending = true;
+        // Safari can keep issuing range requests after the native error. Clear
+        // src before waiting for the diagnostic; the read never opens media.
+        this._clearMedia(ticket);
+        Promise.resolve().then(() => readNativeFailure(ticket.url, {signal: ticket.controller.signal})).catch(() => null).then(failure => {
+          ticket.nativeErrorPending = false;
+          if (!this._current(ticket)) return;
+          if (failure) {
+            const headers = failure.retryAfterSeconds ? {'retry-after': String(failure.retryAfterSeconds)} : {};
+            const body = failure.code ? {code: failure.code,
+              ...(failure.retryAfterSeconds ? {retryAfterSeconds: failure.retryAfterSeconds} : {})} : {};
+            const networkError = {category: shaka.util.Error.Category.NETWORK, code: shaka.util.Error.Code.BAD_HTTP_STATUS,
+              severity: shaka.util.Error.Severity.CRITICAL,
+              data: [ticket.url, failure.status, JSON.stringify(body), headers]};
+            this._reportError(ticket, networkError);
+          } else this._reportError(ticket, error);
+        });
+        return;
+      }
+      this._reportError(ticket, error);
+    }
+    _nativeMedia(ticket) {
+      try {
+        const mode = shaka.Player.LoadMode?.SRC_EQUALS;
+        if (mode !== undefined && ticket.player?.getLoadMode?.() === mode) return true;
+        return localMediaURL(ticket.media.getAttribute?.('src') || ticket.media.src) === ticket.url;
+      } catch { return false; }
+    }
+    _clearMedia(ticket) {
+      if (mediaOwner.get(ticket.media) !== ticket) return;
+      try { ticket.media.pause(); } catch {}
+      try { ticket.media.removeAttribute('src'); } catch {}
+      try { ticket.media.srcObject = null; } catch {}
+      try { ticket.media.load(); } catch {}
+    }
+    _reportError(ticket, error) {
+      if (!this._current(ticket) || ticket.reported) return;
       const data = hlsErrorFromShaka(error, {shaka, HlsClass, url: ticket.url, loaded: ticket.loaded});
-      if (data.fatal && ticket.reported) return;
       if (data.fatal) ticket.reported = true;
       this._emit(HlsClass.Events.ERROR, data);
     }
@@ -216,13 +258,19 @@ export function createShakaHlsClass({shaka, HlsClass} = {}) {
       const ticket = this._operation; this._operation = null;
       if (!ticket || ticket.retired) return this.whenStopped;
       ticket.retired = true;
+      ticket.controller.abort();
       for (const cleanup of ticket.listeners.splice(0)) { try { cleanup(); } catch {} }
+      this._clearMedia(ticket);
       // Leave request guards installed until destroy resolves. Invalidating the
       // ticket synchronously prevents newly scheduled requests during teardown.
       let destroyed;
       try { destroyed = Promise.resolve(ticket.player?.destroy()); }
       catch (error) { destroyed = Promise.reject(error); }
       const closed = settledBarrier([ticket.startBarrier, destroyed]).finally(() => {
+        // destroy is asynchronous and can finish native src= setup while an
+        // opening is being canceled. A second clear precedes the next owner.
+        this._clearMedia(ticket);
+        if (mediaOwner.get(ticket.media) === ticket) mediaOwner.delete(ticket.media);
         try { ticket.network?.unregisterRequestFilter(ticket.requestFilter); } catch {}
         try { ticket.network?.unregisterResponseFilter(ticket.responseFilter); } catch {}
         ticket.player = ticket.network = null;

@@ -1,10 +1,14 @@
 import {SERIES_MARKER_REGISTRY} from '../../../web/series-markers/registry.js';
 import {DAY,canonicalSeries,catalogTitle,explicitIdentity,selectSeriesIdentity,episodeInventory,normalizeGlobalDump,inspectSegments} from './metadata.mjs';
-import {MarkerProviders,readPublicDump} from './providers.mjs';
+import {MarkerProviders} from './conectores/orquestrador.mjs';
+import {readPublicDump} from './conectores/dump.mjs';
 import {advanceIncrementalSource} from './incremental.mjs';
 import {retainMarkerCaches} from './retention.mjs';
 
 const iso=value=>new Date(value).toISOString(),errorCode=error=>/^[A-Z0-9_]{1,80}$/.test(error?.code||'')?error.code:'MARKER_SYNC_FAILED';
+const MAINTENANCE_INTERVAL=15*60000;
+const checkedAt=(value,now)=>{const parsed=Date.parse(value);return Number.isFinite(parsed)&&parsed<=now?value:null;};
+const maintenanceDue=(value,now,interval)=>value===null||now-Date.parse(value)>=interval;
 const markerRow=row=>Object.fromEntries(['series_slug','season','episode','edition_id','tmdb_id','imdb_id','duration_seconds','tolerance_seconds','verification','markers','provenance','data_version','is_active'].map(key=>[key,row[key]]));
 export function publicArtifactStream(header,records){
   let index=-1;const encoder=new TextEncoder();return new ReadableStream({pull(controller){
@@ -19,12 +23,27 @@ export async function runMarkerPipeline({store,fetch:request=globalThis.fetch,no
   const owner=crypto.randomUUID(),state=await store.claim(owner);if(!state?.claimed)return {state:'busy'};
   const started=now(),deadline=started+Math.max(1000,Math.min(45000,budgetMs)),room=margin=>now()<deadline-margin;
   const providers=givenProviders||new MarkerProviders({fetch:request,now,skipdbKey,introdbKey,state});
-  const result={state:'ready',discovered:0,identities:0,unresolved:0,inventories:0,published:0,episodesChecked:0,skipdb:0,introdb:0,empty:0,unverified:0,failures:0,dumpComplete:false};
+  const result={state:'ready',discovered:0,identities:0,unresolved:0,inventories:0,published:0,episodesChecked:0,skipdb:0,introdb:0,empty:0,unverified:0,failures:0,dumpComplete:false,
+    discoveryCheckedAt:checkedAt(state.last_result?.discoveryCheckedAt,started),seedsCheckedAt:checkedAt(state.last_result?.seedsCheckedAt,started)};
   try{
-    result.discovered=Number(await store.discover())||0;
+    // The paged RPC checks only the tiny registry when an unchanged partition
+    // completed within 15 minutes. Check every run so a new generation can
+    // restart immediately. Legacy/injected stores retain their old watermark.
+    const pagedDiscovery=typeof store.discoverBatch==='function';
+    if(pagedDiscovery||maintenanceDue(result.discoveryCheckedAt,started,MAINTENANCE_INTERVAL)){
+      const discovery=await(pagedDiscovery?store.discoverBatch():store.discover());
+      // The paged RPC distinguishes changed rows from examined rows. An empty
+      // page can still have a pending catalog tail or another partition.
+      const paged=discovery!==null&&typeof discovery==='object';
+      result.discovered=Number(paged?discovery.changed:discovery)||0;
+      result.discoveryCheckedAt=(paged?discovery.hasMore:result.discovered>=500)?null:iso(now());
+    }
     const auditRows=typeof store.auditDue==='function'?await store.auditDue(now(),10):[],prioritizing=auditRows.length>0;
     // These are labelled public reference seeds, not invented provider items.
-    await store.save('series_marker_titles',SERIES_MARKER_REGISTRY.map(series=>({...canonicalSeries(series.imdbId,series.title,series.tmdbId)})),'imdb_id',{ignore:true});
+    if(maintenanceDue(result.seedsCheckedAt,started,DAY)){
+      await store.save('series_marker_titles',SERIES_MARKER_REGISTRY.map(series=>({...canonicalSeries(series.imdbId,series.title,series.tmdbId)})),'imdb_id',{ignore:true});
+      result.seedsCheckedAt=iso(now());
+    }
     const refreshDue=!state.dump_object||now()-(Date.parse(state.dump_refreshed_at)||0)>=DAY;
     // Full transforms are dependency-injected only for offline bootstrap/tests.
     // The deployed worker always stages bounded source pages and episode groups.
@@ -112,7 +131,7 @@ export async function runMarkerPipeline({store,fetch:request=globalThis.fetch,no
       if(written===false)continue;
       result.episodesChecked++;if(status==='empty')result.empty++;if(status==='unverified')result.unverified++;if(failed)result.failures++;
     }
-    if(!prioritizing&&state.dump_completed_at&&room(18000)&&typeof store.storageRemove==='function'){
+    if(!prioritizing&&state.dump_completed_at&&maintenanceDue(checkedAt(state.retention_checked_at,now()),now(),MAINTENANCE_INTERVAL)&&room(18000)&&typeof store.storageRemove==='function'){
       try{result.retention=await retainMarkerCaches({store,owner,now,room});}
       catch(error){result.retentionError=errorCode(error);result.state='partial';}
     }

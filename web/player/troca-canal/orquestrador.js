@@ -53,7 +53,7 @@ export class ChannelSwitchController {
       if (this.pending !== ticket) return;
       if (!this.owns(ticket) || !this.allowed(ticket.item)) { this.cancel(); return; }
       this.render(ticket);
-    });
+    },ticket.item);
     if (typeof unsubscribe !== 'function') return;
     if (this.pending === ticket) ticket.unsubscribe = unsubscribe;
     else unsubscribe();

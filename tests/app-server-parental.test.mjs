@@ -5,7 +5,7 @@ import {createApp} from '../lib/app-server.mjs';
 test('parental API enforces PIN and session isolation before details, direct playback, EPG and old assets',async t=>{
   let playCalls=0,clients=[];
   const categories=[{id:'safe',name:'Cinema'},{id:'adult',name:'Adultos +18'}],items=[{id:'1',kind:'movie',name:'Filme',categoryId:'safe'},{id:'2',kind:'movie',name:'Reservado',categoryId:'adult'}];
-  const server=createApp({connection:{server:'https://provider.test'},nativeBridge:null,providerFactory:async({config})=>{
+  const server=createApp({connection:{server:'https://provider.test'},providerFactory:async({config})=>{
     const client={config,authenticatedAt:Date.now(),playbackGeneration:0,session:{connected:true,account:{status:'Active'}},assets:new Map([['old',{url:'https://stream.test/movie',key:'movie:2'}]]),playback:{key:'movie:2'},
       async connect(){return this.session;},async catalog(type){return {categories,items:items.map(item=>({...item,kind:type==='live'?'live':type==='series'?'series':'movie'}))};},
       async details(kind,id){return {...items.find(item=>item.id===id),kind,seasons:kind==='series'?[{episodes:[{id:'22'}]}]:[]};},

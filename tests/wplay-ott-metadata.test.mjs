@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import http from 'node:http';
 import { gzipSync } from 'node:zlib';
 import { createApp } from '../lib/app-server.mjs';
-import { WplayOTTProviderClient, WPLAY_OTT_RPC } from '../lib/wplay-ott-provider.mjs';
-import { encodeRPC, decodeRPC } from '../lib/ott-rpc.mjs';
+import { WplayOTTProviderClient, WPLAY_OTT_RPC } from '../lib/wplay/ott/provedor.mjs';
+import { encodeRPC, decodeRPC } from '../lib/wplay/ott/rpc.mjs';
 
 function mp4(seconds) {
   const atom = (type, body) => {
@@ -88,7 +88,7 @@ test('RPC metadata uses compressed delivery and preserves explicit catalog, artw
     const show = await mock.client.details('series', series.items[0].id, { probeDuration: true });
     assert.equal(show.seasons[0].episodes[0].duration, '40 min');
     assert.equal(show.seasons[0].episodes[0].durationSeconds, 2400);
-    assert.equal(show.duration, '40 min');assert.equal(show.durationLabel, '1º episódio');
+    assert.equal(show.duration, '');assert.equal(show.durationLabel, undefined);
     assert.equal(mock.requests.filter(request => request.headers.range).length, 0);
     const catalog = mock.transfers.find(transfer => transfer.id === WPLAY_OTT_RPC.catalog);
     assert.ok(catalog.compressed);assert.ok(catalog.wire < catalog.plain / 10);
@@ -116,8 +116,9 @@ test('duration probes require an explicit preview, reuse private cache and leave
     assert.equal((await mock.client.details('movie', movie.id, { probeDuration: true })).durationSeconds, 9960);
     assert.equal(mock.requests.filter(request => request.path === '/movie.mp4').length, reads);
     const show = await mock.client.details('series', series.id, { probeDuration: true });
-    assert.equal(show.duration, '40 min');assert.equal(show.durationLabel, '1º episódio');
-    assert.equal(show.seasons[0].episodes[0].durationSeconds, 2400);
+    assert.equal(show.duration, '');assert.equal(show.durationLabel, undefined);
+    assert.equal(show.seasons[0].episodes[0].durationSeconds, null);
+    assert.equal(mock.requests.filter(request => request.path === '/episode.mp4').length, 0);
     assert.equal(show.seasons[0].episodes[1].duration, '');
     assert.equal(mock.requests.filter(request => request.path === '/episode-two.mp4').length, 0);
     const unchanged = await mock.client.details('series', series.id);

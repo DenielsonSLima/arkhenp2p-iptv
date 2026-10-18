@@ -1,10 +1,10 @@
-const editable='input, textarea, select, [contenteditable], details[open], [role="menu"], [role="menuitem"], [role="listbox"], [role="option"], [role="combobox"]';
+const editable='input, textarea, select, [contenteditable], details[open], [role="menu"], [role="menuitem"], [role="listbox"], [role="option"], [role="combobox"], .tv-quality-notice';
 const confirmationKeys=new Set(['Enter','OK','Select','Accept']);
 
 /** Keyboard/remote dispatch only; channel intent belongs to TVPlayerNavigation. */
 export function handlePlayerKeydown(player,event){
   if(!player.current)return;player.keyboardMode=true;
-  if(player.blockedByDialog()||event.defaultPrevented||event.altKey||event.ctrlKey||event.metaKey||
+  if(player.blockedByDialog()||event.defaultPrevented||event.altKey||event.ctrlKey||event.metaKey||event.shiftKey||
     event.target?.closest?.(editable)||!player.tools.hidden&&player.tools.contains(event.target))return;
   const key=event.key||'',live=player.current.item.kind==='live';
   const clearDigits=()=>{

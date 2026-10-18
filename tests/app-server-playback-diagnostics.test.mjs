@@ -6,7 +6,7 @@ import {ProviderClient,ProviderError} from '../lib/provider.mjs';
 
 async function fixture(t,{upstreamStatus=404,selectionError,onError,liveManifest=false}={}){
   const events=[],requests=[];
-  const app=createApp({nativeBridge:null,connection:{server:'https://fixture.example'},onPlaybackError:event=>{events.push(event);onError?.(event);},providerFactory:({config})=>{
+  const app=createApp({connection:{server:'https://fixture.example'},onPlaybackError:event=>{events.push(event);onError?.(event);},providerFactory:({config})=>{
     const client=new ProviderClient({...config,server:'https://fixture.example'});
     client.connect=async()=>client.session={connected:true,account:{provider:'wplay',status:'Active'}};
     client.catalog=async()=>({categories:[{id:'safe',name:'Séries'}],items:[{id:'9',kind:'series',name:'Série de teste',categoryId:'safe'},...(liveManifest?[{id:'405',kind:'live',name:'Canal de teste',categoryId:'safe'}]:[])]});
@@ -37,6 +37,15 @@ test('transport errors use an allowed code and successful playback emits no fail
   const failed=await fixture(t,{selectionError:Object.assign(new Error('Synthetic connection failure'),{code:'ECONNRESET'})});
   assert.equal((await fetch(failed.base+'/api/play/series/1.mp4',{headers:failed.headers})).status,502);assert.equal(failed.events[0].code,'ECONNRESET');
   const healthy=await fixture(t,{upstreamStatus:200}),response=await fetch(healthy.base+'/api/play/series/1.mp4',{headers:healthy.headers});assert.equal(response.status,200);await response.text();assert.deepEqual(healthy.events,[]);
+});
+
+test('repeated cooldown readers neither contact the provider nor flood playback diagnostics',async t=>{
+  const f=await fixture(t,{upstreamStatus:429}),url=f.base+'/api/play/series/1.mp4?attempt=cooldown-fixture';
+  for(let i=0;i<12;i++){
+    const response=await fetch(url,{headers:f.headers});assert.equal(response.status,429);await response.json();
+  }
+  assert.equal(f.requests.length,1);assert.equal(f.events.length,1);
+  assert.equal(f.events[0].upstreamStatus,429);
 });
 
 test('a live segment failure is observable without leaking its source or account',async t=>{

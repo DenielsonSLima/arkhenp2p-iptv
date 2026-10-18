@@ -1,3 +1,5 @@
+import {TV_SOURCE_DISCOVERY_TIMEOUT_MS} from '../../tv/player/abertura.js';
+
 /** Prepares only the public source descriptors. The existing playback routes
  * still own the media connection, provider selection and STOP sequence. */
 export class ChannelSwitchService {
@@ -7,7 +9,7 @@ export class ChannelSwitchService {
 
   async prepare(item, {signal} = {}) {
     if (typeof this.preparePlayback !== 'function') throw new TypeError('TV_PLAYBACK_PREPARATION_REQUIRED');
-    const deadline = AbortSignal.timeout(4000);
+    const deadline = AbortSignal.timeout(TV_SOURCE_DISCOVERY_TIMEOUT_MS);
     const combined = signal ? AbortSignal.any([signal, deadline]) : deadline;
     try {
       combined.throwIfAborted();

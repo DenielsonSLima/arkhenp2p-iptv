@@ -56,6 +56,18 @@ function fixture(t,options={}){
   t.after(async()=>{const queryClient=library.queryClient;await queryClient?.cancelQueries();await library.dispose();queryClient?.clear();queryClient?.unmount();});return {library,sdk,time,updates,statuses,shared,handlers};
 }
 
+test('missing bootstrap reports only sanitized backend phase, status and elapsed time without loading a private library',async t=>{
+  const diagnostics=[],f=fixture(t,{onDiagnostic:value=>diagnostics.push(value)});
+  await f.library.resume({libraryId:'local-account',code:'CLOUD_TIMEOUT',stage:'arkhen_identity_lookup',remoteStatus:504,elapsedMs:15003});
+  assert.deepEqual(diagnostics,[{code:'CLOUD_TIMEOUT',stage:'arkhen_identity_lookup',status:504,elapsedMs:15003}]);
+  assert.deepEqual(f.library.getConnectionFailure(),{code:'CLOUD_BOOTSTRAP_UNAVAILABLE',stage:'bootstrap',authRecoveryRequired:false,
+    backendCode:'CLOUD_TIMEOUT',backendStage:'arkhen_identity_lookup',status:504,elapsedMs:15003});
+  assert.equal(f.sdk.calls.length,0);assert.equal(f.library.ready,false);
+  await f.library.resume({libraryId:'local-account',code:'CLOUD_TIMEOUT',stage:'https://private.example/token',remoteStatus:900,elapsedMs:-1});
+  assert.deepEqual(diagnostics.at(-1),{code:'CLOUD_TIMEOUT',stage:'bootstrap'});
+  assert.doesNotMatch(JSON.stringify(f.library.getConnectionFailure()),/private|https|900|-1/);
+});
+
 test('adult classification arriving before flush removes only protected progress from the queue and snapshot',async t=>{
   const blocked=new Set(),f=fixture(t,{canRemember:value=>!blocked.has(value.id)});await f.library.connect(bootstrap());
   await f.library.saveFavorite(item('1'));await f.library.saveProgress(progress('1'));await f.library.saveProgress(progress('2'));
@@ -234,7 +246,7 @@ test('Realtime invalidation observes favorite tombstones and old callbacks becom
 });
 
 test('two independent browser sessions share favorites, deletions and exact episode progress through Realtime',async t=>{
-  const first=fixture(t),second=fixture(t,{sdk:first.sdk});await first.library.connect(bootstrap());
+  const first=fixture(t),second=fixture(t,{sdk:{...first.sdk,createClient:(...args)=>first.sdk.createClient(...args)}});await first.library.connect(bootstrap());
   await first.library.saveFavorite(item('8'));const episode={id:'episode-4',season:5,number:1,title:'S05E01'};
   await first.library.saveProgress({...progress('9',episode),time:420,duration:3600},{force:true});
   await second.library.connect(bootstrap());
@@ -321,9 +333,9 @@ test('a transient initial profile failure preserves the rotated Auth session and
     return client;
   };
   assert.equal(await f.library.connect(bootstrap()),null);assert.equal(f.library.getStatus().state,'offline');
-  assert.equal(f.sdk.calls.filter(call=>call.operation==='signOut').length,0,'Data API outage must not revoke a reusable Auth session.');assert.equal(disposed,1,'Detached SDK background tasks are stopped without clearing storage.');
-  assert.equal((await f.library.connect(bootstrap())).userId,A);assert.equal(captured[1].refresh_token,'rotated-refresh');assert.equal(f.library.ready,true);
-  await f.library.logout({flush:false});assert.equal(f.sdk.calls.filter(call=>call.operation==='signOut').length,1,'Explicit logout still revokes this device session.');assert.equal(disposed,2);
+  assert.equal(f.sdk.calls.filter(call=>call.operation==='signOut').length,0,'Data API outage must not revoke a reusable Auth session.');assert.equal(disposed,0,'A transient outage retains the realm Auth client and its token-to-Realtime listener.');
+  assert.equal((await f.library.connect(bootstrap())).userId,A);assert.equal(captured.length,1,'The rotated persisted session is reused without replaying setSession.');assert.equal(f.library.accessToken,'rotated-access');assert.equal(f.sdk.clients.length,1);assert.equal(f.library.ready,true);
+  await f.library.logout({flush:false});assert.equal(f.sdk.calls.filter(call=>call.operation==='signOut').length,1,'Explicit logout still revokes this device session.');assert.equal(disposed,0,'Explicit logout revokes local credentials without destroying the reusable Auth client.');
 });
 
 test('a persisted rotated refresh session takes precedence over an older backend bootstrap',async t=>{
@@ -333,7 +345,7 @@ test('a persisted rotated refresh session takes precedence over an older backend
     client.auth.getSession=async()=>({data:{session:{access_token:'rotated-access',refresh_token:'rotated-refresh',user:{id:A}}},error:null});
     client.auth.setSession=async value=>{captured.push(value);return set(value);};return client;
   };
-  await f.library.connect(bootstrap());assert.equal(captured[0].refresh_token,'rotated-refresh');assert.equal(f.library.accessToken,'rotated-access');
+  await f.library.connect(bootstrap());assert.deepEqual(captured,[],'A valid persisted session must not be reset by the stale bootstrap.');assert.equal(f.library.accessToken,'rotated-access');
   const clients=f.sdk.clients.length;await f.library.connect(bootstrap());assert.equal(f.sdk.clients.length,clients);assert.equal(f.sdk.calls.some(call=>call.operation==='signOut'),false);
 });
 
@@ -341,7 +353,7 @@ test('a rejected Auth session requests recovery without revocation and a recover
   const diagnostics=[],f=fixture(t,{onDiagnostic:event=>diagnostics.push(event)}),create=f.sdk.createClient,captured=[];let verifies=0,sessionReads=0;
   f.sdk.createClient=(...args)=>{const client=create(...args),set=client.auth.setSession;client.auth.getSession=async()=>{sessionReads++;return {data:{session:{access_token:'stale-access',refresh_token:'stale-refresh',user:{id:A}}},error:null};};client.auth.setSession=async value=>{captured.push(value);return set(value);};client.auth.getUser=async()=>++verifies===1?{data:{user:null},error:{status:401,message:'private-token-never-log'}}:{data:{user:{id:A}},error:null};return client;};
   assert.equal(await f.library.connect(bootstrap()),null);assert.equal(f.library.getConnectionFailure().authRecoveryRequired,true);assert.equal(f.library.getConnectionFailure().status,401);assert.equal(f.sdk.calls.some(call=>call.operation==='signOut'),false);
-  const recovered=bootstrap(A,{session:{access_token:'fresh-access',refresh_token:'fresh-refresh'}});assert.equal((await f.library.connect(recovered,{preferBootstrap:true})).userId,A);assert.equal(sessionReads,1);assert.equal(captured[1].refresh_token,'fresh-refresh');assert.equal(f.library.getConnectionFailure(),null);assert.doesNotMatch(JSON.stringify(diagnostics),/private-token|stale-|fresh-/);
+  const recovered=bootstrap(A,{session:{access_token:'fresh-access',refresh_token:'fresh-refresh'}});assert.equal((await f.library.connect(recovered,{preferBootstrap:true})).userId,A);assert.equal(sessionReads,1);assert.equal(captured.length,1);assert.equal(captured[0].refresh_token,'fresh-refresh');assert.equal(f.library.getConnectionFailure(),null);assert.doesNotMatch(JSON.stringify(diagnostics),/private-token|stale-|fresh-/);
 });
 
 test('UI subscriber and status callback failures cannot revoke or fail a valid Auth connection',async t=>{
@@ -390,4 +402,11 @@ test('a new account waits for the previous SDK sign-out and a late logout cannot
   assert.equal(f.sdk.clients.length,1,'The old auth store finishes cleanup before creating a new SDK client.');
   cleanup.resolve({error:null});await leaving;assert.equal((await entering).userId,B);assert.equal(f.library.ready,true);assert.equal(f.library.scope.userId,B);
   assert.ok(f.library.queryClient.getQueryCache().getAll().every(query=>query.queryKey[3]===B));
+});
+
+
+test('two library owners in one JavaScript realm cannot compete for the same Auth client',async t=>{
+ const first=fixture(t),second=fixture(t,{sdk:first.sdk});await first.library.connect(bootstrap());
+ assert.equal(await second.library.connect(bootstrap()),null);assert.equal(first.sdk.clients.length,1);assert.equal(first.library.ready,true);
+ assert.equal(first.sdk.calls.some(call=>call.operation==='signOut'),false,'A rejected second owner cannot revoke the active owner.');
 });

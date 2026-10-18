@@ -1,6 +1,7 @@
 import {withRequestSignals} from '../request-signals.js';
 import {tvScopeKey} from './scope.js';
 import {normalizeGuideChannel,validateGuideProjection} from './canais/programacao.js';
+import {TVProgramWindowCache} from './canais/cache-programacao.js';
 export {normalizeGuideChannel} from './canais/programacao.js';
 
 const emptyState=()=>({data:null,loading:false,error:null,stale:false});
@@ -10,22 +11,26 @@ const abort=()=>new DOMException('Consulta da programação cancelada.','AbortEr
 const bounded=(value,min,max,fallback)=>Number.isFinite(Number(value))?Math.min(max,Math.max(min,Number(value))):fallback;
 
 export const tvQueryKeys=Object.freeze({
-  guide:scope=>['arkhen-tv-guide',typeof scope==='string'?scope:tvScopeKey(scope)],
+  guide:(scope,ids=null)=>['arkhen-tv-guide',typeof scope==='string'?scope:tvScopeKey(scope),ids],
   favorites:scope=>['arkhen-tv','favorites',tvScopeKey(scope)],
   sources:(scope,id)=>['arkhen-tv','sources',tvScopeKey(scope),String(id)]
 });
 
-/** One bounded query for the eligible channel scope. Cards, current channel
- * and both neighbours consume this map; mounting a card never fetches an ID.
+/** One bounded query for the union of channels needed by active consumers.
+ * Cards, current channel and both neighbours join the same coalesced batch.
  * Source collection is a separate six-hour server job, not this timer. */
 export class TVGuideClient{
   constructor({request,services=null,getScope=()=>null,loadQueryCore=()=>import('/assets/vendor/cloud-client.js'),
-    now=Date.now,schedule=(callback,delay)=>setTimeout(callback,delay),cancel=timer=>clearTimeout(timer)}={}){
-    Object.assign(this,{request:services?.api||request,getScope,loadQueryCore,now,schedule,cancel});
-    this.scope=null;this.epoch=0;this.invalidation=0;this.pending=null;this.timer=null;this.freshUntil=0;this.failures=0;this.blocked=false;
+    now=Date.now,document=globalThis.document,schedule=(callback,delay)=>globalThis.setTimeout(callback,delay),cancel=timer=>globalThis.clearTimeout(timer)}={}){
+    Object.assign(this,{request:services?.api||request,getScope,loadQueryCore,now,document,schedule,cancel});
+    this.scope=null;this.epoch=0;this.invalidation=0;this.publication=0;this.pending=null;this.timer=null;this.freshUntil=0;this.failures=0;this.blocked=false;
     this.listeners=new Set();this.state=emptyState();this.client=null;this.clientPromise=null;this.disposed=false;
-    this.onOnline=()=>{if(this.listeners.size)this.invalidate();};
+    this.selections=new Map();this.selectionKey='[]';this.selectionQueued=false;
+    this.windows=new TVProgramWindowCache({now});
+    this.onOnline=()=>{if(this.listeners.size&&!this.document?.hidden)this.invalidate();};
+    this.onVisibility=()=>{if(this.document?.hidden){this.cancel(this.timer);this.timer=null;}else if(this.listeners.size)void this.ensure();};
     globalThis.addEventListener?.('online',this.onOnline);
+    document?.addEventListener?.('visibilitychange',this.onVisibility);
   }
   emit(){for(const listener of [...this.listeners]){try{listener(this.state);}catch{}}}
   synchronizeScope(){
@@ -45,19 +50,44 @@ export class TVGuideClient{
   clear(){
     this.epoch++;this.pending?.controller.abort();this.pending=null;
     this.cancel(this.timer);this.timer=null;this.freshUntil=0;this.failures=0;this.blocked=false;this.state=emptyState();
+    this.windows.clear();
     void this.client?.cancelQueries();this.client?.clear();
   }
   reset(){this.clear();this.scope=null;this.emit();}
-  subscribe(listener,{immediate=true}={}){
-    this.synchronizeScope();this.listeners.add(listener);if(immediate)listener(this.state);
-    void this.ensure();
-    return()=>{this.listeners.delete(listener);if(!this.listeners.size){this.cancel(this.timer);this.timer=null;}};
+  requestedIds(){
+    if(!this.selections.size)return null;
+    const requested=new Set();
+    for(const selection of this.selections.values()){
+      // Omitted IDs preserve the full-map contract for external old callers.
+      if(selection===null)return null;
+      let ids;try{ids=typeof selection==='function'?selection():selection;}catch{ids=[];}
+      for(const id of Array.isArray(ids)?ids:[])if(isChannelID(id))requested.add(String(id));
+    }
+    const ids=[...requested].sort();
+    // Extreme selections use the existing full-map contract instead of
+    // silently dropping the playing channel or exceeding HTTP header limits.
+    return ids.length>2000||ids.join(',').length>6000?null:ids;
+  }
+  selectionChanged(){
+    const key=JSON.stringify(this.requestedIds());if(key===this.selectionKey)return;
+    this.selectionKey=key;this.invalidation++;this.freshUntil=0;this.blocked=false;
+    // Mounting 48 cards in one render produces one request, not 48 requests.
+    if(!this.selectionQueued&&this.listeners.size){this.selectionQueued=true;queueMicrotask(()=>{
+      this.selectionQueued=false;if(!this.disposed&&this.listeners.size)void this.ensure();
+    });}
+  }
+  subscribe(listener,{immediate=true,ids=null}={}){
+    this.synchronizeScope();this.listeners.add(listener);this.selections.set(listener,ids);this.selectionChanged();
+    if(immediate)listener(this.state);
+    // Also resume a still-valid selection whose prior reader unsubscribed.
+    queueMicrotask(()=>{if(this.listeners.has(listener))void this.ensure();});
+    const unsubscribe=()=>{this.listeners.delete(listener);this.selections.delete(listener);this.selectionChanged();if(!this.listeners.size){this.cancel(this.timer);this.timer=null;}};
+    unsubscribe.updateIds=(next=ids)=>{if(this.listeners.has(listener)){ids=next;this.selections.set(listener,next);this.selectionChanged();}};
+    return unsubscribe;
   }
   peek(id){
     this.synchronizeScope();if(!isChannelID(id))return null;
-    const data=this.state.data,channel=data?.channels[String(id)];
-    return channel?{...channel,revision:data.revision,projectionVersion:data.projectionVersion,asOf:data.asOf,
-      stale:Boolean(data.stale||this.state.stale),snapshotFetchedAt:data.snapshotFetchedAt}:null;
+    return this.windows.peek(id,{stale:this.state.stale});
   }
   async queries(){
     if(!this.clientPromise)this.clientPromise=Promise.resolve().then(()=>this.loadQueryCore()).then(({QueryClient})=>{
@@ -72,26 +102,31 @@ export class TVGuideClient{
     const serverDelay=Date.parse(data.nextRefreshAt)-Date.parse(data.serverTime);
     return bounded(data.retryAfterMs??serverDelay,5000,300_000,60_000);
   }
-  scheduleRefresh(delay){
+  scheduleRefresh(delay,{force=true}={}){
     this.cancel(this.timer);this.timer=null;
-    if(this.disposed||!this.scope||!this.listeners.size)return;
-    this.timer=this.schedule(()=>{this.timer=null;void this.ensure({force:true});},delay);
+    if(this.disposed||!this.scope||!this.listeners.size||this.document?.hidden)return;
+    this.timer=this.schedule(()=>{this.timer=null;void this.ensure({force});},delay);
   }
   invalidate(){
-    this.invalidation++;this.freshUntil=0;this.blocked=false;
+    this.invalidation++;this.publication++;this.freshUntil=0;this.blocked=false;
+    this.windows.invalidate();
     void this.client?.invalidateQueries({queryKey:['arkhen-tv-guide'],refetchType:'none'});
-    if(this.listeners.size)void this.ensure({force:true});
+    if(this.listeners.size&&!this.document?.hidden)void this.ensure({force:true});
   }
   ensure({force=false}={}){
     const scope=this.synchronizeScope();
     if(this.disposed||!scope||typeof this.request!=='function')return Promise.resolve(null);
+    if(this.document?.hidden)return Promise.resolve(this.state.data);
+    const ids=this.requestedIds();if(ids!==null&&!ids.length)return Promise.resolve(this.state.data);
     if(this.pending)return this.pending.promise;
     if(this.blocked&&!force)return Promise.resolve(null);
-    if(!force&&this.now()<this.freshUntil){
-      this.scheduleRefresh(this.freshUntil-this.now());return Promise.resolve(this.state.data);
+    const cachedUntil=this.windows.freshUntil(ids);
+    if(!force&&this.now()<cachedUntil){
+      this.scheduleRefresh(cachedUntil-this.now());return Promise.resolve(this.state.data);
     }
+    if(!force&&this.state.error&&this.now()<this.freshUntil){this.scheduleRefresh(this.freshUntil-this.now());return Promise.resolve(this.state.data);}
     this.cancel(this.timer);this.timer=null;
-    const ticket={epoch:++this.epoch,invalidation:this.invalidation,scope,fresh:force,controller:new AbortController(),promise:null};this.pending=ticket;
+    const ticket={epoch:++this.epoch,invalidation:this.invalidation,publication:this.publication,scope,ids,fresh:force,controller:new AbortController(),promise:null};this.pending=ticket;
     this.state={...this.state,loading:true,error:null};ticket.promise=this.load(ticket);this.emit();
     return ticket.promise;
   }
@@ -106,18 +141,24 @@ export class TVGuideClient{
       let queryDeadline;
       const client=await Promise.race([this.queries(),new Promise(resolve=>{queryDeadline=this.schedule(()=>resolve(null),500);})]);
       this.cancel(queryDeadline);if(!current())throw abort();
+      const params=new URLSearchParams();if(ticket.fresh)params.set('fresh','1');if(ticket.ids!==null)params.set('ids',ticket.ids.join(','));
       const run=({signal}={})=>withRequestSignals([signal,ticket.controller.signal],signal=>
-        this.request('/api/tv/guide'+(ticket.fresh?'?fresh=1':''),{signal}).then(validateGuideProjection));
-      const data=client?await client.fetchQuery({queryKey:tvQueryKeys.guide(ticket.scope),queryFn:run,staleTime:0}):await run();
+        this.request('/api/tv/guide'+(params.size?'?'+params:''),{signal}).then(validateGuideProjection));
+      const data=client?await client.fetchQuery({queryKey:tvQueryKeys.guide(ticket.scope,ticket.ids),queryFn:run,staleTime:0}):await run();
       if(!current())throw abort();
       const delay=this.refreshDelay(data);this.freshUntil=this.now()+delay;this.failures=0;
-      this.state={data,loading:false,error:null,stale:Boolean(data.stale)};retryDelay=delay;
+      this.windows.remember(data,{ids:ticket.ids,delay});
+      // A publication invalidation is stronger than a changed selection. A
+      // response started before it cannot certify fresh cached coverage.
+      const invalidated=ticket.publication!==this.publication;if(invalidated)this.windows.invalidate();
+      this.state={data,loading:false,error:null,stale:Boolean(data.stale||invalidated)};retryDelay=delay;
       return data;
     }catch(error){
       const owned=this.pending===ticket&&scopeKey(this.getScope())===ticket.scope&&this.epoch===ticket.epoch;
       if(owned){
         const denied=[401,403].includes(error?.status);
         this.blocked=denied;
+        if(denied)this.windows.clear();
         this.state={...this.state,data:denied?null:this.state.data,loading:false,error:'Não foi possível atualizar a programação.',stale:!denied&&Boolean(this.state.data)};
         if(!denied){retryDelay=bounded(error?.retryAfterMs,15_000,300_000,Math.min(300_000,15_000*2**Math.min(5,this.failures++)));this.freshUntil=this.now()+retryDelay;}
       }
@@ -129,11 +170,11 @@ export class TVGuideClient{
         const scope=scopeKey(this.getScope());
         if(scope!==ticket.scope){this.clear();this.scope=scope;retryDelay=scope?0:null;}
         else if(ticket.invalidation!==this.invalidation){this.freshUntil=0;retryDelay=0;}
-        this.emit();if(retryDelay!==null)this.scheduleRefresh(retryDelay);
+        this.emit();if(retryDelay!==null)this.scheduleRefresh(retryDelay,{force:ticket.publication!==this.publication||ticket.invalidation===this.invalidation});
       }
     }
   }
-  dispose(){this.disposed=true;this.reset();this.listeners.clear();globalThis.removeEventListener?.('online',this.onOnline);}
+  dispose(){this.disposed=true;this.reset();this.listeners.clear();this.selections.clear();globalThis.removeEventListener?.('online',this.onOnline);this.document?.removeEventListener?.('visibilitychange',this.onVisibility);}
 }
 
 const clients=new WeakMap();

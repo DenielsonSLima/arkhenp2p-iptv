@@ -25,9 +25,9 @@ export function createCollectorHandler({environment=name=>globalThis.Deno?.env?.
       // still finishing. Keep the pipeline alive long enough to release its lease.
       if(continuation)continuation(pending.catch(()=>{}));
       const result=await pending;
-      // A bounded continuation avoids waiting one minute per catalog page group.
-      // Cron remains the fallback if the isolate is stopped before this wakeup.
-      if(['ready','checkpointed'].includes(result.state)&&continuation)continuation((async()=>{await delay(11000);try{await store.rpc('arkhen_kick_cloud_collector',{});}catch{/* Cron retries a missed continuation. */}})());
+      // Cron owns the normal cadence. Fast backfill is an explicit operational
+      // choice, and a completed job must never start another worker by itself.
+      if(environment('ARKHEN_SYNC_CONTINUATIONS_ENABLED')==='true'&&result.state==='checkpointed'&&continuation)continuation((async()=>{await delay(11000);try{await store.rpc('arkhen_kick_cloud_collector',{});}catch{/* Cron retries a missed continuation. */}})());
       return json(result,result.state==='failed'?503:200);
     }catch{return json({error:'COLLECTOR_FAILED'},503);}
   };

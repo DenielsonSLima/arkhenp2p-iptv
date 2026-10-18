@@ -1,0 +1,306 @@
+[
+  {
+    "artifact": "playback-DefaultLoadControl-defaultBytes.json",
+    "evidence_id": "ev_085259f98844b00dfb29618f80f34a619bcd1de5407a51757bea6d04a4790f93",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_method",
+    "class_name": "androidx.media3.exoplayer.DefaultLoadControl",
+    "method_name": "getDefaultBufferSize",
+    "overload_index": 0,
+    "body_status": "available",
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  },
+  {
+    "artifact": "playback-DefaultLoadControl-init-1.json",
+    "evidence_id": "ev_881c00f590dcd95b928b6f9622632249ca455b4aafe47514f4fa763297cf900a",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_method",
+    "class_name": "androidx.media3.exoplayer.DefaultLoadControl",
+    "method_name": "<init>",
+    "overload_index": 1,
+    "body_status": "available",
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  },
+  {
+    "artifact": "playback-DefaultLoadControl-init.json",
+    "evidence_id": "ev_ecdf0161b936721cba6b60a296911f97bae4ca5417897bd99063270a5812540f",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_method",
+    "class_name": "androidx.media3.exoplayer.DefaultLoadControl",
+    "method_name": "<init>",
+    "overload_index": 0,
+    "body_status": "available",
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  },
+  {
+    "artifact": "playback-DefaultLoadControl-loading.json",
+    "evidence_id": "ev_f0da89dc7706183b1cce539cfcfca0e698882e5e512bac3595c8c5a20f40dc1c",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_method",
+    "class_name": "androidx.media3.exoplayer.DefaultLoadControl",
+    "method_name": "shouldContinueLoading",
+    "overload_index": 1,
+    "body_status": "available",
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  },
+  {
+    "artifact": "playback-DefaultLoadControl.json",
+    "evidence_id": "ev_2a52cf386a0f12a1612fdc3bb027ef8ad308505cc9f6c40f1fc5db6ce6e1b641",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_class",
+    "class_name": "androidx.media3.exoplayer.DefaultLoadControl",
+    "method_name": null,
+    "overload_index": null,
+    "body_status": null,
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  },
+  {
+    "artifact": "playback-FfmpegLibrary-clinit.json",
+    "evidence_id": "ev_8e6fb6bb3eb2d84f10fcb9aba535deb8db5dfeee9196ea60aaa7057e2fd580df",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_method",
+    "class_name": "androidx.media3.decoder.ffmpeg.FfmpegLibrary",
+    "method_name": "<clinit>",
+    "overload_index": 0,
+    "body_status": "available",
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  },
+  {
+    "artifact": "playback-Libtvcar-clinit.json",
+    "evidence_id": "ev_a2b501724eee112a3732caca36672837436a6a99437176215937bcb7d2884498",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_method",
+    "class_name": "com.libtvcar.Libtvcar",
+    "method_name": "<clinit>",
+    "overload_index": 0,
+    "body_status": "available",
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  },
+  {
+    "artifact": "playback-Libtvcar.json",
+    "evidence_id": "ev_70c3789ec3c6624da6925fc1c4b2df06c911440c1eeedaf0cee8ed63b0cee25b",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_class",
+    "class_name": "com.libtvcar.Libtvcar",
+    "method_name": null,
+    "overload_index": null,
+    "body_status": null,
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  },
+  {
+    "artifact": "playback-NativeUtil-clinit.json",
+    "evidence_id": "ev_86a92382aa68a2e7fffc49a083805eda6af70bc64a28c1510f337b400aefa2b8",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_method",
+    "class_name": "com.nmmedit.protect.NativeUtil",
+    "method_name": "<clinit>",
+    "overload_index": 0,
+    "body_status": "available",
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  },
+  {
+    "artifact": "playback-TVServer-run.json",
+    "evidence_id": "ev_37dd39ac2912ac00e89a9340304ec741502219b01ed93b2ed9b672917014ca5d",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_method",
+    "class_name": "com.tvbus.engine.TVService.TVServer",
+    "method_name": "run",
+    "overload_index": 0,
+    "body_status": "available",
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  },
+  {
+    "artifact": "playback-TVService-onCreate.json",
+    "evidence_id": "ev_66c1b080dd8a6cac6a0c5cf76ec5fd0eb7bcacba63e022d7dd7ed8f688408661",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_method",
+    "class_name": "com.tvbus.engine.TVService",
+    "method_name": "onCreate",
+    "overload_index": 0,
+    "body_status": "not_available",
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  },
+  {
+    "artifact": "playback-TVService.json",
+    "evidence_id": "ev_7d099dbfd6bb37af8ea6b3c5da49178d573bc039f2feb858c2d8b23d77ea542d",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_class",
+    "class_name": "com.tvbus.engine.TVService",
+    "method_name": null,
+    "overload_index": null,
+    "body_status": null,
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  },
+  {
+    "artifact": "playback-wrapper-d.json",
+    "evidence_id": "ev_9379cc1ba5e95decc47639981b12f39facd548e4e6fe7ab7e3d39fb46de262f8",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_class",
+    "class_name": "te.d",
+    "method_name": null,
+    "overload_index": null,
+    "body_status": null,
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  },
+  {
+    "artifact": "playback-wrapper-e.json",
+    "evidence_id": "ev_88fc53b51e3cbc8b71eb60e1a0b43295ec0b4757be57383fb19932faa0738356",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_class",
+    "class_name": "te.e",
+    "method_name": null,
+    "overload_index": null,
+    "body_status": null,
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  },
+  {
+    "artifact": "package-primary.json",
+    "evidence_id": "ev_10e6cd4c74d55d8153c1a476e0a2873b3ca563cd42dfd1f8cf23bc4d3dbad0eb",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_package",
+    "class_name": null,
+    "method_name": null,
+    "overload_index": null,
+    "body_status": null,
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  },
+  {
+    "artifact": "network-Spark-onCreate.json",
+    "evidence_id": "ev_5eaf279f29713c77fc11fee7189083b6b03fa20667fd2ce462be8b7f6cb6e50e",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_method",
+    "class_name": "org.bitspark.android.Spark",
+    "method_name": "onCreate",
+    "overload_index": 0,
+    "body_status": "available",
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  },
+  {
+    "artifact": "network-Spark-onDestroy.json",
+    "evidence_id": "ev_168324d675dc6049c771188c5a1939ef79ec639e21693c98c761a747345d5457",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_method",
+    "class_name": "org.bitspark.android.Spark",
+    "method_name": "onDestroy",
+    "overload_index": 0,
+    "body_status": "available",
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  },
+  {
+    "artifact": "class-com.tvbus.engine.TVCore.json",
+    "evidence_id": "ev_aa933a3331d7b27993008211a507bd69ac3be0876a945289e99b425b56eefc20",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_class",
+    "class_name": "com.tvbus.engine.TVCore",
+    "method_name": null,
+    "overload_index": null,
+    "body_status": null,
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "cached-target-bound"
+  },
+  {
+    "artifact": "network-Spark-v.json",
+    "evidence_id": "ev_1ec33b4e4df7a2ed1b171cbe84d3a3a02a658f76e686db359b74c71391cff0fe",
+    "subject_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "operation": "inspect_android_method",
+    "class_name": "org.bitspark.android.Spark",
+    "method_name": "v",
+    "overload_index": 0,
+    "body_status": "available",
+    "provider": {
+      "id": "jadx",
+      "name": "JADX headless",
+      "version": "0.7.1"
+    },
+    "collection": "2026-10-16"
+  }
+]

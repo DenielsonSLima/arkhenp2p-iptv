@@ -5,8 +5,8 @@ function element(tag,className='',value){
   const node=document.createElement(tag);node.className=className;if(value!==undefined)node.textContent=value;return node;
 }
 
-/** Every card reads the same completed server projection. No visibility
- * queue, two-request bottleneck or per-card request/clock is involved. */
+/** Cards register their channel IDs in one shared server projection. No
+ * per-card provider request, clock or programme selection is involved. */
 export class ChannelGuide{
   constructor({api,connectionGeneration,guide=null}){
     Object.assign(this,{api,connectionGeneration});this.generation=this.readGeneration();
@@ -18,7 +18,7 @@ export class ChannelGuide{
   peek(id){this.ensureGeneration();return this.guide?.peek(id)||null;}
   connect(){
     if(this.paused||this.unsubscribe||!this.records.size||!this.guide)return;
-    this.unsubscribe=this.guide.subscribe(state=>{this.ensureGeneration();this.prune();for(const record of this.records.values())this.render(record,this.guide.peek(record.id),state);});
+    this.unsubscribe=this.guide.subscribe(state=>{this.ensureGeneration();this.prune();for(const record of this.records.values())this.render(record,this.guide.peek(record.id),state);},{ids:()=>[...this.records.values()].map(record=>record.id)});
     if(this.interval===null)this.interval=setInterval(()=>this.prune(),30_000);
   }
   observe(card,item){
@@ -34,7 +34,7 @@ export class ChannelGuide{
     const progress=element('progress','channel-guide-progress');progress.max=100;progress.value=0;progress.setAttribute('aria-label','Tempo do programa atual');
     root.append(placeholder,rows,progress);(card.querySelector('.channel-copy')||card).append(root);
     const record={card,id:String(item.id),root,placeholder,rows,nodes,progress,connectedOnce:card.isConnected,createdAt:Date.now()};
-    this.records.set(card,record);this.render(record,this.guide?.peek(record.id),this.guide?.state);this.connect();
+    this.records.set(card,record);this.render(record,this.guide?.peek(record.id),this.guide?.state);this.unsubscribe?.updateIds?.();this.connect();
   }
   render(record,data,state={}){
     const programs=programWindow(data),available=Boolean(programs.current||programs.next),loading=!data&&Boolean(state?.loading),failed=!data&&Boolean(state?.error);
@@ -49,11 +49,12 @@ export class ChannelGuide{
   }
   remove(record){this.records.delete(record.card);record.root.remove();}
   prune(){
-    const now=Date.now();for(const record of this.records.values()){
+    const size=this.records.size,now=Date.now();for(const record of this.records.values()){
       if(record.card.isConnected)record.connectedOnce=true;
       else if(record.connectedOnce||now-record.createdAt>1000)this.remove(record);
     }
     if(!this.records.size){this.unsubscribe?.();this.unsubscribe=null;clearInterval(this.interval);this.interval=null;}
+    else if(size!==this.records.size)this.unsubscribe?.updateIds?.();
   }
   tick(){this.ensureGeneration();this.prune();if(!this.paused&&this.records.size){this.connect();void this.guide?.ensure();}}
   pause(){this.paused=true;this.unsubscribe?.();this.unsubscribe=null;clearInterval(this.interval);this.interval=null;}

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {featuredMovies,featuredTitles} from '../web/inicio/bannerprincipal/selecao.js';
 import {latestReleases} from '../web/inicio/ordens.js';
-import {homeShelves} from '../web/inicio/seletores-offline.js';
+import {homeShelves} from './fixtures/home-sections-legacy.js';
 import {playbackProgress} from '../web/inicio/progresso.js';
 const item = (id, name, kind = 'movie', extra = {}) => ({id:String(id), name, kind, ...extra});
 test('three banner titles are movies, ordered by supplied release data without fictional dates', () => {

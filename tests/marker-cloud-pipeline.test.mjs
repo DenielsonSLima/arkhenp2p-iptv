@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {LICENSE,normalizeGlobalDump,selectSeriesIdentity,explicitIdentity,episodeInventory,inspectSegments,catalogTitle} from '../supabase/functions/series-markers-sync/metadata.mjs';
-import {MarkerProviders,readPublicDump} from '../supabase/functions/series-markers-sync/providers.mjs';
+import {MarkerProviders} from '../supabase/functions/series-markers-sync/conectores/orquestrador.mjs';
+import {readPublicDump} from '../supabase/functions/series-markers-sync/conectores/dump.mjs';
 import {MarkerStore} from '../supabase/functions/series-markers-sync/store.mjs';
 import {parseRawRange,advanceIncrementalSource} from '../supabase/functions/series-markers-sync/incremental.mjs';
 import {runMarkerPipeline,publicArtifactStream} from '../supabase/functions/series-markers-sync/pipeline.mjs';
@@ -209,9 +210,9 @@ test('the Edge handler rejects absent/wrong capabilities and never accepts clien
   const response=await handler(new Request('https://fixture.test',{method:'POST',headers:{'x-arkhen-marker-secret':secret},body:'{}'}));assert.equal(response.status,200);assert.equal(calls,1);assert.doesNotMatch(await response.text(),/private-fixture|fixture-fixture/);
 });
 
-test('a checkpointed worker schedules one authenticated continuation after eleven seconds and completed generations stop it',async()=>{
+test('an explicitly enabled checkpointed worker schedules one continuation and completed generations stop it',async()=>{
   const secret='fixture-'.repeat(8),background=[],delays=[],requests=[];
-  const env=name=>({ARKHEN_MARKER_SYNC_SECRET:secret,SUPABASE_URL:'https://fixture.supabase.co'})[name];
+  const env=name=>({ARKHEN_MARKER_SYNC_SECRET:secret,SUPABASE_URL:'https://fixture.supabase.co',ARKHEN_SYNC_CONTINUATIONS_ENABLED:'true'})[name];
   const options={environment:env,store:{},waitUntil:work=>background.push(work),sleep:async delay=>{delays.push(delay);},fetch:async(url,options)=>{requests.push({url,options});return new Response('{}');}};
   const request=()=>new Request('https://fixture.test',{method:'POST',headers:{'x-arkhen-marker-secret':secret},body:'{}'});
   await createMarkerSyncHandler({...options,pipeline:async()=>({state:'ready',published:4000,dumpComplete:false})})(request());await Promise.all(background);
@@ -248,4 +249,31 @@ for(const preferred of ['network','404','empty','cooldown','wrong-identity','int
   if(preferred==='network')assert.equal(result.providerStatus.skipdb.errorCode,'PROVIDER_NETWORK_FAILED');
   if(preferred==='404')assert.equal(result.providerStatus.skipdb.errorCode,null,'A valid empty response is healthy availability, not a network failure.');
   if(preferred==='cooldown'){assert.equal(result.providerStatus.skipdb.lastCheckedAt,undefined);assert.equal(result.providerStatus.skipdb.lastSuccessAt,'2026-10-14T12:00:00.000Z');}
+});
+
+
+test('routine marker sync defaults to cron cadence and partial runs never start a continuation chain',async()=>{
+  const secret='fixture-'.repeat(8),request=()=>new Request('https://fixture.test',{method:'POST',headers:{'x-arkhen-marker-secret':secret},body:'{}'});
+  for(const [enabled,state]of [[undefined,'ready'],['false','ready'],['true','partial']]){
+    const environment=name=>({ARKHEN_MARKER_SYNC_SECRET:secret,SUPABASE_URL:'https://fixture.supabase.co',ARKHEN_SYNC_CONTINUATIONS_ENABLED:enabled})[name];
+    let background=0,requests=0;
+    const response=await createMarkerSyncHandler({environment,store:{},pipeline:async()=>({state,published:4000,dumpComplete:false,episodesChecked:10}),waitUntil:()=>background++,fetch:async()=>{requests++;return new Response('{}');}})(request());
+    assert.equal(response.status,200);assert.equal(background,0);assert.equal(requests,0);
+  }
+});
+
+test('explicit source connectors preserve endpoint identity and independent provider credentials',async()=>{
+  const calls=[],providers=new MarkerProviders({sleep:async()=>{},skipdbKey:'skipdb-fixture',introdbKey:'introdb-fixture',fetch:async(url,options)=>{calls.push({url:new URL(url),headers:options.headers});return new Response('{}');}});
+  await providers.search('Uma série');await providers.inventory('tt1234567');
+  await providers.segments('skipdb',{imdb_id:'tt1234567',season:0,episode:8});
+  await providers.segments('introdb',{imdb_id:'tt1234567',season:0,episode:8});
+  assert.equal(calls[0].url.hostname,'skipdb.tv');assert.equal(calls[0].url.searchParams.get('q'),'Uma série');
+  assert.equal(calls[1].url.pathname,'/api/titles/tt1234567');
+  assert.equal(calls[2].url.hostname,'api.skipdb.tv');assert.equal(calls[2].url.pathname,'/api/segments');assert.equal(calls[2].url.searchParams.get('adjust'),'none');
+  assert.equal(calls[3].url.hostname,'api.introdb.app');assert.equal(calls[3].url.pathname,'/segments');assert.equal(calls[3].url.searchParams.has('adjust'),false);
+  for(const [index,call]of calls.entries()){
+    assert.equal(call.headers['X-API-Key'],index===3?'introdb-fixture':'skipdb-fixture');
+    if(index>1){assert.equal(call.url.searchParams.get('season'),'0');assert.equal(call.url.searchParams.get('episode'),'8');assert.equal(call.url.searchParams.get('imdb_id'),'tt1234567');}
+  }
+  await assert.rejects(async()=>providers.segments('unknown',{imdb_id:'tt1234567',season:1,episode:1}),{code:'PROVIDER_INVALID'});assert.equal(calls.length,4);
 });

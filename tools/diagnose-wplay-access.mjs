@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { performance } from 'node:perf_hooks';
-import { WplayOTTProviderClient, WPLAY_OTT_RPC } from '../lib/wplay-ott-provider.mjs';
+import { WplayOTTProviderClient, WPLAY_OTT_RPC } from '../lib/wplay/ott/provedor.mjs';
 import { readWplayCredentials, safeCode, sanitizeWplayMessage } from './wplay-tool-input.mjs';
 
 async function main() {

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {homeRecommendations} from '../web/inicio/recomendados/legado.js';
+import {homeRecommendations} from './fixtures/home-recommendations-legacy.js';
 
 const movie = (id, extra = {}) => ({id:String(id), kind:'movie', name:`Filme ${id}`, rating:8, ...extra});
 const series = (id, extra = {}) => ({id:String(id), kind:'series', name:`Série ${id}`, rating:8, ...extra});

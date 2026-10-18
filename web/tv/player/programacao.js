@@ -7,13 +7,13 @@ export class TVPlayerPrograms{
     this.guide=guide||(typeof request==='function'?sharedTVGuide({request,getScope:()=>({account:String(getNamespace())||'session'})}):null);
     this.unsubscribe=null;this.namespace=null;
   }
-  start(){
+  start(ids=null){
     const namespace=String(this.getNamespace());
-    if(this.unsubscribe&&namespace===this.namespace)return;
+    if(this.unsubscribe&&namespace===this.namespace){this.unsubscribe.updateIds?.(ids);return;}
     this.stop();this.namespace=namespace;
     this.unsubscribe=this.guide?.subscribe(()=>{
       if(this.namespace===String(this.getNamespace()))this.onUpdate?.();
-    },{immediate:false})||null;
+    },{immediate:false,ids})||null;
   }
   peek(id){
     if(this.namespace!==String(this.getNamespace()))return null;

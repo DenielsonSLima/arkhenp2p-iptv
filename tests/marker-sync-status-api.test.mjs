@@ -11,7 +11,7 @@ async function fixture(t){
     bootstrap:async()=>({providerKey,scopeHash,session:{access_token:'scoped-user-token',expires_in:3600}}),revoke:async()=>{},rpc:async()=>{},
     request:async(path,options)=>{calls.push({path,options});return report;}};
   const worker={registerSource(){},unregisterSource(){},start(){},stop(){},async tick(){}};
-  const app=createApp({connection:{},nativeBridge:null,cloud,sharedWorker:worker,providerFactory:({config})=>{
+  const app=createApp({connection:{},cloud,sharedWorker:worker,providerFactory:({config})=>{
     const client={config,images:new Map(),async connect(){this.authenticatedAt=Date.now();this.session={connected:true,account:{status:'Active',expiresAt:'2070-01-01T00:00:00Z'}};return this.session;},async logout(){this.session=null;},async stopPlayback(){}};clients.push(client);return client;
   }});
   await new Promise(resolve=>app.listen(0,'127.0.0.1',resolve));

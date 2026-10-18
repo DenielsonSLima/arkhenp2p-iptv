@@ -1,5 +1,6 @@
 import {normalizeSeriesPlaybackPreferences, SERIES_COUNTDOWN_SECONDS} from './series-playback-preferences.js';
-import {isVerifiedEpisodeMarkerResult} from './series-markers/index.js';
+import {isVerifiedEpisodeMarkerResult,markerEpisodeNumbers} from './series-markers/index.js';
+import {validEpisodeReference,referenceActions} from './serie/marcadores/referencia.js';
 
 const STORAGE_KEY = 'arkhen.episode-skips.v2';
 const ID = /^[A-Za-z0-9_-]{1,160}$/;
@@ -124,17 +125,17 @@ function timeLabel(value) {
 }
 
 export class EpisodeSkipController {
-  constructor({video, storage, document = globalThis.document, preferences, getNamespace = () => '', getEpisodeMarkers, onSeek,
+  constructor({video, storage, document = globalThis.document, preferences, getNamespace = () => '', getEpisodeMarkers, requirePlayback = false, onSeek,
     onNextEpisode, hasNextEpisode = () => false, notify = () => {}, onAction = () => {}, onConfigureMarkers, now = Date.now,
     schedule = (callback, delay) => globalThis.setTimeout(callback,delay), cancel = timer => globalThis.clearTimeout(timer)}) {
     this.video = video; this.document = document; this.getNamespace=getNamespace;this.preferences=preferences;
     this.now=now;this.schedule=schedule;this.cancel=cancel;this.timer=null;this.generation=0;
     this.store = new EpisodeSkipStore(storage,now,{getNamespace});
-    this.options = {onNextEpisode, hasNextEpisode, notify, onAction,onSeek,getEpisodeMarkers,onConfigureMarkers}; this.context = null; this.disposers = [];
+    this.options = {onNextEpisode, hasNextEpisode, notify, onAction,onSeek,getEpisodeMarkers,requirePlayback,onConfigureMarkers}; this.context = null; this.disposers = [];
     this.build();
     for (const event of ['loadedmetadata', 'durationchange', 'timeupdate', 'seeked', 'seeking', 'playing', 'pause', 'waiting', 'stalled', 'ended', 'error']) this.listen(video, event, () => {
       if(event==='loadedmetadata')this.metadataReady=true;
-      if(event==='playing')this.playing=true;
+      if(event==='playing'){this.playing=true;if(this.context)this.playbackStarted=true;}
       if(['pause','waiting','stalled','seeking','ended','error'].includes(event))this.playing=false;
       if(event==='ended')this.ended=true;
       // A completed seek can still be waiting for decoded frames. Only the
@@ -185,7 +186,7 @@ export class EpisodeSkipController {
     this.countdownTitle=this.node('strong','episode-next-title');this.countdownTitle.setAttribute('role','status');this.countdownTitle.setAttribute('aria-live','polite');
     this.countdownDetail=this.node('span','episode-next-detail');
     const actions=this.node('div','episode-next-buttons');
-    this.playNextButton=this.button('Reproduzir agora',()=>this.advanceNext({automatic:false}),'episode-skip-action episode-next-now');
+    this.playNextButton=this.button('Reproduzir agora',()=>this.completeCountdown({automatic:false}),'episode-skip-action episode-next-now');
     this.cancelNextButton=this.button('Cancelar',()=>this.cancelAutoNext(),'episode-skip-action episode-next-cancel');actions.append(this.playNextButton,this.cancelNextButton);
     this.countdownPanel.append(this.countdownTitle,this.countdownDetail,actions);
     this.overlay.append(this.openingButton, this.creditsButton,this.configureMarkersButton,this.openingCountdownPanel,this.countdownPanel);
@@ -198,15 +199,17 @@ export class EpisodeSkipController {
     this.playing=this.video.paused===false && (this.video.readyState===undefined || this.video.readyState>=2);this.update();
   }
   reset() {
+    this.reference=null;this.playbackStarted=false;
     this.externalController?.abort();this.externalController=null;this.externalKey=null;this.externalResult=null;this.externalOutcome=null;this.externalSettled=false;this.referenceOpening=null;
     this.generation++;this.stopCountdown();this.stopOpeningCountdown();this.metadataReady=false;this.playing=false;this.ended=false;
-    this.openingSkipped=false;this.openingPending=false;this.openingCancelledStart=null;this.nextInvoked=false;this.cancelledThreshold=null;this.preferenceSignature='';
+    this.openingSkipped=false;this.openingPending=false;this.openingCancelledStart=null;this.creditsSkipped=false;this.nextInvoked=false;this.cancelledThreshold=null;this.preferenceSignature='';
     this.context = null;this.episodeContext=null; this.panel.hidden = true; this.overlay.hidden = true;
     this.configureMarkersButton.hidden=true;this.catalogAvailability.hidden=true;
     this.openingButton.hidden = true; this.creditsButton.hidden = true; this.setStatus('');
   }
   clearSessionMarkers(){this.store.clearTransient();this.update();}
   refreshExternalMarkers(){
+    this.reference=null;
     this.externalController?.abort();this.externalController=null;this.externalKey=null;this.externalResult=null;this.externalOutcome=null;this.externalSettled=false;this.referenceOpening=null;
     this.stopOpeningCountdown();this.stopCountdown();if(this.context)this.update();
   }
@@ -214,8 +217,12 @@ export class EpisodeSkipController {
   loadExternalMarkers(duration){
     if(typeof this.options.getEpisodeMarkers!=='function')return;
     const key=Math.round(duration*1000);if(this.externalKey===key)return;
+    if(this.options.requirePlayback&&(!this.playbackStarted||!this.isPlaying()||this.video.error)){
+      this.externalController?.abort();this.externalController=null;this.externalKey=null;this.externalResult=null;this.externalOutcome=null;this.externalSettled=false;this.reference=null;
+      return;
+    }
     this.externalController?.abort();const controller=new AbortController(),generation=this.generation,namespace=this.context.namespace;
-    this.externalController=controller;this.externalKey=key;this.externalResult=null;this.externalOutcome=null;this.externalSettled=false;this.referenceOpening=null;
+    this.externalController=controller;this.externalKey=key;this.externalResult=null;this.externalOutcome=null;this.externalSettled=false;this.referenceOpening=null;this.reference=null;
     const accept=(value,notify=false)=>{
       if(controller.signal.aborted||generation!==this.generation||namespace!==String(this.getNamespace()||'')||Math.round(this.video.duration*1000)!==key)return;
       const verified=isVerifiedEpisodeMarkerResult(value,{...this.episodeContext,duration});
@@ -223,6 +230,10 @@ export class EpisodeSkipController {
       const marks=validateSkipMarkers(raw,duration);
       this.externalSettled=true;this.externalOutcome={status:verified?'matched':value?.status==='matched'?'edition-unverified':value?.status||'unavailable',reason:value?.reason};
       this.externalResult=marks?{marks,blockEarlyNext:value.blockEarlyNext===true,source:'Tempos conferidos para esta edição',confidence:'edition-verified'}:null;
+      const binding=value?.binding,numbers=markerEpisodeNumbers(this.episodeContext.episode);
+      if(binding&&numbers&&binding.mediaId===String(this.context.seriesId)&&binding.episodeId===String(this.context.episodeId)&&
+        binding.sourceFingerprint===this.episodeContext.sourceFingerprint&&binding.season===numbers.season&&binding.episode===numbers.episode&&
+        Math.round(binding.duration*1000)===key&&validEpisodeReference(value.reference,binding))this.reference=value.reference;
       if(notify)this.update();
     };
     try{
@@ -230,11 +241,13 @@ export class EpisodeSkipController {
       // Non-enumerable signal preserves the existing synchronous callback
       // contract while supplying cancellation to asynchronous adapters.
       Object.defineProperty(input,'signal',{value:controller.signal,enumerable:false});
+      Object.defineProperty(input,'playing',{value:this.playbackStarted&&this.isPlaying(),enumerable:false});
       const supplied=this.options.getEpisodeMarkers(input);
       if(supplied?.then)Promise.resolve(supplied).then(value=>accept(value,true),()=>accept({status:'unavailable'},true));else accept(supplied);
     }catch{accept({status:'unavailable'});}
   }
   state() {
+    if(this.context&&this.context.namespace!==String(this.getNamespace()||''))this.reset();
     const duration = this.video.duration, currentTime = this.video.currentTime;
     const ready = Boolean(this.context) && this.metadataReady && durationValid(duration) && Number.isFinite(currentTime) && currentTime >= 0 && currentTime < duration && !this.video.error;
     const manual=this.store.read(this.context,duration);
@@ -245,8 +258,11 @@ export class EpisodeSkipController {
     // until the user finishes marking it. Never mix two different windows.
     if(manual.marks.openingStart!==undefined || manual.marks.openingEnd!==undefined){external={...external};delete external.openingStart;delete external.openingEnd;}
     const marks=validateSkipMarkers({...external,...manual.marks},duration)||manual.marks;
-    const blockEarlyNext=supplied?.blockEarlyNext===true&&manual.marks.creditsStart===undefined;
-    return {duration,currentTime,ready,...manual,marks,manualMarks:manual.marks,blockEarlyNext,markerSource:(Object.keys(external).length||blockEarlyNext)&&typeof supplied?.source==='string'?supplied.source:null};
+    const reference=referenceActions(this.reference,currentTime,duration);
+    if(marks.openingStart!==undefined||marks.openingEnd!==undefined)reference.opening=false;
+    if(marks.creditsStart!==undefined||supplied?.blockEarlyNext===true)reference.credits=false;
+    const blockEarlyNext=(supplied?.blockEarlyNext===true||Boolean(this.reference?.segments?.outro||this.reference?.segments?.post_credits))&&marks.creditsStart===undefined;
+    return {duration,currentTime,ready,...manual,marks,reference,manualMarks:manual.marks,blockEarlyNext,markerSource:(Object.keys(external).length||blockEarlyNext)&&typeof supplied?.source==='string'?supplied.source:null};
   }
   isPlaying(){return this.playing && this.video.paused===false && !this.video.seeking && this.video.readyState>=2;}
   update() {
@@ -258,8 +274,10 @@ export class EpisodeSkipController {
     if(state.currentTime<state.duration-.5)this.ended=false;
     if(this.cancelledThreshold!==null && state.currentTime<this.cancelledThreshold-1)this.cancelledThreshold=null;
     if(this.openingCancelledStart!==null && state.currentTime<this.openingCancelledStart-1)this.openingCancelledStart=null;
-    this.panel.hidden = false; this.openingButton.hidden = !active.opening; this.creditsButton.hidden = !active.credits;
-    this.openingButton.textContent='Pular abertura';this.openingButton.title='';
+    this.panel.hidden = false; this.openingButton.hidden = !(active.opening||state.ready&&state.reference.opening); this.creditsButton.hidden = !(active.credits||state.ready&&state.reference.credits);
+    this.openingButton.textContent=state.reference.opening?'Pular introdução':'Pular abertura';this.openingButton.title=state.reference.opening?'Horário da comunidade':'';
+    this.creditsButton.textContent=state.reference.credits?(state.reference.final&&this.options.hasNextEpisode()?'Próximo episódio':'Pular créditos'):'Pular final';
+    this.creditsButton.title=state.reference.credits?'Horário da comunidade':'';
     for (const [key, value] of this.markerValues) { const text = timeLabel(state.marks[key]); if (value.textContent !== text) value.textContent = text; }
     for (const button of this.markerButtons.values()) button.disabled = !state.ready;
     this.markerButtons.get('openingEnd').disabled = !state.ready || state.marks.openingStart === undefined || state.currentTime <= state.marks.openingStart;
@@ -268,7 +286,12 @@ export class EpisodeSkipController {
     this.catalogSource.hidden=!state.markerSource;this.catalogSource.textContent=state.markerSource?state.markerSource+(state.blockEarlyNext?' · preservar conteúdo final':''):'';
     const hasOpening=state.marks.openingStart!==undefined&&state.marks.openingEnd!==undefined;
     let availability='';
-    if(!hasOpening&&this.externalOutcome?.status==='edition-mismatch')availability='Os tempos disponíveis pertencem a outra edição deste episódio.';
+    if(this.reference?.status==='reference'){
+      const parts=Object.values(this.reference.segments);
+      availability=`Horários da comunidade (${[...new Set(parts.map(part=>part.source))].join(', ')}).`;
+      if(parts.some(part=>part.divergenceSeconds>5))availability+=' As fontes diferem em mais de 5 segundos.';
+    }
+    else if(!hasOpening&&this.externalOutcome?.status==='edition-mismatch')availability='Os tempos disponíveis pertencem a outra edição deste episódio.';
     else if(!hasOpening&&this.externalOutcome?.status==='edition-conflict')availability='As marcações desta edição estão em revisão.';
     else if(!hasOpening&&this.externalSettled)availability='Abertura sem marcação conferida para esta edição.';
     else if(!hasOpening&&this.externalController&&!this.externalSettled)availability='Buscando marcações desta edição…';
@@ -279,7 +302,14 @@ export class EpisodeSkipController {
     else if (this.status.textContent === 'Aguarde o vídeo carregar para marcar os trechos.') this.setStatus('');
     this.updateOpeningCountdown(state,active,preferences);
     if(!this.openingCountdownPanel.hidden)this.openingButton.hidden=true;
-    const trigger=nextEpisodeTrigger(state.marks,state.duration,preferences,{blockEarlyNext:state.blockEarlyNext});
+    let trigger=nextEpisodeTrigger(state.marks,state.duration,preferences,{blockEarlyNext:state.blockEarlyNext});
+    // Community windows use the same cancellable clock without becoming
+    // edition-verified marks. Keep outro.end as a seek boundary for later scenes.
+    if(preferences.autoNext&&preferences.nextMode!=='ended'&&state.ready&&state.reference.credits){
+      trigger={at:state.reference.creditsStart,until:state.reference.creditsEnd,reason:'credits',approximate:false,action:'skip-credits'};
+    }else if(trigger?.reason==='credits'&&!this.options.hasNextEpisode()){
+      trigger={...trigger,until:state.duration,action:'skip-credits'};
+    }
     if(!this.openingCountdownPanel.hidden)this.stopCountdown();else this.updateCountdown(trigger,state,preferences);
     if(!this.countdownPanel.hidden)this.creditsButton.hidden=true;
     // Optional local marking remains in advanced settings; missing community
@@ -292,8 +322,8 @@ export class EpisodeSkipController {
     if(this.openingCountdownPanel)this.openingCountdownPanel.hidden=true;
   }
   updateOpeningCountdown(state,active,preferences){
-    if(!state.ready || !active.opening || !preferences.autoSkipOpening || this.openingSkipped || this.openingPending || this.openingCancelledStart!==null){this.stopOpeningCountdown();return;}
-    const start=state.marks.openingStart,end=state.marks.openingEnd;
+    if(!state.ready || !(active.opening||state.reference.opening) || !preferences.autoSkipOpening || this.openingSkipped || this.openingPending || this.openingCancelledStart!==null){this.stopOpeningCountdown();return;}
+    const start=active.opening?state.marks.openingStart:state.reference.openingStart,end=active.opening?state.marks.openingEnd:state.reference.openingEnd;
     if(this.openingCountdown && (this.openingCountdown.start!==start || this.openingCountdown.end!==end))this.stopOpeningCountdown();
     // Do not rush or flash an automatic offer after entering the last seconds
     // of an opening. The explicit manual action remains available instead.
@@ -323,12 +353,14 @@ export class EpisodeSkipController {
   }
   updateCountdown(trigger,state,preferences){
     const ended=this.ended || this.video.ended===true;
-    if(!trigger || trigger.reason==='ended'&&!ended || !this.metadataReady || this.video.error || !this.options.hasNextEpisode() || this.nextInvoked ||
+    const skipsCredits=trigger?.action==='skip-credits';
+    if(!trigger || trigger.reason==='ended'&&!ended || !this.metadataReady || this.video.error || (!skipsCredits&&!this.options.hasNextEpisode()) || this.nextInvoked ||
+      (skipsCredits&&(!state.ready||this.creditsSkipped||state.currentTime>=trigger.until)) ||
       this.cancelledThreshold!==null || !Number.isFinite(state.currentTime) || (!ended && state.currentTime<trigger.at)){
       this.stopCountdown();return;
     }
     if(this.timer!==null)this.cancel(this.timer);this.timer=null;
-    if(!this.countdown || this.countdown.at!==trigger.at || this.countdown.reason!==trigger.reason)
+    if(!this.countdown || this.countdown.at!==trigger.at || this.countdown.reason!==trigger.reason || this.countdown.action!==trigger.action || this.countdown.until!==trigger.until)
       this.countdown={...trigger,remaining:SERIES_COUNTDOWN_SECONDS*1000,deadline:null,generation:this.generation};
     const countdown=this.countdown,canRun=ended || this.isPlaying();
     if(canRun){
@@ -337,15 +369,24 @@ export class EpisodeSkipController {
     }else if(countdown.deadline!==null){countdown.remaining=Math.max(0,countdown.deadline-this.now());countdown.deadline=null;}
     this.countdownPanel.hidden=false;
     const seconds=Math.max(1,Math.ceil(countdown.remaining/1000));
-    const title=canRun?`Próximo episódio em ${seconds}s`:`Contagem pausada · ${seconds}s`;
+    const seeksCredits=skipsCredits&&(!state.reference.final||!this.options.hasNextEpisode());
+    const action=seeksCredits?'Pular créditos':'Próximo episódio';
+    this.countdownPanel.setAttribute('aria-label',action);
+    this.playNextButton.textContent=seeksCredits?'Pular agora':'Reproduzir agora';
+    const title=canRun?`${action} em ${seconds}s`:`Contagem pausada · ${seconds}s`;
     if(this.countdownTitle.textContent!==title)this.countdownTitle.textContent=title;
     this.countdownDetail.textContent=countdown.reason==='credits'?`${state.markerSource?state.markerSource+' · ':''}Créditos marcados neste episódio`:countdown.reason==='offset'?`Últimos ${preferences.endOffsetSeconds}s · horário aproximado`:state.blockEarlyNext?'Episódio concluído · preservar conteúdo final':'Episódio concluído';
-    if(canRun && countdown.remaining<=0){this.advanceNext();return;}
+    if(canRun && countdown.remaining<=0){this.completeCountdown();return;}
     if(canRun){const generation=this.generation;this.timer=this.schedule(()=>{this.timer=null;if(generation===this.generation)this.update();},Math.min(250,countdown.remaining));}
   }
   cancelAutoNext(){
     if(!this.countdown)return false;
     this.cancelledThreshold=this.countdown.at;this.stopCountdown();this.setStatus('Reprodução automática cancelada para este episódio.');this.update();return true;
+  }
+  completeCountdown({automatic=true}={}){
+    if(!this.context||this.context.namespace!==String(this.getNamespace()||'')){this.reset();return false;}
+    if(!this.countdown)return false;
+    return this.countdown.action==='skip-credits'?this.skipCredits({automatic}):this.advanceNext({automatic});
   }
   advanceNext({automatic=true,reason}={}){
     if(!this.context || this.nextInvoked || !this.options.hasNextEpisode() || typeof this.options.onNextEpisode!=='function')return false;
@@ -371,17 +412,21 @@ export class EpisodeSkipController {
   }
   skipOpening() {
     const state = this.state();
-    if (!state.ready || !activeSkipActions(state.marks, state.currentTime, state.duration).opening) return false;
+    const verified=activeSkipActions(state.marks,state.currentTime,state.duration).opening;
+    if (!state.ready || !(verified||state.reference.opening)) return false;
     this.openingSkipped=true;this.stopOpeningCountdown();
-    try {return this.seekTo(state.marks.openingEnd,'opening');}
+    try {return this.seekTo(verified?state.marks.openingEnd:state.reference.openingEnd,'opening');}
     catch { this.options.notify('Este vídeo não permitiu avançar agora.'); return false; }
   }
-  skipCredits() {
+  skipCredits({automatic=false}={}) {
     const state = this.state();
-    if (!state.ready || !activeSkipActions(state.marks, state.currentTime, state.duration).credits) return false;
+    const verified=activeSkipActions(state.marks,state.currentTime,state.duration).credits;
+    if (!state.ready || !(verified||state.reference.credits)) return false;
+    this.creditsSkipped=true;this.stopCountdown();
     try {
+      if(!verified&&!state.reference.final)return this.seekTo(state.reference.creditsEnd,'credits');
       if (this.options.hasNextEpisode() && typeof this.options.onNextEpisode === 'function') {
-        return this.advanceNext({automatic:false,reason:'credits'});
+        return this.advanceNext({automatic,reason:'credits'});
       } else return this.seekTo(state.duration,'credits');
     } catch { this.options.notify('Este vídeo não permitiu avançar agora.'); return false; }
   }

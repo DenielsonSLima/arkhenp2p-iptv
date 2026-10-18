@@ -31,7 +31,7 @@ export class TVServices{
     Object.assign(this,{request,getScope,now});this.scope=null;this.epoch=0;this.jobs=new Map();this.sources=new Map();
     this.api=(path,options={})=>{
       const url=new URL(path,'http://arkhen.local');
-      if(url.pathname==='/api/tv/guide')return this.guide({signal:options.signal,fresh:url.searchParams.get('fresh')==='1'});
+      if(url.pathname==='/api/tv/guide')return this.guide({signal:options.signal,fresh:url.searchParams.get('fresh')==='1',ids:url.searchParams.has('ids')?url.searchParams.get('ids').split(','):null});
       if(url.pathname==='/api/live/sources')return this.liveSources(url.searchParams.get('id'),{signal:options.signal});
       if(url.pathname==='/api/games')return this.games({date:url.searchParams.get('date'),timeZone:url.searchParams.get('timezone')||'UTC',lang:url.searchParams.get('lang')||'pt',signal:options.signal});
       if(url.pathname==='/api/catalog'&&url.searchParams.get('type')==='live')return this.catalog({force:url.searchParams.get('refresh')==='1',revalidate:url.searchParams.get('cache')==='reload',paged:url.searchParams.get('paged')==='1',signal:options.signal});
@@ -67,7 +67,11 @@ export class TVServices{
       if(combined?.aborted){abort();return;}job.promise.then(value=>finish(null,value),error=>finish(error));
     }));
   }
-  guide({signal,fresh=false}={}){return this.#read('guide','/api/tv/guide'+(fresh?'?fresh=1':''),{signal});}
+  guide({signal,fresh=false,ids=null}={}){
+    if(ids!==null&&(!Array.isArray(ids)||!ids.length||ids.length>2000||ids.some(id=>!channelID(id))))return Promise.reject(new TypeError('Lista de canais inválida.'));
+    const params=new URLSearchParams();if(fresh)params.set('fresh','1');if(ids!==null)params.set('ids',[...new Set(ids.map(String))].sort().join(','));
+    return this.#read('guide:'+params,'/api/tv/guide'+(params.size?'?'+params:''),{signal});
+  }
   catalog({force=false,revalidate=false,paged=false,signal}={}){
     const params=new URLSearchParams({type:'live'});if(paged)params.set('paged','1');
     if(force)params.set('refresh','1');else if(revalidate)params.set('cache','reload');

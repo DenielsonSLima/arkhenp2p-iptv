@@ -1,0 +1,5 @@
+.tv-quality-notice{position:absolute;top:20px;right:20px;z-index:9;display:flex;flex-direction:column;gap:10px;max-width:min(340px,calc(100% - 40px));padding:14px 16px;border:1px solid #ffffff24;border-radius:8px;background:#111821ed;color:#eef2f7;box-shadow:0 8px 28px #0006;font-size:12px;line-height:1.5;pointer-events:auto}
+.tv-quality-notice[hidden]{display:none!important}
+.tv-quality-notice button{align-self:flex-end;min-height:32px;padding:5px 11px;border:1px solid #ffffff36;border-radius:5px;background:#ffffff0d;color:inherit;font:inherit;cursor:pointer}
+.tv-quality-notice button:focus-visible{outline:2px solid #d5dce5;outline-offset:3px}
+@media(max-width:650px){.tv-quality-notice{top:12px;right:12px;max-width:calc(100% - 24px);font-size:11px}}

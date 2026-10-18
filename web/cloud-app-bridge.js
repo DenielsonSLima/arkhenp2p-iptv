@@ -10,12 +10,21 @@ const collection=value=>({id:value.id,name:value.name,collection_type:value.type
 export class CloudAppBridge {
   constructor({cloud,getSession,getGeneration=()=>0,favoritesMap,historyMap,episodeProgress,localLibrary,getPreferences=()=>({}),applyPreferences=()=>{},
     getCollections=()=>[],applyCollections=()=>{},defaultPreferences={},onUpdate=()=>{},onStatus=()=>{},storage=browserStorage(),now=Date.now,refreshSession,
-    pageTarget=globalThis.window,schedule=(callback,delay)=>globalThis.setTimeout(callback,delay),cancel=timer=>globalThis.clearTimeout(timer)}={}){
-    Object.assign(this,{cloud,getSession,getGeneration,favoritesMap,historyMap,episodeProgress,localLibrary,getPreferences,applyPreferences,getCollections,applyCollections,defaultPreferences,onUpdate,onStatus,storage,now,refreshSession,pageTarget,schedule,cancel});
+    pageTarget=globalThis.window,document=pageTarget?.document||globalThis.document,schedule=(callback,delay)=>globalThis.setTimeout(callback,delay),cancel=timer=>globalThis.clearTimeout(timer)}={}){
+    Object.assign(this,{cloud,getSession,getGeneration,favoritesMap,historyMap,episodeProgress,localLibrary,getPreferences,applyPreferences,getCollections,applyCollections,defaultPreferences,onUpdate,onStatus,storage,now,refreshSession,pageTarget,document,schedule,cancel});
     this.serial=0;this.applying=false;this.account=null;this.preferenceRecords={};this.collectionRecords={};this.knownCollections=new Map();
     this.retryTimer=null;this.retryAttempt=0;this.connecting=null;this.lastSnapshot=null;
-    this.recover=()=>{if(this.account)void this.#connect(this.serial,this.getGeneration(),{refresh:true});};
-    pageTarget?.addEventListener?.('online',this.recover);pageTarget?.addEventListener?.('focus',this.recover);
+    this.recover=()=>this.account?this.#connect(this.serial,this.getGeneration(),{refresh:true}):Promise.resolve(null);
+    // A healthy socket already receives changes. Merely focusing the window
+    // must not fetch another bootstrap and every personal table again.
+    this.autoRecover=event=>{
+      const state=this.cloud.getStatus?.().state,healthy=this.cloud.ready&&['synced','syncing'].includes(state)&&!this.cloud.getConnectionFailure?.();
+      if(this.document?.hidden||state==='restricted'||healthy||this.retryTimer!==null&&event?.type!=='online')return;
+      this.recover();
+    };
+    this.visibility=()=>{if(this.document?.hidden)this.#cancelRetry();else this.autoRecover();};
+    pageTarget?.addEventListener?.('online',this.autoRecover);pageTarget?.addEventListener?.('focus',this.autoRecover);
+    document?.addEventListener?.('visibilitychange',this.visibility);
     this.unsubscribe=cloud.subscribe(snapshot=>this.receive(snapshot));
   }
   #key(){return this.account?`arkhen.cloud-ui.v1.${this.account}`:'';}
@@ -35,8 +44,11 @@ export class CloudAppBridge {
   }
   #cancelRetry(){if(this.retryTimer!==null)this.cancel(this.retryTimer);this.retryTimer=null;}
   #retry(serial,generation){
-    if(!this.#current(serial,generation)||this.retryTimer!==null)return;
-    this.retryTimer=this.schedule(()=>{this.retryTimer=null;void this.#connect(serial,generation,{refresh:true});},Math.min(60000,5000*2**Math.min(this.retryAttempt++,4)));
+    if(!this.#current(serial,generation)||this.retryTimer!==null||this.document?.hidden||this.cloud.getStatus?.().state==='restricted')return;
+    // Backend bootstrap failures already have a 30s recovery floor. Polling
+    // the same unavailable result at 5/10s only repeats diagnostics and work.
+    const minimum=this.getSession()?.cloudStatus?.state==='unavailable'?30000:5000;
+    this.retryTimer=this.schedule(()=>{this.retryTimer=null;if(!this.document?.hidden)void this.#connect(serial,generation,{refresh:true});},Math.min(300000,minimum*2**Math.min(this.retryAttempt++,6)));
   }
   #connect(serial,generation,{refresh=false}={}){
     if(!this.#current(serial,generation))return Promise.resolve(null);
@@ -52,7 +64,8 @@ export class CloudAppBridge {
         const session=this.getSession(),bootstrap=session?.cloud||null;let waitingBootstrap=!bootstrap;
         // Provisioning has its own backend deadline and may outlive login.
         // Never feed its temporary null result to the explicit Auth lifecycle.
-        let snapshot=bootstrap?await this.cloud.connect(bootstrap):await this.cloud.resume?.({libraryId:this.account,pending:session?.cloudStatus?.state==='pending',code:session?.cloudStatus?.code});
+        let snapshot=bootstrap?await this.cloud.connect(bootstrap):await this.cloud.resume?.({libraryId:this.account,pending:session?.cloudStatus?.state==='pending',
+          code:session?.cloudStatus?.code,stage:session?.cloudStatus?.stage,remoteStatus:session?.cloudStatus?.remoteStatus,elapsedMs:session?.cloudStatus?.elapsedMs});
         if(!snapshot&&this.cloud.getConnectionFailure?.()?.authRecoveryRequired===true&&this.refreshSession&&this.#current(serial,generation)){
           // Only a rejected Auth session may mint a replacement. A rendering,
           // network or profile-policy failure must not request this capability.
@@ -130,5 +143,5 @@ export class CloudAppBridge {
   progressChanged(entry,{force=false}={}){if(this.applying||!this.account)return Promise.resolve(false);return this.cloud.saveProgress(entry,{force});}
   syncLocal(){return this.account?this.cloud.syncLocal({libraryId:this.account,favoritesMap:this.favoritesMap,historyMap:this.historyMap,episodeEntries:this.#episodeEntries()}):Promise.resolve(false);}
   async stop({flush=true}={}){const serial=++this.serial;this.#cancelRetry();this.retryAttempt=0;this.connecting=null;this.account=null;await this.cloud.logout({flush});if(this.serial!==serial)return;this.preferenceRecords={};this.collectionRecords={};this.knownCollections.clear();}
-  async dispose(){await this.stop();this.unsubscribe?.();this.pageTarget?.removeEventListener?.('online',this.recover);this.pageTarget?.removeEventListener?.('focus',this.recover);}
+  async dispose(){await this.stop();this.unsubscribe?.();this.pageTarget?.removeEventListener?.('online',this.autoRecover);this.pageTarget?.removeEventListener?.('focus',this.autoRecover);this.document?.removeEventListener?.('visibilitychange',this.visibility);}
 }

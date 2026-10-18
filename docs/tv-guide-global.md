@@ -1,8 +1,10 @@
 # Guia global de TV
 
+Estado posterior em 16/10: [limpeza e estratégia EPG](epg-architecture-cleanup-20261016.md). A publicação compartilhada saudável tem prioridade; recuperação WPLAY passa a ser condicional. O restante deste documento conserva a implantação original e seus readbacks históricos.
+
 Atualização posterior: o [registro de recuperação EPG](tv-epg-recovery-20261016.md) documenta a recuperação integral WPLAY compartilhada e os ajustes de escopo/entrega. O caminho de programação já não depende exclusivamente da disponibilidade do bootstrap Supabase.
 
-A API local também tem `lib/tv-guide-compat.mjs`: durante falha da RPC/Edge, lê
+A API local também tem `lib/tv/grade-legada.mjs`: durante falha da RPC/Edge, lê
 os caches Supabase existentes em lote e calcula o DTO no backend. O retorno
 declara `source:legacy-cache`, `partial:true`, `stale:true`; canal sem linha
 fica indisponível sem apagar os demais. Não consulta WPLAY, não dispara coleta

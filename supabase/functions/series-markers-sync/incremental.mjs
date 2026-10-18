@@ -1,5 +1,5 @@
 import {LICENSE,DAY,imdbID,canonicalSeries,digest,normalizeGlobalDump} from './metadata.mjs';
-import {openPublicDump} from './providers.mjs';
+import {openPublicDump} from './conectores/dump.mjs';
 
 const error=code=>Object.assign(new Error(code),{code}),iso=value=>new Date(value).toISOString();
 export function parseRawRange(bytes,{offset=0,metadata=null}={}){

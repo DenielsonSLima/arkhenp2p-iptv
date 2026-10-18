@@ -14,10 +14,10 @@ O código comum de transporte e armazenamento é compartilhado. Cada domínio po
 ## Ciclo de carregamento
 
 1. `CatalogRepository` separa chaves por projeto, provedor, escopo, tipo e desbloqueio adulto. A geração da conta e a geração da requisição impedem commits atrasados.
-2. IndexedDB fornece o último catálogo completo. Dentro de 24 horas, a reabertura não faz nova consulta de catálogo. Após o prazo, o catálogo anterior permanece disponível enquanto ocorre a atualização.
+2. IndexedDB fornece o último catálogo completo e RAM evita repetir sua leitura durante a sessão. A revalidação compara um cabeçalho compacto da publicação antes de transferir títulos. Uma publicação igual reutiliza os bytes e registra `verifiedAt` separado de `savedAt`; falha preserva ambas as idades. A reabertura apresenta primeiro o cache, com checagem compacta em segundo plano para publicações perdidas enquanto a página esteve fechada.
 3. TanStack Query Core deduplica leituras. Prévias permanecem vencidas e podem ser enriquecidas quando a publicação ficar disponível. Catálogo completo e prévia têm slots distintos.
 4. Resposta parcial, vazia, de outro tipo, com revisão anterior ou sem versão sobre um snapshot versionado não derruba o último completo. Erro de atualização mantém seu conteúdo e sua idade.
-5. Somente uma resposta completa aceita pode renovar a persistência. Uma resposta rejeitada não transforma dados antigos em dados recém-atualizados.
+5. Somente uma resposta completa aceita renova a idade dos bytes persistidos (`savedAt`). Um cabeçalho autenticado igual pode renovar somente sua confirmação (`verifiedAt`), em registro pequeno separado. Resposta rejeitada ou falha não renova nenhuma idade. O TTL diário considera a última destas duas datas válidas para a mesma publicação.
 
 O formato persistido é versão 2. Registros antigos são tratados como ausentes até a primeira resposta completa aceita, que os substitui atomicamente; biblioteca pessoal e alterações pendentes não são removidas. O envelope completo da API preserva snapshot, revisão e expiração do header publicado.
 
@@ -37,7 +37,9 @@ Contratos, limites e medições: [busca e modelos de catálogo](catalog-query-mo
 
 Favoritos começam nos registros privados da conta, com enriquecimento pelo catálogo quando disponível. A ausência de um favorito na prévia não o remove de Minha lista nem do filtro Favoritos de seu domínio. Dados de outra conta são rejeitados.
 
-Realtime pessoal atualiza a projeção afetada. Progresso não recarrega os catálogos de Filmes/Séries/TV. Preferências de catálogo e favoritos podem alterar a navegação; preferências de áudio não reconstruem os cards. Eventos de catálogo carregam tipo e revisão, respeitando o cache diário; eventos sem tipo não limpam todos os domínios.
+Realtime pessoal atualiza a projeção afetada. Progresso não recarrega os catálogos de Filmes/Séries/TV. Preferências de catálogo e favoritos podem alterar a navegação; preferências de áudio não reconstruem os cards. Eventos de catálogo carregam tipo, revisão e UUID, e podem revalidar o domínio publicado antes do TTL; eventos sem tipo não limpam todos os domínios. Duplicatas não reiniciam o orçamento limitado de retries.
+
+Implementação local e limites desta evolução: [revalidação compacta](catalog-revalidation-20261016.md). Ela não fornece ainda deltas de títulos; a versão igual evita transferência e a versão nova conserva substituição por snapshot completo e atômico.
 
 ## Publicação no Supabase
 

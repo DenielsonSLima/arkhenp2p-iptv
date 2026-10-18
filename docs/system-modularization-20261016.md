@@ -2,6 +2,8 @@
 
 Estado: implementação local e revisão estática. Este registro não comprova publicação, estado remoto ou reprodução. Os testes e a conferência no navegador permanecem com o usuário.
 
+Atualização posterior: a [revisão integrada WPLAY](architecture-review-wplay-20261016.md) registra a modularização completa de Séries, a conexão do provedor por domínio e a remoção das fachadas TV/player restantes. Nesta atualização houve testes sintéticos, sem navegador ou mídia real. As seções de etapas anteriores abaixo conservam seu contexto histórico.
+
 ## Implementações canônicas
 
 `web/app.js` compõe os domínios, a sessão geral e o único elemento de vídeo. Ele injeta estado, transporte e ações; as extrações abaixo possuem implementação e ciclo de vida próprios.
@@ -23,11 +25,11 @@ Estado: implementação local e revisão estática. Este registro não comprova 
 | Início | `web/inicio/bannerprincipal/{selecao,apresentacao,rotacao}.js`, `carrosseis.js` | Seleção de títulos e imagens, fatos do banner e relógios visuais de cinco segundos. |
 | Minha lista | `web/minha-lista/services.js`, `orquestrador.js` | Seleção da biblioteca privada existente e apresentação por tipo. Não abre outro Auth, socket ou cache privado paralelo. |
 | Filmes | `web/filmes/` | Aba, metadados/duração/prévia, biblioteca, recomendações e políticas específicas do player sobre a sessão/vídeo compartilhados. Veja a atualização de Filmes abaixo. |
-| Séries | `web/serie/{orquestrador,services}.js` | Aba e transporte de catálogo específicos sobre o contrato compartilhado. Episódios, marcadores e transporte de vídeo ainda têm módulos compartilhados existentes. |
+| Séries | `web/serie/`, `lib/serie/` | Aba, detalhes, busca, temporadas, episódios, progresso, áudio, legendas, resolução, buffer, TanStack, Realtime e marcadores próprios sobre a sessão compartilhada. |
 
 O início mantém seis seletores concretos, sem adicionar uma segunda fonte de catálogo:
 
-- `lista-canais/seletor.js`: canais favoritos/recentes e seleção de canais carregados.
+- `lista-canais/`: projeção RPC dos quatro canais, estado, cache, prévia e apresentação.
 - `ultimosfilmes/seletor.js` e `ultimasseries/seletor.js`: histórico da conta ativa.
 - `lancamentosfilmes/seletor.js` e `lancamentosseries/seletor.js`: ordens de lançamentos do catálogo.
 - `recomendados/seletor.js` e `recomendados/estado.js`: projeção privada, seleção já carregada quando a projeção está indisponível e estado de carregamento/erro.
@@ -53,7 +55,7 @@ Os consumidores de produção e os imports de testes/ferramentas foram apontados
 | `web/home-sections.js` | `web/inicio/ordens.js`, `bannerprincipal/selecao.js`, `progresso.js`, `seletores-offline.js` |
 | `web/home-hero.js` | `web/inicio/bannerprincipal/apresentacao.js` |
 | `web/home-recommendations-state.js` | `web/inicio/recomendados/estado.js` |
-| `web/home-recommendations.js` | `web/inicio/recomendados/legado.js` |
+| `web/home-recommendations.js` | `tests/fixtures/home-recommendations-legacy.js` |
 | `web/home-bootstrap.js`, `web/entry-preparation.js` | `web/inicio/hooks.js` |
 | `web/hero-rotation.js` | `web/inicio/bannerprincipal/rotacao.js` |
 | `web/shelf-carousel.js` | `web/inicio/carrosseis.js` |

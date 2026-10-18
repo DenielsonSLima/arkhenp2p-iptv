@@ -12,7 +12,7 @@ npm start
 
 Abra **http://localhost:4173** e mantenha o terminal aberto. No Windows, **`Iniciar ARKHEN.cmd`** executa esse comando; no macOS, use **`Iniciar ARKEHN.command`**. O fluxo padrão utiliza os serviços WPLAY e a reprodução HTTP do player web oficial. Use `Ctrl+C` para encerrar o servidor e limpar a reprodução.
 
-O aplicativo requer Node.js 22 ou superior. O bundle do cliente Supabase/TanStack está versionado; para instalar as dependências fixadas e recompilá-lo, execute `npm ci` e `npm run build:cloud`. A integração experimental com o APK Android permanece opcional, documentada em [tools/original-engine/README.md](tools/original-engine/README.md).
+O aplicativo requer Node.js 22 ou superior. O bundle do cliente Supabase/TanStack está versionado; para instalar as dependências fixadas e recompilá-lo, execute `npm ci` e `npm run build:cloud`. A integração experimental com motor Android local foi removida. O APK é somente fonte de investigação; o fluxo web está documentado em [WPLAY TV](docs/wplay/README.md).
 
 Os avisos e licenças das dependências distribuídas estão em [CLOUD-LICENSES.txt](web/assets/vendor/CLOUD-LICENSES.txt), gerado junto com o bundle.
 
@@ -20,13 +20,17 @@ Os avisos e licenças das dependências distribuídas estão em [CLOUD-LICENSES.
 
 O repositório contém o código, os testes e os recursos da interface. Credenciais, sessões locais, APKs de investigação, emuladores, SDKs e ambientes de execução locais ficam fora do Git. A reprodução web usa as fontes autorizadas pela WPLAY; os experimentos com APK ficam documentados separadamente.
 
-Para funcionar na Vercel, esta versão ainda precisa de adaptação do backend: o servidor aceita apenas acesso local e mantém sessões em memória. Publicar somente `web/` não disponibiliza as APIs necessárias para login, catálogo e reprodução. O envio ao GitHub preserva a versão local atual.
+Na Vercel, `server.mjs` exporta o servidor HTTP como entrada da função; `vercel.json` inclui `web/**` para servir a interface. O comando `npm start` continua iniciando a versão local. A política de acesso aceita localhost e os hosts exatos informados pelas variáveis de sistema Vercel (`VERCEL_URL`, `VERCEL_BRANCH_URL`, `VERCEL_PROJECT_PRODUCTION_URL`). Para um domínio próprio, configure `ARKHEN_PUBLIC_ORIGIN` com sua origem HTTPS, sem caminho. As APIs continuam exigindo a mesma origem.
+
+No runtime Vercel (`VERCEL=1`), configure `ARKHEN_SUPABASE_CONFIG` como variável privada do tipo Secret. Seu valor é um JSON no contrato do backend: `url`, `publishableKey` e `gateway.secret`, para o projeto autorizado; as mesmas validações de projeto/chaves da configuração local se aplicam. O valor fica no servidor e é lido no início da instância. Configuração ausente ou inválida mantém a entrada disponível e a nuvem desconectada; erros registram somente um código sanitizado. A hospedagem não lê arquivos de `.local`. A execução local direta continua usando sua configuração privada existente.
+
+A abertura da interface não certifica o fluxo completo de produção: as sessões do provedor ainda ficam em memória de cada processo. Reciclagem ou distribuição entre instâncias pode exigir novo login, e favoritos/recomendações dependem da disponibilidade do Supabase e da configuração acima. Esses contratos precisam de adaptação própria antes de considerar a operação distribuída estável. Publicar somente `web/` não disponibiliza as APIs de login, catálogo e reprodução. As mudanças desta rodada ainda não constituem um novo deploy.
 
 ## Conexão
 
 A conexão padrão conserva a autenticação, o catálogo e os identificadores WPLAY. Fontes HTTP do catálogo têm prioridade. Nos canais com fonte TVBus, a integração com `player.wplayott.com` consulta a transmissão web da mesma conta, com associação conservadora do canal. Favoritos e progresso conservam os identificadores originais.
 
-A integração WPLAY usa os endpoints observados no APK; a opção WPLAY OTT usa o player web oficial. Cookies e tokens ficam na memória do servidor local. Usuário, senha, cookies, tokens e endereços privados do provedor não são incluídos nas respostas do catálogo nem nas URLs de reprodução apresentadas ao navegador.
+A integração WPLAY usa os endpoints observados no APK; a opção WPLAY OTT usa o player web oficial. Cookies e tokens ficam na memória do servidor. Usuário, senha, cookies, tokens e endereços privados do provedor não são incluídos nas respostas do catálogo nem nas URLs de reprodução apresentadas ao navegador.
 
 O aplicativo abre uma tela de login com usuário e senha. **WPLAY** é o acesso padrão e usa o contrato do APK; **Opções de conexão** também oferece **WPLAY Web (alternativo)**, que usa OTT, e **Outro servidor IPTV**, que usa Xtream. O servidor salvo em `.local/connection.json` é usado apenas no modo Xtream quando o campo servidor fica vazio. Esse diretório não é servido ao navegador e está ignorado pelo Git. Uma nova sessão não autentica automaticamente com credenciais salvas. O navegador pode lembrar apenas o nome do usuário; a senha não é salva na interface.
 
@@ -84,7 +88,7 @@ Verificação inicial com a conta real em 13/10/2026: autenticação ativa, 2.25
 
 Após a mudança de assinatura, a nova consulta real confirmou 2.339 canais (77 na categoria adulta), 15.435 filmes (430 na categoria adulta) e 16.031 séries, em cerca de 1,6–3,0 segundos. A atualização exibe progresso das três etapas e informa conclusão total, parcial ou erro.
 
-O servidor atende exclusivamente em `127.0.0.1`. Para disponibilizar o produto fora deste computador, será necessária uma configuração própria de hospedagem e autenticação.
+A execução direta atende em `127.0.0.1`; na Vercel, a plataforma importa o servidor e gerencia a escuta, conforme a configuração de hospedagem acima.
 
 ## Travamentos, atraso e pré-carregamento
 
@@ -140,12 +144,14 @@ O [mapa de manutenção do player](docs/player-modules.md) relaciona os módulos
 
 A [organização do sistema](docs/system-modularization-20261016.md) descreve as entradas canônicas: `web/login/` para autenticação/apresentação de entrada; `web/sistema/` para cabeçalho, busca, navegação, configurações e layout de catálogo; `web/inicio/` para banner, canais, históricos, lançamentos e recomendados; `web/tv/`, `web/filmes/`, `web/serie/` e `web/minha-lista/` para as abas. Os caminhos JavaScript antigos dessa extração foram removidos depois de atualizar seus consumidores. Os CSS existentes continuam compartilhados, preservando os mesmos seletores.
 
-A TV tem backend próprio em `lib/tv/` e [registro da correção de programação](docs/tv-epg-recovery-20261016.md). O login WPLAY não depende do bootstrap da biblioteca Supabase para entregar a programação. Conta, Auth, RLS, fila e Realtime pessoais continuam com uma única biblioteca compartilhada. [Filmes](docs/movies-modularization-20261016.md) possui módulos específicos no navegador e em `lib/filmes/`; o núcleo de catálogo VOD compartilhado com Séries fica em `lib/vod/`. Sessão, proxy e transporte de vídeo continuam únicos.
+A TV tem backend próprio em `lib/tv/` e [registro da correção de programação](docs/tv-epg-recovery-20261016.md). O login WPLAY não depende do bootstrap da biblioteca Supabase para entregar a programação. Conta, Auth, RLS, fila e Realtime pessoais continuam com uma única biblioteca compartilhada. [Filmes](docs/movies-modularization-20261016.md) possui módulos específicos no navegador e em `lib/filmes/`; o núcleo de catálogo WPLAY compartilhado com Séries fica em `lib/wplay/vod/`. Sessão, proxy e transporte de vídeo continuam únicos.
 
-A reprodução usa `player-tools.js` e `immersive-player.js`, com políticas de Filmes em `web/filmes/{reproducao,resolucao,buffer,audio,legenda}.js`; `web/filmes/previa.js`, `series-preview.js` e `preview-tools.js` compõem as prévias. `lib/wplay-ott-provider.mjs` integra o player web WPLAY e `lib/ott-rpc.mjs` implementa a serialização RPC observada. `lib/app-server.mjs` despacha os endpoints e arquivos locais; `server.mjs` inicia o processo.
+A reprodução usa `web/player-tools.js` e `web/player/orquestrador.js`, com políticas próprias em `web/filmes/` e `web/serie/` para reprodução, resolução, buffer, áudio e legendas. As prévias ficam em `web/filmes/previa.js` e `web/serie/previa.js`, sobre `preview-tools.js`. A [modularização de Séries](docs/series-modularization-20261016.md) separa também busca, capas, temporadas, episódios, progresso, serviços, hooks, TanStack e Realtime; `lib/serie/` concentra catálogo e metadados no backend. `lib/wplay/ott/provedor.mjs` integra o player web WPLAY e `lib/wplay/ott/rpc.mjs` implementa a serialização RPC observada. `lib/app-server.mjs` despacha os endpoints e arquivos locais; `server.mjs` inicia o processo.
 
-`lib/wplay-provider.mjs` implementa a autenticação e o catálogo WPLAY nativos, usados pelo login padrão; `lib/wplay-playback.mjs` encaminha filmes e episódios HTTP e integra os canais P2P à ponte local. `lib/original-engine-bridge.mjs` e `lib/native-bridge-manager.mjs` controlam a engine original e a posse da reprodução por sessão. WPLAY OTT continua sendo um conector alternativo explícito, documentado em `analysis/WPLAYOTT-browser-contract.md`.
+`lib/wplay/conexao/provedor-nativo.mjs` implementa a autenticação e o catálogo WPLAY nativos, usados pelo login padrão; `lib/wplay/conexao/reproducao.mjs` encaminha filmes e episódios HTTP e consulta o transporte web oficial para canais sem fonte HTTP nativa. O ciclo de reprodução conserva uma fonte por sessão e a parada da fonte anterior. O contrato do site está documentado em [WPLAY TV](docs/wplay/README.md).
 
-Os arquivos `analysis/` e os APKs são evidências da investigação, sem execução pela interface. `analysis/WPLAYP2P-11.9.0d-findings.md`, `WPLAYP2P-11.9.0d-auth-contract.md` e `WPLAYP2P-11.9.0d-login-routing.md` registram a análise do APK 11.9.0d, incluindo endpoints, normalização do usuário com `@wareztv.io`, autenticação e engines nativas TVBus/BinStream. Os canais `tvbus://` são processados pela engine Android no emulador preparado; o navegador recebe HLS pelo proxy local. As bibliotecas Android ARM/JNI não executam diretamente no navegador.
+A [camada WPLAY](lib/wplay/README.md) tem orquestrador da conexão, conector Supabase e serviços em `ao-vivo/`, `filmes/` e `series/`, consumidos pelos módulos de produto existentes. As APIs de tempo e marcações de Séries ficam em `lib/serie/marcadores/`, `web/serie/marcadores/` e nos conectores da Edge. A [revisão integrada](docs/architecture-review-wplay-20261016.md) e a [estratégia EPG](docs/epg-architecture-cleanup-20261016.md) registram a limpeza, 1.085 testes sintéticos aprovados após atualização dos contratos legados e os limites operacionais que continuam separados da modularização.
+
+Os arquivos `analysis/` e os APKs são evidências da investigação, sem execução pela interface. `analysis/WPLAYP2P-11.9.0d-findings.md`, `WPLAYP2P-11.9.0d-auth-contract.md` e `WPLAYP2P-11.9.0d-login-routing.md` registram a análise do APK 11.9.0d, incluindo endpoints, normalização do usuário com `@wareztv.io`, autenticação e protocolos TVBus/BinStream. Uma fonte `tvbus://` não vira uma URL de vídeo: a integração consulta o HTTP/HLS autorizado do player web oficial para o mesmo canal. Não há emulador ou ponte Android no fluxo da aplicação.
 
 HLS.js 1.6.13 é distribuído com sua licença em `web/assets/vendor/HLS-LICENSE.txt`.

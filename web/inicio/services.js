@@ -1,6 +1,6 @@
 import {withRequestSignals} from '../request-signals.js';
 
-const scopeKey=scope=>scope?.account?JSON.stringify(scope):null;
+import {homeVODScopeKey as scopeKey} from './biblioteca/scope.js';
 const cancelled=()=>new DOMException('A consulta do início foi encerrada.','AbortError');
 
 /** Home's private projection uses the existing same-origin authenticated

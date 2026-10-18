@@ -1,0 +1,223 @@
+{
+  "file": "WPlay P2P BinStream.apk",
+  "sha256": "9752e3f6ffdc522bc3e6a1e8e3e7989737bf09db44c0b220e9eb8c637aeb9e9e",
+  "method": "direct DEX tables and class_data; no decompilation/execution",
+  "dex": [
+    {
+      "member": "classes.dex",
+      "sha256": "65d1f03566a2f9b6d0be16dd426c153f954853657365ea5aa8c04ac4809f6583",
+      "class_defs": 7600,
+      "defined_methods": 51100,
+      "defined_fields": 32190,
+      "native_methods": 154,
+      "method_ids_including_references": 60006
+    },
+    {
+      "member": "classes2.dex",
+      "sha256": "5934dd856ba2e8f5a0c3e31d79c5382462535ce031cc5e37e1891233b6d58803",
+      "class_defs": 2690,
+      "defined_methods": 15218,
+      "defined_fields": 10005,
+      "native_methods": 2613,
+      "method_ids_including_references": 20410
+    }
+  ],
+  "literal_search": {
+    "classes.dex": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 1
+    },
+    "classes2.dex": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 1
+    }
+  },
+  "native_literal_search": {
+    "lib/arm64-v8a/libBugly.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/arm64-v8a/libBugly_Native.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/arm64-v8a/libandroidx.graphics.path.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/arm64-v8a/libc++_shared.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/arm64-v8a/libcountly_native.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/arm64-v8a/libffmpegJNI.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/arm64-v8a/libgojni.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/arm64-v8a/libmarsxlog.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/arm64-v8a/libtvcore.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/armeabi-v7a/libBugly.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/armeabi-v7a/libBugly_Native.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/armeabi-v7a/libandroidx.graphics.path.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/armeabi-v7a/libc++_shared.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/armeabi-v7a/libcountly_native.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/armeabi-v7a/libffmpegJNI.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/armeabi-v7a/libgojni.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/armeabi-v7a/libmarsxlog.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/armeabi-v7a/libtvcore.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/armeabi-v7a/libijkcodec.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/armeabi-v7a/libijkplayer.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/arm64-v8a/libijkplayer.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    },
+    "lib/arm64-v8a/libijkcodec.so": {
+      "supabase": 0,
+      "postgrest": 0,
+      "supabase.co": 0,
+      "/rest/v1/": 0,
+      "realtime/v1": 0,
+      "firebase": 0
+    }
+  },
+  "unique_class_descriptors": 10290,
+  "duplicate_class_descriptors": {}
+}

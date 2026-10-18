@@ -4,7 +4,9 @@ Integração implementada em `web/app.js`, 16/10/2026. Este módulo apresenta a 
 
 ## Apresentação
 
-`HomeChannelShelf`, de `visualizacao.js`, recebe o DTO `{mostWatchedId, items:[{item, reason}]}`. Mantém a ordem do servidor, até quatro IDs distintos, com um canal mais assistido e até três recentes. `reason` é `most-watched` ou `recent`. Não preenche posições ausentes com favoritos ou canais aleatórios. Somente o item marcado `most-watched` que corresponde a `mostWatchedId` recebe prévia.
+`HomeChannelShelf`, de `visualizacao.js`, recebe o DTO `{featuredId, mostWatchedId, items:[{item, reason}]}`. Mantém a ordem do servidor, até cinco IDs distintos: um destaque à esquerda e até quatro recentes. `reason` é `most-watched`, `default-globo` ou `recent`. O destaque semanal usa o rótulo “Mais assistido · 7 dias”; o padrão enviado pela RPC usa “Seu canal ao vivo”, sem alegar histórico. No padrão, `mostWatchedId` é nulo e `featuredId` identifica o canal enviado. O nome regional é apresentado integralmente, sem inferir a localização do usuário.
+
+Somente o primeiro item, com motivo de destaque e ID correspondente a `featuredId`, recebe a moldura branca. Todos os cards usam logo; não há prévia ou abertura automática de mídia. A área da logo conserva3:2 (84×56px no desktop,63×42px no celular), proporção usada por `logoGeometry`; uma área quadrada distorce os recortes transparentes. DTOs antigos sem `featuredId` continuam usando `mostWatchedId`. A UI não escolhe Globo, não preenche posições ausentes e não promove um recente a destaque. Os cinco cards ficam na mesma linha em telas largas, com área de imagem limitada a124px; três colunas até1050px, duas até650px e uma até340px. Horários e nomes extensos ficam contidos no card.
 
 ```js
 const homeTV = new HomeChannelShelf({
@@ -19,41 +21,42 @@ const homeTV = new HomeChannelShelf({
   }),
   onMore: () => setView('live'),
   onRetry: () => homeTVModel.ensure({force: true}),
-  preview: {
-    playbackURL: (item, {attempt, purpose}) => tv.playbackURL(item, {attempt, purpose}),
-    beforeStart: async ({signal}) => {
-      await pendingStop;
-      if (signal.aborted || player) throw new DOMException('', 'AbortError');
-    },
-    stop: ({attempt, scope, reason}) => stopPreviewAttempt({attempt, scope, reason}),
-    getConfig: () => playerTools.configFor('live'),
-    readFailure: (item, options) => readPlaybackFailure(item, options),
-  },
+
 });
 const section = homeTV.render(existingSection, homeTVModel.state.data || {}, homeTVModel.state);
 container.append(section);
 homeTV.sync();
 ```
 
-Os nomes `beforePlayback` e `fullscreen` no exemplo são o contrato proposto para a integração central; precisam ser consumidos pelo chamador. `onWatch` é invocado durante o clique, após o início de `pause()`, com a promessa `stopped`. O chamador pode abrir sua superfície e solicitar fullscreen enquanto a ativação do usuário existe, mas deve aguardar essa promessa antes de resolver ou carregar qualquer fonte.
+### Programação atual
 
-O terceiro argumento opcional de `render(existing, dto, state)` recebe o estado de `HomeTVModel`. Carregamento, falha e histórico válido vazio mantêm a seção visível com uma mensagem própria. Uma falha conserva os cards do último DTO; não imprime mensagens internas da API. `onRetry` é opcional e só executa a recuperação explícita (`model.ensure({force:true})`), sem timer novo ou repetição por renderização. A chamada antiga com dois argumentos continua válida.
+`getItems()` devolve uma cópia do array dos itens apresentados, na ordem da RPC. O proprietário registra esses IDs no serviço de grade compartilhado e fornece os resultados normalizados:
 
-## Transporte e encerramento
+```js
+const items = homeTV.getItems();
+const dataById = new Map(items.map(item => [item.id, tvGuide.peek(item.id)]));
+homeTV.updatePrograms(dataById, tvGuide.state);
+```
 
-`HomeChannelPreview`, de `previa.js`, usa `createLiveAttempt`, `supportsNativeHLS` e `PreparedLiveVideo`, já usados pelo player. O callback `playbackURL` somente devolve a rota local autenticada `/api/play/live/<id>/index.m3u8?attempt=...`; não recebe ou guarda endereço privado do provedor. O callback `beforeStart` confirma que o encerramento anterior terminou e que o player principal continua inativo. O callback `stop` deve encerrar somente a tentativa capturada, com a mesma conta/escopo, e resolver somente após a confirmação do backend. Falha de STOP é preservada e impede outra prévia automática; uma nova chamada explícita de `pause()` pode repetir esse encerramento.
+`updatePrograms(dataById, state={})` aceita `Map` ou objeto por ID. Cada valor é o payload normalizado da grade, com `window.current`, `window.next`, `startLabel`, `endLabel` e `progressPercent`. Usa `programWindow` apenas como presenter: a RPC continua escolhendo o programa, os horários e o percentual. Não consulta relógio, calcula janela, cria timer ou faz request por card.
 
-O chamador central deve iniciar `pause()` ao abrir qualquer player, navegar para outra tela, buscar, abrir detalhes/configurações, bloquear o PIN, trocar conta ou sair. Deve aguardar o encerramento antes de outra fonte; o módulo não pode impor essa barreira aos outros players sozinho. `sync()` reconcilia a disponibilidade após renderização/retorno. O módulo também encerra a prévia quando o documento fica oculto, no `pagehide` e quando o card sai da área visível. Uma alteração de escopo invalida imediatamente operações antigas; um callback STOP antigo não pode atuar sobre uma nova conta.
+O bloco dentro de cada card apresenta somente “Agora”, seus horários e o progresso recebido. `window.next` não é mostrado. `loading`, `error` e `stale` são apresentados explicitamente; dados ainda disponíveis continuam visíveis quando a atualização falha, com indicação de programação anterior. Uma janela vazia confirmada não inventa programa atual. A atualização altera somente os nós do bloco de programação: não recria cards nem inicia reprodução.
 
-O wrapper `pause(reason, options)` preserva a chamada antiga e aceita `{retryStop:false}` para pausas automáticas do render/lifecycle. Assim, um STOP falho não é repetido a cada render fora do Início. O clique em um card e a abertura explícita do player podem repetir o STOP retido. `isActive` deve excluir também uma abertura de player em andamento, inclusive enquanto ela aguarda a biblioteca de reprodução: um render de fundo não pode rearmar a prévia entre o clique e o início do player.
+Os campos `beforePlayback` e `fullscreen` são consumidos por `openPlayer`: a solicitação de tela cheia ocorre no clique autorizado, antes de aguardar a engine; descritores podem ser resolvidos durante o encerramento anterior; a mídia aguarda sua confirmação. `onWatch` é invocado durante o clique, após o início de `pause()`, com a promessa `stopped`. O chamador pode abrir sua superfície e solicitar fullscreen enquanto a ativação do usuário existe, mas deve aguardar essa promessa antes de carregar qualquer mídia.
 
-A prévia tem seu próprio `<video muted playsinline>`, sem controles de áudio, handlers de histórico, batimentos ou progresso do player principal. A sessão do provedor continua única. Não há pré-carregamento dos outros três canais, rotação, troca automática de fonte, tentativas extras após 401/403/429 ou tentativa de ligar uma engine Android.
+O terceiro argumento opcional de `render(existing, dto, state)` recebe o estado de `HomeTVModel`. Carregamento, falha e histórico válido vazio mantêm a seção visível com uma mensagem própria. Uma falha conserva os cards do último DTO e mostra aviso compacto; não imprime mensagens internas da API. Atualização em andamento com cards disponíveis não ocupa outra faixa. `onRetry` é opcional e só executa a recuperação explícita (`model.ensure({force:true})`), sem timer novo ou repetição por renderização. A chamada antiga com dois argumentos continua válida.
 
-`getScope` representa a identidade da sessão de reprodução (conta e geração de autenticação). Não deve incluir campos que aparecem depois do bootstrap cloud, como `project` ou `scopeHash`: o provisionamento cloud não troca a sessão de mídia. O callback URL recebe `purpose: 'preview'`; a integração deve propagá-lo à intenção autenticada para que o backend rejeite batimentos de prévia.
+## Lifecycle sem reprodução automática
+
+Pedido de 16/10 posterior à revisão de cinco cards removeu a prévia. `HomeChannelShelf` não importa `HomeChannelPreview`, não cria `<video>` e não possui engine, autoplay ou STOP próprio. `sync()` e `pause()` preservam a interface com o proprietário; `pause()` devolve uma promessa já resolvida. A reprodução explícita pertence ao player principal e sua barreira de STOP.
+
+`HomeChannelPreview`, em `previa.js`, permanece como módulo isolado e testado, sem instância na Home atual. Seu contrato anterior e as evidências históricas estão em [cinco cards](../../../docs/home-tv-five-cards-20261017.md); não confundir código disponível com reprodução ativa.
+
+Fullscreen é pedido no clique autorizado. Uma flag compartilhada encerra a superfície temporária quando todas as aberturas concorrentes falham antes de criar um player. Ao criar o player, ele assume a superfície.
 
 ## Projeção privada e Realtime
 
-`HomeTVModel`, de `tanstack-query.js`, recebe `{request, getScope, getRevision, isActive, onChange}`. Expõe `state: {data, loading, error}`, `ensure({force=false}={})`, `invalidate()`, `reset()` e `dispose()`. `ensure()` não recebe nenhum item ou parâmetro implícito: usa somente as dependências injetadas. `getScope` recebe o escopo privado da aplicação e seleciona somente conta/geração/PIN/filtros de TV por `tvScope`; `getRevision` deve depender apenas da publicação de TV e da revisão privada de canais. O transporte é `POST /api/tv/home` com `{hidden: [ids], hiddenItems: [ids]}`. `HomeTVServices`, de `services.js`, aplica prazo de6s (RPC backend5s, SQL3s) e valida o DTO. O modelo mantém a ordem da RPC e seu último DTO válido na mesma conta; não usa catálogo/favoritos como substituto nem persiste o resultado no armazenamento local.
+`HomeTVModel`, de `tanstack-query.js`, recebe `{request, getScope, getRevision, isActive, isAvailable, onChange}`. Expõe `state: {data, loading, waiting, error}`, `ensure({force=false}={})`, `invalidate()`, `reset()` e `dispose()`. `ensure()` não recebe nenhum item ou parâmetro implícito: usa somente as dependências injetadas. `getScope` recebe o escopo privado da conta conectada, mesmo quando o bootstrap cloud ainda não terminou, e seleciona somente conta/geração/PIN/filtros de TV por `tvScope`; `isAvailable` informa separadamente se a RPC pode ser usada. Indisponibilidade mantém o último DTO da mesma conta e apresenta `waiting`, sem realizar requisições impossíveis. `onRetry` deve recuperar a conexão pelo bridge existente antes de chamar `ensure({force:true})`; o módulo não cria uma sessão de autenticação. `getRevision` deve depender apenas da publicação de TV e da revisão privada de canais. O transporte é `POST /api/tv/home` com `{hidden: [ids], hiddenItems: [ids]}`. `HomeTVServices`, de `services.js`, aplica prazo de6s (RPC backend5s, SQL3s) e valida o DTO. O modelo mantém a ordem da RPC e seu último DTO válido na mesma conta; não usa catálogo/favoritos como substituto nem persiste o resultado no armazenamento local.
 
 TanStack usa `retry:0`, sem recarga por foco/reconexão própria. Renderizações não repetem uma falha durante30s; `Retry-After` maior conserva a espera. Não há timer de repetição após erro. Uma invalidação válida pode reagrupar leituras bem-sucedidas com intervalo mínimo de15s. `ensure({force:true})` corresponde à recuperação explícita; não antecipa uma pausa HTTP429. `reset()` descarta imediatamente o DTO e cancela leitores ao trocar conta ou preferências.
 
@@ -69,12 +72,16 @@ O módulo observa `playing` real, aguarda os handlers existentes concluírem o e
 
 A contagem é uma aproximação por batimentos. A primeira sessão começa em zero; falhas de rede e a disputa com o encerramento podem perder ou limitar o último trecho. Recuperar uma sessão incerta conserva os limites e a sequência da RPC atual, sem inventar precisão de milissegundos ou prometer que todo trecho desconhecido será zerado. Não há campo de reset, nova identidade de medição enviada pelo navegador ou mudança de reprodução para obter estatísticas.
 
-Esses ciclos são diferentes: o STOP de **mídia da prévia** precisa ser confirmado antes de outra fonte, enquanto o batimento final **de estatística** é melhor esforço e não bloqueia a reprodução.
-
-`preview.readFailure` tem assinatura `(item, {attempt, sourceId, mediaErrorCode, signal})`, igual à adaptação da continuidade do player. O item é o canal capturado, não o player global que pode já ter mudado. Deve consultar a rota local de status para esse ID/attempt e retornar `status.failure` (`null` explícito quando não há falha). Somente esse `null` permite uma troca de decoder nativo→HLS, uma vez, mantendo a mesma tentativa. Rejeição/retorno indefinido/erro do serviço encerra a prévia. A preparação exige a rota local de HLS autenticada; não sintetiza mídia para fontes incompatíveis. Sem suporte HLS/MSE ou quando o navegador recusa autoplay, o card mantém o logo e o acesso ao player.
+A estatística final é melhor esforço; o STOP da mídia do player continua confirmado antes de outra fonte. A Home atual não abre prévia.
 
 ## Verificação
 
-Os arquivos podem passar por sintaxe/bundle estático. A autorização atual reserva testes, navegador e reprodução ao usuário. Essa inspeção não certifica autoplay, fullscreen ou latência real do provedor.
+Em 16/10/2026 a regressão da faixa invisível foi coberta por testes sintéticos de indisponibilidade, recuperação, preservação do DTO, troca de conta e ordem exata da RPC. A validação visual e de reprodução permanece com o usuário. Esses testes não certificam autoplay, fullscreen ou latência real do provedor.
+
+Na revisão de cinco cards de17/10 UTC, `tests/home-channel-shelf.test.mjs` cobre o destaque padrão/mais assistido, quatro recentes, ausência de promoção local, atualização somente do programa atual sem recriar os cards, estados de grade, filtros e clique com pedido síncrono de fullscreen/barreira de STOP. São fixtures DOM sem navegador, mídia ou prova audiovisual.
 
 A migration `20261016054432_arkhen_private_tv_watch_home.sql` foi aplicada ao projeto autorizado. Readback do esquema confirmou RLS, tabelas privadas sem SELECT/INSERT/UPDATE autenticados, publicação apenas da revisão e RPCs sem EXECUTE anônimo. O servidor local foi reiniciado com as novas rotas. Isso confirma integração e esquema, não autoplay ou comportamento audiovisual, cuja validação permanece com o usuário.
+
+A composição EPG vive em `programacao.js` (`HomeChannelPrograms`) e usa a instância `tvGuide` existente. O registro de ativação, testes e limites está em [cinco canais com programação](../../../docs/home-tv-five-cards-20261017.md).
+
+Revisão atual: [abertura, qualidade e Home sem prévia](../../../docs/tv-playback-recovery-20261017.md). `catalogForProjection` reaproveita snapshot completo durante revalidação compartilhada; a RPC continua revalidando conta, publicação e filtros. Os prazos não foram aumentados. A revisão integrada teve 138 testes internos aprovados, sem navegador/mídia real.

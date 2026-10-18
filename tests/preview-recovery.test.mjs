@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PreviewTools } from '../web/preview-tools.js';
-import { renderSeriesPreview } from '../web/series-preview.js';
+import { renderSeriesPreview } from '../web/serie/previa.js';
 import { renderMoviePreview } from '../web/filmes/previa.js';
 
 class Element {

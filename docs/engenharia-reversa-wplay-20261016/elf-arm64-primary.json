@@ -1,0 +1,188 @@
+[
+  {
+    "apk_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "member": "lib/arm64-v8a/libtvcore.so",
+    "sha256": "23ef3fe420716e95764690f2edd52ec0780c15fe23f0741c7f9b148a790e86ee",
+    "bytes": 2544712,
+    "machine": 183,
+    "defined_symbol_count": 3703,
+    "load_segments": [
+      {
+        "offset": 0,
+        "vaddr": 0,
+        "file_size": 913184,
+        "memory_size": 913184,
+        "alignment": 16384,
+        "flags": 4
+      },
+      {
+        "offset": 913184,
+        "vaddr": 929568,
+        "file_size": 1572352,
+        "memory_size": 1572352,
+        "alignment": 16384,
+        "flags": 5
+      },
+      {
+        "offset": 2485536,
+        "vaddr": 2518304,
+        "file_size": 54664,
+        "memory_size": 58080,
+        "alignment": 16384,
+        "flags": 6
+      },
+      {
+        "offset": 2540200,
+        "vaddr": 2589352,
+        "file_size": 2432,
+        "memory_size": 26280,
+        "alignment": 16384,
+        "flags": 6
+      }
+    ]
+  },
+  {
+    "apk_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "member": "lib/arm64-v8a/libgojni.so",
+    "sha256": "57a67d1bbdc61d502766f98958108ae20543e450e3ea0a26dc33dc127bb754dd",
+    "bytes": 7568616,
+    "machine": 183,
+    "defined_symbol_count": 257,
+    "load_segments": [
+      {
+        "offset": 0,
+        "vaddr": 0,
+        "file_size": 1408924,
+        "memory_size": 1408924,
+        "alignment": 16384,
+        "flags": 4
+      },
+      {
+        "offset": 1408928,
+        "vaddr": 1425312,
+        "file_size": 2952144,
+        "memory_size": 2952144,
+        "alignment": 16384,
+        "flags": 5
+      },
+      {
+        "offset": 4361088,
+        "vaddr": 4393856,
+        "file_size": 2825352,
+        "memory_size": 2827392,
+        "alignment": 16384,
+        "flags": 6
+      },
+      {
+        "offset": 7186448,
+        "vaddr": 7235600,
+        "file_size": 379512,
+        "memory_size": 679536,
+        "alignment": 16384,
+        "flags": 6
+      }
+    ]
+  },
+  {
+    "apk_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "member": "lib/arm64-v8a/libffmpegJNI.so",
+    "sha256": "278859a559108dd7927fef447c18b617c9b3593c33c89f07018f3c5f0a70aaf8",
+    "bytes": 1371000,
+    "machine": 183,
+    "defined_symbol_count": 1035,
+    "load_segments": [
+      {
+        "offset": 0,
+        "vaddr": 0,
+        "file_size": 1245216,
+        "memory_size": 1245216,
+        "alignment": 16384,
+        "flags": 5
+      },
+      {
+        "offset": 1245216,
+        "vaddr": 1261600,
+        "file_size": 123576,
+        "memory_size": 123576,
+        "alignment": 16384,
+        "flags": 6
+      },
+      {
+        "offset": 1368792,
+        "vaddr": 1401560,
+        "file_size": 40,
+        "memory_size": 16961984,
+        "alignment": 16384,
+        "flags": 6
+      }
+    ]
+  },
+  {
+    "apk_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "member": "lib/arm64-v8a/libijkplayer.so",
+    "sha256": "24bc03762b81bc2bb1919501a0758fce0829d2376a52422351468b7412711187",
+    "bytes": 1424040,
+    "machine": 183,
+    "defined_symbol_count": 1,
+    "load_segments": [
+      {
+        "offset": 0,
+        "vaddr": 0,
+        "file_size": 1379040,
+        "memory_size": 1379040,
+        "alignment": 16384,
+        "flags": 5
+      },
+      {
+        "offset": 1379040,
+        "vaddr": 1395424,
+        "file_size": 42952,
+        "memory_size": 46368,
+        "alignment": 16384,
+        "flags": 6
+      },
+      {
+        "offset": 1421992,
+        "vaddr": 1454760,
+        "file_size": 0,
+        "memory_size": 208328,
+        "alignment": 16384,
+        "flags": 6
+      }
+    ]
+  },
+  {
+    "apk_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "member": "lib/arm64-v8a/libijkcodec.so",
+    "sha256": "970e7ab1f95d616435d1f4317a14f81da5465e2a325e4d80b20cfbfaf29984f9",
+    "bytes": 304432,
+    "machine": 183,
+    "defined_symbol_count": 302,
+    "load_segments": [
+      {
+        "offset": 0,
+        "vaddr": 0,
+        "file_size": 283184,
+        "memory_size": 283184,
+        "alignment": 16384,
+        "flags": 5
+      },
+      {
+        "offset": 283184,
+        "vaddr": 299568,
+        "file_size": 18624,
+        "memory_size": 19920,
+        "alignment": 16384,
+        "flags": 6
+      },
+      {
+        "offset": 301808,
+        "vaddr": 334576,
+        "file_size": 88,
+        "memory_size": 3024,
+        "alignment": 16384,
+        "flags": 6
+      }
+    ]
+  }
+]

@@ -1,12 +1,13 @@
 import { EpisodeSkipController } from '../episode-skip.js';
-import { programWindow } from '../program-guide.js';
+import {programWindow} from '../tv/canais/programacao.js';
 import { PlaybackLoader } from '../playback-loader.js';
-export { parseProgramTime, programWindow } from '../program-guide.js';
+export {parseProgramTime, programWindow} from '../tv/canais/programacao.js';
 
 import {element, control} from './dom.js';
 import {VolumeControl} from './controles/volume.js';
 import {PlaybackControl} from './controles/reproducao.js';
 import {TVPlayerNavigation} from '../tv/player/navegacao.js';
+import {tvHasPlayableVideo,observeTVPlaybackReadiness} from '../tv/player/estado-media.js';
 import {numberedChannels} from '../tv/player/canais.js';
 import {TVPlayerGuide} from '../tv/player/grade.js';
 import {handlePlayerKeydown} from './teclado.js';
@@ -39,6 +40,7 @@ export class ImmersivePlayer {
       onPreview:(_entry,detail)=>this.previewChanged(detail),onCommit:(entry,options)=>this.switchChannel(entry,options)});
     this.build();
     this.episodeSkip = new EpisodeSkipController({
+      requirePlayback:true,
       video:this.video, onNextEpisode:options => this.options.onNextEpisode?.(options),
       hasNextEpisode:() => Boolean(this.options.getPlayer?.()?.next),
       preferences:this.options.seriesPlaybackPreferences,
@@ -96,7 +98,11 @@ export class ImmersivePlayer {
   bind() {
     for (const event of ['loadstart', 'waiting']) this.listen(this.video, event, () => { if (this.current && !(this.current.awaitingPlay && this.video.paused) && !(event === 'waiting' && this.video.paused)) this.setLoading(true, event === 'waiting' ? this.current.item.kind === 'live' ? 'Aguardando a transmissão' : 'Retomando seu vídeo' : 'Preparando sua sessão'); });
     for (const event of ['loadeddata', 'canplay']) this.listen(this.video, event, () => { if (this.current?.awaitingPlay && this.video.paused) this.setLoading(false); });
-    this.listen(this.video, 'playing', () => { if (!this.current || this.current.failed) return; this.current.awaitingPlay = false; this.error.hidden = true; this.recordStart(); this.setLoading(false); this.updateControls(); });
+    const playing=()=>{if(!this.current||this.current.failed)return;this.current.awaitingPlay=false;this.error.hidden=true;this.recordStart();this.setLoading(false);this.updateControls();};
+    this.listen(this.video,'playing',()=>{if(this.current?.item.kind!=='live')playing();});
+    const disposeReadiness=observeTVPlaybackReadiness({video:this.video,getOwner:()=>this.current?.item.kind==='live'&&!this.current.failed?this.current:null,onReady:playing});
+    // bind() also has small event-only fixtures without the full constructor.
+    (this.disposers ||= []).push(disposeReadiness);
     for (const event of ['loadedmetadata', 'durationchange', 'timeupdate', 'progress', 'pause', 'play', 'ended']) this.listen(this.video, event, () => { if (this.current) { this.updateControls(); if (this.video.paused || this.video.ended) this.reveal(); } });
     // The transport controller owns retries and terminal failures. A media
     // element error during HLS recovery must not create a competing overlay.
@@ -211,6 +217,7 @@ export class ImmersivePlayer {
   setLoadingSource(source) { this.playbackLoader.setSource(source); }
   acceptPreparedPlayback(){
     if(!this.current||this.current.failed||this.video.paused||this.video.readyState<2)return;
+    if(this.current.item.kind==='live'&&(!tvHasPlayableVideo(this.video)||this.video.seeking))return;
     this.current.awaitingPlay=false;this.error.hidden=true;this.recordStart();this.setLoading(false);this.updateControls();
   }
   waitForPlay({ready = true} = {}) {

@@ -12,7 +12,7 @@ async function fixture(t){
     bootstrap:async()=>({providerKey,scopeHash,session:{access_token:'scoped-user-token',expires_in:3600}}),revoke:async()=>{},rpc:async()=>{},
     request:async(path,options)=>{calls.push({path,options});return report;}};
   const worker={registerSource(){},unregisterSource(){},start(){},stop(){},async tick(){}};
-  const app=createApp({connection:{},nativeBridge:null,cloud,sharedWorker:worker,providerFactory:({config})=>({config,images:new Map(),
+  const app=createApp({connection:{},cloud,sharedWorker:worker,providerFactory:({config})=>({config,images:new Map(),
     async connect(){this.authenticatedAt=Date.now();this.session={connected:true,account:{status:'Active',expiresAt:'2070-01-01T00:00:00Z'}};return this.session;},async logout(){this.session=null;},async stopPlayback(){}})});
   await new Promise(resolve=>app.listen(0,'127.0.0.1',resolve));t.after(async()=>{app.closeAllConnections?.();await app.shutdown();});
   const base=`http://127.0.0.1:${app.address().port}`,common={Origin:base,'Content-Type':'application/json'};
@@ -55,17 +55,17 @@ test('search cannot use privileged credentials without a cloud user session',asy
   try{assert.equal(await runtime.searchCatalog({},{query:'acao'}),null);assert.equal(await runtime.searchCatalog({cloud:{providerKey,scopeHash}},{query:'acao'}),null);assert.equal(calls,0);}finally{runtime.close();}
 });
 test('home projection uses the account JWT, private visibility filters and server adult grant',async t=>{
-  const f=await fixture(t),home={schemaVersion:1,counts:{live:2,movie:4,series:1},history:{live:[],movie:[],series:[]},favoriteChannels:[],recommendations:{items:[],personalized:false}};
+  const f=await fixture(t),home={schemaVersion:1,counts:{live:0,movie:4,series:1},history:{live:[],movie:[],series:[]},favoriteChannels:[],recommendations:{items:[],personalized:false}};
   f.cloud.request=async(path,options)=>{f.calls.push({path,options});return home;};
   const response=await fetch(f.base+'/api/home/library',{method:'POST',headers:f.headers,body:JSON.stringify({userId:'other',includeAdult:true,hidden:{live:['10']}})});
-  assert.equal(response.status,200);assert.deepEqual(await response.json(),home);const call=f.calls[0];assert.equal(call.path,'/rest/v1/rpc/arkhen_home_library');
-  assert.deepEqual(call.options.body,{p_provider_key:providerKey,p_scope_hash:scopeHash,p_include_adult:false,p_hidden_categories:{live:['10']},p_hidden_items:{}});assert.equal(call.options.accessToken,'scoped-user-token');
+  assert.equal(response.status,200);assert.deepEqual(await response.json(),home);const call=f.calls[0];assert.equal(call.path,'/rest/v1/rpc/arkhen_home_vod');
+  assert.deepEqual(call.options.body,{p_provider_key:providerKey,p_scope_hash:scopeHash,p_include_adult:false,p_hidden_categories:{},p_hidden_items:{}});assert.equal(call.options.accessToken,'scoped-user-token');
   assert.equal((await fetch(f.base+'/api/home/library',{headers:f.headers})).status,405);
   f.cloud.request=async()=>{throw new Error('secret');};const failed=await fetch(f.base+'/api/home/library',{method:'POST',headers:f.headers,body:'{}'});assert.equal(failed.status,503);assert.equal((await failed.json()).code,'HOME_UNAVAILABLE');
 });
 
 test('movie recommendations use the account JWT and cannot accept caller ownership or adult overrides',async t=>{
-  const f=await fixture(t),value={schemaVersion:1,sourceId:'film',revision:'published',items:[{id:'related',kind:'movie',name:'Related',isAdult:false}],personalized:true,reason:'source_genre'};
+  const f=await fixture(t),value={schemaVersion:1,rankingVersion:2,identityVersion:2,source:'rpc',sourceId:'film',revision:'published',items:[{id:'related',kind:'movie',name:'Related',isAdult:false}],personalized:true,reason:'source_genre'};
   f.cloud.request=async(path,options)=>{f.calls.push({path,options});return value;};
   const response=await fetch(f.base+'/api/recommendations/movie',{method:'POST',headers:f.headers,body:JSON.stringify({id:'film',limit:3,userId:'other',providerKey:'foreign',includeAdult:true,hidden:{movies:['10']}})});
   assert.equal(response.status,200);assert.deepEqual(await response.json(),value);assert.equal(response.headers.get('cache-control'),'no-store');
@@ -85,9 +85,10 @@ test('movie recommendations require a scoped session and reject malformed or adu
   try{
     assert.equal(await runtime.movieRecommendations({cloud:{providerKey,scopeHash}},{id:'film'}),null);assert.equal(calls,0);
     for(const value of [{schemaVersion:1,sourceId:'other',items:[]},{schemaVersion:1,sourceId:'film',items:[{id:'other',kind:'movie',isAdult:true}]},{schemaVersion:1,sourceId:'film',items:[{id:'film',kind:'movie',isAdult:false}]},{schemaVersion:1,sourceId:'film',items:[{id:'other',kind:'series',isAdult:false}]}]){
-      result=value;assert.equal(await runtime.movieRecommendations(state,{id:'film'}),null);
+      result={rankingVersion:2,identityVersion:2,source:'rpc',...value};assert.equal(await runtime.movieRecommendations(state,{id:'film'}),null);
     }
-    result={schemaVersion:1,sourceId:'film',items:[{id:'other',kind:'movie',isAdult:false}]};assert.deepEqual(await runtime.movieRecommendations(state,{id:'film'}),result);
+    result={schemaVersion:1,sourceId:'film',items:[{id:'other',kind:'movie',isAdult:false}]};assert.equal(await runtime.movieRecommendations(state,{id:'film'}),null,'Legacy DTO without ranking/identity versions is not accepted as a current RPC result.');
+    result={...result,rankingVersion:2,identityVersion:2,source:'rpc'};assert.deepEqual(await runtime.movieRecommendations(state,{id:'film'}),result);
   }finally{runtime.close();}
 });
 

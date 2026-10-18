@@ -1,8 +1,12 @@
+import {visibleFavoriteArtwork} from './capas.js';
+
 export class MyListOrchestrator{
-  constructor({services,getLimit=()=>48,ui}={}){Object.assign(this,{services,getLimit,ui});}
+  constructor({services,getLimit=()=>48,ensureArtwork=()=>{},ui}={}){Object.assign(this,{services,getLimit,ensureArtwork,ui});}
   items(){return this.services.items();}
+  artworkItems(items=this.items()){return visibleFavoriteArtwork(items,{limit:this.getLimit()});}
   render(container,items=this.items()){
     const {node,formatNumber,renderCards,renderLive,reconcileChildren,renderCatalogStatus}=this.ui,limit=this.getLimit();
+    this.ensureArtwork();
     let shown=0;const sections=[];
     for(const [kind,title] of [['live','TV ao vivo'],['movie','Filmes'],['series','Séries']]){
       const values=items.filter(item=>item.kind===kind);if(!values.length)continue;

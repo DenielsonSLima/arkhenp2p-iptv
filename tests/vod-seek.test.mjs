@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {VodSeekController,clampSeekTarget} from '../web/vod-seek.js';
-import {ImmersivePlayer} from '../web/immersive-player.js';
+import {ImmersivePlayer} from '../web/player/orquestrador.js';
 
 class Video extends EventTarget {
   constructor(){super();this.duration=3600;this.readyState=4;this.currentTime=100;this.paused=false;this.seeking=false;this.ended=false;this.error=null;this.playCalls=0;this.pauseCalls=0;this.seekable={length:1,start:()=>0,end:()=>3600};}

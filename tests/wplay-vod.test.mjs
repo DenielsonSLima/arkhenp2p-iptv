@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { WplayProviderClient } from '../lib/wplay-provider.mjs';
-import { nativeEpisodeID } from '../lib/wplay-vod.mjs';
+import { WplayProviderClient } from '../lib/wplay/conexao/provedor-nativo.mjs';
+import { nativeEpisodeID } from '../lib/wplay/vod/catalogo-nativo.mjs';
 import {ParentalControl} from '../lib/parental-control.mjs';
 import {adultCategory} from '../lib/provider.mjs';
 

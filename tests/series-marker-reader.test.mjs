@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {EpisodeMarkerReader} from '../web/series-markers/reader.js';
+import {EpisodeMarkerReader} from '../web/serie/marcadores/orquestrador.js';
 const manifest=()=>({schemaVersion:1,dataVersion:'fixture',series:{slug:'game-of-thrones',tmdbId:1399,imdbId:'tt0944947'},records:[{season:1,episode:1,edition:{id:'test',durationSeconds:600,toleranceSeconds:.5},verification:{status:'verified'},markers:{openingStart:10,openingEnd:60},sources:[{url:'https://api.introdb.app/reference',title:'Fixture'}]}]});
 const context=()=>({item:{kind:'series',name:'Game of Thrones'},episode:{season:1,number:1},duration:600,editionId:'test'});
 test('cloud manifest is preferred and a missing cloud manifest falls back to the local file',async()=>{

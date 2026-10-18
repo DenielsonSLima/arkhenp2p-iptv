@@ -1,6 +1,6 @@
 import {mkdir,writeFile} from 'node:fs/promises';
 import {readWplayCredentials,safeCode} from './wplay-tool-input.mjs';
-import {WplayProviderClient,WPLAY_AUTH_URLS} from '../lib/wplay-provider.mjs';
+import {WplayProviderClient,WPLAY_AUTH_URLS} from '../lib/wplay/conexao/provedor-nativo.mjs';
 import {requestUpstream,readBody} from '../lib/upstream.mjs';
 const client=new WplayProviderClient({...await readWplayCredentials(),authURLs:[WPLAY_AUTH_URLS[1]]});
 const dir='/private/tmp/arkhen-artwork-check';

@@ -34,7 +34,7 @@ export async function sharedImageReference(value,{providerKey,scopeHash}={}){
   url.searchParams.sort();return '/api/shared-image/'+await digest(JSON.stringify([providerKey,scopeHash,url.href]));
 }
 
-// Same explicit-zone calendar contract as lib/wplay-epg.mjs.
+// Same explicit-zone calendar contract as lib/wplay/ao-vivo/grade.mjs.
 export function wplayTimestamp(value){
   if(typeof value!=='string')return null;
   const match=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,9}))?(Z|([+-])(\d{2}):?(\d{2}))$/.exec(value);if(!match)return null;

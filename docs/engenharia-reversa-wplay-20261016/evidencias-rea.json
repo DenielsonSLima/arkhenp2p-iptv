@@ -1,0 +1,2078 @@
+{
+  "scope": "metadata only; canonical envelopes remain private",
+  "records": [
+    {
+      "evidence_id": "ev_03e2e388cb52172945a4d9556818b25e442051bce05114fa2366a485dbd1e133",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.Spark",
+        "method_name": "L",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-Spark-L.json",
+      "private_envelope_sha256": "9a57f75107ca83a9c5741a8fb733b4610d8b7ec04e9d5aedfc867ef8c76dd618",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_04d588b89b95666e2be6099ff3e2cfb3d4d34f776607c4b517c5d8b867afd9b8",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.beans.EpgBeans.EpgBean"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "class-EpgBean.json",
+      "private_envelope_sha256": "b655fed78299af2f0c1a372e7611abd4ebd860e9dbf9e277d58be00e7716fc3a",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_06134f31a18275f576d2834acb0e08725049d6d262f238323bb44cb29501fadd",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.utils.i0",
+        "method_name": "<clinit>",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-utils-i0-clinit.json",
+      "private_envelope_sha256": "a5d52ee2342ebcc707107574c699551554329b9d09cb5514ba5f74917a4fad0a",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_0816af624bf3af343ad5d3b3359ba87aaeb2016aa6aa11520f954c1d3db3f6e4",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "td.i",
+        "method_name": "j",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-epg-date.json",
+      "private_envelope_sha256": "e3fe8a3335265b92923c4927145963175a49e42b8b76e6be5a4e07e62bfd5520",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_085259f98844b00dfb29618f80f34a619bcd1de5407a51757bea6d04a4790f93",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "androidx.media3.exoplayer.DefaultLoadControl",
+        "method_name": "getDefaultBufferSize",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "playback-DefaultLoadControl-defaultBytes.json",
+      "private_envelope_sha256": "566e722be79be4604517c82ddbbf6ca3c4d0e7421214d11fdbb5fa12f4aee75b",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_10e6cd4c74d55d8153c1a476e0a2873b3ca563cd42dfd1f8cf23bc4d3dbad0eb",
+      "operation": "inspect_android_package",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {},
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "package-primary.json",
+      "private_envelope_sha256": "e2a980f82f2c166df279dcd6f09c89d6602475fb0a11cac9aa1b9aecc96ec7ef",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_114883cba3ad29c04f3494951fca5367aa46580c6a82012f2964d0bd9ac0e789",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "td.f",
+        "method_name": "run",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-f-run.json",
+      "private_envelope_sha256": "eb35e719c183da24927f7e7a91aa0a2822c76c83d8f272456066f54ec7597a90",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_1188aeba6f63aa85478708dcc078ffdf307734b0fafaf160b0f7a79fd7acf3fc",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "td.m",
+        "method_name": "e",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-m-e.json",
+      "private_envelope_sha256": "eb5253d8b403b5b69984324238557c4affba0044d52cac4a5832c8ab934724e4",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_135c6bd5e840a5ec2caed3b9362baa46cba4237d3912883fcacf2ace9da2ff9d",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "c2.a",
+        "method_name": "c",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-cache-read-file.json",
+      "private_envelope_sha256": "e1b92010fab30576da8e6efe4940a741fc3003aafa7b7a862308a6a9137944a1",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_168324d675dc6049c771188c5a1939ef79ec639e21693c98c761a747345d5457",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.Spark",
+        "method_name": "onDestroy",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-Spark-onDestroy.json",
+      "private_envelope_sha256": "82657c00ba9f3e6d679b479fc3ce9475d280f562173409cad1339b2c56ef50d6",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_1910c43c1ce38e0c8860d267800863d3b42a72add5c3ba0fbbd7915706b0b268",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "com.tencent.bugly.proguard.i0",
+        "method_name": "run",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-i0-run.json",
+      "private_envelope_sha256": "9cffa891430fa973f8d67097ca02a4708e247a8a703eca1580b25fdb0054e461",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_1af36b38121854dbe9da06b834fe2374836e98f960a434ca9359fa24bbfb750d",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.db.AppDatabase_Impl"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-appdatabase-impl.json",
+      "private_envelope_sha256": "5c147e70801d65473dc412abe23189e1b47a7db91a65e57ea4b2877d56f4f31d",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_1ec33b4e4df7a2ed1b171cbe84d3a3a02a658f76e686db359b74c71391cff0fe",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.Spark",
+        "method_name": "v",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-Spark-v.json",
+      "private_envelope_sha256": "cad40c6d99bb33613a1f7024d685c7a30623120519e2c6431e6dbf06eef34d1f",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_21c54243293a35501b367784d197bcb6ccaba228d18fb1c2e5846ebe99083303",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "c2.a",
+        "method_name": "a",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-cache-eviction.json",
+      "private_envelope_sha256": "9f8ee0de1579abafdc898bb836335fc09d4c8b9e5f05f3d4ffab222de2ef5d6b",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_2351056e046de2758046575f2541678e1abe5ca60dc47093d17547bb2ac58fab",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "l8.b",
+        "method_name": "call",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-prefs-factory.json",
+      "private_envelope_sha256": "5b490cacbdb667f306122000b8a4be5838c01d90972f1ae1c62be565bebe6964",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_24b996dd9979a455e907e92872fa2d1e23b0bbfb13733653571ec6f1671c84cb",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "se.i",
+        "method_name": "<clinit>",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-offline-clinit.json",
+      "private_envelope_sha256": "d2a311263bfa9a903f41c1c45c4d864e5e11dad7474844e6f6c33e8a23558a93",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_27d8bb392b3faa302645789b6b76d3f1e92f80c1d5379f55fca98ebb89f9cb50",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "ua.c",
+        "method_name": "l",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-string-decoder.json",
+      "private_envelope_sha256": "67eef191556bde8f5a64974e0871fefbeff40db19eed54777b105828cce862e5",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_28dbb527a1bf369e600e00104c4f88d4242d1ab695571479882524b5671aa3ff",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.beans.ChannelBean",
+        "method_name": "getSid"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "method-ChannelBean-getSid.json",
+      "private_envelope_sha256": "86940cfb301b8b31a88f0d0fa280196dec3c401bf65892b2f489a294293fe052",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_2a52cf386a0f12a1612fdc3bb027ef8ad308505cc9f6c40f1fc5db6ce6e1b641",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "androidx.media3.exoplayer.DefaultLoadControl"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "playback-DefaultLoadControl.json",
+      "private_envelope_sha256": "1688d7e112962c82c632c8a1cdb24acbed5e5f4b385f7da383035c4edfe0e13a",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_2e9fcb292182d4045d402fbcff4af04f513cf67a70f4884c802afe8033cd6d33",
+      "operation": "inspect_android_package",
+      "artifact": "WPlay P2P BinStream.apk",
+      "artifact_sha256": "9752e3f6ffdc522bc3e6a1e8e3e7989737bf09db44c0b220e9eb8c637aeb9e9e",
+      "selectors": {},
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "package-binstream.json",
+      "private_envelope_sha256": "cb956c5cab8376c9ae88c62d89c2698211245b4ac0dca9c28991820099c76e1a",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_30bbd66bbc52e0372e099486091172a7e240e87b056024ce4889ea87a9882e39",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.Spark",
+        "method_name": "U",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-Spark-U.json",
+      "private_envelope_sha256": "805df9de960b354dcb871d4d4affbf44f984083adc9c4b5aef69f52c18e62bd2",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_35fb60e20b591e69db883ca509cfd3344d473fb6dc67ae25a0a2811497ee7947",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.Spark"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-Spark.json",
+      "private_envelope_sha256": "1512e3662a86102b363b6deafe4a0663a2c1c553e3e325633fb59fceae4e263a",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_37dd39ac2912ac00e89a9340304ec741502219b01ed93b2ed9b672917014ca5d",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "com.tvbus.engine.TVService.TVServer",
+        "method_name": "run",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "playback-TVServer-run.json",
+      "private_envelope_sha256": "1eaab80029d6c0397007487a29aa99841b933b1fc65eae2f7b4d04fbae10238d",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_3854e541d3bdfc5de458444fd0db041a217ace60cb33f062acb28bff7e3958e5",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "ua.c"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-ua-c.json",
+      "private_envelope_sha256": "4859fa685638bd0da6e8e19254bf74907ac86e58dbef1998aecef42b62080c4b",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_3a87c256bbdcaea5b477e21de857f0b7bd67e3696af81e0a21293c585c8e2bb5",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.beans.EpgBeans"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "class-org.bitspark.android.beans.EpgBeans.json",
+      "private_envelope_sha256": "a0e14a5417d0cf0996816711cff45748a74e373abe266ab6927b644c6952ad00",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_40aefb7c0d52b4371f5462a25bd46b0fe61a78804640b77a482eefa7f831fdaa",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "td.i",
+        "method_name": "<clinit>",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-td-i-clinit.json",
+      "private_envelope_sha256": "1d359741de1d5b650fa5f13f5820321d8ed1991a486a5d4c3d6e254bf7bdd0be",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_44a5e7278517c8464ac242dbaef3332c87a71074a3f0138850c3b861d84f9907",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.SpkApplication"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-spkapplication.json",
+      "private_envelope_sha256": "0d95af4e5ea008938984505d9349ab0d10e1cad618f9b1024048ce19c95fd551",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_4ad3d60c70c591e9aa748b6a2e454320233a128c18161ad260b08904f2309095",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "td.i",
+        "method_name": "b",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-td-i-b.json",
+      "private_envelope_sha256": "e26ac3ad50544d2c900162dce05d7f8a02e9e80362499e5344f980b13c5ddf5e",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_4d9d1b34be2636c9a63ea06a64f12a46ab4ba5ae220d662cb823ffc2602876e2",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.db.AppDatabase"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-appdatabase.json",
+      "private_envelope_sha256": "553ac74d4c35e76bdb92a53b1bef1a544988645761edf2a040b9802825684c33",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_4dac845ad22fb3b89eb46e75554fdab42d6f6a7b71bb91276c27477319970c59",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "rd.c",
+        "method_name": "b",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-cache-get.json",
+      "private_envelope_sha256": "6bc56dd393fff0f714f2dc50d951d91ed898847167cccf25a3e88d25264aac3f",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_4e3c7f0afc80572bfc6e4e9c67a4a75936dcfab72f14b842b57d12083970d67d",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.h",
+        "method_name": "<clinit>",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-h-clinit.json",
+      "private_envelope_sha256": "13abac00787a31fa2ee5c9512d1c23ca36645b4133cca70959e8d5fd5ad7773b",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_550b799fcb044f8a6101b5b191664a2b3fd68f1c4faced7e2e1d0c3bffd231fd",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.beans.ChannelBean",
+        "method_name": "getDefaultUrl"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "method-ChannelBean-getDefaultUrl.json",
+      "private_envelope_sha256": "c3e560ff570b8bfd7a92f29eadbbf6907a40e4cda68a299822dbe9d34a7ea63f",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_59fe37a4c3cd619c2f53c830dec8241e04ec796bca4e39679164d3fa5efbe7d2",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.utils.y",
+        "method_name": "onCacheSuccess",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-y-onCacheSuccess.json",
+      "private_envelope_sha256": "b11e85b03b83f441edf0d594d97c8d8a458f57be8ab2dda4f2a71a464b70d115",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_5a3f9ebb6ffab2b2205e2029ae7c6c9d1873d137ef05ce6f78f4129ebabfd603",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "com.tvbus.engine.TVCore",
+        "method_name": "start",
+        "overload_index": 1
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "method-TVCore-start-1.json",
+      "private_envelope_sha256": "48dbde357269077639677a04bbddde29f31a76c355e26ec4db106278a2471c18",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_5b1d288cbe0e2c40b0a7fd365eec098640d0b3869d39fa883243796a6a60883d",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.utils.g"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-utils-g.json",
+      "private_envelope_sha256": "bf9ca96215c11351306d3a1dd2c236efeb8a52a2d760ab2f8efe472b78095066",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_5eaf279f29713c77fc11fee7189083b6b03fa20667fd2ce462be8b7f6cb6e50e",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.Spark",
+        "method_name": "onCreate",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-Spark-onCreate.json",
+      "private_envelope_sha256": "0f8afc15678c8dcb889262e6d322771b5884a6fb2b6d10d5eccdbf239e4acd19",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_5eaf6bc7bd9e14d5de4724300e3a8ae8810c41560e507f9664238f7b6f61ef6a",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "xc.a",
+        "method_name": "z",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-cache-ttl-prefix.json",
+      "private_envelope_sha256": "d296c67831e550d92240a10408171228019b92c1a63c04dd731da66b741e1b84",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_615a173f06de51ff4498aa5ca3e316dc9719b9b9e9389572366eac908204c3d3",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.Spark",
+        "method_name": "K",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-Spark-K.json",
+      "private_envelope_sha256": "5e74f565a487bf88043dd8b60c3c1494dd7224e7756f97c1e01c194fac2de680",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_63a34c6e47eb9d31b8f6d083b54f4d03b9bbda4fb63285c177124a8228fe7fd0",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "c2.a",
+        "method_name": "<init>",
+        "overload_index": 1
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-cache-manager-init.json",
+      "private_envelope_sha256": "2e9a212a4a9f1d43b8af3fd53676c064d05ada1e39bb2eafdc50ec1a7808dd7c",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_663025e38966e0db5913af7e01d8a6c7b8e2ac0eb106647eeb0491f0813ed86b",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.Spark",
+        "method_name": "I",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-Spark-I.json",
+      "private_envelope_sha256": "61de17373894e0818cf2e47c38e603c344d1cf63c30b601c41415a626fdf612a",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_66c1b080dd8a6cac6a0c5cf76ec5fd0eb7bcacba63e022d7dd7ed8f688408661",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "com.tvbus.engine.TVService",
+        "method_name": "onCreate",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "playback-TVService-onCreate.json",
+      "private_envelope_sha256": "29bcda2f99a866f67fd86c8f1943a22927e7865fc9b62411de27319ec8459a8b",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_66fcc41e6d88c6089b1318a088a986d8099a3a62092938f80f4f0217321b7749",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "td.i"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-td-i.json",
+      "private_envelope_sha256": "a84bfad8753d3c066e22036f907aede79fd39901b9f93909e771e1c3c5a99fef",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_6c64e935c3ccc99b6d1e458c3a341f688ce6eab1561eee01e2be8148474088b6",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.utils.i0",
+        "method_name": "h",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-http-client.json",
+      "private_envelope_sha256": "3999f6240afde35e9751faf798454800041a6b9a934cbbd66a3be2df927d4d74",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_70c3789ec3c6624da6925fc1c4b2df06c911440c1eeedaf0cee8ed63b0cee25b",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "com.libtvcar.Libtvcar"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "playback-Libtvcar.json",
+      "private_envelope_sha256": "9a7997fc2c84bc1b1b3fe3e14e417c84ef7d080868bf66943a97b63f13250e47",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_7237b4f5b53df3adf2f3efee61c6e5e7a1ea972ea6527fb69b469484775d7355",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.beans.ChannelBean",
+        "method_name": "getSourceList"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "method-ChannelBean-getSourceList.json",
+      "private_envelope_sha256": "d6eb5e00dba7b8ec9b6b57343d5f3f9024666b6e48ab1a0c88e3ef50a10de0f0",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_72a23341f0b25133b4c1747d5e67b6373d73976b71afac43a217fea8d0009274",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.utils.i0"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-utils-i0.json",
+      "private_envelope_sha256": "cfa1b685eecaab54b3b83b9256ba996f384866ed93d9c1dbabfdec16b2c7e6db",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_7d099dbfd6bb37af8ea6b3c5da49178d573bc039f2feb858c2d8b23d77ea542d",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "com.tvbus.engine.TVService"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "playback-TVService.json",
+      "private_envelope_sha256": "bab8ecd72c2920079b904a09a643cbf841a6d3262e448651e1018ee772cccf97",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_7fc236c5316535b20ef58e55ed72dcb2e82ed2f6db7a5619dea2f086c9f0cf42",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.e1",
+        "method_name": "handleMessage",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-e1-handleMessage.json",
+      "private_envelope_sha256": "786d12e155e603c372c4ce8063b8f9497ef3c6e7137991f35a074c2297485332",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_82779644ea3f2e6a1642d10c0829c6dafebac14ba47947862b7aa222657bb6f1",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "rd.c",
+        "method_name": "<clinit>",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-cache-clinit.json",
+      "private_envelope_sha256": "208fe62399fece982ee3936e56c76c550de8680150a3408b5365c16914b8d9d0",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_84f4a675d6790c9bd50b00d3fe73f9de76707d478e807157dbf9bfd41260d660",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "c2.a",
+        "method_name": "j",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-cache-victim.json",
+      "private_envelope_sha256": "59a4bc2cd064b77c25f7171aca9cf3d113ed85fe1aa99d01025979fc3f25d156",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_86a92382aa68a2e7fffc49a083805eda6af70bc64a28c1510f337b400aefa2b8",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "com.nmmedit.protect.NativeUtil",
+        "method_name": "<clinit>",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "playback-NativeUtil-clinit.json",
+      "private_envelope_sha256": "0378d542180997cf00342fce8cc458b8ef68d96da0ea5ca1fa96faca53fadadc",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_8807d7cacc593e2dd447f38ec5bc7541968bb8be30a96be7ec12908dd3ef3fdf",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "wd.c"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-wd-c.json",
+      "private_envelope_sha256": "e358826703a8e7c09229fcdb8c573923401df52656fd2dd25876f85043ed0380",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_881c00f590dcd95b928b6f9622632249ca455b4aafe47514f4fa763297cf900a",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "androidx.media3.exoplayer.DefaultLoadControl",
+        "method_name": "<init>",
+        "overload_index": 1
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "playback-DefaultLoadControl-init-1.json",
+      "private_envelope_sha256": "8bd3f9565f672fd7cf8bae28052bf87dfdf61801a4b30b36aba85e0ec0338bad",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_88fc53b51e3cbc8b71eb60e1a0b43295ec0b4757be57383fb19932faa0738356",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "te.e"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "playback-wrapper-e.json",
+      "private_envelope_sha256": "37595b24a37a542ee71b5506e50b8cb474d987ba41a8a9d317e03c35baa82c83",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_8e6fb6bb3eb2d84f10fcb9aba535deb8db5dfeee9196ea60aaa7057e2fd580df",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "androidx.media3.decoder.ffmpeg.FfmpegLibrary",
+        "method_name": "<clinit>",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "playback-FfmpegLibrary-clinit.json",
+      "private_envelope_sha256": "eca9780a95df4202f383bc41ad6f90cd93154ea483a0b07e5d45ac0cbdbf8a7a",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_8ffe2715f5d74af4076ee11ab1b5caef3970cbbd4e387c77babf8e5b10960371",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "td.i",
+        "method_name": "j",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-i-j.json",
+      "private_envelope_sha256": "8296350411993b158d63bfc067d44a30f1b10c8ca714dba9b3ca4d56c5b0fb8f",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_90bb96361d207fc67623e5b07a251f413c900d35154f315f2171cbcd211d227b",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.offline.VodOfflineDownloadService"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-offline-service.json",
+      "private_envelope_sha256": "692f9f9c638377461c6aa4439c4611e346df9a83ca8263b529b230df05a3acd7",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_915ec100171910ff79129dd972f9485cec59ae0c7cda3b6870fef75de8c3b18c",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "c2.a"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-cache-manager.json",
+      "private_envelope_sha256": "e2519008a8413490008fcb161c108f736ef35cd5269ee21912bfea7c6413b474",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_91e31c100dcbb9e053028729819175e9868221f03072665eeabb4a2a13a5efd2",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.utils.y",
+        "method_name": "onError",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-y-onError.json",
+      "private_envelope_sha256": "57de318f7b875bf20efc86394d8f971e50f74bc06bb61fbedab7772e8d7f5efe",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_9379cc1ba5e95decc47639981b12f39facd548e4e6fe7ab7e3d39fb46de262f8",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "te.d"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "playback-wrapper-d.json",
+      "private_envelope_sha256": "4abc430ec03fe54a30c3d8cd8f98e8eaff0b085de71e259577265ddebcb2f89e",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_9c4a6b6b43aea9a30141b701edc3df3c6d249c6ecd887aa621665f6ef09bb271",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.db.AppDatabase_Impl",
+        "method_name": "createInvalidationTracker",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-appdatabase-tables.json",
+      "private_envelope_sha256": "d558b8b8dc8da41ab6ca3e391f333984b5889e1ab951bbb458514136f986e10e",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_9ce0e98db2d8857d680d0a6c531a1af978151c317aa4f541835f98e91f793557",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "n7.b",
+        "method_name": "y",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-preset-y.json",
+      "private_envelope_sha256": "3f3bb78a1ee947ed45a8eef0c640ea270854d04b5119ab71b19555f2a46cae64",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_a2b501724eee112a3732caca36672837436a6a99437176215937bcb7d2884498",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "com.libtvcar.Libtvcar",
+        "method_name": "<clinit>",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "playback-Libtvcar-clinit.json",
+      "private_envelope_sha256": "8e0ae10b4652595e44afb50daacee63795455743c2b46c9ea56a58182486e3ee",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_a46eb48d11eea39be2205f33e8044657a720794007cec186348a72784f843dcd",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.beans.ChannelBean.SourcesBean"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "class-SourcesBean.json",
+      "private_envelope_sha256": "4bcb8f301bc6806049a18e70930ada50b0ee10bdf0e837783ce0d4c4fe82a708",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_a4bab36c0b890f105a393e95c20ba6ff3fb4e99f1a06ffeb59d762536f6cb411",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "rd.c",
+        "method_name": "d",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-cache-put-object.json",
+      "private_envelope_sha256": "d19489e58bb395b971a7f80c7ec556b3d90c4a021fe89316564fb1eab6045338",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_aa933a3331d7b27993008211a507bd69ac3be0876a945289e99b425b56eefc20",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "com.tvbus.engine.TVCore"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "class-com.tvbus.engine.TVCore.json",
+      "private_envelope_sha256": "99e1449581231e860a059c236595e87d99913d072e2d69d8e85e5743f2afe6fa",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_ad2645895119b9bc38f312433e457c34f3783205be03849b1794e063d60efbc2",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "se.i"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-offline-core.json",
+      "private_envelope_sha256": "0af7cbec70d0333c43f61ef30045d6bdb24d974bfb9e822889cfc4ff4a5a57d0",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_af594677de8ed09f20b7f384d54a9346989be7ec5b239b96166eea98d6b6f679",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "rd.c",
+        "method_name": "f",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-cache-put-ttl.json",
+      "private_envelope_sha256": "7cfdbda7c43a06cac53b65eea066375f66153d112373b4e3787271540e1b6eb8",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_b5335e6fa8f074015bfe1900c649bd25418b915998a138c5debe94cce89b3c55",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "xc.a",
+        "method_name": "O",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-cache-ttl-expired.json",
+      "private_envelope_sha256": "1e48325b6e7f115921f4a21bb17aa65fcb93d17d657744f78a899f6055ffa980",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_b894f5721af4ebdb923c1043cbbdcfe7aa220584aa0fd47f6be2eb6d20a77c5b",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "td.c",
+        "method_name": "a",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-c-a.json",
+      "private_envelope_sha256": "a13abf6f6a5510e7fd225920394785180d8e35ff6d2719d251a487a0f76d771c",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_b8d03dbae27b78f6eec1f14809debe894ee76ff4f2aa3499b49ee0fff4340c3f",
+      "operation": "inspect_android_package",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {},
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "package.json",
+      "private_envelope_sha256": "7558002dcfa10b4eef41243df88c4d3108a8768d18c7f1e3fe22b079cc4966f4",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_b908ab26a72a44622819e88759f4ff721ea253bc1cc500a25ab195873a089120",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "td.e",
+        "method_name": "onError",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-e-onError.json",
+      "private_envelope_sha256": "8337b00f436bf78e78455da4fb37b5dfb9e37a1e4544d935bcd24b1a0a56d677",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_b99a0aa070db3df7521e43e3a2e1ba4ca6d56b1363b638cf024faac74fa57bd9",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "rd.c",
+        "method_name": "e",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-cache-write-bytes.json",
+      "private_envelope_sha256": "41f7792157080b06918f58a7ef8ad44d9947b62a16720f1cceb689539c1766a8",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_ba458facab5c120169d247aed11fd3da522887e97ffc3e74278eff9a847accf4",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "ae.t2",
+        "method_name": "o0",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-t2-o0.json",
+      "private_envelope_sha256": "61f328677cd87ad6d99e1c957f35d53bdd64454808e41dbcbe7655319145cdb6",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_bd384cc57aa5236ad466afd9741eb2103e8c8e9c69ef0c9854493b3aafdd2d6b",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "rd.a",
+        "method_name": "run",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-cache-write-worker.json",
+      "private_envelope_sha256": "fd2b7824856b159255607151ebec35d26d641079992f72f93edbff482da940e6",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_c5c430b884d467ab4e080593291ae4d9db5081450fb6df84d681a509f3377c8c",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.utils.y",
+        "method_name": "onSuccess",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-y-onSuccess.json",
+      "private_envelope_sha256": "c355bfa72c6d22271c7536543c6a79d8e2ae0796829f9b1f9f370f9c2349fc8d",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_c7a313131b64ebe63a481716966bd322eb87065c95d7253f8ce9275871d8c7d5",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.SpkApplication",
+        "method_name": "onCreate",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-spkapplication-onCreate.json",
+      "private_envelope_sha256": "6339f3050a2fe5efa24b59c069f393dc899fcff91f84622a823467cfc505e80b",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_c8303fe5151ce921938de3b18bb896fe8bcba7c8f43d595168f43ee9717fc258",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.e1"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-e1.json",
+      "private_envelope_sha256": "b92c4928778e8ce9fd7f1ace7d3ebb4d40c3a5e73fbf95d70c1ef8f2aa2522ec",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_ccc54c772b678b599d6a69a6380de338ed46378322f388cd2bccdaa6cb4cee9f",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.offline.VodOfflineDownloadService",
+        "method_name": "getDownloadManager",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-offline-manager.json",
+      "private_envelope_sha256": "dedaf73cda032a9bb0f63977d8e9d6fe1dc10154c07561fc17cbddfed32c9403",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_cffac46faeb24c4ed30704f057a35f3209998fbbdefd17350ee6d2307b3ca3cc",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.beans.ChannelBean"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "class-org.bitspark.android.beans.ChannelBean.json",
+      "private_envelope_sha256": "f343f58c73214b7563ff5e69200ba2e100afc33c418333479e3bc2e7c776a9ae",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_d1d61ba267050db3db5945e88fd1c718ff1a2ae720d35375ff68248a70deccb9",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "c2.a",
+        "method_name": "f",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-cache-file-name.json",
+      "private_envelope_sha256": "1fc026150dd4b6e614abedc5e48d9976efb7ac613f7aedb4803e076723513499",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_d8881d50cf56f577e5c97c654ff5bfd4463ad754310a99e3f52dd398c5307d84",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.db.AppDatabase_Impl",
+        "method_name": "createOpenDelegate",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-appdatabase-open.json",
+      "private_envelope_sha256": "eca711f6877929cbbbb63d6c06777baa2f52fbea88861413351b101d838be22f",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_ded2b67474613e4bf7c315112fdab1c47350d423319ccbaa3074d0156ee22feb",
+      "operation": "inspect_android_class",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "rd.c"
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-rd-c.json",
+      "private_envelope_sha256": "f72ac7a462aadcb65e010c007a3c27c8b037be97f757f22c844422188dee5669",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_e61083749f64f6821c49d120713c6d25ab46b673c2ec571726c4b629730edb8e",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "ua.c",
+        "method_name": "J",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-sharedpreferences.json",
+      "private_envelope_sha256": "8eb184f1b4421488d9c3ac264cc29c0a2226f2720773e0b8ff838ce5836396ed",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_e73f1c7acdae1b706870b2a7483893c72f4f43532b9df8479baed6cc0c013abf",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "org.bitspark.android.Spark",
+        "method_name": "onStop",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-Spark-onStop.json",
+      "private_envelope_sha256": "30e495ab74366f435250af3f7bfd44f7d441fca89a74fa21ada7a6e86f5a7826",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_e994e5257549ce5987ae8b592b1df0f50ef0389667f2d47e010dda5e6043c8d1",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "td.e",
+        "method_name": "onSuccess",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "network-e-onSuccess.json",
+      "private_envelope_sha256": "cd153ba18217db92dfb0bb4993da68666820e331ace0473047141303efeff5a1",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_ecdf0161b936721cba6b60a296911f97bae4ca5417897bd99063270a5812540f",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "androidx.media3.exoplayer.DefaultLoadControl",
+        "method_name": "<init>",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "playback-DefaultLoadControl-init.json",
+      "private_envelope_sha256": "2fcaccb9468e3a98cf4984b21c14a37aeb296867e55770759ff47539242b48f9",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_f0da89dc7706183b1cce539cfcfca0e698882e5e512bac3595c8c5a20f40dc1c",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "androidx.media3.exoplayer.DefaultLoadControl",
+        "method_name": "shouldContinueLoading",
+        "overload_index": 1
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "playback-DefaultLoadControl-loading.json",
+      "private_envelope_sha256": "d45312e13c7537802e9826ff3daa27ad2a3930663aa530c2cff289af5d94d175",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    },
+    {
+      "evidence_id": "ev_f8264fdb5b1291ba063251991578665c81a2dd78e6d86a7c7d0d2dc138be8b38",
+      "operation": "inspect_android_method",
+      "artifact": "WPLAYP2P.apk",
+      "artifact_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+      "selectors": {
+        "class_name": "se.i",
+        "method_name": "q",
+        "overload_index": 0
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "private_source_basename": "storage-offline-init.json",
+      "private_envelope_sha256": "7f83ae046d31f1949a08ab1f0b76f04ba6fc51ca56d8a7d14ebdf7d2f0eca630",
+      "limitations": [
+        "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+        "Method signatures use provider display types; exact DEX descriptors and instruction offsets are unavailable. Overload indices are local to this engine and artifact.",
+        "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+        "Manifest summary fields are extracted by the upstream engine; decoded XML is retained for verification. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+      ]
+    }
+  ]
+}

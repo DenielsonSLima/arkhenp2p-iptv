@@ -1,5 +1,6 @@
 @import './player/troca-canal/visualizacao.css';
 @import './player/troca-canal/continuidade/host.css';
+@import './tv/player/qualidade-adaptativa.css';
 .immersive-stage{position:relative;isolation:isolate;background:#000;overflow:hidden;outline:none}
 .immersive-stage:focus-visible{outline:2px solid #d2dae4;outline-offset:-2px}
 .immersive-stage video{width:100%;height:100%;object-fit:contain}
@@ -120,6 +121,9 @@
 .immersive-stage .ip-live-information .ip-title { color: #f1f3f7; font-size: clamp(17px, 1.4vw, 25px); font-weight: 600; line-height: 1.25; letter-spacing: .2px; }
 .immersive-stage .ip-live-information :is(.ip-schedule, .ip-neighbor-schedule) { display: flex; flex-direction: column; min-width: 0; gap: 8px; margin-top: 12px; padding-top: 11px; border-top: 1px solid #edf2fa20; text-align: left; }
 .immersive-stage .ip-live-information .ip-program { grid-template-columns: 59px minmax(0, 1fr) auto; gap: 8px; line-height: 1.4; }
+.immersive-stage .ip-live-information :is(.ip-program-previous, .ip-neighbor-program-previous) { opacity: .5; }
+.immersive-stage .ip-live-information :is(.ip-program-current, .ip-neighbor-program-current) { opacity: 1; }
+.immersive-stage .ip-live-information :is(.ip-program-next, .ip-neighbor-program-next) { opacity: .7; }
 .immersive-stage .ip-live-information .ip-program-title { font-size: clamp(16px, 1.2vw, 18px); color: #d3dce9; font-weight: 500; }
 .immersive-stage .ip-live-information .ip-program-label,
 .immersive-stage .ip-live-information .ip-program-time { color: #a9b7ca; font-size: 13px; font-weight: 500; white-space: nowrap; }

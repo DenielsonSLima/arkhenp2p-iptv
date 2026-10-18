@@ -77,20 +77,22 @@ test('favorite numbers survive reordered catalogs, new favorites and saved-prefe
   assert.deepEqual(reloaded.tools.getNumberedChannels().map(entry => [entry.item.id, entry.number]), updated.map(entry => [entry.item.id, entry.number]));
 });
 
-test('custom channel numbers accept the boundaries and reject collisions and invalid values without saving', () => {
+test('custom numbers accept boundaries, swap occupied numbers and reject invalid values without saving', () => {
   const fixture = preferences();
   assert.equal(fixture.tools.setChannelNumber('101', 1), true);
   assert.equal(fixture.tools.setChannelNumber('102', '9999'), true);
   assert.equal(fixture.tools.getChannelNumber('101'), 1);
   assert.equal(fixture.tools.getChannelNumber('102'), 9999);
+  assert.equal(fixture.tools.setChannelNumber('102', 1), true);
+  assert.equal(fixture.tools.getChannelNumber('101'),9999);assert.equal(fixture.tools.getChannelNumber('102'),1);
   const saves = fixture.snapshots.length;
-  assert.equal(fixture.tools.setChannelNumber('102', 1), false);
   for (const value of [0, 10000, 1.5, '', 'inválido']) assert.equal(fixture.tools.setChannelNumber('101', value), false);
   assert.equal(fixture.snapshots.length, saves);
-  assert.equal(fixture.changes, 2);
-  assert.equal(fixture.messages.length, 6);
-  assert.equal(fixture.tools.getChannelNumber('101'), 1);
-  assert.equal(fixture.tools.getChannelNumber('102'), 9999);
+  assert.equal(fixture.changes, 3);
+  assert.equal(fixture.messages.length, 5);
+  assert.equal(fixture.tools.getChannelNumber('101'), 9999);
+  assert.equal(fixture.tools.getChannelNumber('102'), 1);
+  const assignments=fixture.tools.getNumberedChannels({favoritesOnly:false,persistMissing:false});assert.equal(new Set(assignments.map(entry=>entry.number)).size,assignments.length);
 });
 
 test('removing a favorite persists its visibility separately and restoring it keeps its channel number', () => {

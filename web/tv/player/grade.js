@@ -1,5 +1,5 @@
 import {element,icon} from '../../player/dom.js';
-import {programWindow} from '../../program-guide.js';
+import {programWindow} from '../canais/programacao.js';
 import {renderPlayerChannelLogo} from '../../player-channel-logos.js';
 import {TVPlayerPrograms} from './programacao.js';
 
@@ -41,7 +41,7 @@ export class TVPlayerGuide{
   }
   setContext({current,programs}={}){
     this.current=current;this.programs=programs;
-    if(current?.item.kind==='live')this.metadata.start();else this.metadata.stop();
+    if(current?.item.kind!=='live')this.metadata.stop();
     this.render();
   }
   render(){
@@ -49,6 +49,7 @@ export class TVPlayerGuide{
     try{
       const live=this.current?.item.kind==='live',preview=live&&this.navigation.isPreviewing();
       const neighbors=live?this.navigation.neighbors():{},selected=live?(this.navigation.selected()||{item:this.current.item,number:this.current.channelNumber}):null;
+      if(live)this.metadata.start([this.current?.item.id,selected?.item.id,neighbors.previous?.item.id,neighbors.next?.item.id].filter(Boolean).map(String));
       for(const [key,slot] of Object.entries(this.slots)){
         const entry=key==='current'?selected:neighbors[key];slot.entry=entry||null;
         slot.button.hidden=!live;slot.button.disabled=!entry||(key==='current'&&!preview);
@@ -60,7 +61,10 @@ export class TVPlayerGuide{
         const caption=entry?`${key==='current'&&!preview?'Canal atual':'Assistir canal'} ${number(entry.number)}, ${text(entry.item.name)}`:'Sem outro canal';
         slot.button.setAttribute('aria-label',caption);slot.button.title=caption;
         const active=entry&&String(entry.item.id)===String(this.current?.item.id);
-        const data=active?(this.programs||this.metadata.peek(entry.item.id)):entry?this.metadata.peek(entry.item.id):null;
+        // The live shared projection can arrive after an empty opening DTO.
+        // Prefer that authoritative window, including a legitimate empty one.
+        const cached=entry?this.metadata.peek(entry.item.id):null;
+        const data=cached||(active?this.programs:null);
         const periods=programWindow(data),hasPrograms=Object.values(periods).some(Boolean);
         slot.schedule.hidden=!entry;slot.status.hidden=hasPrograms;
         const status=data?.status||this.metadata.status();

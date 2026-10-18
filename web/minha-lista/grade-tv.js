@@ -88,6 +88,7 @@ export class FavoriteTVGuide{
     }
     for(const key of this.records.keys())if(!wanted.has(key))this.records.delete(key);reconcileChildren(this.body,rows);
     if(focus&&document.activeElement!==focus.element)(focus.element.isConnected?focus.element:rows[Math.min(focus.index,rows.length-1)]?.querySelector('.grade-tv-channel-button'))?.focus({preventScroll:true});
+    this.subscription?.unsubscribe?.updateIds?.();
     this.renderPrograms(this.guide?.state);if(this.isActive())this.resume();else this.pause();
   }
 
@@ -198,7 +199,7 @@ export class FavoriteTVGuide{
     if(!this.isActive()){this.pause();return;}if(this.readScope()!==this.scope){this.reset();return;}this.paused=false;this.resizeObserver?.observe(this.scroller);
     if(this.subscription||!this.records.size||!this.guide?.subscribe){this.startClock();return;}
     const subscription={unsubscribe:null};this.subscription=subscription;
-    const unsubscribe=this.guide.subscribe(state=>{if(this.subscription!==subscription||this.paused)return;if(!this.isActive()){this.pause();return;}this.renderPrograms(state);});
+    const unsubscribe=this.guide.subscribe(state=>{if(this.subscription!==subscription||this.paused)return;if(!this.isActive()){this.pause();return;}this.renderPrograms(state);},{ids:()=>[...this.records.values()].map(record=>String(record.item.id))});
     if(this.subscription===subscription&&!this.paused){subscription.unsubscribe=unsubscribe;this.startClock();}else unsubscribe?.();
   }
   pause(){this.paused=true;clearTimeout(this.clockTimer);this.clockTimer=null;this.resizeObserver?.disconnect();const subscription=this.subscription;this.subscription=null;subscription?.unsubscribe?.();}

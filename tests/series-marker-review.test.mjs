@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {reviewCatalogTitle,prioritizedReviewSeries,reviewedSeriesIdentity} from '../lib/series-marker-review.mjs';
+import {reviewCatalogTitle,prioritizedReviewSeries,reviewedSeriesIdentity} from '../lib/serie/marcadores/revisao.mjs';
 test('review selection uses only real supplied provider items, prioritizes existing app items and balances catalog categories',()=>{
  const pool=Array.from({length:12},(_,i)=>({id:String(i),name:'Série '+i,kind:'series',rating:i,sourceCategory:{name:i%2?'A':'B'}}));const rows=prioritizedReviewSeries(pool,[{id:'100',name:'Já no app',kind:'series'}],5);
  assert.equal(rows.length,5);assert.equal(rows[0].id,'100');assert.ok(rows.slice(1).every(row=>pool.some(item=>item.id===row.id)));assert.equal(new Set(rows.slice(1).map(row=>row.sourceCategory.name)).size,2);

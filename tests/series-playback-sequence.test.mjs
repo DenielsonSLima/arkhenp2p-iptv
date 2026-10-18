@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {loadSeriesPlaybackSequence} from '../web/series-playback-sequence.js';
+import {loadSeriesPlaybackSequence} from '../web/serie/sequencia.js';
 
 const item={kind:'series',id:'100',name:'Game of Thrones'};
 const historyEpisode={id:'501',title:'S05E001'};

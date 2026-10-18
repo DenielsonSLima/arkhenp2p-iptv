@@ -1,0 +1,107 @@
+{
+  "apk_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+  "dex_member": "classes.dex",
+  "dex_sha256": "288b1a547c148add3c7832844095be31d70b7148815dd4a3fde2d31ea6beea7b",
+  "method": "direct selected DEX encoded_array numeric/boolean constants; no execution",
+  "class": "Landroidx/media3/exoplayer/DefaultLoadControl;",
+  "values": [
+    {
+      "field": "DEFAULT_AUDIO_BUFFER_SIZE:I",
+      "encoded_value_offset": "0x2c61a6",
+      "type": "0x4",
+      "value": 13107200
+    },
+    {
+      "field": "DEFAULT_BACK_BUFFER_DURATION_MS:I",
+      "encoded_value_offset": "0x2c61ab",
+      "type": "0x4",
+      "value": 0
+    },
+    {
+      "field": "DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS:I",
+      "encoded_value_offset": "0x2c61ad",
+      "type": "0x4",
+      "value": 2000
+    },
+    {
+      "field": "DEFAULT_BUFFER_FOR_PLAYBACK_MS:I",
+      "encoded_value_offset": "0x2c61b0",
+      "type": "0x4",
+      "value": 1000
+    },
+    {
+      "field": "DEFAULT_CAMERA_MOTION_BUFFER_SIZE:I",
+      "encoded_value_offset": "0x2c61b3",
+      "type": "0x4",
+      "value": 131072
+    },
+    {
+      "field": "DEFAULT_IMAGE_BUFFER_SIZE:I",
+      "encoded_value_offset": "0x2c61b7",
+      "type": "0x4",
+      "value": 131072
+    },
+    {
+      "field": "DEFAULT_MAX_BUFFER_MS:I",
+      "encoded_value_offset": "0x2c61bb",
+      "type": "0x4",
+      "value": 50000
+    },
+    {
+      "field": "DEFAULT_METADATA_BUFFER_SIZE:I",
+      "encoded_value_offset": "0x2c61bf",
+      "type": "0x4",
+      "value": 131072
+    },
+    {
+      "field": "DEFAULT_MIN_BUFFER_MS:I",
+      "encoded_value_offset": "0x2c61c3",
+      "type": "0x4",
+      "value": 50000
+    },
+    {
+      "field": "DEFAULT_MIN_BUFFER_SIZE:I",
+      "encoded_value_offset": "0x2c61c7",
+      "type": "0x4",
+      "value": 13107200
+    },
+    {
+      "field": "DEFAULT_MUXED_BUFFER_SIZE:I",
+      "encoded_value_offset": "0x2c61cc",
+      "type": "0x4",
+      "value": 144310272
+    },
+    {
+      "field": "DEFAULT_PRIORITIZE_TIME_OVER_SIZE_THRESHOLDS:Z",
+      "encoded_value_offset": "0x2c61d1",
+      "type": "0x1f",
+      "value": false
+    },
+    {
+      "field": "DEFAULT_RETAIN_BACK_BUFFER_FROM_KEYFRAME:Z",
+      "encoded_value_offset": "0x2c61d2",
+      "type": "0x1f",
+      "value": false
+    },
+    {
+      "field": "DEFAULT_TARGET_BUFFER_BYTES:I",
+      "encoded_value_offset": "0x2c61d3",
+      "type": "0x4",
+      "value": -1
+    },
+    {
+      "field": "DEFAULT_TEXT_BUFFER_SIZE:I",
+      "encoded_value_offset": "0x2c61d5",
+      "type": "0x4",
+      "value": 131072
+    },
+    {
+      "field": "DEFAULT_VIDEO_BUFFER_SIZE:I",
+      "encoded_value_offset": "0x2c61d9",
+      "type": "0x4",
+      "value": 131072000
+    }
+  ],
+  "class_def_offset": "0x133d14",
+  "static_values_offset": "0x2c61a5"
+}

@@ -176,8 +176,8 @@ export class HomeChannelPreview {
     void this.pause('failure', {suspend: false, retryStop: false}).then(() => this.#emit('unavailable', null, operation.target), () => {});
   }
 
-  /** Local media is retired synchronously. The returned promise confirms the
-   * remote STOP. A failed reference remains available to a later explicit call. */
+  /** Retirement starts synchronously. The promise confirms local cleanup and
+   * remote STOP; a failed reference remains available to an explicit retry. */
   pause(reason = 'owner', {suspend = true, retryStop = true} = {}) {
     if (suspend) this.suspended = true;
     const operation = this.operation;
@@ -185,27 +185,34 @@ export class HomeChannelPreview {
     if (operation) {
       operation.controller.abort();
       for (const cleanup of operation.cleanup.splice(0)) cleanup();
-      operation.task?.dispose();
+      // Some existing adapters retire asynchronously. The shared video must
+      // not be reused while an old dispose() can still clear its new source.
+      try { operation.localStopped = Promise.resolve(operation.task?.dispose()); }
+      catch (error) { operation.localStopped = Promise.reject(error); }
+      operation.localStopped = operation.localStopped.catch(error => { operation.localStopFailed = true; throw error; });
+      void operation.localStopped.catch(() => {});
       if (operation.remoteStarted) this.failedStop = operation;
       this.#emit('idle');
     }
     if (this.stopping) return this.stopping;
     const pending = this.failedStop;
     if (!pending) return Promise.resolve();
-    // Logout/account replacement owns cleanup of its old backend session.
-    // Never issue an old attempt's STOP against a newly authenticated account.
-    if (pending.scope !== scopeKey(this.getScope())) {
-      this.failedStop = null;
-      return Promise.resolve();
-    }
-    if (!operation?.remoteStarted && !retryStop) return Promise.reject(pending.stopError || cancelled());
+    if (!operation?.remoteStarted && !retryStop && pending.scope === scopeKey(this.getScope())) return Promise.reject(pending.stopError || cancelled());
     const next = Promise.resolve().then(() => {
-      if (pending.scope !== scopeKey(this.getScope())) return;
-      return this.stopRemote({attempt: pending.attempt, scope: pending.scope, reason});
+      // Account replacement owns the old backend session. Local retirement
+      // still completes before this same video can serve the new account.
+      return Promise.allSettled([pending.localStopped,
+        Promise.resolve().then(() => {
+          if (pending.scope === scopeKey(this.getScope())) return this.stopRemote({attempt: pending.attempt, scope: pending.scope, reason});
+        })
+      ]).then(results => {
+        const failed = results.find(result => result.status === 'rejected');
+        if (failed) throw failed.reason;
+      });
     }).then(() => {
       if (this.failedStop === pending) this.failedStop = null;
     }, error => {
-      if (pending.scope !== scopeKey(this.getScope())) {
+      if (pending.scope !== scopeKey(this.getScope()) && !pending.localStopFailed) {
         if (this.failedStop === pending) this.failedStop = null;
         return;
       }

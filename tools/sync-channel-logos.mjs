@@ -5,8 +5,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { readWplayCredentials, safeCode } from './wplay-tool-input.mjs';
-import { WplayOTTProviderClient } from '../lib/wplay-ott-provider.mjs';
-import { WplayProviderClient, WPLAY_AUTH_URLS } from '../lib/wplay-provider.mjs';
+import { WplayOTTProviderClient } from '../lib/wplay/ott/provedor.mjs';
+import { WplayProviderClient, WPLAY_AUTH_URLS } from '../lib/wplay/conexao/provedor-nativo.mjs';
 import { requestUpstream, readBody } from '../lib/upstream.mjs';
 
 const OUTPUT = fileURLToPath(new URL('../web/assets/channels/', import.meta.url));

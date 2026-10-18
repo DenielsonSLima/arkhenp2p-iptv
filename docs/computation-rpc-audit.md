@@ -13,7 +13,7 @@ Auditoria de 15/10/2026. As observações de código abaixo são uma análise es
 | `web/home-sections.js:watched` | Cria mapa do catálogo inteiro para enriquecer um histórico pequeno | RPC privada limitada aos itens assistidos, enriquecidos por join indexado com a geração publicada |
 | `web/library-selectors.js:selectLibraryFavorites` | Percorre somente favoritos privados e resolve metadados pelo mapa do catálogo | Manter resposta otimista local; contagens persistidas e leitura entre dispositivos vêm do Supabase, sem depender da disponibilidade do catálogo |
 | `web/cloud-library.js:flushProgress` | Persiste as alterações acumuladas com outbox e revisão por registro | Banco continua autoridade; eventual RPC de gravação deve ser em lote, mantendo merge/revisão e confirmação por registro |
-| `web/immersive-player.js`, `web/episode-progress.js` | Percentual de reprodução, intervalo ativo, controles, seek e buffer | Permanecem no dispositivo; o Supabase fornece referências e persiste progresso em intervalos, pausa e saída |
+| `web/player/orquestrador.js`, `web/serie/progresso.js` | Percentual de reprodução, intervalo ativo, controles, seek e buffer | Permanecem no dispositivo; o Supabase fornece referências e persiste progresso em intervalos, pausa e saída |
 
 Os metadados compartilhados não incluem favoritos, tempo assistido, coleções, categorias ocultas nem sinais de recomendação de uma conta. O cache completo diário continua separado por domínio e partição; as ordens e associações preparadas são publicadas junto da geração correspondente. Uma falha de atualização conserva a última geração completa.
 

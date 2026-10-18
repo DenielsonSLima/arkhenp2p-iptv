@@ -1,6 +1,6 @@
 # TV ao vivo no navegador
 
-Implementação canônica de TV. A página principal compõe este domínio por `TVOrchestrator`; os arquivos antigos de guia e fontes conservam exportações de compatibilidade. Não mantenha uma segunda implementação nesses arquivos antigos.
+Implementação canônica de TV. A página principal compõe este domínio por `TVOrchestrator`; os consumidores importam os módulos desta pasta. As fachadas antigas de guia e fontes foram removidas após a migração dos imports.
 
 ## Mapa de manutenção
 
@@ -36,12 +36,14 @@ Configure o orquestrador uma vez por instância da aplicação. Use `reset()` ao
 
 A coleta global da programação e a projeção atual do guia são fases distintas. O temporizador da query pede uma nova projeção no prazo informado pelo servidor; não agenda uma coleta WPLAY. O cliente consome `epg_cache_versions` pelo socket compartilhado e não abre outro cliente Supabase por card, tela ou canal.
 
+Cards, favoritos, player e vizinhos registram IDs em `TVGuideClient.subscribe(...,{ids})`; seleções mutáveis notificam por `unsubscribe.updateIds()`. A união usa uma consulta compartilhada e a RPC filtra antes de calcular. Assinaturas antigas e conjuntos extremos conservam o mapa completo. Regras e progresso continuam no servidor. [Decisão e limites](../../docs/tv-epg-on-demand-20261017.md).
+
 Favoritar um canal não altera seu ID nem os favoritos de Filmes/Séries. Estado otimista ou uma gravação na fila local não comprova persistência remota. Para um problema entre dispositivos, comece em `supabase.js`/`canais/favoritos.js`, depois siga para `web/cloud-library.js`, sua fila e a política remota da conta.
 
 ## Onde investigar
 
 - Guia lento ou vazio: `services.js` → `tanstack-query.js` → `canais/programacao.js` → [backend TV](../../lib/tv/README.md).
-- Repetição de abertura ou falha HTTP: integração do player em `web/app.js`, `canais/resolucoes.js` e transporte em `lib/tv/transporte-web.mjs`; os códigos e prazos continuam na infraestrutura compartilhada.
+- Repetição de abertura ou falha HTTP: integração do player em `web/app.js`, `canais/resolucoes.js` e transporte em `lib/wplay/ao-vivo/transporte-web.mjs`; os códigos e prazos continuam na infraestrutura compartilhada.
 - Qualidade ausente: inventário público de `services.js` e `canais/resolucoes.js`; compare as variantes reais da fonte antes de interpretar um rótulo “4K”.
 - Volume ou faixa incorreta: `canais/audio.js`; legendas: `canais/legendas.js` e `web/subtitle-layout.js`.
 - Logo ausente: `logos/resolver.js`, manifesto e `web/artwork-url.js`; preserve os endereços antigos durante a migração de favoritos/cache.

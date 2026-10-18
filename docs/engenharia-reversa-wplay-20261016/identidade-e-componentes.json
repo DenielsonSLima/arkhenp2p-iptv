@@ -1,0 +1,412 @@
+[
+  {
+    "label": "primary",
+    "file": "WPLAYP2P.apk",
+    "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+    "evidence_id": "ev_10e6cd4c74d55d8153c1a476e0a2873b3ca563cd42dfd1f8cf23bc4d3dbad0eb",
+    "package": "io.wareztv.android.one",
+    "version": "11.9.0d",
+    "version_code": "1190",
+    "sdk_min": "21",
+    "sdk_target": "35",
+    "jadx_class_view": 7977,
+    "resource_count": 2463,
+    "permissions": [
+      "android.permission.INTERNET",
+      "android.permission.READ_PHONE_STATE",
+      "android.permission.READ_OWNER_DATA",
+      "android.permission.WRITE_OWNER_DATA",
+      "android.permission.ACCESS_NETWORK_STATE",
+      "android.permission.ACCESS_WIFI_STATE",
+      "android.permission.WRITE_EXTERNAL_STORAGE",
+      "android.permission.READ_EXTERNAL_STORAGE",
+      "android.permission.RECEIVE_BOOT_COMPLETED",
+      "android.permission.WAKE_LOCK",
+      "android.permission.MODIFY_AUDIO_SETTINGS",
+      "android.permission.SYSTEM_ALERT_WINDOW",
+      "android.permission.REQUEST_INSTALL_PACKAGES",
+      "android.permission.FOREGROUND_SERVICE",
+      "android.permission.FOREGROUND_SERVICE_DATA_SYNC",
+      "io.wareztv.android.one.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+      "android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
+    ],
+    "components": [
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.Spark",
+        "exported": "true",
+        "process": null
+      },
+      {
+        "type": "receiver",
+        "name": "org.bitspark.android.broadcast.ActionReceiver",
+        "exported": "true",
+        "process": null
+      },
+      {
+        "type": "service",
+        "name": "com.tvbus.engine.TVService",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "service",
+        "name": "org.bitspark.android.offline.VodOfflineDownloadService",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.tv.GameDetailActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.phone.PhoneGameDetailActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.phone.PhoneEventsScheduleActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.tv.GamePlayActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.phone.PhoneGamePlayActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.phone.PhoneLeagueEventsActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.phone.PhoneRankingActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.tv.EventsScheduleActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.tv.LeagueEventsActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.tv.RankingActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.payment.PaymentActivity",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "provider",
+        "name": "androidx.core.content.FileProvider",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "receiver",
+        "name": "com.google.android.gms.cast.framework.media.MediaIntentReceiver",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "service",
+        "name": "com.google.android.gms.cast.framework.ReconnectionService",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "com.google.android.gms.common.api.GoogleApiActivity",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "ly.count.android.sdk.messaging.CountlyPushActivity",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "ly.count.android.sdk.TransparentActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "provider",
+        "name": "androidx.startup.InitializationProvider",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "provider",
+        "name": "me.jessyan.autosize.InitProvider",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "service",
+        "name": "androidx.room.MultiInstanceInvalidationService",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "receiver",
+        "name": "androidx.profileinstaller.ProfileInstallReceiver",
+        "exported": "true",
+        "process": null
+      },
+      {
+        "type": "service",
+        "name": "com.google.android.datatransport.runtime.backends.TransportBackendDiscovery",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "service",
+        "name": "com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "receiver",
+        "name": "com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver",
+        "exported": "false",
+        "process": null
+      }
+    ],
+    "bitspark_class_defs": 501,
+    "bitspark_defined_methods": 3673,
+    "bitspark_native_methods": 1919
+  },
+  {
+    "label": "binstream",
+    "file": "WPlay P2P BinStream.apk",
+    "sha256": "9752e3f6ffdc522bc3e6a1e8e3e7989737bf09db44c0b220e9eb8c637aeb9e9e",
+    "evidence_id": "ev_2e9fcb292182d4045d402fbcff4af04f513cf67a70f4884c802afe8033cd6d33",
+    "package": "io.wareztv.android.one",
+    "version": "12.0.3",
+    "version_code": "1203",
+    "sdk_min": "21",
+    "sdk_target": "35",
+    "jadx_class_view": 7992,
+    "resource_count": 2469,
+    "permissions": [
+      "android.permission.INTERNET",
+      "android.permission.READ_PHONE_STATE",
+      "android.permission.READ_OWNER_DATA",
+      "android.permission.WRITE_OWNER_DATA",
+      "android.permission.ACCESS_NETWORK_STATE",
+      "android.permission.ACCESS_WIFI_STATE",
+      "android.permission.WRITE_EXTERNAL_STORAGE",
+      "android.permission.READ_EXTERNAL_STORAGE",
+      "android.permission.RECEIVE_BOOT_COMPLETED",
+      "android.permission.WAKE_LOCK",
+      "android.permission.MODIFY_AUDIO_SETTINGS",
+      "android.permission.SYSTEM_ALERT_WINDOW",
+      "android.permission.REQUEST_INSTALL_PACKAGES",
+      "android.permission.FOREGROUND_SERVICE",
+      "android.permission.FOREGROUND_SERVICE_DATA_SYNC",
+      "io.wareztv.android.one.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+      "android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
+    ],
+    "components": [
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.Spark",
+        "exported": "true",
+        "process": null
+      },
+      {
+        "type": "receiver",
+        "name": "org.bitspark.android.broadcast.ActionReceiver",
+        "exported": "true",
+        "process": null
+      },
+      {
+        "type": "service",
+        "name": "com.tvbus.engine.TVService",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "service",
+        "name": "org.bitspark.android.offline.VodOfflineDownloadService",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.tv.GameDetailActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.phone.PhoneGameDetailActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.phone.PhoneEventsScheduleActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.tv.GamePlayActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.phone.PhoneGamePlayActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.phone.PhoneLeagueEventsActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.phone.PhoneRankingActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.tv.EventsScheduleActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.tv.LeagueEventsActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.match.tv.RankingActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "org.bitspark.android.payment.PaymentActivity",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "provider",
+        "name": "androidx.core.content.FileProvider",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "receiver",
+        "name": "com.google.android.gms.cast.framework.media.MediaIntentReceiver",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "service",
+        "name": "com.google.android.gms.cast.framework.ReconnectionService",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "com.google.android.gms.common.api.GoogleApiActivity",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "ly.count.android.sdk.messaging.CountlyPushActivity",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "activity",
+        "name": "ly.count.android.sdk.TransparentActivity",
+        "exported": null,
+        "process": null
+      },
+      {
+        "type": "provider",
+        "name": "androidx.startup.InitializationProvider",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "provider",
+        "name": "me.jessyan.autosize.InitProvider",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "service",
+        "name": "androidx.room.MultiInstanceInvalidationService",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "receiver",
+        "name": "androidx.profileinstaller.ProfileInstallReceiver",
+        "exported": "true",
+        "process": null
+      },
+      {
+        "type": "service",
+        "name": "com.google.android.datatransport.runtime.backends.TransportBackendDiscovery",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "service",
+        "name": "com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService",
+        "exported": "false",
+        "process": null
+      },
+      {
+        "type": "receiver",
+        "name": "com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver",
+        "exported": "false",
+        "process": null
+      }
+    ],
+    "bitspark_class_defs": 500,
+    "bitspark_defined_methods": 3679,
+    "bitspark_native_methods": 1926
+  }
+]

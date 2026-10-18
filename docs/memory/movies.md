@@ -1,5 +1,35 @@
 # Filmes
 
+## MEM-MOVIES-012 — Home VOD independente da preparação de TV
+
+Estado: RPCs aditivas publicadas e conferidas; rotas HTTP com login normal validadas; Safari pendente. Data: 17/10/2026.
+
+`arkhen_home_vod` substitui o uso atual da HomeLibrary legada sem consultar catálogo, favoritos ou progresso de TV. Conserva ranking, históricos e contagens VOD; os campos legados de canais ficam vazios. `arkhen_home_tv_catalog` deriva os IDs autorizados da geração live no banco e chama a projeção TV já existente, evitando transferir o catálogo inteiro para obter cinco cards. Sugestões de um filme continuam exclusivamente em `arkhen_movie_recommendations`.
+
+Fixture PostgreSQL reproduziu o acoplamento anterior: um canal sem `home_identity` fazia a Home inteira retornarNULL. O isolamento preservou a mesma ordenação VOD diante dessa falha.141 asserções passaram; readback confirmou hashes, ACL autenticada/invoker e prazos8s/3s. Houve57014 real na Home e indisponibilidade pontual dos três serviços, seguida de reinício externo observado; não atribuir a recuperação da infraestrutura às migrations nem declarar corrigida a latência de Filmes sem medir sua requisição real.
+
+Fonte: [isolamento, publicação e limites](../home-recommendations-isolation-20261017.md), [pastas SQL por domínio](../../supabase/domains/README.md), migrations161601/161618.
+
+Validação posterior em instância temporária: HomeTV200/550ms, HomeVOD200/2612ms e sugestões200/3213ms. Servidor4173ativado depois de172testes integrados; três rotas e revisões dos catálogos novamente200 com login normal. São amostras pontuais, sem certificação de latência contínua, reprodução ou interface. O cliente separa escopos TV/VOD/Filmes e preserva DTO válido do mesmo proprietário quando a atualização falha. Conferir relatório para a evidência final.
+
+## MEM-MOVIES-011 — Compartilhar recomendações simultâneas sem cache privado
+
+Estado: implementação local e inspeção estática; sem confirmação funcional ou publicação. Data: 17/10/2026 UTC (16/10 no fuso do produto).
+
+O conector de Filmes compartilha somente a RPC idêntica ainda em andamento, isolada por estado/conta/cliente/autenticação/PIN/provedor/escopo/origem/limite/ocultações. Consumidores mantêm cancelamento independente; o último leitor cancela upstream, e encerrar o runtime aborta pendências. A conclusão remove o resultado do servidor, sem cache privado ou ranking alternativo. Os guards anteriores continuam sendo conferidos na entrega.
+
+As imagens desta rodada mostram503 e falhas de identidade, mas não identificam a fase da requisição de Filmes. Sem código/duração atual, não repetir o diagnóstico antigo de timeout como causa confirmada. A última SQL local continua051752 com mapa por geração, franquia/universo pelo nome, gênero, categoria e nota como desempate; nenhuma migration ou prazo foi alterado nesta frente.
+
+Fontes: `lib/filmes/conector-supabase.mjs`, [análise e limites](../movies-recommendations-single-flight-20261017.md), migration051752. Evidência: `node --check` e `git diff --check`; nenhum teste, navegador, chamada à aplicação, leitura privada ou reprodução.
+
+## MEM-MOVIES-010 — Recuperação das capas de favoritos
+
+Estado: implementação local e testes sintéticos; sem confirmação visual ou publicação. Data: 16/10/2026.
+
+A hidratação anterior considerava somente histórico e seu callback de erro ignorava favoritos nunca assistidos. Minha Lista agora fornece sua janela visível preservando a ordem; a recuperação consulta detalhes em concorrência limitada e conserva conta/epoch/adulto. Hash autorizado com falha transitória de nuvem deve produzir 503; hash desconhecido continua bloqueado. A reconexão válida da mesma conta pode renovar uma vez o orçamento de tentativas, sem alimentar loop de render/imagem.
+
+Fontes: `web/minha-lista/capas.js`, `web/minha-lista/orquestrador.js`, `web/library-artwork.js`, `web/artwork-image.js`, `web/app.js`, `lib/cloud-runtime.mjs`, `tests/library-artwork.test.mjs`, `tests/artwork-image.test.mjs`. Banco indisponível continua impedindo capas globais e recomendações; esta correção não prova recuperação remota.
+
 ## MEM-MOVIES-009 — Sugestões relacionadas e cards padronizados
 
 Estado: usuário confirmou sugestões relacionadas e apresentação em imagem; implementação visual conferida no código local. Data: 16/10/2026.
@@ -60,7 +90,7 @@ Estado: contrato. Data: 15/10/2026.
 
 Filmes usam catálogo/detalhes e VOD HTTP do provedor, sem preparar transporte OTT ou EPG de TV. Duração ausente pode ser sondada apenas para o filme selecionado por leitura MP4 de intervalos limitada e cancelável; abrir a prévia não baixa o filme completo nem inicia mídia. Estado e biblioteca conservam identificadores nativos.
 
-Fontes: `lib/wplay-vod.mjs`, `lib/mp4-duration.mjs`, `web/movie-preview.js`, [mapa do player](../player-modules.md), [seek VOD](../vod-seek.md).
+Fontes: `lib/wplay/vod/catalogo-nativo.mjs`, `lib/mp4-duration.mjs`, `web/movie-preview.js`, [mapa do player](../player-modules.md), [seek VOD](../vod-seek.md).
 
 ## MEM-MOVIES-002 — Recomendações privadas e Home
 

@@ -25,10 +25,10 @@ test('manual 4K uses an offered level and is not clobbered by repeated level or 
   assert.deepEqual(PlayerTools.prototype.getQualitySelection.call(player),{qualityMode:'manual',qualityHeight:2160});
 });
 
-test('activating Auto releases the manual level once and disabling Auto keeps the playing level',()=>{
+test('activating TV Auto holds the highest offered level until its warning permits a step',()=>{
   const {hls,player}=qualityHarness();player.applyAutoQuality();hls.currentLevel=1;
-  PlayerTools.prototype.setAutoQuality.call(player,true);assert.deepEqual(hls.writes,[2,-1]);
-  player.applyAutoQuality();player.applyAutoQuality();assert.deepEqual(hls.writes,[2,-1]);assert.equal(hls.config.preserveManualLevelOnError,false);
+  PlayerTools.prototype.setAutoQuality.call(player,true);assert.deepEqual(hls.writes,[2,2]);
+  player.applyAutoQuality();player.applyAutoQuality();assert.deepEqual(hls.writes,[2,2]);assert.equal(hls.config.preserveManualLevelOnError,true);
   PlayerTools.prototype.setAutoQuality.call(player,false);assert.equal(hls.writes.at(-1),1);
   assert.deepEqual(PlayerTools.prototype.getQualitySelection.call(player),{qualityMode:'manual',qualityHeight:1080});
 });
@@ -37,6 +37,34 @@ test('manual resolution survives a retry with a different manifest level order',
   const {hls,player}=qualityHarness();player.current.manualHeight=1080;hls.levels=[{height:2160},{height:720},{height:1080}];
   player.applyAutoQuality();assert.equal(hls.writes[0],2);
   assert.deepEqual(PlayerTools.prototype.getQualitySelection.call(player),{qualityMode:'manual',qualityHeight:1080});
+});
+
+test('an approved automatic reduction survives a manifest level reorder without returning to 4K',()=>{
+  const {hls,player}=qualityHarness();player.current.qualityMode='auto';player.applyAutoQuality();
+  PlayerTools.prototype.applyTVQualityStep.call({...player,video:{paused:false,ended:false},renderQuality:()=>{}},
+    {kind:'level',key:'level:1080:0:'},player.current);
+  assert.equal(hls.loadLevel,1);hls.levels=[{height:1080},{height:720},{height:2160}];
+  player.applyAutoQuality();assert.equal(hls.loadLevel,0);assert.equal(hls.levels[hls.loadLevel].height,1080);
+});
+
+test('restoring the same TV Auto preference preserves an approved reduction and its stall evidence',()=>{
+  const {hls,player}=qualityHarness();player.current.qualityMode='auto';player.applyAutoQuality();
+  PlayerTools.prototype.applyTVQualityStep.call({...player,video:{paused:false,ended:false}},
+    {kind:'level',key:'level:1080:0:'},player.current);
+  let resets=0;player.tvQuality={reset:()=>resets++};const writes=hls.writes.length;
+  PlayerTools.prototype.setAutoQuality.call(player,true,null,{restore:true});
+  assert.equal(hls.loadLevel,1);assert.equal(hls.writes.length,writes);assert.equal(resets,0);
+});
+
+test('restoring TV profiles applies changed budgets without seeking, while an explicit choice keeps live sync',()=>{
+  let renders=0;const player={profiles:{live:'balanced',vod:'balanced'},bufferMode:'balanced',
+    current:{item:fhd,hls:{config:{},liveSyncPosition:100}},video:{readyState:4,currentTime:90},
+    options:{toast:()=>{}},syncToProfile:PlayerTools.prototype.syncToProfile,renderBuffer:()=>renders++};
+  PlayerTools.prototype.setProfile.call(player,'live','balanced',{restore:true});
+  assert.equal(player.video.currentTime,90);assert.equal(renders,0);assert.equal(player.current.intentionalSeekUntil,undefined);
+  PlayerTools.prototype.setProfile.call(player,'live','stable',{restore:true});
+  assert.equal(player.current.hls.config.maxBufferLength,60);assert.equal(player.video.currentTime,90);assert.equal(renders,1);
+  PlayerTools.prototype.setProfile.call(player,'live','balanced');assert.equal(player.video.currentTime,100);assert.ok(player.current.intentionalSeekUntil>Date.now());
 });
 
 test('manual source choice locks the requested ID without changing the global preference',()=>{
@@ -59,14 +87,13 @@ function metricsHarness(mode='auto',levels=1){
   const state=createAdaptiveState({now:0,currentId:fhd.id});Object.assign(state,{lastObservedAt:1000,lastStallCount:1,stallTimes:[1000]});
   return {nodes,calls,player:{$:node,autoQuality:true,adaptiveState:state,
     video:{currentTime:10,buffered:{length:1,start:()=>0,end:()=>11},videoWidth:1920,videoHeight:1080,paused:false,ended:false},
-    current:{item:fhd,variants:[fhd,hd],qualityMode:mode,hls:{levels:Array.from({length:levels},()=>({bitrate:3000000})),currentLevel:0,bandwidthEstimate:8000000},segments:1,stalls:2,lastStall:2100,started:true,buffering:true,failed:false,errorEvents:[]},
+    current:{item:fhd,sources:[],variants:[fhd,hd],qualityMode:mode,hls:{levels:Array.from({length:levels},()=>({bitrate:3000000})),currentLevel:0,bandwidthEstimate:8000000},segments:1,stalls:2,lastStall:2100,started:true,buffering:true,failed:false,errorEvents:[]},
     options:{toast:()=>{},switchChannel:(...args)=>calls.push(args)}}};
 }
 
-test('source Auto can recover stalls while manual selection and manifest ABR never retune the channel ID',t=>{
+test('metrics alone cannot retune a channel after two stalls or bypass the quality warning',t=>{
   t.mock.method(Date,'now',()=>2100);
-  const auto=metricsHarness();PlayerTools.prototype.updateMetrics.call(auto.player);assert.equal(auto.calls[0][0],hd);
-  assert.equal(auto.calls[0][1].qualityMode,'auto');
+  const auto=metricsHarness();PlayerTools.prototype.updateMetrics.call(auto.player);assert.equal(auto.calls.length,0);
   const manual=metricsHarness('manual');PlayerTools.prototype.updateMetrics.call(manual.player);assert.equal(manual.calls.length,0);
   const abr=metricsHarness('auto',2);PlayerTools.prototype.updateMetrics.call(abr.player);assert.equal(abr.calls.length,0);
   assert.equal(manual.nodes.get('#metric-bandwidth').textContent,'≈ 8,0 Mb/s');

@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import { createApp } from '../lib/app-server.mjs';
-import { WplayOTTProviderClient, WPLAY_OTT_RPC } from '../lib/wplay-ott-provider.mjs';
-import { decodeRPC, encodeRPC } from '../lib/ott-rpc.mjs';
+import { WplayOTTProviderClient, WPLAY_OTT_RPC } from '../lib/wplay/ott/provedor.mjs';
+import { decodeRPC, encodeRPC } from '../lib/wplay/ott/rpc.mjs';
 
 async function listen(server) {
   await new Promise((resolve, reject) => {

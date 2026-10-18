@@ -1,134 +1,80 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {LiveProgramFeed, parseProgramTime, programWindow, retainCurrentProgramList} from '../web/program-guide.js';
-import {ChannelGuide} from '../web/channel-guide.js';
+import {LiveProgramFeed} from '../web/tv/canais/feed.js';
+import {ChannelGuide} from '../web/tv/canais/guia-cards.js';
+import {TVGuideClient} from '../web/tv/tanstack-query.js';
+import {parseProgramTime,programWindow,normalizeGuideChannel,validateGuideProjection} from '../web/tv/canais/programacao.js';
+import {NOW,program,channel,projection,fixture,flush} from './helpers/tv-guide-fixture.mjs';
 
-const NOW=Date.parse('2026-10-14T12:00:00Z');
-const program=(title,from,to)=>({title,description:`Sinopse de ${title}`,start:new Date(NOW+from).toISOString(),end:new Date(NOW+to).toISOString()});
-const flush=()=>new Promise(resolve=>setImmediate(resolve));
-function clock(){
-  let time=NOW,next=0;const timers=new Map();
-  return {now:()=>time,schedule:(callback,delay)=>{const id=++next;timers.set(id,{at:time+delay,callback});return id;},cancel:id=>timers.delete(id),
-    async advance(duration){const end=time+duration;while(true){const due=[...timers].filter(([,task])=>task.at<=end).sort((a,b)=>a[1].at-b[1].at)[0];if(!due)break;time=due[1].at;timers.delete(due[0]);due[1].callback();await flush();}time=end;await flush();},get size(){return timers.size;}};
-}
-
-test('EPG interprets epoch units and explicit UTC offsets as the same instant',()=>{
-  for(const value of [NOW,NOW/1000,String(NOW),String(NOW/1000),'2026-10-14T12:00:00Z','2026-10-14T09:00:00-03:00'])assert.equal(parseProgramTime(value),NOW);
-  for(const value of [null,undefined,'','invalid',0])assert.ok(Number.isNaN(parseProgramTime(value)));
+test('EPG metadata interprets epoch units and explicit offsets as the same instant',()=>{
+ for(const value of [NOW,NOW/1000,String(NOW),String(NOW/1000),'2026-10-14T12:00:00Z','2026-10-14T09:00:00-03:00'])assert.equal(parseProgramTime(value),NOW);
+ for(const value of [null,undefined,'','invalid',0])assert.ok(Number.isNaN(parseProgramTime(value)));
 });
 
-test('default timers keep the browser global receiver required by Safari',async t=>{
-  const timers=new Map();let next=0;
-  t.mock.method(globalThis,'setTimeout',function(callback,delay){assert.equal(this,globalThis);const id=++next;timers.set(id,{callback,delay});return id;});
-  t.mock.method(globalThis,'clearTimeout',function(id){assert.equal(this,globalThis);timers.delete(id);});
-  const updates=[];
-  const feed=new LiveProgramFeed({request:async()=>({list:[program('Agora',-1000,60000)]}),onUpdate:data=>updates.push(data.list)});
-  feed.start('123');await flush();
-  assert.equal(updates.at(-1)[0].title,'Agora');assert.equal(timers.size,1);
-  feed.stop();assert.equal(timers.size,0);
+test('server window, labels and progress are authoritative even when the browser clock disagrees',t=>{
+ t.mock.method(Date,'now',()=>NOW+86400000);
+ const normalized=normalizeGuideChannel(channel('Servidor'));
+ assert.equal(programWindow(normalized).current.title,'Servidor');assert.equal(programWindow(normalized).current.startLabel,'09:00');assert.equal(normalized.progressPercent,37);
+ assert.equal(programWindow([program('Lista sem projeção')]).current,null);assert.equal(normalizeGuideChannel({list:[program('Legado')]}),null);
+ assert.equal(normalizeGuideChannel({...channel(),progressPercent:200}).progressPercent,100);
 });
 
-test('EPG selects by the actual time, preserves descriptions and never labels an expired entry as current',()=>{
-  const list=[program('Próximo',60000,120000),program('Anterior',-120000,-60000),program('Agora',-60000,60000),{title:'Inválido',start:'bad',end:'bad'}];
-  const result=programWindow(list,NOW);
-  assert.equal(result.current.title,'Agora');assert.equal(result.current.description,'Sinopse de Agora');assert.equal(result.previous.title,'Anterior');assert.equal(result.next.title,'Próximo');
-  assert.equal(programWindow(list,NOW+60000).current.title,'Próximo');
-  assert.equal(programWindow([list[1],list[0]],NOW).current,null);
-  assert.equal(programWindow(list,NOW+120000).current,null);
-  assert.equal(programWindow(null,NOW).current,null);
+test('malformed projections are rejected and scheduled entries require absolute timestamps',()=>{
+ const value=channel();value.schedule=[program('Válido'),{title:'Sem fuso',start:'2026-10-14T12:00:00',end:'2026-10-14T13:00:00'},program('Invertido',10,0)];
+ assert.ok(normalizeGuideChannel(value).schedule.every(entry=>entry.title!=='Sem fuso'&&entry.title!=='Invertido'));
+ for(const invalid of [{},{...projection(),channels:[]},{...projection(),serverTime:'bad'},projection({'private-id':channel()}),projection({'10':{list:[]}})])assert.throws(()=>validateGuideProjection(invalid),/TV_GUIDE_RESPONSE_INVALID/);
 });
 
-test('the active channel refreshes at a program boundary and continues with a bounded interval',async()=>{
-  const timer=clock(),updates=[];let calls=0;
-  const feed=new LiveProgramFeed({...timer,request:async()=>{calls++;return {list:[program('Primeiro',-10000,10000),program('Segundo',10000,200000)]};},onUpdate:data=>updates.push(programWindow(data.list,timer.now()).current?.title)});
-  feed.start('123');await flush();assert.equal(calls,1);assert.equal(updates.at(-1),'Primeiro');
-  await timer.advance(15000);assert.equal(calls,2);assert.equal(updates.at(-1),'Segundo');
-  await timer.advance(45000);assert.equal(calls,2);
-  await timer.advance(15000);assert.equal(calls,3);
-  feed.stop();assert.equal(timer.size,0);
+test('current channel and cards share one map request and selections do not issue per-channel EPG calls',async t=>{
+ const f=fixture(t,{request:async()=>projection({'10':channel('Dez'),'20':channel('Vinte')})}),updates=[];
+ const feed=new LiveProgramFeed({guide:f.guide,onUpdate:data=>updates.push(data)});
+ t.after(()=>feed.destroy());feed.start('10');await f.ready();assert.equal(updates.at(-1).window.current.title,'Dez');
+ const cards=new ChannelGuide({guide:f.guide,connectionGeneration:()=>1});t.after(()=>cards.destroy());assert.equal(cards.peek('20').window.current.title,'Vinte');
+ feed.start('20');await f.ready();assert.equal(updates.at(-1).window.current.title,'Vinte');assert.deepEqual(f.calls.map(call=>call.url),['/api/tv/guide?ids=10']);
+ feed.stop();assert.equal(f.time.size,0);
 });
 
-test('a temporary EPG error retains valid data while expired entries disappear naturally',async()=>{
-  const timer=clock(),updates=[];let calls=0;
-  const feed=new LiveProgramFeed({...timer,request:async()=>{if(++calls>1)throw new Error('temporary');return {list:[program('Atual',-10000,90000)]};},onUpdate:data=>updates.push(programWindow(data.list,timer.now()).current?.title||null)});
-  feed.start('123');await flush();await timer.advance(60000);
-  assert.equal(calls,2);assert.equal(updates.at(-1),'Atual');
-  await timer.advance(30000);assert.equal(calls,3);assert.equal(updates.at(-1),null);
-  feed.stop();
+test('refresh uses the server delay and transient errors retain the complete snapshot as stale',async t=>{
+ let calls=0;const f=fixture(t,{request:async()=>{if(++calls>1)throw new Error('temporary');return projection();}}),stop=f.guide.subscribe(()=>{});t.after(stop);await f.ready();
+ await f.time.advance(59999);assert.equal(calls,1);await f.time.advance(1);assert.equal(calls,2);
+ assert.equal(f.guide.peek('10').window.current.title,'Agora');assert.equal(f.guide.peek('10').stale,true);
+ await f.time.advance(15000);assert.equal(calls,3);stop();assert.equal(f.time.size,0);
 });
 
-test('channel switches and closing playback cancel requests and suppress late EPG results',async()=>{
-  const timer=clock(),requests=[],updates=[];
-  const feed=new LiveProgramFeed({...timer,request:(url,{signal})=>new Promise(resolve=>requests.push({url,signal,resolve})),onUpdate:data=>updates.push(data.list[0]?.title||null)});
-  feed.start('123');feed.start('456');assert.equal(requests[0].signal.aborted,true);
-  requests[1].resolve({list:[program('Canal novo',-1000,120000)]});await flush();
-  requests[0].resolve({list:[program('Canal antigo',-1000,120000)]});await flush();
-  assert.equal(updates.at(-1),'Canal novo');assert.equal(updates.includes('Canal antigo'),false);
-  feed.stop();assert.equal(requests[1].signal.aborted,true);await timer.advance(120000);assert.equal(requests.length,2);assert.equal(timer.size,0);
+test('a validated empty map is an authoritative correction while an invalid HTTP200 cannot erase a snapshot',async t=>{
+ let result=projection();const f=fixture(t,{request:async()=>result}),stop=f.guide.subscribe(()=>{});t.after(stop);await f.ready();
+ result={list:[]};await f.guide.ensure({force:true});assert.equal(f.guide.peek('10').window.current.title,'Agora');assert.equal(f.guide.state.stale,true);
+ result=projection({});await f.guide.ensure({force:true});assert.equal(f.guide.peek('10'),null);assert.equal(f.guide.state.error,null);
 });
 
-test('EPG requests have a deadline and retry without overlapping requests',async()=>{
-  const timer=clock();let calls=0,active=0,maxActive=0;
-  const feed=new LiveProgramFeed({...timer,request:(_,{signal})=>new Promise((resolve,reject)=>{calls++;active++;maxActive=Math.max(maxActive,active);signal.addEventListener('abort',()=>{active--;reject(new Error('aborted'));},{once:true});}),onUpdate:()=>{}});
-  feed.start('123');await timer.advance(10000);assert.equal(active,0);assert.equal(calls,1);
-  await timer.advance(30000);assert.equal(calls,1);
-  await timer.advance(5000);assert.equal(calls,2);assert.equal(maxActive,1);
-  feed.stop();await flush();assert.equal(active,0);assert.equal(timer.size,0);
+test('account, PIN and epoch changes abort old work and late snapshots cannot cross their scope',async t=>{
+ const pending=[];const f=fixture(t,{request:(_url,{signal})=>new Promise(resolve=>pending.push({signal,resolve}))}),updates=[];
+ const stop=f.guide.subscribe(state=>updates.push(state.data));t.after(stop);await f.ready();
+ for(const scope of [{account:'account-b',epoch:1},{account:'account-b',epoch:1,includeAdult:true},{account:'account-b',epoch:2,includeAdult:true}]){
+  const old=pending.at(-1);f.setScope(scope);assert.equal(f.guide.peek('10'),null);await f.ready();assert.equal(old.signal.aborted,true);old.resolve(projection({'10':channel('Antigo')}));await flush();assert.equal(f.guide.peek('10'),null);
+ }
+ pending.at(-1).resolve(projection({'10':channel('Atual')}));await f.ready();assert.equal(f.guide.peek('10').window.current.title,'Atual');assert.equal(updates.some(data=>data?.channels['10']?.window.current.title==='Antigo'),false);
 });
 
-test('a failed card refresh preserves the current cached guide instead of replacing it with empty data',async()=>{
-  const list=[program('Atual',-10000,60000)],job={key:'session:123',controller:new AbortController()},saved=[];
-  const guide={api:async()=>{throw new Error('temporary');},isCurrent:()=>true,cache:new Map([[job.key,{list}]]),store:(key,value)=>saved.push({key,list:value}),active:new Map(),pump:()=>{}};
-  await ChannelGuide.prototype.fetch.call(guide,job);
-  assert.deepEqual(saved,[{key:job.key,list}]);
+test('deadline retry is bounded, denied access clears data and disposal cancels pending signals',async t=>{
+ let active=0,max=0;const f=fixture(t,{request:(_,{signal})=>new Promise((resolve,reject)=>{active++;max=Math.max(max,active);signal.addEventListener('abort',()=>{active--;reject(new Error('aborted'));},{once:true});})});
+ f.guide.subscribe(()=>{});await f.ready();await f.time.advance(10000);assert.equal(active,0);await f.time.advance(15000);assert.equal(f.calls.length,2);assert.equal(max,1);f.guide.dispose();await flush();assert.equal(active,0);assert.equal(f.time.size,0);
+ let denied=false;const secure=fixture(t,{request:async()=>{if(denied)throw Object.assign(new Error('Denied'),{status:403});return projection();}});secure.guide.subscribe(()=>{});await secure.ready();denied=true;await secure.guide.ensure({force:true});assert.equal(secure.guide.peek('10'),null);await secure.time.advance(300000);assert.equal(secure.calls.length,2);
 });
 
-test('empty and invalid EPG responses retain only a still-current guide and accept real corrections',()=>{
-  const list=[program('Atual',-10000,60000)];
-  for(const incoming of [[],null,undefined,[{title:'Invalid',start:'bad',end:'bad'}]])assert.equal(retainCurrentProgramList(list,incoming,NOW),list);
-  const corrected=[program('Corrigido',-10000,60000)];
-  assert.equal(retainCurrentProgramList(list,corrected,NOW),corrected);
-  assert.deepEqual(retainCurrentProgramList(list,[],NOW+60000),[]);
+test('card rendering uses server labels and exposes stale state without recalculating progress',()=>{
+ const record={root:{dataset:{}},placeholder:{},rows:{},nodes:{current:{title:{},time:{}},next:{title:{},time:{}}},progress:{}};
+ ChannelGuide.prototype.render.call({},record,{...normalizeGuideChannel(channel('Atual')),stale:true});
+ assert.equal(record.root.dataset.state,'ready');assert.equal(record.root.dataset.stale,'true');assert.equal(record.nodes.current.time.textContent,'09:00 — 09:02');assert.equal(record.progress.value,37);
+ ChannelGuide.prototype.render.call({},record,null,{error:true});assert.equal(record.root.dataset.state,'error');assert.equal(record.rows.hidden,true);
 });
 
-test('restarting the same channel seeds its guide immediately and late previous responses cannot overwrite it',async()=>{
-  const timer=clock(),updates=[],requests=[];
-  const feed=new LiveProgramFeed({...timer,getNamespace:()=> 'account-a',request:(_,{signal})=>new Promise(resolve=>requests.push({signal,resolve})),onUpdate:data=>updates.push(data.list[0]?.title||null)});
-  feed.start('123');requests[0].resolve({list:[program('Atual',-10000,120000)]});await flush();
-  assert.equal(feed.peek('123').list[0].title,'Atual');
-  await timer.advance(60000);assert.equal(requests.length,2);
-  feed.stop();const checkpoint=updates.length;feed.start('123');
-  assert.deepEqual(updates.slice(checkpoint),['Atual']);assert.equal(requests[1].signal.aborted,true);
-  requests[1].resolve({list:[program('Resposta antiga',-10000,120000)]});await flush();assert.equal(updates.includes('Resposta antiga'),false);
-  requests[2].resolve({list:[]});await flush();assert.equal(updates.at(-1),'Atual');
-  feed.stop({clearCache:true});assert.equal(feed.peek('123'),null);assert.equal(timer.size,0);
-});
 
-test('a card seed fills the first player update and never makes an expired program current',async()=>{
-  const timer=clock(),updates=[];
-  const feed=new LiveProgramFeed({...timer,request:async()=>({list:[]}),onUpdate:data=>updates.push(data.list[0]?.title||null)});
-  feed.start('123',{initialData:{list:[program('Do card',-10000,30000)]}});assert.equal(updates[0],'Do card');await flush();assert.equal(updates.at(-1),'Do card');
-  await timer.advance(30000);assert.equal(programWindow(feed.current.list,timer.now()).current,null);
-  feed.stop();feed.start('456',{initialData:{list:[program('Expirado',-20000,-10000)]}});assert.equal(updates.at(-1),null);
-  feed.stop();await flush();assert.equal(timer.size,0);
-});
-
-test('main EPG cache and pending responses are isolated when the account namespace changes',async()=>{
-  const timer=clock(),updates=[],requests=[];let namespace='account-a';
-  const feed=new LiveProgramFeed({...timer,getNamespace:()=>namespace,request:(_,{signal})=>new Promise(resolve=>requests.push({signal,resolve})),onUpdate:data=>updates.push(data.list[0]?.title||null)});
-  feed.start('123');requests[0].resolve({list:[program('Conta A',-10000,120000)]});await flush();
-  feed.start('123');namespace='account-b';assert.equal(feed.peek('123'),null);assert.equal(requests[1].signal.aborted,true);
-  const checkpoint=updates.length;feed.start('123');requests[1].resolve({list:[program('Antigo',-10000,120000)]});await flush();
-  assert.deepEqual(updates.slice(checkpoint),[null]);assert.equal(feed.cache.size,0);
-  requests[2].resolve({list:[program('Conta B',-10000,120000)]});await flush();assert.equal(feed.peek('123').list[0].title,'Conta B');
-  feed.stop();assert.equal(timer.size,0);
-});
-
-test('card refresh with an empty HTTP200 keeps the current guide and peek stays in its generation',async t=>{
-  t.mock.method(Date,'now',()=>NOW);
-  const list=[program('Atual',-10000,60000)],job={key:'session:123',controller:new AbortController()},saved=[];
-  const guide={generation:'session',ensureGeneration:()=>{},api:async()=>({list:[]}),isCurrent:()=>true,cache:new Map([[job.key,{list,expiresAt:NOW+60000}]]),store:(key,value)=>saved.push({key,list:value}),active:new Map(),pump:()=>{}};
-  await ChannelGuide.prototype.fetch.call(guide,job);assert.deepEqual(saved,[{key:job.key,list}]);
-  assert.deepEqual(ChannelGuide.prototype.peek.call(guide,'123'),{list});
-  guide.generation='new-session';assert.equal(ChannelGuide.prototype.peek.call(guide,'123'),null);
+test('default guide timers preserve the browser global receiver required by Safari',async t=>{
+ const timers=new Map();let next=0;
+ t.mock.method(globalThis,'setTimeout',function(callback,delay){assert.equal(this,globalThis);const id=++next;timers.set(id,{callback,delay});return id;});
+ t.mock.method(globalThis,'clearTimeout',function(id){assert.equal(this,globalThis);timers.delete(id);});
+ const guide=new TVGuideClient({getScope:()=>({account:'account-a'}),request:async()=>projection(),loadQueryCore:async()=>{throw new Error('No SDK');}});t.after(()=>guide.dispose());
+ const feed=new LiveProgramFeed({guide,onUpdate:()=>{}});t.after(()=>feed.destroy());feed.start('10');await flush();await flush();
+ assert.equal(feed.peek('10').window.current.title,'Agora');assert.equal(timers.size,1);feed.stop();assert.equal(timers.size,0);guide.dispose();assert.equal(timers.size,0);
 });

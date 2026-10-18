@@ -41,3 +41,49 @@ test('recommendation provenance survives refresh and a standalone abort ends loa
   session.lookup=async()=>{throw new DOMException('cancelled','AbortError');};await session.select(movie(1),{force:true});
   assert.equal(session.state.loading,false);assert.equal(session.state.reason,'source_franchise');assert.equal(session.state.items[0].id,'2');assert.match(session.state.error,/Não foi possível/);
 });
+
+test('TV and series preferences cannot cancel or hide an active movie recommendation request',async()=>{
+  const pending=deferred();let calls=0;
+  let scope={generation:7,scope:{account:'A',epoch:7,providerKey:'p',scopeHash:'s',hidden:{movies:[],live:[],series:[]},hiddenItems:{movies:[],live:[],series:[]}}};
+  const session=new MovieSuggestionSession({getScope:()=>scope,lookup:()=>{calls++;return pending.promise;}});
+  const work=session.select(movie(1));await Promise.resolve();
+  scope={...scope,scope:{...scope.scope,hidden:{...scope.scope.hidden,live:['news'],series:['drama']},hiddenItems:{...scope.scope.hiddenItems,live:['22']}}};
+  pending.resolve(result(1,[movie(2)]));await work;
+  assert.equal(session.state.item?.id,'1');assert.equal(session.state.items[0]?.id,'2');assert.equal(session.matchesScope(),true);
+  await session.select(movie(1));assert.equal(calls,1);
+});
+
+test('a cached server result survives A to B to A navigation and a failed revalidation, then retry replaces it',async()=>{
+  const cache=new Map([['1',result(1,[movie(2)])]]);let fail=true;let scope={account:'A',epoch:1};
+  const session=new MovieSuggestionSession({getScope:()=>scope,readCached:item=>cache.get(item.id)||null,
+    lookup:async item=>{if(fail)throw Object.assign(new Error('offline'),{status:503,code:'CLOUD_UNAVAILABLE'});return result(item.id,[movie(4)]);}});
+  await session.select(movie(1));assert.deepEqual(session.state.items.map(item=>item.id),['2']);assert.equal(session.state.failure.status,503);
+  await session.select(movie(3));assert.equal(session.state.items.length,0);assert.ok(session.state.error);
+  const returning=session.select(movie(1));assert.deepEqual(session.state.items.map(item=>item.id),['2']);await returning;
+  assert.equal(session.state.loading,false);assert.ok(session.state.error);assert.deepEqual(session.state.items.map(item=>item.id),['2']);
+  fail=false;await session.select(movie(1),{force:true});assert.equal(session.state.error,null);assert.deepEqual(session.state.items.map(item=>item.id),['4']);
+  scope={account:'B',epoch:2};session.readCached=()=>null;
+  fail=true;await session.select(movie(1));assert.deepEqual(session.state.items,[]);assert.ok(session.state.error);
+});
+
+test('cloud recovery cannot retain recommendations across a provider or generation change',async()=>{
+  let scope={generation:1,scope:{account:'A',epoch:1,providerKey:'p',scopeHash:'s'}};
+  const session=new MovieSuggestionSession({getScope:()=>scope,lookup:async()=>result(1,[movie(2)])});
+  await session.select(movie(1));session.lookup=async()=>{throw Object.assign(new Error('offline'),{status:503});};
+  await session.select(movie(1),{force:true});
+  scope={...scope,scope:{...scope.scope,providerKey:'other'}};
+  assert.equal(session.recover(),false);
+  scope={generation:2,scope:{account:'A',epoch:1,providerKey:'p',scopeHash:'s'}};
+  assert.equal(session.recover(),false);
+});
+
+test('a cloud binding attached during the request becomes a retryable failure, not a disappearing destination',async()=>{
+  const pending=deferred();let scope={generation:3,scope:{account:'A',epoch:3}};
+  const session=new MovieSuggestionSession({getScope:()=>scope,lookup:()=>pending.promise});
+  const work=session.select(movie(1));await Promise.resolve();
+  scope={generation:3,scope:{account:'A',epoch:3,project:'fixed',providerKey:'p',scopeHash:'s'}};
+  pending.reject(Object.assign(new Error('bootstrap'),{code:'CLOUD_SESSION_MISSING',status:503}));await work;
+  assert.equal(session.state.item?.id,'1');assert.equal(session.state.loading,false);assert.ok(session.state.error);
+  session.lookup=async()=>result(1,[movie(2)]);assert.equal(session.recover(),true);await session.pending;
+  assert.deepEqual(session.state.items.map(item=>item.id),['2']);assert.equal(session.state.error,null);
+});

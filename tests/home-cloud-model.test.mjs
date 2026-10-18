@@ -27,3 +27,21 @@ test('rapid progress revisions schedule one refresh rather than a request per ti
   for(let i=2;i<30;i++){f.setRevision(i);f.model.ensure();}assert.equal(f.calls,1);assert.ok(f.model.timer);
   f.model.pause();assert.equal(f.model.timer,null);now+=16000;f.model.ensure();await ready(f.model);assert.equal(f.calls,2);
 });
+
+test('VOD Home preserves its scoped snapshot through cloud outage and ignores TV filters',async t=>{
+ let available=true;const f=fixture(t,{isAvailable:()=>available});f.model.ensure();await ready(f.model);
+ const saved=f.model.state.data;available=false;f.model.ensure();
+ assert.equal(f.model.state.data,saved);assert.equal(f.model.state.waiting,true);assert.equal(f.calls,1);
+ f.setScope({account:'A',includeAdult:false,hidden:{live:['99']},hiddenItems:{live:['13']}});f.model.ensure();
+ assert.equal(f.model.state.data,saved);assert.equal(f.calls,1);
+ available=true;f.model.ensure();await ready(f.model);assert.equal(f.calls,1);assert.equal(f.model.state.waiting,false);
+ f.setScope({account:'B',includeAdult:false});available=false;f.model.ensure();assert.equal(f.model.state.data,null);
+});
+
+test('TV preference changes do not cancel VOD response but movie visibility does',async t=>{
+ let resolve;const f=fixture(t,{request:()=>new Promise(done=>{resolve=done;})});f.model.ensure();await tick();
+ const signal=f.model.pending.signal;f.setScope({account:'A',includeAdult:false,hidden:{live:['99']}});f.model.ensure();
+ assert.equal(signal.aborted,false);resolve(result('Owned'));await ready(f.model);assert.equal(f.model.state.data.recommendations.items[0].name,'Owned');
+ f.setScope({account:'A',includeAdult:false,hidden:{movies:['private']}});f.model.ensure();assert.equal(f.model.state.data,null);await tick();
+ resolve(result('Filtered'));await ready(f.model);
+});

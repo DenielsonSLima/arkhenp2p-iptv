@@ -1,5 +1,5 @@
 import {SupabaseCloud} from '../lib/supabase-cloud.mjs';
-import {syncSeriesMarkers} from '../lib/skipdb-markers.mjs';
+import {syncSeriesMarkers} from '../lib/serie/marcadores/orquestrador.mjs';
 
 const args=process.argv.slice(2);
 if(args.some(value=>!['--apply','--force','--help'].includes(value))){console.error('Opções: --apply, --force, --help');process.exitCode=1;}

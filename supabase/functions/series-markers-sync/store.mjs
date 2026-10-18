@@ -12,6 +12,7 @@ export class MarkerStore{
   claim(owner){return this.rpc('arkhen_marker_claim',{p_owner:owner,p_lease_seconds:70});}
   release(owner,result,cooldowns){return this.rpc('arkhen_marker_release',{p_owner:owner,p_result:result,p_skipdb_cooldown:cooldowns.skipdb?new Date(cooldowns.skipdb).toISOString():null,p_introdb_cooldown:cooldowns.introdb?new Date(cooldowns.introdb).toISOString():null});}
   discover(){return this.rpc('arkhen_marker_discover',{p_limit:500});}
+  discoverBatch(){return this.rpc('arkhen_marker_discover_batch',{p_limit:500});}
   auditDue(now,limit){return this.call('/rest/v1/series_marker_coverage?'+query({select:'*',audit_priority:'gt.0',audit_next_check_at:'lte.'+new Date(now).toISOString(),order:'audit_priority.desc,audit_next_check_at.asc,imdb_id.asc,season.asc,episode.asc',limit:String(Math.min(10,Math.max(1,limit)))}));}
   due(table,field,now,limit,extra={}){return this.call('/rest/v1/'+table+'?'+query({select:'*',[field]:'lte.'+new Date(now).toISOString(),order:field+'.asc',limit:String(limit),...extra}));}
   save(table,rows,conflict,{ignore=false}={}){if(!rows.length)return Promise.resolve();return this.call('/rest/v1/'+table+'?'+query({on_conflict:conflict}),{method:'POST',headers:{Prefer:'resolution='+(ignore?'ignore':'merge')+'-duplicates,return=minimal'},body:rows});}

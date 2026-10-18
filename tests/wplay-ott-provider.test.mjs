@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
-import { WplayOTTProviderClient, WPLAY_OTT_RPC } from '../lib/wplay-ott-provider.mjs';
-import { encodeRPC, decodeRPC } from '../lib/ott-rpc.mjs';
+import { WplayOTTProviderClient, WPLAY_OTT_RPC } from '../lib/wplay/ott/provedor.mjs';
+import { encodeRPC, decodeRPC } from '../lib/wplay/ott/rpc.mjs';
 import { requestUpstream, readBody } from '../lib/upstream.mjs';
 
 async function fixture({member=false,artworkFailure=false,legacyUnavailable=false,legacyRejected=false,emptyCatalog=false,emptyRows=false,moviesOnly=false}={}) {

@@ -1,4 +1,4 @@
-const scopeKey=scope=>scope?.account?JSON.stringify(scope):null;
+import {homeVODScopeKey as scopeKey} from './biblioteca/scope.js';
 
 /** The validated application socket delivers events here. One microtask
  * batches changes after the caller has advanced its private revision. */
@@ -18,11 +18,11 @@ export class HomeRealtime{
   }
   libraryUpdated(snapshot,changes={}){
     if(!snapshot?.ready)return false;
-    if(changes.initial||changes.favorites?.length||changes.progress?.length||changes.preferences?.some(key=>['catalog-settings','sort'].includes(key)))return this.#queue();
+    if(changes.initial||changes.favorites?.some(kind=>['movie','series'].includes(kind))||changes.progress?.some(kind=>['movie','series'].includes(kind))||changes.preferences?.some(key=>['catalog-settings','sort'].includes(key)))return this.#queue();
     return false;
   }
   sharedUpdated(event={}){
-    return ['provider_catalog_cache','catalog_visible_generations'].includes(event.table)&&['live','movies','series'].includes(event.type)?this.#queue():false;
+    return ['provider_catalog_cache','catalog_visible_generations'].includes(event.table)&&['movies','series'].includes(event.type)?this.#queue():false;
   }
   statusChanged(status,previous){
     return status?.state==='synced'&&['offline','connecting','restricted','local'].includes(previous)?this.#queue({force:true}):false;

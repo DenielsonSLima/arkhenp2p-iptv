@@ -3,7 +3,7 @@
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
 import {resolve} from 'node:path';
-import {prioritizedReviewSeries,reviewCatalogTitle,reviewedSeriesIdentity} from '../lib/series-marker-review.mjs';
+import {prioritizedReviewSeries,reviewCatalogTitle,reviewedSeriesIdentity} from '../lib/serie/marcadores/revisao.mjs';
 import {MarkerStore} from '../supabase/functions/series-markers-sync/store.mjs';
 import {inspectSegments,canonicalSeries} from '../supabase/functions/series-markers-sync/metadata.mjs';
 

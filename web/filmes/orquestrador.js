@@ -31,7 +31,8 @@ export class MoviesFeature extends CatalogFeature{
   lookupSuggestions(item,options){return this.recommendations?.lookup(item,options)||Promise.reject(new Error('MOVIES_NOT_CONFIGURED'));}
   createSuggestions(options){
     if(this.suggestions)throw new Error('MOVIES_SUGGESTIONS_ALREADY_CREATED');
-    return this.suggestions=new MovieSuggestionsView({...options,lookup:options?.lookup||((item,input)=>this.lookupSuggestions(item,input))});
+    return this.suggestions=new MovieSuggestionsView({...options,lookup:options?.lookup||((item,input)=>this.lookupSuggestions(item,input)),
+      readCached:options?.readCached||((item,input)=>this.recommendations?.peek?.(item,input)||null)});
   }
   renderPreview(tools,item,options={}){
     return renderMoviePreview(tools,item,{...options,relatedSection:options.relatedSection===undefined?this.suggestions?.previewFor(item):options.relatedSection});

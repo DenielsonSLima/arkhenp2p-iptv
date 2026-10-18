@@ -25,6 +25,35 @@ test('authentication does not retry; native fallback is only selected after reco
   const auth=fixture({native:true});auth.handler(null,{...network,response:{code:403}});assert.equal(auth.calls.length,2);assert.match(auth.calls[1][1],/conexão/);
   const native=fixture({native:true});native.handler(null,network);assert.deepEqual(native.calls,['record','recover','native']);
 });
+test('media authorization errors verify the app session without treating transport failure as logout',()=>{
+  for(const status of [401,403]){
+    let active=true;const calls=[];
+    const handler=createHlsErrorHandler({isCurrent:()=>active,tools:{current:{},recordError(){}},video:{},
+      onAuthFailure:code=>{calls.push(code);active=false;},fail:()=>calls.push('stale-error'),canUseNative:()=>false});
+    handler(null,{...network,response:{code:status}});assert.deepEqual(calls,[status]);
+    handler(null,{...network,response:{code:status}});assert.deepEqual(calls,[status]);
+  }
+});
+
+test('late TV transport errors after a terminal failure cannot reopen or recover the failed owner',()=>{
+  const calls=[],tools={current:{item:{kind:'live'},failed:true,segments:2},recordError:()=>calls.push('record'),
+    recoverError:()=>{calls.push('recover');return false;}};
+  const handler=createHlsErrorHandler({isCurrent:()=>true,tools,video:{videoWidth:1920},
+    fail:()=>calls.push('fail'),canUseNative:()=>true,useNative:()=>calls.push('native')});
+  handler(null,network);assert.deepEqual(calls,[]);
+});
+
+test('VOD rate limiting is terminal, preserves its deadline and never enters codec recovery',()=>{
+  const calls=[],limits=[],tools={current:{item:{kind:'movie'}},recordError(){calls.push('record');},recoverError(){assert.fail('A 429 cannot be recovered as a codec error.');}};
+  const handler=createHlsErrorHandler({isCurrent:()=>true,tools,video:{videoWidth:0},onRateLimit:limit=>limits.push(limit),
+    fail:(message,options)=>calls.push({message,options}),canUseNative:()=>true,useNative:()=>assert.fail('A 429 cannot switch transports.')});
+  const started=Date.now();
+  handler(null,{type:'networkError',fatal:true,details:'manifestLoadError',url:'http://localhost/api/play/movie/1.mp4',response:{code:429,headers:{'retry-after':'90'}}});
+  assert.equal(limits.length,1);assert.equal(limits[0].waitMs,90000);
+  assert.ok(tools.current.rateLimitedUntil>=started+90000);
+  assert.equal(calls[0],'record');assert.equal(calls[1].options.terminalService,true);
+  assert.match(calls[1].message,/limitou/);
+});
 test('only initial live manifest gets the OTT startup budget; playlist/VOD/segment bounds stay unchanged',()=>{
   const live=fastLoadPolicies('live'),vod=fastLoadPolicies('movie');
   assert.equal(live.manifestLoadPolicy.default.maxTimeToFirstByteMs,55000);

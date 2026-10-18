@@ -3,18 +3,21 @@ import assert from 'node:assert/strict';
 import {createApp} from '../lib/app-server.mjs';
 import {ProviderError} from '../lib/provider.mjs';
 import {createHash} from 'node:crypto';
+import {createServer} from 'node:http';
+import {cloudSourceScope} from '../lib/supabase-cloud.mjs';
+import {WPLAY_AUTH_URLS} from '../lib/wplay/conexao/provedor-nativo.mjs';
 import {catalogReadFixture} from './helpers/catalog-read-fixture.mjs';
 
-const providerKey='a'.repeat(64),scopeHash='b'.repeat(64),userId='d243589c-25c5-4db0-b9aa-c087ace3d180';
-async function fixture(t,{cloudFailure=false,pendingBootstrap,sportsLogoReader,sportsLogoMirror}={}){
+const {providerKey,scopeHash}=cloudSourceScope('wplay',WPLAY_AUTH_URLS[1]),userId='d243589c-25c5-4db0-b9aa-c087ace3d180';
+async function fixture(t,{cloudFailure=false,pendingBootstrap,sportsLogoReader,sportsLogoMirror,allowPrivateUpstream=false}={}){
   const calls=[],clients=[],config={url:'https://wnicimkmzswksaqdtgdv.supabase.co',publishableKey:'sb_publishable_fixture_1234567890'};
   const cloud={ready:Promise.resolve(true),enabled:true,publicConfig:()=>config,
     async bootstrap(value){calls.push({kind:'bootstrap',value});if(pendingBootstrap)await pendingBootstrap;if(cloudFailure)throw Object.assign(new Error('private password token'),{code:'CLOUD_REQUEST_FAILED'});return {...config,userId,providerKey,scopeHash,session:{access_token:'fixture-access',refresh_token:'fixture-refresh',expires_in:3600}};},
     async revoke(value){calls.push({kind:'revoke',value});},async rpc(name,args){calls.push({kind:'rpc',name,args});},
-    async request(url){calls.push({kind:'cloud-read',url});const expires_at='2070-01-01T00:00:00Z';if(/\/(provider_catalog_cache|catalog_categories|catalog_media)\?/.test(url))return catalogReadFixture({categories:[{id:'1',name:'GLOBAL'}],items:[{id:'1',kind:'live',name:'GLOBAL CHANNEL',poster:''}]})(url);if(url.includes('/provider_epg_cache?'))return [{expires_at,payload:{list:[{title:'GLOBAL EPG'}]}}];if(url.includes('/provider_games_cache?'))return [{expires_at,payload:{available:true,date:'2026-10-15',timeZone:'America/Maceio',games:[{id:'global-game'}]}}];return [];}};
+    async request(url){calls.push({kind:'cloud-read',url});const expires_at='2070-01-01T00:00:00Z';if(/\/(provider_catalog_cache|catalog_categories|catalog_media)\?/.test(url))return catalogReadFixture({categories:[{id:'1',name:'GLOBAL'}],items:[{id:'1',kind:'live',name:'GLOBAL CHANNEL',poster:''}]})(url);if(url.endsWith('/rpc/arkhen_tv_guide')){const now=Date.now(),program={title:'GLOBAL EPG',start:new Date(now-60000).toISOString(),end:new Date(now+60000).toISOString()};return {schemaVersion:1,revision:'fixture-guide',projectionVersion:'fixture-guide:1',asOf:new Date(now).toISOString(),nextRefreshAt:new Date(now+60000).toISOString(),channels:{'1':{list:[program],window:{previous:null,current:program,next:null}}}};}if(url.includes('/provider_games_cache?'))return [{expires_at,payload:{available:true,date:'2026-10-15',timeZone:'America/Maceio',games:[{id:'global-game'}]}}];return [];}};
   const worker={registerSource:value=>calls.push({kind:'register',value}),unregisterSource:value=>calls.push({kind:'unregister',value}),start:()=>calls.push({kind:'worker-start'}),stop:()=>calls.push({kind:'worker-stop'}),tick:async()=>calls.push({kind:'worker-tick'})};
   const providerFactory=({config})=>{const client={config,images:new Map(),async connect(){this.authenticatedAt=Date.now();this.session={connected:true,account:{status:'Active',expiresAt:'2070-01-01T00:00:00Z'}};return this.session;},async logout(){calls.push({kind:'provider-logout'});this.session=null;},async stopPlayback(){calls.push({kind:'provider-stop'});},async catalog(){calls.push({kind:'provider-catalog'});return {categories:[],items:[]};},async epg(){calls.push({kind:'provider-epg'});return {list:[]};},async games(){calls.push({kind:'provider-games'});return {available:true,games:[]};},async details(){calls.push({kind:'provider-details'});return {id:'1',plot:'individual'};},async playbackURL(){calls.push({kind:'provider-playback'});throw new ProviderError('Esta conta não tem acesso a essa mídia.','ACCOUNT_MEDIA_UNAVAILABLE',403);},playbackGeneration:0,invalidateCatalog(){}};clients.push(client);return client;};
-  const app=createApp({connection:{server:'https://fixture.example'},nativeBridge:null,cloud,sharedWorker:worker,providerFactory,sportsLogoReader,sportsLogoMirror});await new Promise((resolve,reject)=>{app.once('error',reject);app.listen(0,'127.0.0.1',resolve);});
+  const app=createApp({connection:{server:'https://fixture.example'},allowPrivateUpstream,cloud,sharedWorker:worker,providerFactory,sportsLogoReader,sportsLogoMirror});await new Promise((resolve,reject)=>{app.once('error',reject);app.listen(0,'127.0.0.1',resolve);});
   t.after(async()=>{app.closeAllConnections?.();await app.shutdown();});const base=`http://127.0.0.1:${app.address().port}`;
   const login=async headers=>fetch(base+'/api/login',{method:'POST',headers:{Origin:base,'Content-Type':'application/json',...headers},body:JSON.stringify({provider:'wplay',username:'fixture-user',password:'private-provider-password'})});
   return {base,app,cloud,calls,clients,login};
@@ -33,6 +36,35 @@ test('authenticated login and session expose cloud bootstrap; cache endpoints ar
   assert.equal((await fetch(f.base+'/api/play/live/1/index.m3u8',{headers})).status,403);assert.equal(f.calls.filter(call=>call.kind==='provider-playback').length,1);
   await fetch(f.base+'/api/stop',{method:'POST',headers:{...headers,Origin:f.base},body:'{}'});assert.equal(f.calls.filter(call=>call.kind==='revoke').length,0);
   await fetch(f.base+'/api/logout',{method:'POST',headers:{...headers,Origin:f.base},body:'{}'});assert.equal(f.calls.filter(call=>call.kind==='revoke').length,1);assert.equal((await fetch(f.base+'/api/catalog?type=live',{headers})).status,401);
+});
+
+test('artwork outages remain a retryable 503 while an unknown hash stays forbidden',async t=>{
+  const unavailable=await fixture(t,{cloudFailure:true}),login=await unavailable.login();await login.json();
+  const headers={Cookie:login.headers.get('set-cookie').split(';')[0]},ref='e'.repeat(64);
+  const response=await fetch(unavailable.base+'/api/shared-image/'+ref,{headers});
+  assert.equal(response.status,503);assert.equal((await response.json()).code,'CLOUD_ARTWORK_UNAVAILABLE');
+  assert.equal(unavailable.calls.filter(call=>call.kind==='provider-details').length,0);
+  const ready=await fixture(t),readyLogin=await ready.login();await readyLogin.json();
+  const unknown=await fetch(ready.base+'/api/shared-image/'+ref,{headers:{Cookie:readyLogin.headers.get('set-cookie').split(';')[0]}});
+  assert.equal(unknown.status,403);
+  assert.equal(ready.calls.filter(call=>call.kind==='provider-details').length,0);
+});
+
+test('already-authorized artwork still returns 503 if its lazy shared reference lookup times out',async t=>{
+  const f=await fixture(t),ref='e'.repeat(64),poster='/api/shared-image/'+ref;
+  const read=catalogReadFixture({categories:[{id:'safe',name:'Cinema'}],items:[{id:'42',kind:'movie',name:'Fixture poster',categoryId:'safe',poster}]});
+  f.cloud.request=read;f.cloud.artwork=async()=>null;
+  const login=await f.login();await login.json();const headers={Cookie:login.headers.get('set-cookie').split(';')[0]};
+  assert.equal((await fetch(f.base+'/api/catalog?type=movies',{headers})).status,200);
+  let lookups=0;
+  f.cloud.request=async path=>{
+    assert.match(path,/catalog_artwork_refs\?/);lookups++;
+    throw Object.assign(new Error('private upstream token'),{code:'CLOUD_TIMEOUT',cloudStage:'artwork_reference',elapsedMs:5000});
+  };
+  const response=await fetch(f.base+poster,{headers});
+  assert.equal(response.status,503);const body=await response.json();
+  assert.equal(body.code,'CLOUD_ARTWORK_UNAVAILABLE');assert.doesNotMatch(JSON.stringify(body),/private|upstream|token/);
+  assert.equal(lookups,1);assert.equal(f.calls.filter(call=>call.kind==='provider-details').length,0);
 });
 
 test('an unavailable cloud never converts a valid WPLAY login into failure or leaks its raw error',async t=>{
@@ -158,9 +190,13 @@ test('a cloud games logo is mirrored locally only after a scoped JWT lookup prov
   assert.equal((await fetch(f.base+'/api/sports-image/'+logo,{headers})).status,200);assert.equal(mirrors.length,1);assert.equal(reads.length,1,'Partition logo references are reused briefly; bytes stay in the local logo cache.');
 });
 
-test('a permitted cold poster warms global Storage from one lazy item while an adult poster cannot supply a source',async t=>{
-  const canonical='https://covers.arkhen.media/poster.jpg',origin=canonical+'?t=private-token',ref=createHash('sha256').update(JSON.stringify([providerKey,scopeHash,canonical])).digest('hex'),adultRef='f'.repeat(64),artworks=[],details=[];
-  const f=await fixture(t),location=`https://wnicimkmzswksaqdtgdv.supabase.co/storage/v1/object/public/arkhen-catalog-artwork/${providerKey}/${scopeHash}/${ref}`;
+test('a permitted cold poster displays one lazy image while Storage warms in the background and adult images stay forbidden',async t=>{
+  const bytes=Buffer.from('synthetic-image-bytes'),requests=[];
+  const upstream=createServer((req,res)=>{requests.push(req.url);res.writeHead(200,{'Content-Type':'image/png','Content-Length':bytes.length});res.end(bytes);});
+  await new Promise((resolve,reject)=>{upstream.once('error',reject);upstream.listen(0,'127.0.0.1',resolve);});
+  t.after(async()=>{upstream.closeAllConnections?.();await new Promise(resolve=>upstream.close(resolve));});
+  const canonical=`http://127.0.0.1:${upstream.address().port}/poster.png`,origin=canonical+'?t=fixture-token',ref=createHash('sha256').update(JSON.stringify([providerKey,scopeHash,canonical])).digest('hex'),adultRef='f'.repeat(64),artworks=[],details=[];
+  const f=await fixture(t,{allowPrivateUpstream:true}),location=`https://wnicimkmzswksaqdtgdv.supabase.co/storage/v1/object/public/arkhen-catalog-artwork/${providerKey}/${scopeHash}/${ref}`;
   f.cloud.request=async path=>{
     const query=new URLSearchParams(path.split('?')[1]);
     if(path.includes('/catalog_artwork_refs?'))return [{media_type:'movies',media_id:query.get('ref')==='eq.'+adultRef?'999':'120',field:'poster'}];
@@ -170,7 +206,7 @@ test('a permitted cold poster warms global Storage from one lazy item while an a
   f.cloud.artwork=async args=>{artworks.push(args);return args.source?location:null;};
   const login=await f.login(),headers={Cookie:login.headers.get('set-cookie').split(';')[0]};await login.json();
   f.clients[0].upstreamHeaders=()=>({'User-Agent':'FixtureAndroid'});f.clients[0].artworkMetadata=async(kind,id)=>{details.push({kind,id});f.clients[0].images.set('lazy',origin);return {poster:'/api/image?ref=lazy'};};
-  const response=await fetch(f.base+'/api/shared-image/'+ref,{headers,redirect:'manual'});assert.equal(response.status,302);assert.equal(response.headers.get('location'),location);
-  assert.deepEqual(details,[{kind:'movie',id:'120'}]);assert.equal(artworks.length,2);assert.deepEqual(artworks[1].source,{url:origin,userAgent:'FixtureAndroid'});assert.equal(f.calls.some(call=>call.kind==='provider-catalog'),false);
-  assert.equal((await fetch(f.base+'/api/shared-image/'+adultRef,{headers,redirect:'manual'})).status,403);assert.equal(artworks.length,2);assert.equal(details.length,1);
+  const response=await fetch(f.base+'/api/shared-image/'+ref,{headers,redirect:'manual'});assert.equal(response.status,200);assert.equal(response.headers.get('content-type'),'image/png');assert.deepEqual(Buffer.from(await response.arrayBuffer()),bytes);
+  assert.deepEqual(details,[{kind:'movie',id:'120'}]);assert.equal(artworks.length,2);assert.deepEqual(artworks[1].source,{url:origin,userAgent:'FixtureAndroid'});assert.equal(f.calls.some(call=>call.kind==='provider-catalog'),false);assert.deepEqual(requests,['/poster.png?t=fixture-token']);
+  assert.equal((await fetch(f.base+'/api/shared-image/'+adultRef,{headers,redirect:'manual'})).status,403);assert.equal(artworks.length,2);assert.equal(details.length,1);assert.equal(requests.length,1);
 });

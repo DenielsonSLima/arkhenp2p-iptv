@@ -1,6 +1,6 @@
 # Reprodução WPLAY: APK e player web
 
-Revisão local mais recente: [recuperação de TV e Início](tv-home-recovery-20261015.md), com geração por abertura, STOP confirmado e limites da verificação atual. Os testes registrados abaixo pertencem às revisões anteriores.
+Estado atual em 16/10/2026: a ponte Android experimental foi excluída por solicitação do usuário. A documentação canônica do fluxo web está em [WPLAY TV](wplay/README.md). Este documento conserva a investigação histórica do APK e dos contratos de reprodução; seus testes anteriores não certificam a reprodução atual.
 
 Inspeção estática realizada em 15/10/2026 no APK original WPLAYP2P 11.9.0d, versão 1190, pacote `io.wareztv.android.one`. SHA-256: `2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69`. O APK não foi executado nesta inspeção. Nenhum Android, ADB, login ou engine foi iniciado. A preparação Android anterior está interrompida; houve criação de metadados de um AVD, sem boot.
 
@@ -23,7 +23,7 @@ O DEX original carrega `tvcore` em `TVCore.<clinit>` (`classes.dex`, offset `0x7
 
 O contrato inclui configuração de listener, URL de autorização do SDK, usuário/senha, opções, broker opcional, `start(String)`/`start(String,String)`, `stop()`/`stop(int)` e `quit()`. Os callbacks são `onInited`, `onStart`, `onPrepared`, `onStop`, `onQuit` e `onInfo`, com payload textual. A biblioteca contém os formatos de saída HTTP locais `http://127.0.0.1:%d/%u/main.m3u8`, `index.m3u8` e `mpegts_live`. Essas são saídas produzidas pela engine; não são uma conversão textual de `tvbus://` em uma URL remota.
 
-SHA-256 ARM64 de `libtvcore.so`: `23ef3fe420716e95764690f2edd52ec0780c15fe23f0741c7f9b148a790e86ee`. O contrato antigo e a restrição de certificação da ponte própria estão registrados em [native-bridge/README.md](../native-bridge/README.md). Essa inspeção não alterou assinatura, certificado, autenticação, autorização nem DRM.
+SHA-256 ARM64 de `libtvcore.so`: `23ef3fe420716e95764690f2edd52ec0780c15fe23f0741c7f9b148a790e86ee`. A ponte própria investigada foi removida; as evidências estáticas do APK permanecem em [evidências WPLAY](wplay/evidencias.md). Essa inspeção não alterou assinatura, certificado, autenticação, autorização nem DRM.
 
 ## BinStream
 
@@ -33,9 +33,9 @@ A biblioteca contém símbolos `binstream/libtvcar.*` e a sequência de protocol
 
 ## Caminhos HTTP existentes
 
-1. O provedor nativo usa a autenticação WPLAY observada no APK e os endpoints retornados em `service` para catálogo e detalhes. `sources[].address` pode oferecer HTTP(S). [WplayProviderClient](../lib/wplay-provider.mjs) percorre todas as fontes e prefere HTTP(S) válido; somente a ausência de HTTP gera `WPLAY_NATIVE_ENGINE_REQUIRED`.
-2. [WplayPlaybackProviderClient](../lib/wplay-playback.mjs) compõe o HTTP nativo com o transporte web privado de TV. No modo web padrão, uma fonte ao vivo `tvbus://` sem HTTP consulta o player OTT oficial. Erro OTT não inicia Android. A ponte anterior permanece disponível somente no modo nativo explícito; a ausência dela explica o antigo `NATIVE_BRIDGE_UNAVAILABLE`.
-3. O [player web oficial confirmado pelo usuário](https://player.wplayott.com/auth) oferece um caminho separado. [WplayOTTProviderClient](../lib/wplay-ott-provider.mjs) implementa o contrato RPC web, sessão por cookie/Bearer, catálogo `rows[].items[]`, `liveVariants` e `playbackUrl`. As URLs de vídeo efetivas vêm da resposta autorizada do serviço. O navegador consome HTTP/HLS; não precisa receber as bibliotecas Android.
+1. O provedor nativo usa a autenticação WPLAY observada no APK e os endpoints retornados em `service` para catálogo e detalhes. `sources[].address` pode oferecer HTTP(S). [WplayProviderClient](../lib/wplay/conexao/provedor-nativo.mjs) percorre todas as fontes e prefere HTTP(S) válido; somente a ausência de HTTP gera `WPLAY_NATIVE_ENGINE_REQUIRED`.
+2. [WplayPlaybackProviderClient](../lib/wplay/conexao/reproducao.mjs) compõe o HTTP fornecido pelo catálogo com o transporte web privado de TV. Uma fonte ao vivo `tvbus://` sem HTTP consulta o player OTT oficial para o mesmo canal. Erro OTT não inicia Android; não existe opção de ponte local.
+3. O [player web oficial confirmado pelo usuário](https://player.wplayott.com/auth) oferece um caminho separado. [WplayOTTProviderClient](../lib/wplay/ott/provedor.mjs) implementa o contrato RPC web, sessão por cookie/Bearer, catálogo `rows[].items[]`, `liveVariants` e `playbackUrl`. As URLs de vídeo efetivas vêm da resposta autorizada do serviço. O navegador consome HTTP/HLS; não precisa receber as bibliotecas Android.
 
 O ID nativo `405` não está embutido no APK como descrição de um canal. O canal e sua fonte vêm do catálogo autenticado. A falha atual de TV405 entrou no ramo da ponte nativa, segundo o diagnóstico do backend. Esta inspeção não reproduziu nem certificou a transmissão desse canal.
 
@@ -45,11 +45,11 @@ O caminho prático para um backend WPLAY sem Android é integrar o HTTP autoriza
 
 O provedor nativo conserva `chid`/`id` numéricos. O adaptador OTT atual gera IDs numéricos a partir de SHA-256 de chaves como `item:live:<raw.id>:quality:<quality>`. Esses IDs não possuem equivalência matemática com o ID nativo. Mudar o provedor principal também mudaria `accountLibrarySession`, `providerKey` e o namespace da biblioteca. Os testes OTT existentes usam IDs sintéticos e não comprovam a forma dos IDs do catálogo real.
 
-A composição implementada mantém autenticação, catálogo, IDs, favoritos, histórico e escopo Supabase nativos. [WplayWebPlayback](../lib/wplay-web-playback.mjs) fornece somente o transporte HTTP do canal ao vivo que precisa de fallback. O frontend continua selecionando `live:405`; o ID OTT não substitui o ID salvo. Isso dispensa migração de favoritos ou fusão de contas.
+A composição implementada mantém autenticação, catálogo, IDs, favoritos, histórico e escopo Supabase nativos. [WplayWebPlayback](../lib/wplay/ao-vivo/transporte-web.mjs) fornece somente o transporte HTTP do canal ao vivo que precisa de fallback. O frontend continua selecionando `live:405`; o ID OTT não substitui o ID salvo. Isso dispensa migração de favoritos ou fusão de contas.
 
 Uma associação de canal exige primeiro um identificador de origem explicitamente compartilhado pelos dois contratos. Não interpretar dígitos encontrados em UUIDs, hashes ou URLs como prova de equivalência. Se esse vínculo não existir, aceitar somente correspondência única de nome completo normalizado e qualidade explícita. Normalizar Unicode, caixa e espaços; conservar regiões, afiliadas, índices de canal/programa, números e demais qualificadores. Remover um sufixo de qualidade apenas quando reconhecido como tal e comparar a qualidade separadamente. Duplicatas idênticas de categoria podem ser deduplicadas pela identidade do provedor. Conflitos, nomes parciais e qualidade ambígua devem permanecer sem associação automática.
 
-O resolvedor atual exige nome completo único no catálogo autorizado e mantém a associação somente na sessão privada. Ele prefere a variante HD do mesmo canal, como o player oficial, ou a primeira variante fornecida. Não há cache global de aliases. Um eventual cache futuro deverá guardar apenas escopos, IDs públicos, qualidade, método, revisão e validade; nunca URLs de reprodução, cookies, Bearer ou senhas.
+O resolvedor atual exige nome completo único no catálogo autorizado e mantém a associação somente na sessão privada. Por solicitação do usuário em 16/10, escolhe a maior resolução declarada das variantes associadas com segurança; `sourceId` explícito conserva a escolha manual. Isso substitui o default HD anterior do ARKHEN, sem alterar o fato histórico observado no site oficial. Não há cache global de aliases. Um eventual cache futuro deverá guardar apenas escopos, IDs públicos, qualidade, método, revisão e validade; nunca URLs de reprodução, cookies, Bearer ou senhas.
 
 ## Verificação e limites
 

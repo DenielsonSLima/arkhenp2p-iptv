@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createApp } from '../lib/app-server.mjs';
-import { WplayPlaybackProviderClient } from '../lib/wplay-playback.mjs';
-import { WPLAY_AUTH_URLS } from '../lib/wplay-provider.mjs';
+import { WplayPlaybackProviderClient } from '../lib/wplay/conexao/reproducao.mjs';
+import { WPLAY_AUTH_URLS } from '../lib/wplay/conexao/provedor-nativo.mjs';
 
 test('the application defaults to native WPlay and dispatches its registered category pages',async t=>{
   const calls=[];
@@ -13,12 +13,12 @@ test('the application defaults to native WPlay and dispatches its registered cat
   const snapshot={categories:[{id:'50',name:'Lançamentos'}],items:[{id:'101',kind:'movie',name:'Filme',categoryId:'50'}],pagination:{mode:'category',byCategory:{'50':{nextPage:2,hasMore:true,loaded:true}}}};
   t.mock.method(WplayPlaybackProviderClient.prototype,'catalog',async function(type){calls.push({method:'catalog',type});return snapshot;});
   t.mock.method(WplayPlaybackProviderClient.prototype,'catalogPage',async function(type,category,page){calls.push({method:'catalogPage',type,category,page});return {...snapshot,pagination:{mode:'category',byCategory:{'50':{nextPage:page+1,hasMore:true,loaded:true}}}};});
-  const app=createApp({connection:{server:'https://unrelated-fixture.invalid'},nativeBridge:null});
+  const app=createApp({connection:{server:'https://unrelated-fixture.invalid'}});
   await new Promise((resolve,reject)=>{app.once('error',reject);app.listen(0,'127.0.0.1',resolve);});
   const base=`http://127.0.0.1:${app.address().port}`;
   try{
     const fresh=await fetch(base+'/api/session');
-    assert.deepEqual(await fresh.json(),{connected:false,capabilities:{games:true,accountLibrary:true,cloud:false},login:{configuredServer:true,defaultProvider:'wplay'},cloud:null,cloudStatus:{state:'disabled'}});
+    assert.deepEqual(await fresh.json(),{connected:false,code:'SESSION_REQUIRED',capabilities:{games:true,accountLibrary:true,cloud:false},login:{configuredServer:true,defaultProvider:'wplay'},cloud:null,cloudStatus:{state:'disabled'}});
     const login=await fetch(base+'/api/login',{method:'POST',headers:{Origin:base,'Content-Type':'application/json'},body:JSON.stringify({username:'native-fixture',password:'synthetic-private-password'})});
     assert.equal(login.status,200);const account=await login.json();assert.equal(account.connected,true);assert.equal(account.account.provider,'wplay');
     const headers={Cookie:login.headers.get('set-cookie').split(';')[0]};
@@ -36,7 +36,7 @@ test('the application defaults to native WPlay and dispatches its registered cat
   }finally{app.closeAllConnections();await new Promise(resolve=>app.close(resolve));}
 });
 
-test('graceful shutdown waits for native session cleanup and can be called twice',async t=>{
+test('graceful shutdown waits for WPLAY session cleanup and can be called twice',async t=>{
   let finishLogout,startedLogout;
   const events=[];
   const waiting=new Promise(resolve=>{startedLogout=resolve;});
@@ -47,7 +47,7 @@ test('graceful shutdown waits for native session cleanup and can be called twice
   t.mock.method(WplayPlaybackProviderClient.prototype,'logout',async function(){
     startedLogout();await released;this.session=null;events.push('logout');
   });
-  const app=createApp({connection:{},nativeBridge:{async shutdown(){events.push('bridge-shutdown');}}});
+  const app=createApp({connection:{}});
   await new Promise((resolve,reject)=>{app.once('error',reject);app.listen(0,'127.0.0.1',resolve);});
   const base='http://127.0.0.1:'+app.address().port;
   try{
@@ -61,6 +61,6 @@ test('graceful shutdown waits for native session cleanup and can be called twice
     finishLogout();
     await closing;await app.shutdown();
     assert.equal(finished,true);assert.equal(app.listening,false);
-    assert.deepEqual(events,['logout','bridge-shutdown']);
+    assert.deepEqual(events,['logout']);
   }finally{finishLogout();await app.shutdown();}
 });

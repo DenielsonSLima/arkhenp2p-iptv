@@ -1,0 +1,2091 @@
+{
+  "scope": "Static storage/cache inspection; no APK execution, network, media, tests or browser",
+  "target_sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69",
+  "captured_local_date": "2026-10-16/17",
+  "records": [
+    {
+      "evidence_id": "ev_5eaf6bc7bd9e14d5de4724300e3a8ae8810c41560e507f9664238f7b6f61ef6a",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "xc.a",
+        "method_name": "z",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "xc.a",
+        "method": {
+          "name": "z",
+          "reported_signature": "z(int): java.lang.String",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "4ba0aa8b0aebd7469680a2934cab9ad65bd099a72b689d87458ec86e6d522279",
+        "source_utf8_bytes": 309
+      },
+      "private_evidence_basename": "storage-cache-ttl-prefix.json",
+      "private_json_sha256": "d296c67831e550d92240a10408171228019b92c1a63c04dd731da66b741e1b84"
+    },
+    {
+      "evidence_id": "ev_af594677de8ed09f20b7f384d54a9346989be7ec5b239b96166eea98d6b6f679",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "rd.c",
+        "method_name": "f",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "rd.c",
+        "method": {
+          "name": "f",
+          "reported_signature": "f(java.lang.String, byte[], int): void",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "286b8a842d5a6530a4d07106cc1a238da5acb7a27e33033fc3c77dd5070d752b",
+        "source_utf8_bytes": 340
+      },
+      "private_evidence_basename": "storage-cache-put-ttl.json",
+      "private_json_sha256": "7cfdbda7c43a06cac53b65eea066375f66153d112373b4e3787271540e1b6eb8"
+    },
+    {
+      "evidence_id": "ev_24b996dd9979a455e907e92872fa2d1e23b0bbfb13733653571ec6f1671c84cb",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "se.i",
+        "method_name": "<clinit>",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "se.i",
+        "method": {
+          "name": "<clinit>",
+          "reported_signature": "<clinit>(): void",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "189fc4478672d098b7f1ecb1141139025b69fd03f9c8169a36b251a937715879",
+        "source_utf8_bytes": 476
+      },
+      "private_evidence_basename": "storage-offline-clinit.json",
+      "private_json_sha256": "d2a311263bfa9a903f41c1c45c4d864e5e11dad7474844e6f6c33e8a23558a93"
+    },
+    {
+      "evidence_id": "ev_27d8bb392b3faa302645789b6b76d3f1e92f80c1d5379f55fca98ebb89f9cb50",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "ua.c",
+        "method_name": "l",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "ua.c",
+        "method": {
+          "name": "l",
+          "reported_signature": "l(java.lang.String, java.lang.String): java.lang.String",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "b4cbacf3b5eb098b06b9834c8f48ceced31fd2347434fe6208badd428ce3c3d8",
+        "source_utf8_bytes": 512
+      },
+      "private_evidence_basename": "storage-string-decoder.json",
+      "private_json_sha256": "67eef191556bde8f5a64974e0871fefbeff40db19eed54777b105828cce862e5"
+    },
+    {
+      "evidence_id": "ev_d8881d50cf56f577e5c97c654ff5bfd4463ad754310a99e3f52dd398c5307d84",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "org.bitspark.android.db.AppDatabase_Impl",
+        "method_name": "createOpenDelegate",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "org.bitspark.android.db.AppDatabase_Impl",
+        "method": {
+          "name": "createOpenDelegate",
+          "reported_signature": "createOpenDelegate(): androidx.room.o0",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "not_available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "b0ecf94d5c076e5859635541efb266166fa68b82b84e9d9334c6ebf17043e908",
+        "source_utf8_bytes": 61
+      },
+      "private_evidence_basename": "storage-appdatabase-open.json",
+      "private_json_sha256": "eca711f6877929cbbbb63d6c06777baa2f52fbea88861413351b101d838be22f"
+    },
+    {
+      "evidence_id": "ev_135c6bd5e840a5ec2caed3b9362baa46cba4237d3912883fcacf2ace9da2ff9d",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "c2.a",
+        "method_name": "c",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "c2.a",
+        "method": {
+          "name": "c",
+          "reported_signature": "c(java.lang.String): java.io.File",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "8e2831be315fdc473b0ecbf7fc874ee6027fea98bc61d0461f6f2878066abe65",
+        "source_utf8_bytes": 309
+      },
+      "private_evidence_basename": "storage-cache-read-file.json",
+      "private_json_sha256": "e1b92010fab30576da8e6efe4940a741fc3003aafa7b7a862308a6a9137944a1"
+    },
+    {
+      "evidence_id": "ev_90bb96361d207fc67623e5b07a251f413c900d35154f315f2171cbcd211d227b",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_class",
+      "parameters": {
+        "class_name": "org.bitspark.android.offline.VodOfflineDownloadService"
+      },
+      "authority": "shipped-artifact",
+      "confidence": "observed",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "org.bitspark.android.offline.VodOfflineDownloadService"
+      },
+      "private_evidence_basename": "storage-offline-service.json",
+      "private_json_sha256": "692f9f9c638377461c6aa4439c4611e346df9a83ca8263b529b230df05a3acd7"
+    },
+    {
+      "evidence_id": "ev_44a5e7278517c8464ac242dbaef3332c87a71074a3f0138850c3b861d84f9907",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_class",
+      "parameters": {
+        "class_name": "org.bitspark.android.SpkApplication"
+      },
+      "authority": "shipped-artifact",
+      "confidence": "observed",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "org.bitspark.android.SpkApplication"
+      },
+      "private_evidence_basename": "storage-spkapplication.json",
+      "private_json_sha256": "0d95af4e5ea008938984505d9349ab0d10e1cad618f9b1024048ce19c95fd551"
+    },
+    {
+      "evidence_id": "ev_2351056e046de2758046575f2541678e1abe5ca60dc47093d17547bb2ac58fab",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "l8.b",
+        "method_name": "call",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "l8.b",
+        "method": {
+          "name": "call",
+          "reported_signature": "call(): java.lang.Object",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "5400ce165d693e5f8d8fa5187a71a69e08412dbbf202afaa35909cb21f9b17d0",
+        "source_utf8_bytes": 1500
+      },
+      "private_evidence_basename": "storage-prefs-factory.json",
+      "private_json_sha256": "5b490cacbdb667f306122000b8a4be5838c01d90972f1ae1c62be565bebe6964"
+    },
+    {
+      "evidence_id": "ev_72a23341f0b25133b4c1747d5e67b6373d73976b71afac43a217fea8d0009274",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_class",
+      "parameters": {
+        "class_name": "org.bitspark.android.utils.i0"
+      },
+      "authority": "shipped-artifact",
+      "confidence": "observed",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "org.bitspark.android.utils.i0"
+      },
+      "private_evidence_basename": "storage-utils-i0.json",
+      "private_json_sha256": "cfa1b685eecaab54b3b83b9256ba996f384866ed93d9c1dbabfdec16b2c7e6db"
+    },
+    {
+      "evidence_id": "ev_d1d61ba267050db3db5945e88fd1c718ff1a2ae720d35375ff68248a70deccb9",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "c2.a",
+        "method_name": "f",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "c2.a",
+        "method": {
+          "name": "f",
+          "reported_signature": "f(java.lang.String): java.io.File",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "0fb9f4a83bdc2b2644dd0f81c1e0c942569d067655b696d863424cb72794c8b9",
+        "source_utf8_bytes": 98
+      },
+      "private_evidence_basename": "storage-cache-file-name.json",
+      "private_json_sha256": "1fc026150dd4b6e614abedc5e48d9976efb7ac613f7aedb4803e076723513499"
+    },
+    {
+      "evidence_id": "ev_63a34c6e47eb9d31b8f6d083b54f4d03b9bbda4fb63285c177124a8228fe7fd0",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "c2.a",
+        "method_name": "<init>",
+        "overload_index": 1
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "c2.a",
+        "method": {
+          "name": "<init>",
+          "reported_signature": "<init>(java.io.File): void",
+          "overload_index": 1,
+          "is_constructor": true,
+          "dex_descriptor": null
+        },
+        "overload_count": 2,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "f525698dc136ff1a8947d32c3aeda8b45a5bbcd5a9ad691136540069dc43fbf3",
+        "source_utf8_bytes": 311
+      },
+      "private_evidence_basename": "storage-cache-manager-init.json",
+      "private_json_sha256": "2e9a212a4a9f1d43b8af3fd53676c064d05ada1e39bb2eafdc50ec1a7808dd7c"
+    },
+    {
+      "evidence_id": "ev_4d9d1b34be2636c9a63ea06a64f12a46ab4ba5ae220d662cb823ffc2602876e2",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_class",
+      "parameters": {
+        "class_name": "org.bitspark.android.db.AppDatabase"
+      },
+      "authority": "shipped-artifact",
+      "confidence": "observed",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "org.bitspark.android.db.AppDatabase"
+      },
+      "private_evidence_basename": "storage-appdatabase.json",
+      "private_json_sha256": "553ac74d4c35e76bdb92a53b1bef1a544988645761edf2a040b9802825684c33"
+    },
+    {
+      "evidence_id": "ev_06134f31a18275f576d2834acb0e08725049d6d262f238323bb44cb29501fadd",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "org.bitspark.android.utils.i0",
+        "method_name": "<clinit>",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "org.bitspark.android.utils.i0",
+        "method": {
+          "name": "<clinit>",
+          "reported_signature": "<clinit>(): void",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "494fbcb203edd20d559391962e084bb4c1913d04c6015e0812966804e986755c",
+        "source_utf8_bytes": 506
+      },
+      "private_evidence_basename": "storage-utils-i0-clinit.json",
+      "private_json_sha256": "a5d52ee2342ebcc707107574c699551554329b9d09cb5514ba5f74917a4fad0a"
+    },
+    {
+      "evidence_id": "ev_915ec100171910ff79129dd972f9485cec59ae0c7cda3b6870fef75de8c3b18c",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_class",
+      "parameters": {
+        "class_name": "c2.a"
+      },
+      "authority": "shipped-artifact",
+      "confidence": "observed",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "c2.a"
+      },
+      "private_evidence_basename": "storage-cache-manager.json",
+      "private_json_sha256": "e2519008a8413490008fcb161c108f736ef35cd5269ee21912bfea7c6413b474"
+    },
+    {
+      "evidence_id": "ev_9ce0e98db2d8857d680d0a6c531a1af978151c317aa4f541835f98e91f793557",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "n7.b",
+        "method_name": "y",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "n7.b",
+        "method": {
+          "name": "y",
+          "reported_signature": "y(): void",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "3fba891a232fa07662c44493b05a5100e5d69c18c3239e1af95e6fd8472d46c3",
+        "source_utf8_bytes": 1708
+      },
+      "private_evidence_basename": "storage-preset-y.json",
+      "private_json_sha256": "3f3bb78a1ee947ed45a8eef0c640ea270854d04b5119ab71b19555f2a46cae64"
+    },
+    {
+      "evidence_id": "ev_1af36b38121854dbe9da06b834fe2374836e98f960a434ca9359fa24bbfb750d",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_class",
+      "parameters": {
+        "class_name": "org.bitspark.android.db.AppDatabase_Impl"
+      },
+      "authority": "shipped-artifact",
+      "confidence": "observed",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "org.bitspark.android.db.AppDatabase_Impl"
+      },
+      "private_evidence_basename": "storage-appdatabase-impl.json",
+      "private_json_sha256": "5c147e70801d65473dc412abe23189e1b47a7db91a65e57ea4b2877d56f4f31d"
+    },
+    {
+      "evidence_id": "ev_66fcc41e6d88c6089b1318a088a986d8099a3a62092938f80f4f0217321b7749",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_class",
+      "parameters": {
+        "class_name": "td.i"
+      },
+      "authority": "shipped-artifact",
+      "confidence": "observed",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "td.i"
+      },
+      "private_evidence_basename": "storage-td-i.json",
+      "private_json_sha256": "a84bfad8753d3c066e22036f907aede79fd39901b9f93909e771e1c3c5a99fef"
+    },
+    {
+      "evidence_id": "ev_84f4a675d6790c9bd50b00d3fe73f9de76707d478e807157dbf9bfd41260d660",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "c2.a",
+        "method_name": "j",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "c2.a",
+        "method": {
+          "name": "j",
+          "reported_signature": "j(): long",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "f5208dd80e10e534a1b231af43fd20c1515d8a8ac989962d53624b19b65db505",
+        "source_utf8_bytes": 1106
+      },
+      "private_evidence_basename": "storage-cache-victim.json",
+      "private_json_sha256": "59a4bc2cd064b77c25f7171aca9cf3d113ed85fe1aa99d01025979fc3f25d156"
+    },
+    {
+      "evidence_id": "ev_8807d7cacc593e2dd447f38ec5bc7541968bb8be30a96be7ec12908dd3ef3fdf",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_class",
+      "parameters": {
+        "class_name": "wd.c"
+      },
+      "authority": "shipped-artifact",
+      "confidence": "observed",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "wd.c"
+      },
+      "private_evidence_basename": "storage-wd-c.json",
+      "private_json_sha256": "e358826703a8e7c09229fcdb8c573923401df52656fd2dd25876f85043ed0380"
+    },
+    {
+      "evidence_id": "ev_4dac845ad22fb3b89eb46e75554fdab42d6f6a7b71bb91276c27477319970c59",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "rd.c",
+        "method_name": "b",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "rd.c",
+        "method": {
+          "name": "b",
+          "reported_signature": "b(java.lang.String): java.lang.Object",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "2a63c3e3cce01bbe9b41da07a8d4360106073ab06eb2f094f9793ed466003175",
+        "source_utf8_bytes": 6791
+      },
+      "private_evidence_basename": "storage-cache-get.json",
+      "private_json_sha256": "6bc56dd393fff0f714f2dc50d951d91ed898847167cccf25a3e88d25264aac3f"
+    },
+    {
+      "evidence_id": "ev_21c54243293a35501b367784d197bcb6ccaba228d18fb1c2e5846ebe99083303",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "c2.a",
+        "method_name": "a",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "c2.a",
+        "method": {
+          "name": "a",
+          "reported_signature": "a(c2.a, java.io.File): void",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "b96a86cd20f03a76123d7cb1f59b33030fa75f5d1574263125f16e1ac8a67a8a",
+        "source_utf8_bytes": 1266
+      },
+      "private_evidence_basename": "storage-cache-eviction.json",
+      "private_json_sha256": "9f8ee0de1579abafdc898bb836335fc09d4c8b9e5f05f3d4ffab222de2ef5d6b"
+    },
+    {
+      "evidence_id": "ev_ccc54c772b678b599d6a69a6380de338ed46378322f388cd2bccdaa6cb4cee9f",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "org.bitspark.android.offline.VodOfflineDownloadService",
+        "method_name": "getDownloadManager",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "org.bitspark.android.offline.VodOfflineDownloadService",
+        "method": {
+          "name": "getDownloadManager",
+          "reported_signature": "getDownloadManager(): androidx.media3.exoplayer.offline.DownloadManager",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "not_available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "b0ecf94d5c076e5859635541efb266166fa68b82b84e9d9334c6ebf17043e908",
+        "source_utf8_bytes": 61
+      },
+      "private_evidence_basename": "storage-offline-manager.json",
+      "private_json_sha256": "dedaf73cda032a9bb0f63977d8e9d6fe1dc10154c07561fc17cbddfed32c9403"
+    },
+    {
+      "evidence_id": "ev_ded2b67474613e4bf7c315112fdab1c47350d423319ccbaa3074d0156ee22feb",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_class",
+      "parameters": {
+        "class_name": "rd.c"
+      },
+      "authority": "shipped-artifact",
+      "confidence": "observed",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "rd.c"
+      },
+      "private_evidence_basename": "storage-rd-c.json",
+      "private_json_sha256": "f72ac7a462aadcb65e010c007a3c27c8b037be97f757f22c844422188dee5669"
+    },
+    {
+      "evidence_id": "ev_a4bab36c0b890f105a393e95c20ba6ff3fb4e99f1a06ffeb59d762536f6cb411",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "rd.c",
+        "method_name": "d",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "rd.c",
+        "method": {
+          "name": "d",
+          "reported_signature": "d(java.lang.String, java.io.Serializable, int): void",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "43172cb32b5480eb1ea97ee1e69e04c2762eb6b4ff199ed3d4af6a46b534148f",
+        "source_utf8_bytes": 1574
+      },
+      "private_evidence_basename": "storage-cache-put-object.json",
+      "private_json_sha256": "d19489e58bb395b971a7f80c7ec556b3d90c4a021fe89316564fb1eab6045338"
+    },
+    {
+      "evidence_id": "ev_f8264fdb5b1291ba063251991578665c81a2dd78e6d86a7c7d0d2dc138be8b38",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "se.i",
+        "method_name": "q",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "se.i",
+        "method": {
+          "name": "q",
+          "reported_signature": "q(android.content.Context): void",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "8d1157f2b3307ac760c41417a5e46795a4c97247b3bd2053b321bb6937fa6d7b",
+        "source_utf8_bytes": 1309
+      },
+      "private_evidence_basename": "storage-offline-init.json",
+      "private_json_sha256": "7f83ae046d31f1949a08ab1f0b76f04ba6fc51ca56d8a7d14ebdf7d2f0eca630"
+    },
+    {
+      "evidence_id": "ev_c7a313131b64ebe63a481716966bd322eb87065c95d7253f8ce9275871d8c7d5",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "org.bitspark.android.SpkApplication",
+        "method_name": "onCreate",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "org.bitspark.android.SpkApplication",
+        "method": {
+          "name": "onCreate",
+          "reported_signature": "onCreate(): void",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "3f0cffa79792404d766bc758b65b59c30d4b298d75a984136d302770876ba727",
+        "source_utf8_bytes": 6587
+      },
+      "private_evidence_basename": "storage-spkapplication-onCreate.json",
+      "private_json_sha256": "6339f3050a2fe5efa24b59c069f393dc899fcff91f84622a823467cfc505e80b"
+    },
+    {
+      "evidence_id": "ev_9c4a6b6b43aea9a30141b701edc3df3c6d249c6ecd887aa621665f6ef09bb271",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "org.bitspark.android.db.AppDatabase_Impl",
+        "method_name": "createInvalidationTracker",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "org.bitspark.android.db.AppDatabase_Impl",
+        "method": {
+          "name": "createInvalidationTracker",
+          "reported_signature": "createInvalidationTracker(): androidx.room.l",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "13b53f6a1cdd7bb6e5ac016095cacf1c798e42c8386aba07805a6e59dcd40f70",
+        "source_utf8_bytes": 210
+      },
+      "private_evidence_basename": "storage-appdatabase-tables.json",
+      "private_json_sha256": "d558b8b8dc8da41ab6ca3e391f333984b5889e1ab951bbb458514136f986e10e"
+    },
+    {
+      "evidence_id": "ev_b99a0aa070db3df7521e43e3a2e1ba4ca6d56b1363b638cf024faac74fa57bd9",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "rd.c",
+        "method_name": "e",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "rd.c",
+        "method": {
+          "name": "e",
+          "reported_signature": "e(java.lang.String, byte[]): void",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "427f7b793ef121085ce0562313f52e8a1e1d54c36f088d18a423a8b155577ea9",
+        "source_utf8_bytes": 1930
+      },
+      "private_evidence_basename": "storage-cache-write-bytes.json",
+      "private_json_sha256": "41f7792157080b06918f58a7ef8ad44d9947b62a16720f1cceb689539c1766a8"
+    },
+    {
+      "evidence_id": "ev_e61083749f64f6821c49d120713c6d25ab46b673c2ec571726c4b629730edb8e",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "ua.c",
+        "method_name": "J",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "ua.c",
+        "method": {
+          "name": "J",
+          "reported_signature": "J(android.content.Context): android.content.SharedPreferences",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "1f3d1db4b0f8e3b03482a201633a6e0caf9aa765504ef897fe36e37845861b30",
+        "source_utf8_bytes": 494
+      },
+      "private_evidence_basename": "storage-sharedpreferences.json",
+      "private_json_sha256": "8eb184f1b4421488d9c3ac264cc29c0a2226f2720773e0b8ff838ce5836396ed"
+    },
+    {
+      "evidence_id": "ev_5b1d288cbe0e2c40b0a7fd365eec098640d0b3869d39fa883243796a6a60883d",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_class",
+      "parameters": {
+        "class_name": "org.bitspark.android.utils.g"
+      },
+      "authority": "shipped-artifact",
+      "confidence": "observed",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "org.bitspark.android.utils.g"
+      },
+      "private_evidence_basename": "storage-utils-g.json",
+      "private_json_sha256": "bf9ca96215c11351306d3a1dd2c236efeb8a52a2d760ab2f8efe472b78095066"
+    },
+    {
+      "evidence_id": "ev_40aefb7c0d52b4371f5462a25bd46b0fe61a78804640b77a482eefa7f831fdaa",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "td.i",
+        "method_name": "<clinit>",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "td.i",
+        "method": {
+          "name": "<clinit>",
+          "reported_signature": "<clinit>(): void",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "4745bd4474678a54ad7fbff26c0f2db6c243098c538a2600ca1aced9c2b3c186",
+        "source_utf8_bytes": 654
+      },
+      "private_evidence_basename": "storage-td-i-clinit.json",
+      "private_json_sha256": "1d359741de1d5b650fa5f13f5820321d8ed1991a486a5d4c3d6e254bf7bdd0be"
+    },
+    {
+      "evidence_id": "ev_0816af624bf3af343ad5d3b3359ba87aaeb2016aa6aa11520f954c1d3db3f6e4",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "td.i",
+        "method_name": "j",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "td.i",
+        "method": {
+          "name": "j",
+          "reported_signature": "j(java.lang.String): long",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "aa324acb8bd5cbf1712aa84ef6ac62fc78f3b8e070498c44eab2a3e4672f7598",
+        "source_utf8_bytes": 1106
+      },
+      "private_evidence_basename": "storage-epg-date.json",
+      "private_json_sha256": "e3fe8a3335265b92923c4927145963175a49e42b8b76e6be5a4e07e62bfd5520"
+    },
+    {
+      "evidence_id": "ev_4ad3d60c70c591e9aa748b6a2e454320233a128c18161ad260b08904f2309095",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "td.i",
+        "method_name": "b",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "td.i",
+        "method": {
+          "name": "b",
+          "reported_signature": "b(int, java.util.ArrayList, boolean): void",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "not_available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "b0ecf94d5c076e5859635541efb266166fa68b82b84e9d9334c6ebf17043e908",
+        "source_utf8_bytes": 61
+      },
+      "private_evidence_basename": "storage-td-i-b.json",
+      "private_json_sha256": "e26ac3ad50544d2c900162dce05d7f8a02e9e80362499e5344f980b13c5ddf5e"
+    },
+    {
+      "evidence_id": "ev_82779644ea3f2e6a1642d10c0829c6dafebac14ba47947862b7aa222657bb6f1",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "rd.c",
+        "method_name": "<clinit>",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "rd.c",
+        "method": {
+          "name": "<clinit>",
+          "reported_signature": "<clinit>(): void",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "not_available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "b0ecf94d5c076e5859635541efb266166fa68b82b84e9d9334c6ebf17043e908",
+        "source_utf8_bytes": 61
+      },
+      "private_evidence_basename": "storage-cache-clinit.json",
+      "private_json_sha256": "208fe62399fece982ee3936e56c76c550de8680150a3408b5365c16914b8d9d0"
+    },
+    {
+      "evidence_id": "ev_bd384cc57aa5236ad466afd9741eb2103e8c8e9c69ef0c9854493b3aafdd2d6b",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "rd.a",
+        "method_name": "run",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "rd.a",
+        "method": {
+          "name": "run",
+          "reported_signature": "run(): void",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "7a7ca79480e4b5e53d1301bbe1f80cec5fd3b9d6385438d47fd858a410d36cc3",
+        "source_utf8_bytes": 2143
+      },
+      "private_evidence_basename": "storage-cache-write-worker.json",
+      "private_json_sha256": "fd2b7824856b159255607151ebec35d26d641079992f72f93edbff482da940e6"
+    },
+    {
+      "evidence_id": "ev_ad2645895119b9bc38f312433e457c34f3783205be03849b1794e063d60efbc2",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_class",
+      "parameters": {
+        "class_name": "se.i"
+      },
+      "authority": "shipped-artifact",
+      "confidence": "observed",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "se.i"
+      },
+      "private_evidence_basename": "storage-offline-core.json",
+      "private_json_sha256": "0af7cbec70d0333c43f61ef30045d6bdb24d974bfb9e822889cfc4ff4a5a57d0"
+    },
+    {
+      "evidence_id": "ev_3854e541d3bdfc5de458444fd0db041a217ace60cb33f062acb28bff7e3958e5",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_class",
+      "parameters": {
+        "class_name": "ua.c"
+      },
+      "authority": "shipped-artifact",
+      "confidence": "observed",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "ua.c"
+      },
+      "private_evidence_basename": "storage-ua-c.json",
+      "private_json_sha256": "4859fa685638bd0da6e8e19254bf74907ac86e58dbef1998aecef42b62080c4b"
+    },
+    {
+      "evidence_id": "ev_b5335e6fa8f074015bfe1900c649bd25418b915998a138c5debe94cce89b3c55",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "xc.a",
+        "method_name": "O",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "xc.a",
+        "method": {
+          "name": "O",
+          "reported_signature": "O(byte[]): boolean",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "f85afdefdd80a46bc171ed65d13cb08cf0cb3fbdac1b155ed89e898564ef9c10",
+        "source_utf8_bytes": 1046
+      },
+      "private_evidence_basename": "storage-cache-ttl-expired.json",
+      "private_json_sha256": "1e48325b6e7f115921f4a21bb17aa65fcb93d17d657744f78a899f6055ffa980"
+    },
+    {
+      "evidence_id": "ev_4e3c7f0afc80572bfc6e4e9c67a4a75936dcfab72f14b842b57d12083970d67d",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "org.bitspark.android.h",
+        "method_name": "<clinit>",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "org.bitspark.android.h",
+        "method": {
+          "name": "<clinit>",
+          "reported_signature": "<clinit>(): void",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "not_available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "b0ecf94d5c076e5859635541efb266166fa68b82b84e9d9334c6ebf17043e908",
+        "source_utf8_bytes": 61
+      },
+      "private_evidence_basename": "storage-h-clinit.json",
+      "private_json_sha256": "13abac00787a31fa2ee5c9512d1c23ca36645b4133cca70959e8d5fd5ad7773b"
+    },
+    {
+      "evidence_id": "ev_6c64e935c3ccc99b6d1e458c3a341f688ce6eab1561eee01e2be8148474088b6",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "org.bitspark.android.utils.i0",
+        "method_name": "h",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "org.bitspark.android.utils.i0",
+        "method": {
+          "name": "h",
+          "reported_signature": "h(java.lang.String): okhttp3.OkHttpClient",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "not_available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "b0ecf94d5c076e5859635541efb266166fa68b82b84e9d9334c6ebf17043e908",
+        "source_utf8_bytes": 61
+      },
+      "private_evidence_basename": "storage-http-client.json",
+      "private_json_sha256": "3999f6240afde35e9751faf798454800041a6b9a934cbbd66a3be2df927d4d74"
+    },
+    {
+      "evidence_id": "ev_1ec33b4e4df7a2ed1b171cbe84d3a3a02a658f76e686db359b74c71391cff0fe",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "org.bitspark.android.Spark",
+        "method_name": "v",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "org.bitspark.android.Spark",
+        "method": {
+          "name": "v",
+          "reported_signature": "v(): void",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "76d86bfa0fefc61899f740c242f9164adb30ca029f78b8a1fe4bb6ece0d3c764",
+        "source_utf8_bytes": 20212
+      },
+      "private_evidence_basename": "network-Spark-v.json",
+      "private_json_sha256": "cad40c6d99bb33613a1f7024d685c7a30623120519e2c6431e6dbf06eef34d1f"
+    },
+    {
+      "evidence_id": "ev_c5c430b884d467ab4e080593291ae4d9db5081450fb6df84d681a509f3377c8c",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "org.bitspark.android.utils.y",
+        "method_name": "onSuccess",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "org.bitspark.android.utils.y",
+        "method": {
+          "name": "onSuccess",
+          "reported_signature": "onSuccess(com.lzy.okgo.model.Response): void",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "ba34ceae12cea6764bfcc4c4ce67952bb98618d6acf114ee1d7cde3e515ee053",
+        "source_utf8_bytes": 3608
+      },
+      "private_evidence_basename": "network-y-onSuccess.json",
+      "private_json_sha256": "c355bfa72c6d22271c7536543c6a79d8e2ae0796829f9b1f9f370f9c2349fc8d"
+    },
+    {
+      "evidence_id": "ev_91e31c100dcbb9e053028729819175e9868221f03072665eeabb4a2a13a5efd2",
+      "subject": {
+        "name": "WPLAYP2P.apk",
+        "digest": {
+          "sha256": "2e2b680d01ed0178e40368e02964d004e16bbe1b39206cda8da7680d6b95fc69"
+        },
+        "format": "apk",
+        "architecture": null
+      },
+      "provider": {
+        "id": "jadx",
+        "name": "JADX headless",
+        "version": "0.7.1"
+      },
+      "operation": "inspect_android_method",
+      "parameters": {
+        "class_name": "org.bitspark.android.utils.y",
+        "method_name": "onError",
+        "overload_index": 0
+      },
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "normalized": {
+        "engine": {
+          "name": "jadx-headless-mcp",
+          "version": "0.7.1",
+          "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+          "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "worker_count": 1,
+          "heap_limit_mib": 768
+        },
+        "class_name": "org.bitspark.android.utils.y",
+        "method": {
+          "name": "onError",
+          "reported_signature": "onError(com.lzy.okgo.model.Response): void",
+          "overload_index": 0,
+          "is_constructor": false,
+          "dex_descriptor": null
+        },
+        "overload_count": 1,
+        "representation": "java",
+        "body_status": "available",
+        "fell_back": false,
+        "markers": [],
+        "source_status": "complete",
+        "source_sha256": "f747f5d54d57039511dcfb4f4fbbd8cdb0ddae9d62516119dc53bace0127b652",
+        "source_utf8_bytes": 5695
+      },
+      "private_evidence_basename": "network-y-onError.json",
+      "private_json_sha256": "57de318f7b875bf20efc86394d8f971e50f74bc06bb61fbedab7772e8d7f5efe"
+    }
+  ]
+}

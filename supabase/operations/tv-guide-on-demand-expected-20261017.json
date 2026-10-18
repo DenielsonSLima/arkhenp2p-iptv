@@ -1,0 +1,15 @@
+{
+  "mode": "prepared-static-only",
+  "migration": "20261017011816_arkhen_tv_guide_on_demand_channels.sql",
+  "functions_md5": {
+    "public.arkhen_tv_guide": "d4bb56ed00c68ed5f0ab6ccd718987c7",
+    "arkhen_private.refresh_tv_guide": "bd0b16947f17fa530b795cbc9ca1862f",
+    "public.arkhen_tick_tv_guides": "14939ecb98c466af2fb01426295f6482"
+  },
+  "expected_clock_active": false,
+  "baseline_functions_md5": {
+    "public.arkhen_tv_guide": "9bc93f608cefcb2238726d7b6c4159ce",
+    "arkhen_private.refresh_tv_guide": "76f885ad6324356c857bff956be75280",
+    "public.arkhen_tick_tv_guides": "260bb9e9d2e2ac2e6b30698eb64c7169"
+  }
+}

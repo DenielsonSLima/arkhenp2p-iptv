@@ -1,4 +1,4 @@
-import { formatMediaTime } from './immersive-player.js';
+import {formatMediaTime} from './player/orquestrador.js';
 import {isAdultItem} from './parental-classification.js';
 
 const positiveSeconds = value => {

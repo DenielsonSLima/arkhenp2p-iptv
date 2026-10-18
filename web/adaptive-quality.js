@@ -1,5 +1,5 @@
 import { findChannelVariants, channelQualityRank, channelCodec, declaredSourceBitrate } from './channel-variants.js';
-export {createLiveSourceState,decideLiveSourceFallback} from './live-source-quality.js';
+export {createLiveSourceState,decideLiveSourceFallback} from './tv/canais/resolucoes.js';
 
 const STALL_WINDOW_MS = 30_000;
 const SWITCH_COOLDOWN_MS = 60_000;

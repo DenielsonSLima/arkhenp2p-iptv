@@ -32,21 +32,29 @@ function reusableClient(createClient,scope,owner,fetch){
 /** Supabase transport and TanStack Query cache; it never owns the local player. */
 export class CloudLibrary {
   constructor({loadSDK=loadRuntime,onUpdate=()=>{},onStatus=()=>{},onSharedUpdate=()=>{},onDiagnostic=event=>globalThis.console?.warn?.('[arkhen.cloud]',event),now=Date.now,
-    schedule=(callback,delay)=>globalThis.setTimeout(callback,delay),cancel=timer=>globalThis.clearTimeout(timer),fetch=(...args)=>globalThis.fetch(...args),pageTarget=globalThis.window,storage,canRemember=()=>true,onHistoryBlocked=()=>{}}={}){
-    Object.assign(this,{loadSDK,onUpdate,onStatus,onSharedUpdate,onDiagnostic,now,schedule,cancel,fetch,pageTarget,canRemember,onHistoryBlocked});
+    schedule=(callback,delay)=>globalThis.setTimeout(callback,delay),cancel=timer=>globalThis.clearTimeout(timer),fetch=(...args)=>globalThis.fetch(...args),pageTarget=globalThis.window,document=pageTarget?.document||globalThis.document,storage,canRemember=()=>true,onHistoryBlocked=()=>{}}={}){
+    Object.assign(this,{loadSDK,onUpdate,onStatus,onSharedUpdate,onDiagnostic,now,schedule,cancel,fetch,pageTarget,document,canRemember,onHistoryBlocked});
     this.blockedProgressItems=new Set();
     this.epoch=0;this.connectRequest=0;this.client=null;this.authEntry=null;this.queryClient=null;this.scope=null;this.ready=false;this.listeners=new Set();this.rows=emptyRows();
     this.offlineScope=null;this.outbox=new CloudOutbox({storage});this.cleanupPending=Promise.resolve();
-    this.outboxTimer=null;this.outboxAttempt=0;
+    this.outboxTimer=null;this.outboxAttempt=0;this.outboxFlush=null;this.realtimeRows=new Map();this.lastDiagnostic=null;
     this.channel=null;this.authSubscription=null;this.queryUnsubscribe=null;this.progressQueue=new Map();this.progressTimer=null;this.writeControllers=new Set();this.revisions=new Map();this.optimisticRows=new Map();this.lastStamp=0;
     this.pagehide=()=>{void this.flushProgress({keepalive:true}).catch(()=>{});};
-    this.online=()=>{if(this.ready){void this.load({force:true}).catch(()=>{});void this.flushProgress().then(()=>this.flushOutbox()).catch(()=>{});}};
+    this.online=()=>{if(this.ready&&!this.document?.hidden){void this.load({force:true}).catch(()=>{});void this.flushProgress().then(()=>this.flushOutbox()).catch(()=>{});}};
+    this.visibility=()=>{if(this.document?.hidden){if(this.outboxTimer!==null)this.cancel(this.outboxTimer);this.outboxTimer=null;}else if(this.ready&&this.outbox.entries().length)void this.flushOutbox().catch(()=>{});};
     pageTarget?.addEventListener?.('pagehide',this.pagehide);pageTarget?.addEventListener?.('online',this.online);
+    document?.addEventListener?.('visibilitychange',this.visibility);
     this.status={state:'local',message:'Biblioteca salva neste aparelho.'};
   }
   getStatus(){return {...this.status};}
   getConnectionFailure(){return this.connectionFailure?{...this.connectionFailure}:null;}
-  #diagnostic(code,stage,status){try{this.onDiagnostic({code,stage,...(Number.isInteger(status)&&status>=100&&status<=599?{status}:{})});}catch{/* Diagnostics never alter authentication. */}}
+  #diagnostic(code,stage,status,{elapsedMs}={}){
+    const key=JSON.stringify([code,stage,status||null]),stamp=this.now();
+    if(this.lastDiagnostic?.key===key&&stamp-this.lastDiagnostic.at<30000)return;
+    this.lastDiagnostic={key,at:stamp};
+    try{this.onDiagnostic({code,stage,...(Number.isInteger(status)&&status>=100&&status<=599?{status}:{}),
+      ...(Number.isSafeInteger(elapsedMs)&&elapsedMs>=0?{elapsedMs}:{})});}catch{/* Diagnostics never alter authentication. */}
+  }
   #notify(callback,value,stage){try{callback(value);}catch{this.#diagnostic('CLOUD_UI_CALLBACK_FAILED',stage);}}
   #status(state,message){this.status={state,message};this.#notify(this.onStatus,this.getStatus(),'status');}
   #libraryStatus(){const pending=this.outbox.entries().length;this.#status(pending?(this.status.state==='offline'?'offline':'syncing'):'synced',pending?'Algumas alterações locais aguardam sincronização.':'Sua biblioteca está sincronizada.');}
@@ -79,7 +87,7 @@ export class CloudLibrary {
     if(scope&&previous&&scope.url===previous.url&&scope.provider===previous.provider&&scope.userId===previous.userId&&scope.libraryId===previous.libraryId)this.outbox.scope=scope;
     else this.outbox.setScope(scope);
   }
-  async resume({libraryId,pending=false,code}={}){
+  async resume({libraryId,pending=false,code,stage,remoteStatus,elapsedMs}={}){
     const scope=this.scope||this.offlineScope;
     // A missing backend bootstrap is not a sign-out. Only a client already
     // authorized for this exact library may recover its own rotated session.
@@ -87,8 +95,12 @@ export class CloudLibrary {
     if(scope&&scope.libraryId!==libraryId){const request=this.connectRequest+1;await this.logout({flush:false});if(request!==this.connectRequest)return null;}
     if(!this.ready){
       const backendCode=typeof code==='string'&&/^[A-Z][A-Z0-9_]{0,79}$/.test(code)?code:null;
-      this.connectionFailure={code:pending?'CLOUD_BOOTSTRAP_PENDING':'CLOUD_BOOTSTRAP_UNAVAILABLE',stage:'bootstrap',authRecoveryRequired:false,...(backendCode?{backendCode}:{})};
-      if(!pending&&backendCode)this.#diagnostic(backendCode,'bootstrap');
+      const backendStage=typeof stage==='string'&&/^[a-z0-9_]{1,100}$/.test(stage)?stage:null;
+      const status=Number.isInteger(remoteStatus)&&remoteStatus>=100&&remoteStatus<=599?remoteStatus:null;
+      const duration=Number.isSafeInteger(elapsedMs)&&elapsedMs>=0?elapsedMs:null;
+      this.connectionFailure={code:pending?'CLOUD_BOOTSTRAP_PENDING':'CLOUD_BOOTSTRAP_UNAVAILABLE',stage:'bootstrap',authRecoveryRequired:false,
+        ...(backendCode?{backendCode}:{}),...(backendStage?{backendStage}:{}),...(status!==null?{status}:{}),...(duration!==null?{elapsedMs:duration}:{})};
+      if(!pending&&backendCode)this.#diagnostic(backendCode,backendStage||'bootstrap',status,{elapsedMs:duration});
       this.#status(pending?'connecting':'offline',pending?'Preparando a sincronização da sua biblioteca…':'A sincronização está temporariamente indisponível. Sua biblioteca continua salva neste aparelho.');
     }
     return null;
@@ -105,7 +117,7 @@ export class CloudLibrary {
     try{
       const {createClient,QueryClient}=await this.loadSDK();if(this.epoch!==epoch||request!==this.connectRequest)return null;
       const entry=reusableClient(createClient,scope,this,(input,options)=>this.#fetchWithDeadline(input,options)),client=entry.client;this.authEntry=entry;
-      this.client=client;this.scope=scope;this.queryClient=new QueryClient({defaultOptions:{queries:{staleTime:30000,gcTime:300000,retry:1,refetchOnWindowFocus:false},mutations:{retry:0,gcTime:0}}});this.queryClient.mount();
+      this.client=client;this.scope=scope;this.queryClient=new QueryClient({defaultOptions:{queries:{staleTime:30000,gcTime:300000,retry:0,refetchOnWindowFocus:false,refetchOnReconnect:false},mutations:{retry:0,gcTime:0}}});this.queryClient.mount();
       // The browser SDK may already have rotated its refresh token. A cached
       // backend bootstrap must not replace that newer session on page reload.
       const current=()=>request===this.connectRequest&&this.#current(epoch,client);
@@ -159,7 +171,7 @@ export class CloudLibrary {
       if(signal)query=query.abortSignal(signal);
       const result=await query;if(result.error)throw Object.assign(safeError(),{status:result.status||result.error.status,cloudAuthFailure:Number(result.status||result.error.status)===401});
       const page=(result.data||[]).filter(row=>row.user_id===scope.userId&&row.provider===scope.provider);rows.push(...page);
-      if((result.data||[]).length<1000){let merged=rows;for(const value of this.optimisticRows.values())if(value.table===table)merged=replaceRecord(merged,value.row,table);return table==='user_progress'?merged.filter(row=>!this.#privateEntry(row.entry)):merged;}
+      if((result.data||[]).length<1000){let merged=rows;for(const value of this.realtimeRows.values())if(value.table===table)merged=replaceRecord(merged,value.row,table);for(const value of this.optimisticRows.values())if(value.table===table)merged=replaceRecord(merged,value.row,table);return table==='user_progress'?merged.filter(row=>!this.#privateEntry(row.entry)):merged;}
     }
     throw safeError();
   }
@@ -169,7 +181,7 @@ export class CloudLibrary {
     try{
       const rows=await Promise.all(USER_TABLES.map(table=>queryClient.fetchQuery({queryKey:this.#key(table),gcTime:Infinity,staleTime:force?0:30000,queryFn:({signal})=>this.#readTable(table,signal)})));
       if(!this.#current(epoch,client))return null;
-      USER_TABLES.forEach((table,index)=>{this.rows[table]=rows[index];});this.ready=true;this.#publish();
+      USER_TABLES.forEach((table,index)=>{this.rows[table]=rows[index];});this.ready=true;this.connectionFailure=null;this.#publish();
       this.#libraryStatus();return this.snapshot();
     }catch(error){if(this.#current(epoch,client)){this.connectionFailure={code:error?.cloudAuthFailure?'CLOUD_AUTH_SESSION_REJECTED':'CLOUD_LIBRARY_READ_FAILED',stage:'library',authRecoveryRequired:error?.cloudAuthFailure===true,...(error?.status?{status:error.status}:{})};this.#diagnostic(this.connectionFailure.code,'library',error?.status);this.#status('offline','Sincronização temporariamente indisponível. Seus dados locais foram mantidos.');}return null;}
   }
@@ -178,8 +190,23 @@ export class CloudLibrary {
     let channel=client.channel(`arkhen-library:${scope.provider}:${scope.userId}`);
     for(const table of USER_TABLES)for(const event of ['INSERT','UPDATE'])channel=channel.on('postgres_changes',{event,schema:'public',table,filter:`user_id=eq.${scope.userId}`},payload=>{
       if(!this.#current(epoch,client))return;
-      const row=payload.new||payload.old;if(row?.provider&&row.provider!==scope.provider)return;
-      void this.queryClient.invalidateQueries({queryKey:this.#key(table),refetchType:'all'}).catch(()=>{});
+      const row=payload.new;
+      if(row?.user_id!==scope.userId||row.provider!==scope.provider||!millis(row.updated_at)||!recordIdentity(table,row))return;
+      // INSERT/UPDATE contains the committed row, including soft deletions.
+      // Apply that row instead of downloading the entire table on each pulse;
+      // reconnect still reconciles changes missed while the socket was down.
+      const identity=`${table}:${recordIdentity(table,row)}`,previous=this.realtimeRows.get(identity)?.row;
+      if(previous&&millis(previous.updated_at)>millis(row.updated_at))return;
+      this.realtimeRows.set(identity,{table,row});
+      const key=this.#key(table),cached=this.queryClient.getQueryData(key)||[];
+      if(table==='user_progress'&&this.#privateEntry(row.entry)){
+        this.queryClient.setQueryData(key,cached.filter(entry=>recordIdentity(table,entry)!==recordIdentity(table,row)));return;
+      }
+      const current=cached.find(entry=>recordIdentity(table,entry)===recordIdentity(table,row));
+      // The SQL timestamp guard accepts ties. A distinct committed UPDATE at
+      // the same timestamp wins in event order; a newer optimistic edit stays.
+      if(current&&(millis(current.updated_at)>millis(row.updated_at)||millis(current.updated_at)===millis(row.updated_at)&&JSON.stringify(current)===JSON.stringify(row)))return;
+      this.queryClient.setQueryData(key,replaceRecord(cached,row,table));
     });
     for(const table of SHARED_TABLES)for(const event of ['INSERT','UPDATE'])channel=channel.on('postgres_changes',{event,schema:'public',table:table==='provider_catalog_cache'?'catalog_visible_generations':table,...(table==='marker_cache_versions'?{filter:'name=eq.global'}:{filter:`provider_key=eq.${scope.providerKey}`})},payload=>{
       if(!this.#current(epoch,client))return;
@@ -191,7 +218,7 @@ export class CloudLibrary {
       }
       const type=['live','movies','series'].includes(row?.media_type)?row.media_type:undefined;
       if(table!=='provider_catalog_cache'||type)void this.queryClient.invalidateQueries({queryKey:this.#key(table,...(type?[type]:[])),refetchType:'all'}).catch(()=>{});
-      this.#notify(this.onSharedUpdate,{table,...(type?{type}:{}),...(row?.updated_at?{revision:row.updated_at}:{})},'shared_update');
+      this.#notify(this.onSharedUpdate,{table,...(type?{type}:{}),...(row?.updated_at?{revision:row.updated_at}:{}),...(table==='provider_catalog_cache'&&typeof row?.snapshot_id==='string'?{snapshotId:row.snapshot_id}:{})},'shared_update');
     });
     channel=channel.on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles',filter:`id=eq.${scope.userId}`},payload=>{
       if(!this.#current(epoch,client)||payload.new?.id!==scope.userId)return;
@@ -211,11 +238,11 @@ export class CloudLibrary {
     return {user_id:scope.userId,provider:scope.provider,...value,updated_at:this.#stamp()};
   }
   #retryOutbox(epoch=this.epoch,client=this.client){
-    if(!this.#current(epoch,client)||!this.outbox.entries().length||this.outboxTimer!==null)return;
+    if(!this.#current(epoch,client)||!this.outbox.entries().length||this.outboxTimer!==null||this.document?.hidden)return;
     this.outboxTimer=this.schedule(()=>{
       this.outboxTimer=null;if(!this.#current(epoch,client))return;
       void this.flushOutbox().then(saved=>{if(this.#current(epoch,client)&&!saved)this.#retryOutbox(epoch,client);}).catch(()=>this.#retryOutbox(epoch,client));
-    },Math.min(60000,5000*2**Math.min(this.outboxAttempt++,4)));
+    },Math.min(300000,5000*2**Math.min(this.outboxAttempt++,6)));
   }
   async #write(table,row){
     if(table==='user_progress'&&this.#privateEntry(row?.entry)){this.purgeHistory();return true;}
@@ -232,7 +259,14 @@ export class CloudLibrary {
         const controller=new AbortController();this.writeControllers.add(controller);
         try{
           const result=await client.from(table).upsert(row,{onConflict:conflict[table]}).select('*').abortSignal(controller.signal);
-          if(result.error){if(table==='user_progress'&&result.error.code==='P0001'&&String(result.error.message).includes('ARKHEN_ADULT_PROGRESS_DISABLED'))throw Object.assign(safeError(),{adultProgressBlocked:true});throw safeError();}return result.data?.[0]||row;
+          if(result.error){if(table==='user_progress'&&result.error.code==='P0001'&&String(result.error.message).includes('ARKHEN_ADULT_PROGRESS_DISABLED'))throw Object.assign(safeError(),{adultProgressBlocked:true});throw safeError();}
+          if(result.data?.[0])return result.data[0];
+          // The timestamp guard can ignore a stale upsert. Reconcile its one
+          // identity instead of treating an uncommitted local row as success.
+          let current=client.from(table).select('*');
+          for(const field of conflict[table].split(','))current=current.eq(field,row[field]);
+          const winner=await current.abortSignal(controller.signal).maybeSingle();
+          if(winner.error||!winner.data)throw safeError();return winner.data;
         }finally{this.writeControllers.delete(controller);}
       },
       onMutate:async()=>{
@@ -248,17 +282,22 @@ export class CloudLibrary {
         if(this.revisions.get(revisionKey)===revision&&previous){
           this.optimisticRows.delete(revisionKey);
           const remaining=(queryClient.getQueryData(key)||[]).filter(entry=>recordIdentity(table,entry)!==recordIdentity(table,row));
-          queryClient.setQueryData(key,previous.old?[...remaining,previous.old]:remaining);
+          const committed=this.realtimeRows.get(revisionKey)?.row,restored=!previous.old||committed&&millis(committed.updated_at)>=millis(previous.old.updated_at)?committed:previous.old;
+          queryClient.setQueryData(key,restored?[...remaining,restored]:remaining);
         }
         this.#status('offline','A alteração continua salva neste aparelho e aguarda sincronização.');
         this.#retryOutbox(epoch,client);
       },
       onSuccess:stored=>{if(this.#current(epoch,client)&&stored){
         if(table==='user_progress'&&(this.#privateEntry(row.entry)||this.#privateEntry(stored.entry))){this.outbox.acknowledge(table,row);this.purgeHistory();this.#libraryStatus();return;}
+        const committed=this.realtimeRows.get(revisionKey)?.row;
+        if(!committed||millis(committed.updated_at)<=millis(stored.updated_at))this.realtimeRows.set(revisionKey,{table,row:stored});
         this.outbox.acknowledge(table,row);if(this.revisions.get(revisionKey)===revision)queryClient.setQueryData(key,replaceRecord(queryClient.getQueryData(key)||[],stored,table));
         if(!this.outbox.entries().length){if(this.outboxTimer!==null)this.cancel(this.outboxTimer);this.outboxTimer=null;this.outboxAttempt=0;this.#status('synced','Sua biblioteca está sincronizada.');}
       }},
-      onSettled:()=>{if(this.#current(epoch,client)){if(this.revisions.get(revisionKey)===revision)this.optimisticRows.delete(revisionKey);void queryClient.invalidateQueries({queryKey:key,refetchType:'all'}).catch(()=>{});}}
+      // The upsert returns the committed row and Realtime carries concurrent
+      // edits. A full-table read here multiplies every progress/preference write.
+      onSettled:()=>{if(this.#current(epoch,client)&&this.revisions.get(revisionKey)===revision)this.optimisticRows.delete(revisionKey);}
     });
     try{return Boolean(await mutation.execute(row));}catch(error){return error?.adultProgressBlocked===true||table==='user_progress'&&this.#privateEntry(row.entry);}
   }
@@ -299,7 +338,17 @@ export class CloudLibrary {
     return this.#write('custom_collections',this.#row('custom_collections',{id:value.id,name:value.name.slice(0,80),collection_type:value.collection_type,item_keys:[...new Set((Array.isArray(value.item_keys)?value.item_keys:[]).filter(key=>typeof key==='string'&&/^(live|movie|series):[\w-]{1,160}$/.test(key)))].slice(0,1000),deleted_at:millis(value.deleted_at)?new Date(millis(value.deleted_at)).toISOString():null}));
   }
   removeCollection(value){return this.saveCollection({...value,name:value?.name||'Categoria removida',deleted_at:new Date(this.now()).toISOString()});}
-  async flushOutbox(){this.purgeHistory();if(!this.ready)return false;const entries=this.outbox.entries();const results=[];for(const {table,row}of entries){if(!this.ready)return false;results.push(await this.#write(table,row));}return results.every(Boolean);}
+  async flushOutbox(){
+    this.purgeHistory();if(!this.ready)return false;
+    const epoch=this.epoch,client=this.client;if(this.outboxFlush?.epoch===epoch)return this.outboxFlush.promise;
+    const work={epoch,promise:null};this.outboxFlush=work;
+    work.promise=(async()=>{
+      const entries=this.outbox.entries(),results=[];
+      for(const {table,row}of entries){if(!this.#current(epoch,client)||!this.ready)return false;results.push(await this.#write(table,row));}
+      return results.every(Boolean);
+    })().finally(()=>{if(this.outboxFlush===work)this.outboxFlush=null;});
+    return work.promise;
+  }
   async syncLocal({libraryId,favoritesMap,historyMap,episodeEntries=[]}={}){
     if(!this.ready||!libraryId||libraryId!==this.scope.libraryId)return false;
     const epoch=this.epoch,client=this.client;
@@ -391,7 +440,7 @@ export class CloudLibrary {
     for(const controller of this.writeControllers)controller.abort();this.writeControllers.clear();
     this.authSubscription?.unsubscribe();this.authSubscription=null;this.queryUnsubscribe?.();this.queryUnsubscribe=null;
     const queryClient=this.queryClient;this.queryClient=null;if(queryClient){void queryClient.cancelQueries();queryClient.clear();queryClient.unmount();}
-    const channel=this.channel;this.channel=null;this.rows=emptyRows();this.revisions.clear();this.optimisticRows.clear();this.offlineScope=offlineScope;this.#outboxScope(offlineScope);this.#status('local','Biblioteca salva neste aparelho.');
+    const channel=this.channel;this.channel=null;this.rows=emptyRows();this.revisions.clear();this.optimisticRows.clear();this.realtimeRows.clear();this.outboxFlush=null;this.offlineScope=offlineScope;this.#outboxScope(offlineScope);this.#status('local','Biblioteca salva neste aparelho.');
     if(client)this.cleanupPending=this.cleanupPending.catch(()=>{}).then(async()=>{
       if(channel)await client.removeChannel(channel).catch(()=>{});
       if(entry)await serializeAuth(entry,async()=>{
@@ -402,5 +451,5 @@ export class CloudLibrary {
     });
     await this.cleanupPending;
   }
-  async dispose(){await this.logout();this.pageTarget?.removeEventListener?.('pagehide',this.pagehide);this.pageTarget?.removeEventListener?.('online',this.online);this.listeners.clear();}
+  async dispose(){await this.logout();this.pageTarget?.removeEventListener?.('pagehide',this.pagehide);this.pageTarget?.removeEventListener?.('online',this.online);this.document?.removeEventListener?.('visibilitychange',this.visibility);this.listeners.clear();}
 }

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {CloudRuntime} from '../lib/cloud-runtime.mjs';
 import {sanitizeSharedCatalog} from '../lib/shared-cache-worker.mjs';
 import {artworkURL,fallbackArtworkURL} from '../web/channel-artwork.js';
-import {episodeArtworkSources} from '../web/series-preview.js';
+import {episodeArtworkSources} from '../web/serie/capa.js';
 import {playerChannelLogoSources} from '../web/player-channel-logos.js';
 import {openingArtwork,preloadArtwork} from '../web/login/capas.js';
 import {withoutSessionArtwork} from '../web/stored-artwork.js';
@@ -23,8 +23,10 @@ test('shared catalog images survive normalization, player logos, episode fallbac
   const requested=[],createImage=()=>({decode:async()=>{},set src(value){requested.push(value);queueMicrotask(()=>this.onload?.());}});
   assert.deepEqual(await preloadArtwork(opening,{createImage}),{completed:1,loaded:1,total:1});
   assert.deepEqual(requested,[shared]);
-  // Persisted title snapshots still discard authenticated proxy references.
-  assert.equal(withoutSessionArtwork(item).poster,'');runtime.close();
+  // Opaque global artwork survives snapshots; session handles and private URLs do not.
+  assert.equal(withoutSessionArtwork(item).poster,shared);
+  for(const poster of ['/api/image?ref=cover','https://images.example/cover.jpg?token=private',shared+'?token=x'])assert.equal(withoutSessionArtwork({...item,poster}).poster,'');
+  runtime.close();
 });
 
 test('shared artwork accepts only the exact opaque route served by the backend',()=>{

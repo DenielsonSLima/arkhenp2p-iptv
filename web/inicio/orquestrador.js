@@ -16,7 +16,7 @@ export class HomeOrchestrator{
     renderHero=()=>{},ensureArtwork=()=>{},isAvailable=()=>false,recover=()=>{}}={}){
     Object.assign(this,{getScope,getState,ui,renderHero,ensureArtwork,isAvailable,recover});
     this.services=services||new HomeServices({request:request||model?.request,getScope});
-    this.model=model||new HomeCloudModel({services:this.services,getScope,getRevision,onChange});
+    this.model=model||new HomeCloudModel({services:this.services,getScope,getRevision,onChange,isAvailable});
     if(model)model.request=this.services.api;
     this.projection=null;this.offlineCatalogs=new WeakMap();this.heroRotation=null;this.carousels=null;
     this.realtime=new HomeRealtime({model:this.model,getScope,invalidate:()=>this.invalidate()});
@@ -45,7 +45,7 @@ export class HomeOrchestrator{
       excludedHistory:state.excludedHistory,visible:this.ui.isVisible,resolve:this.ui.resolveItem});
     this.projection={scope,sources,data,revision:state.libraryRevision,sections};return sections;
   }
-  ensure(options){if(this.isAvailable())this.model.ensure(options);}
+  ensure(options){this.model.ensure(options);}
   invalidate(){this.projection=null;}
   render(container){
     const state=this.getState(),ui=this.ui,catalogs=state.catalogs||new Map();
@@ -60,7 +60,7 @@ export class HomeOrchestrator{
     if(!sections.some(section=>section.dataset.shelfKey==='home:recommendations')&&(catalogs.has('movies')||catalogs.has('series'))){
       const key='home:recommendations-status',status=homeRecommendationState({...this.model.state,available:this.isAvailable()});
       sections.push(renderHomeRecommendationsState(existing.get(key),{state:status,onRetry:()=>{
-        if(!this.isAvailable())this.recover();this.model.ensure({force:true});ui.renderPage?.();
+        void Promise.resolve(!this.isAvailable()?this.recover():null).then(()=>{this.model.ensure({force:true});ui.renderPage?.();});
       }}));
     }
     if(!sections.length&&state.loading?.size){const skeleton=existing.get('__loading')||ui.skeletons();skeleton.dataset.shelfKey='__loading';sections.push(skeleton);}

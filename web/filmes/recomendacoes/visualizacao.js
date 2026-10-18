@@ -5,7 +5,7 @@ const node=(tag,className='',text)=>{const value=document.createElement(tag);val
 const action=(label,className,run)=>{const button=node('button',className,label);button.type='button';button.addEventListener('click',run);return button;};
 
 export class MovieSuggestionsView{
-  constructor({stage,video,lookup,getScope,allowed,createCard,setArt,onWatch,onDetails,onReplay,onBack}){
+  constructor({stage,video,lookup,readCached,getScope,allowed,createCard,setArt,onWatch,onDetails,onReplay,onBack}){
     Object.assign(this,{stage,video,allowed,createCard,setArt,onWatch,onDetails,onReplay,onBack});this.endItem=null;this.endCurrent=null;this.inertNodes=[];
     this.preview=node('section','detail-related movie-suggestions-preview');const heading=node('div','detail-related-heading');this.previewHeading=node('h2','','Sugestões para você');heading.append(this.previewHeading);this.previewBody=node('div');this.preview.append(heading,this.previewBody);
     this.end=node('section','movie-end-screen');this.end.hidden=true;this.end.tabIndex=-1;this.end.setAttribute('role','dialog');this.end.setAttribute('aria-modal','true');this.end.setAttribute('aria-labelledby','movie-end-title');
@@ -15,8 +15,8 @@ export class MovieSuggestionsView{
     const lead=node('header','movie-end-heading');lead.append(node('p','movie-end-caption','Porque você assistiu'));this.endTitle=node('h1');this.endTitle.id='movie-end-title';lead.append(this.endTitle);
     this.replay=action('Rever filme','button secondary',()=>{if(this.validEnd()){const item=this.endItem;this.closeEnd();this.onReplay?.(item);}});
     this.endBody=node('div','movie-end-body');const footer=node('div','movie-end-footer');footer.append(this.replay);content.append(top,lead,this.endBody,footer);this.end.append(this.endArt,shade,content);stage.append(this.end);
-    this.previewSession=new MovieSuggestionSession({lookup,getScope,allowed,onChange:state=>this.render(this.previewBody,state,'preview')});
-    this.endSession=new MovieSuggestionSession({lookup,getScope,allowed,onChange:state=>{if(!state.item){if(this.endItem)this.closeEnd(false);return;}if(this.validEnd())this.render(this.endBody,state,'end');}});
+    this.previewSession=new MovieSuggestionSession({lookup,readCached,getScope,allowed,onChange:state=>this.render(this.previewBody,state,'preview')});
+    this.endSession=new MovieSuggestionSession({lookup,readCached,getScope,allowed,onChange:state=>{if(!state.item){if(this.endItem)this.closeEnd(false);return;}if(this.validEnd())this.render(this.endBody,state,'end');}});
     this.onKeydown=event=>this.keydown(event);this.end.addEventListener('keydown',this.onKeydown);
   }
   showPreview(parent,item){
@@ -40,9 +40,10 @@ export class MovieSuggestionsView{
     if(resetSession)this.endSession.reset();
   }
   reset(){this.closeEnd();this.previewSession.reset();this.preview.remove();}
+  pausePreview(){this.previewSession.reset();}
   recover(){
-    const preview=this.preview.isConnected&&this.previewSession.recover();
-    const end=this.validEnd()&&!this.end.hidden&&this.endSession.recover();return Boolean(preview||end);
+    const preview=this.preview.isConnected&&!this.preview.ownerDocument?.hidden&&!this.preview.closest?.('[hidden]')&&this.previewSession.recover();
+    const end=this.validEnd()&&!this.end.hidden&&!this.end.ownerDocument?.hidden&&this.endSession.recover();return Boolean(preview||end);
   }
   dispose(){this.reset();this.end.removeEventListener('keydown',this.onKeydown);this.end.remove();}
   render(parent,state,mode){

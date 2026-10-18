@@ -1,5 +1,5 @@
 import {readWplayCredentials,safeCode} from './wplay-tool-input.mjs';
-import {WplayProviderClient,WPLAY_AUTH_URLS} from '../lib/wplay-provider.mjs';
+import {WplayProviderClient,WPLAY_AUTH_URLS} from '../lib/wplay/conexao/provedor-nativo.mjs';
 
 // This verifier requests only account metadata, the live catalogue and EPG.
 // It never starts a stream or exports provider addresses/tokens/replay URLs.

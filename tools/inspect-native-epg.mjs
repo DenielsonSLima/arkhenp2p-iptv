@@ -1,5 +1,5 @@
 import {readWplayCredentials,safeCode} from './wplay-tool-input.mjs';
-import {WplayProviderClient,WPLAY_AUTH_URLS} from '../lib/wplay-provider.mjs';
+import {WplayProviderClient,WPLAY_AUTH_URLS} from '../lib/wplay/conexao/provedor-nativo.mjs';
 import {requestUpstream,readBody} from '../lib/upstream.mjs';
 
 const emit=value=>console.log(JSON.stringify(value));

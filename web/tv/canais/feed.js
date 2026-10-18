@@ -20,7 +20,7 @@ export class LiveProgramFeed{
         {list:[],window:{previous:null,current:null,next:null},status:this.guide?.state.loading?'loading':this.guide?.state.error?'error':'unavailable',progressPercent:0};
       this.onUpdate?.(data);
     };
-    if(this.guide)this.unsubscribe=this.guide.subscribe(deliver);else deliver();
+    if(this.guide)this.unsubscribe=this.guide.subscribe(deliver,{ids:[selection.id]});else deliver();
   }
   stop(){this.current=null;this.unsubscribe?.();this.unsubscribe=null;}
   destroy(){this.stop();}

@@ -5,7 +5,7 @@ import {pipeline} from 'node:stream/promises';
 import {execFileSync} from 'node:child_process';
 import {resolve,join} from 'node:path';
 import {normalizeGlobalDump,LICENSE} from '../supabase/functions/series-markers-sync/metadata.mjs';
-import {readPublicDump} from '../supabase/functions/series-markers-sync/providers.mjs';
+import {readPublicDump} from '../supabase/functions/series-markers-sync/conectores/dump.mjs';
 import {publicArtifactStream} from '../supabase/functions/series-markers-sync/pipeline.mjs';
 import {MarkerStore} from '../supabase/functions/series-markers-sync/store.mjs';
 import {SERIES_MARKER_REGISTRY} from '../web/series-markers/registry.js';

@@ -153,13 +153,25 @@ test('expired sources, stalled cursors and private image origins produce sanitiz
   }
 });
 
-test('EPG publication respects bounded batches and persists completed channels before yielding',async()=>{
-  const f=fixture('epg');f.job.payload={};const channels=Array.from({length:230},(_,id)=>({channel_id:String(id),payload:{list:[]}}));
-  const createSource=()=>({epg:async()=>({channels})});
-  const first=await runCloudCollector({...f.options,createSource,maxSteps:1});assert.equal(first.state,'checkpointed');assert.equal(f.state.epgDone.length,100);
-  const second=await runCloudCollector({...f.options,createSource,maxSteps:2});assert.equal(second.state,'ready');
-  const batches=f.calls.filter(row=>row[0]==='rpc').map(row=>row[2].p_channels);assert.deepEqual(batches.map(row=>row.length),[100,100,30]);
-  assert.equal(new Set(batches.flat().map(row=>row.channel_id)).size,230);
+test('EPG seals one whole snapshot before yielding and resumes publication without reopening the provider',async()=>{
+  const f=fixture('epg');f.job.payload={};let clock=timestamp,downloads=0,candidate={state:'missing'};
+  const channels=Array.from({length:230},(_,id)=>({channel_id:String(id+1),payload:{list:[{title:'Programa',start:new Date(timestamp-60000).toISOString(),end:new Date(timestamp+3600000).toISOString()}]}}));
+  f.store.epgState=async()=>candidate;
+  f.store.epgStage=async(j,w,value)=>{
+    f.calls.push(['epgStage',value]);candidate={state:'sealed',snapshotId:'sealed-fixture',...value};clock+=1001;return candidate;
+  };
+  f.store.epgPublish=async()=>{f.calls.push(['epgPublish']);candidate={...candidate,state:'published'};return candidate;};
+  const createSource=()=>({epg:async()=>{downloads++;return {channels};}}),options={...f.options,now:()=>clock,createSource,budgetMs:1000};
+  const first=await runCloudCollector(options);assert.equal(first.state,'checkpointed');assert.equal(candidate.state,'sealed');
+  const staged=f.calls.filter(row=>row[0]==='epgStage');assert.equal(staged.length,1);assert.deepEqual(staged[0][1].channels,channels);
+  assert.match(staged[0][1].contentHash,/^[a-f0-9]{64}$/);assert.equal(staged[0][1].fetchedAt,new Date(timestamp).toISOString());
+  assert.equal(f.calls.some(row=>['epgPublish','finish'].includes(row[0])),false);
+  assert.deepEqual(f.calls.find(row=>row[0]==='yield')[1],{epgSnapshotId:'sealed-fixture',epgState:'sealed'});
+  f.store.source=()=>assert.fail('A sealed complete snapshot no longer needs its provider capability.');
+  const second=await runCloudCollector({...options,createSource:()=>assert.fail('Resuming publication cannot redownload the guide.')});
+  assert.equal(second.state,'ready');assert.equal(candidate.state,'published');assert.equal(downloads,1);
+  assert.equal(f.calls.filter(row=>row[0]==='epgStage').length,1);assert.equal(f.calls.filter(row=>row[0]==='epgPublish').length,1);
+  assert.deepEqual(f.calls.at(-1),['finish',true,undefined]);
 });
 
 test('game logos publish local sports-image routes with encrypted shared origins',async()=>{
@@ -177,10 +189,16 @@ test('collector entrypoint denies browsers, unsigned requests and caller-selecte
   assert.equal((await request({'x-arkhen-collector-secret':secret})).status,200);assert.equal(calls,1);
 });
 
-test('Edge continuation wakes only after cooldown and uses the service-only fixed kick RPC',async()=>{
-  const calls=[],pending=[];const handler=createCollectorHandler({environment:name=>({ARKHEN_COLLECTOR_SECRET:secret,ARKHEN_SOURCE_ENCRYPTION_KEY:'fixture-key'})[name],store:{rpc:async(...args)=>calls.push(args)},pipeline:async()=>({state:'checkpointed'}),waitUntil:value=>pending.push(value),delay:async ms=>calls.push(['delay',ms])});
-  const result=await handler(new Request('https://function.arkhen.media',{method:'POST',headers:{'x-arkhen-collector-secret':secret},body:'{}'}));
-  assert.equal(result.status,200);await Promise.all(pending);assert.deepEqual(calls,[['delay',11000],['arkhen_kick_cloud_collector',{}]]);
+test('Edge continuation is disabled by default and explicit opt-in alone permits a bounded checkpoint wakeup',async()=>{
+  for(const [enabled,state,expected] of [
+    [undefined,'checkpointed',[]],['false','checkpointed',[]],['true','ready',[]],
+    ['true','checkpointed',[['delay',11000],['arkhen_kick_cloud_collector',{}]]],
+  ]){
+    const calls=[],pending=[];const handler=createCollectorHandler({environment:name=>({ARKHEN_COLLECTOR_SECRET:secret,ARKHEN_SOURCE_ENCRYPTION_KEY:'fixture-key',ARKHEN_SYNC_CONTINUATIONS_ENABLED:enabled})[name],store:{rpc:async(...args)=>calls.push(args)},pipeline:async()=>({state}),waitUntil:value=>pending.push(value),delay:async ms=>calls.push(['delay',ms])});
+    const result=await handler(new Request('https://function.arkhen.media',{method:'POST',headers:{'x-arkhen-collector-secret':secret},body:'{}'}));
+    assert.equal(result.status,200);await Promise.all(pending);assert.deepEqual(calls,expected);
+    assert.equal(pending.length,expected.length?2:1,'The pipeline remains registered even when no continuation is permitted.');
+  }
 });
 
 test('the Edge pipeline is registered as background work before an HTTP response can finish', {timeout:2000},async()=>{

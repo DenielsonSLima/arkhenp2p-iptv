@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {WplayProviderClient} from '../lib/wplay-provider.mjs';
-import {gamesRequestOptions, gamesTimezoneOffset, normalizeWplayGames, WPLAY_GAMES_CACHE_MS, WPLAY_GAMES_MAX_BYTES} from '../lib/wplay-games.mjs';
+import {WplayProviderClient} from '../lib/wplay/conexao/provedor-nativo.mjs';
+import {gamesRequestOptions, gamesTimezoneOffset, normalizeWplayGames, WPLAY_GAMES_CACHE_MS, WPLAY_GAMES_MAX_BYTES} from '../lib/wplay/ao-vivo/jogos.mjs';
 
 const options={date:'2026-10-14',timeZone:'America/Maceio',lang:'pt'};
 const rawGame=(id='game-1')=>({id,name:'Time A &amp; Time B',date:'2026-10-14T20:30:00.000-03:00',status:'scheduled',score:'',

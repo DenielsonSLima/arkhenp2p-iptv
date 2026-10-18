@@ -2,8 +2,10 @@
 import {readFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
-import {homeRecommendations} from '../web/inicio/recomendados/legado.js';
+import {homeRecommendations} from '../tests/fixtures/home-recommendations-legacy.js';
 import {movieRecommendationsFixture} from './test-movie-recommendations-fixture.mjs';
+import {homeTvFixture} from './test-home-tv-fixture.mjs';
+import {homeDomainIsolationFixture} from './test-home-domain-isolation-fixture.mjs';
 if(!process.argv[2])throw new Error('Pass the installed local PGlite module path.');
 const {PGlite}=await import(pathToFileURL(process.argv[2]).href),db=new PGlite();
 const user='10000000-0000-4000-8000-000000000001',other='10000000-0000-4000-8000-000000000002',foreignUser='10000000-0000-4000-8000-000000000003';
@@ -147,6 +149,8 @@ try{
  check(JSON.stringify(value.revisions)===JSON.stringify({live:zero,movies:zero,series:zero}),'Revisions are the current published generations of this partition.');
  check((await q("select prosecdef from pg_proc where oid='public.arkhen_home_library(text,text,boolean,jsonb,jsonb)'::regprocedure")).rows[0].prosecdef===false,'The private RPC remains SECURITY INVOKER.');
  await movieRecommendationsFixture({q,as,load,check,rejected,media,progress,user,other,foreignUser,provider,scope,foreign,zero,candidate});
+ await homeTvFixture({q,as,load,check,rejected,media,progress,user,other,foreignUser,provider,scope,foreign,zero});
+ await homeDomainIsolationFixture({q,as,load,check,rejected,media,progress,user,other,foreignUser,provider,scope,foreign,zero,candidate});
  await q("update public.profiles set last_validated_at=now()-interval '2 days' where id=$1",[user]);await rejected(()=>home());
  console.log(JSON.stringify({ok:true,assertions}));
 }catch(error){console.error(JSON.stringify({ok:false,code:error.code,message:error.message,detail:error.detail,where:error.where,position:error.position,internalPosition:error.internalPosition}));process.exitCode=1;}finally{await db.close();}
