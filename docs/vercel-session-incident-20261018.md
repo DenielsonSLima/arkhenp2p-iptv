@@ -1,6 +1,6 @@
 # Entrada aceita e sessão perdida na Vercel
 
-Data: 18/10/2026. Estado: sessão distribuída publicada; falha posterior de tamanho confirmada e correção compacta preparada. A publicação anterior READY não certificou o carregamento completo. Evidências e etapas abaixo têm escopos e horários próprios.
+Data: 18/10/2026. Estado: correções distribuídas publicadas; entrada, Filmes, Séries e capas conferidos no Safari online após recuperação do Supabase. As publicações anteriores READY não certificaram o fluxo. Evidências e etapas abaixo têm escopos e horários próprios.
 
 ## Evidência do incidente
 
@@ -73,3 +73,21 @@ Leituras permitidas: GETcatalog semrefresh=1, readmodel, revision e guiaTV; POST
 Capas compartilhadas consultam todos os proprietários da referência (consulta indexada limitada, no máximo64referências; até3batches por tipo), mesmo havendo uma prova parcial já carregada. Classificação incompleta, ambiguidade, excesso ou falha de transporte recusam a resposta. O lookup aplica JWT/RLS da geração publicada. A leitura ocorre fora da lease, sob a validação final de conta/PIN; imagens privadas registradas ainda autorizam antes de liberar.
 
 O usuário autorizou explicitamente testes e navegador durante esta etapa, revogando a proibição anterior. Os testes HTTP foram inicialmente impedidos pelo sandbox/revisão automática; somente após a autorização foram executados com fixtures127.0.0.1. Testes específicos do store cobrem concorrência entre instâncias sem vídeo, descarte de mutações pósrelease, preservação de escritor posterior, revogação por PIN/logout/geração e erro da validação sem flush de200/Location. A comprovação do deploy e da página real desta segunda etapa ainda deve ser registrada.
+
+
+## Indisponibilidade compartilhada às11:56–11:57BRT
+
+A segunda correção foi publicada no commit2a42ea151881f1ef3b9b67afe4ceee62efc3698f; deploymentdpl_ARk1WPheKUWm2EzKpgWNurdNpoPK READY e alvo de produção conferidos.74testes dirigidos passaram, incluindo9HTTPsintéticos. Isso não certificou a disponibilidade remota: a tentativa real ainda mostrou503 em session/login.
+
+Janela14:54:00–14:57:30UTC: diagnóstico da nova implantação indicou `RUNTIME_SESSION_UNAVAILABLE`, faseacquire, transporte`CLOUD_TIMEOUT`. Captura local11:57BRT mostrou também504 no endpointAuth de renovação do Supabase, além dos503 das capas. A leitura de saúde oficial retornou DB/Auth/RESTUNHEALTHY; a consulta administrativa limitada retornou544/connectiontimeout. A indisponibilidade comum está demonstrada, mas não identifica CPU, autor de reinício ou consulta causadora.
+
+O usuário autorizou expressamente reiniciar o projeto ARKHEN. A chamada administrativa foi recusada403, faltando`project_admin_write`; não foi contornada com chave de serviço ou modificação de permissões. O painel autenticado do projeto já apresentava Restarting, sem clique de reinício executado pelo agente. A recuperação e a validação do fluxo permanecem pendentes desta etapa.
+
+
+## Recuperação e conferência real após12:04BRT
+
+O projeto passou a ACTIVE_HEALTHY; a leitura oficial confirmou DB/Auth/REST saudáveis. Estatística agregada às15:04:09UTC encontrou postmaster iniciado15:01:57UTC,24backends,2outros ativos, nenhum esperandoLock, duas sessões privadas, maior ciphertext7.329bytes e nenhuma lease ativa. Não houve leitura de payload cifrado, credenciais ou SQL pessoal. Essa amostra demonstra recuperação pontual, não a causa da indisponibilidade nem estabilidade permanente.
+
+No Safari, o agente clicou Entrar no formulário de produção já preenchido. A entrada foi aceita; a rota/#movies carregou categorias e capas com18.211títulos, e/#series exibiu categorias e capas com8.118títulos. Nenhum dado de favoritos/progresso/conta foi copiado para esta memória. JanelaVercel15:05:04–15:08:04UTC retornou zero registros503 na consulta final limitada. Houve inspeção visual de catálogo; nenhuma reprodução de mídia foi iniciada por essa conferência.
+
+O localhost também exibiu novamente categorias e capas após a recuperação. Seu processo antigo foi encerrado com SIGTERM após confirmar PID/porta/diretório; `node server.mjs` iniciou a versão publicada na porta4173. Como as sessões locais continuam em RAM por contrato, o formulário passou a exigir entrada; a senha ficou vazia e foi solicitado preenchimento diretamente no Safari, sem enviar senha ao chat. A nova entrada local permanece pendente até esse preenchimento.
