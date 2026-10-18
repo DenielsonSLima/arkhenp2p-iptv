@@ -25,10 +25,10 @@ export class TVGuideClient{
     Object.assign(this,{request:services?.api||request,getScope,loadQueryCore,now,document,schedule,cancel});
     this.scope=null;this.epoch=0;this.invalidation=0;this.publication=0;this.pending=null;this.timer=null;this.freshUntil=0;this.failures=0;this.blocked=false;
     this.listeners=new Set();this.state=emptyState();this.client=null;this.clientPromise=null;this.disposed=false;
-    this.selections=new Map();this.selectionKey='[]';this.selectionQueued=false;
+    this.selections=new Map();this.selectionKey='[]';this.selectionQueued=false;this.preparation=null;this.preparedScope=null;this.prewarmWanted=false;
     this.windows=new TVProgramWindowCache({now});
     this.onOnline=()=>{if(this.listeners.size&&!this.document?.hidden)this.invalidate();};
-    this.onVisibility=()=>{if(this.document?.hidden){this.cancel(this.timer);this.timer=null;}else if(this.listeners.size)void this.ensure();};
+    this.onVisibility=()=>{if(this.document?.hidden){this.cancel(this.timer);this.timer=null;}else{if(this.prewarmWanted)void this.prewarm();if(this.listeners.size)void this.ensure();}};
     globalThis.addEventListener?.('online',this.onOnline);
     document?.addEventListener?.('visibilitychange',this.onVisibility);
   }
@@ -36,13 +36,17 @@ export class TVGuideClient{
   synchronizeScope(){
     const key=scopeKey(this.getScope());
     if(key!==this.scope){
-      this.clear();this.scope=key;this.emit();
+      const prepareAgain=Boolean(this.preparedScope||this.preparation||this.prewarmWanted);
+      this.clear();this.scope=key;this.prewarmWanted=Boolean(key&&prepareAgain);this.emit();
       // An attached cloud bootstrap or changed PIN/preferences can replace
       // the scope while existing cards remain mounted. Clearing the former
       // timer/request must also restart their shared reader in the new scope.
-      const epoch=this.epoch;
-      if(key&&this.listeners.size)queueMicrotask(()=>{
-        if(!this.disposed&&this.epoch===epoch&&this.scope===key&&scopeKey(this.getScope())===key&&this.listeners.size)void this.ensure();
+      if(key&&(this.listeners.size||this.prewarmWanted))queueMicrotask(()=>{
+        // Query epochs can advance before this microtask when the selected
+        // reader starts first; that must not suppress the new scope's warmup.
+        if(!this.disposed&&this.scope===key&&scopeKey(this.getScope())===key){
+          if(this.prewarmWanted)void this.prewarm();else if(this.listeners.size)void this.ensure();
+        }
       });
     }
     return key;
@@ -50,7 +54,7 @@ export class TVGuideClient{
   clear(){
     this.epoch++;this.pending?.controller.abort();this.pending=null;
     this.cancel(this.timer);this.timer=null;this.freshUntil=0;this.failures=0;this.blocked=false;this.state=emptyState();
-    this.windows.clear();
+    this.windows.clear();this.preparedScope=null;this.prewarmWanted=false;
     void this.client?.cancelQueries();this.client?.clear();
   }
   reset(){this.clear();this.scope=null;this.emit();}
@@ -88,6 +92,27 @@ export class TVGuideClient{
   peek(id){
     this.synchronizeScope();if(!isChannelID(id))return null;
     return this.windows.peek(id,{stale:this.state.stale});
+  }
+  prewarm(){
+    const scope=this.synchronizeScope();
+    if(this.disposed||!scope)return Promise.resolve(null);
+    if(this.preparedScope===scope)return Promise.resolve(this.state.data);
+    if(this.document?.hidden){this.prewarmWanted=true;return Promise.resolve(this.state.data);}
+    if(this.preparation?.scope===scope)return this.preparation.promise;
+    this.prewarmWanted=false;
+    const ticket={scope,publication:this.publication,joinedSubset:Boolean(this.pending&&this.pending.ids!==null),promise:null};this.preparation=ticket;
+    const unsubscribe=this.subscribe(()=>{},{immediate:false,ids:null});
+    ticket.promise=(async()=>{
+      let data=await this.ensure();
+      // An earlier selected-ID request may already own the shared flight.
+      // Keep the full-map consumer until its follow-up batch has completed.
+      const publicationChanged=ticket.publication!==this.publication;
+      if((ticket.joinedSubset||publicationChanged)&&scopeKey(this.getScope())===scope&&!this.disposed&&!this.state.error&&this.windows.freshUntil(null)<=this.now())data=await this.ensure({force:publicationChanged});
+      if(scopeKey(this.getScope())!==scope)return null;
+      if(this.windows.fullIds!==null)this.preparedScope=scope;
+      return data;
+    })().finally(()=>{unsubscribe();if(this.preparation===ticket)this.preparation=null;});
+    return ticket.promise;
   }
   async queries(){
     if(!this.clientPromise)this.clientPromise=Promise.resolve().then(()=>this.loadQueryCore()).then(({QueryClient})=>{

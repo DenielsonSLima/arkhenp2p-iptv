@@ -10,7 +10,7 @@ Um relógio `Hora HH:mm:ss` fica nos controles inferiores, à direita do espaço
 
 O canal selecionado permanece no centro do painel de programação, inclusive durante a prévia. Número, nome e programação recebem tons amarelos; a linha “Agora” tem amarelo mais claro, fundo discreto e filete lateral. Os canais anterior e seguinte conservam suas cores neutras. O destaque acompanha a seleção da navegação e não sintoniza a prévia sem confirmação.
 
-A navegação usa o mesmo mapa compartilhado aquecido quando o catálogo live fica disponível; a assinatura completa permanece estável durante o player. Cada seta reutiliza as janelas em RAM, mantendo ativo e prévia separados. [Causa, contrato e limites da antecipação](tv-guide-memory-cache-20261017.md#navegação-pronta-no-player--18102026).
+A navegação usa o mapa compartilhado aquecido uma vez por escopo quando o catálogo live fica disponível. As setas reutilizam as janelas válidas em RAM; após vencerem, a assinatura recorrente atualiza somente ativo, prévia e vizinhos, preservando o último dado como antigo. Não há projeção completa recorrente. [Causa, contrato e limites da antecipação](tv-guide-memory-cache-20261017.md#navegação-pronta-no-player--18102026).
 
 Três agentes participaram: implementação dos metadados, implementação do relógio e revisão estática. A integração foi revista pelo coordenador. Não houve reinício do servidor ou interação com a sessão do usuário.
 

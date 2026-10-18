@@ -4,7 +4,7 @@
 
 Estado: implementação local; inspeção/sintaxe, sem testes/navegador. Data:18/10/2026.
 
-TV mostra número configurado, programa (ou canal sem EPG), resolução medida atual e relógio local HH:mm nos controles. Não usar ranking de qualidade como medição; limpar dimensões durante troca. Relógio suspende oculto e encerra com player. Três agentes. Fonte:[decisões e arquivos](../tv-player-metadata-clock-20261018.md).
+TV: número configurado, programa/canal, resolução medida e Hora HH:mm:ss; ranking não é medição, troca limpa dimensões. Relógio alinha segundos, suspende oculto e encerra com player. Centro/Agora amarelos. Grade antecipada uma vez; setas usam cache válido, refresh restrito. Fonte:[decisões e arquivos](../tv-player-metadata-clock-20261018.md).
 
 ## MEM-LIVE-027 — Cinco canais na Home e abertura de TV
 

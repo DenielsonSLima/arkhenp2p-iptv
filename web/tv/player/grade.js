@@ -49,6 +49,8 @@ export class TVPlayerGuide{
     try{
       const live=this.current?.item.kind==='live',preview=live&&this.navigation.isPreviewing();
       const neighbors=live?this.navigation.neighbors():{},selected=live?(this.navigation.selected()||{item:this.current.item,number:this.current.channelNumber}):null;
+      // The prepared complete map serves new previews in RAM while valid.
+      // Recurring refresh stays limited to the visible/playing selection.
       if(live)this.metadata.start([this.current?.item.id,selected?.item.id,neighbors.previous?.item.id,neighbors.next?.item.id].filter(Boolean).map(String));
       for(const [key,slot] of Object.entries(this.slots)){
         const entry=key==='current'?selected:neighbors[key];slot.entry=entry||null;

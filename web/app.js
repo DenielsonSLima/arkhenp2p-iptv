@@ -448,7 +448,7 @@ function prepareCatalog(data, type) {
 }
 function acceptCatalog(type,response,options){
   const data=catalogRepository.commit(type,response,options);
-  if(data){for(const listener of entryCatalogListeners)listener();ensureHomeProjection();}
+  if(data){for(const listener of entryCatalogListeners)listener();ensureHomeProjection();if(type==='live'&&data.items?.length)void tvGuide.prewarm();}
   return data;
 }
 async function hydrateCatalogReadModel(type,catalog,savedAt){
