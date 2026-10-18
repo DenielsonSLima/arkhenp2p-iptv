@@ -15,6 +15,13 @@ alpha, renderizadas diretamente da geometria vetorial.
 `apple-touch-icon.png` de 180 pixels. `favicon.ico` contém 16, 24, 32, 48, 64, 128 e
 256 pixels. Todos preservam transparência.
 
+O documento declara ICO, PNGs com tamanhos explícitos, SVG e Apple Touch Icon.
+`web/favicon.ico` e `web/apple-touch-icon.png` são cópias dos arquivos da marca,
+mantidas pelo gerador para descoberta nos endereços padrão da raiz.
+`safari-pinned-tab.svg` usa a mesma geometria em uma única silhueta preta com
+`viewBox="0 0 16 16"`, conforme o [contrato da Apple para abas fixadas](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/pinnedTabs/pinnedTabs.html).
+Os links de ícone usam uma revisão de URL para renovar o cache após alterações.
+
 O gerador está em `tools/build-brand-assets.py`, na raiz do projeto, e pode ser
 executado com Python, Pillow e NumPy. Ele também atualiza `inventory.json`. Os
 arquivos originais na pasta `Logo` do iCloud permanecem preservados.

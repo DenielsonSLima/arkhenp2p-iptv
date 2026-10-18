@@ -8,6 +8,7 @@ or modified. Requires Pillow and NumPy, already available in the local runtime.
 from pathlib import Path
 import json
 import re
+from shutil import copyfile
 import numpy as np
 from PIL import Image, ImageDraw
 
@@ -116,6 +117,21 @@ def svg_document(kind):
     return header + definitions + group + '</svg>\n'
 
 
+def safari_mask_document():
+    # Safari pinned tabs require a black, single-layer silhouette in a 16px viewBox.
+    scale = 16 / ICON_VIEW[3]
+    offset_x = (16 - ICON_VIEW[2] * scale) / 2
+    paths = []
+    for mirror in (False, True):
+        for source in (UPPER, LOWER):
+            points = path_points(source)
+            if mirror:
+                points = reflect(points)
+            coordinates = [f'{(x - ICON_VIEW[0]) * scale + offset_x:.5f} {(y - ICON_VIEW[1]) * scale:.5f}' for x, y in points]
+            paths.append('M' + ' L'.join(coordinates) + ' Z')
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="#000" d="' + ' '.join(paths) + '"/></svg>\n'
+
+
 def gradient_image(width, height, stops, view, scale, offset, y1, y2):
     ys = (np.arange(height) - offset[1]) / scale + view[1]
     positions = np.clip((ys - y1) / (y2 - y1), 0, 1)
@@ -153,12 +169,15 @@ def render(kind, width, height, icon=False):
 (OUT / 'symbol.svg').write_text(svg_document('symbol'), encoding='utf8')
 (OUT / 'wordmark.svg').write_text(svg_document('wordmark'), encoding='utf8')
 (OUT / 'favicon.svg').write_text(svg_document('favicon'), encoding='utf8')
+(OUT / 'safari-pinned-tab.svg').write_text(safari_mask_document(), encoding='utf8')
 render('symbol', 1024, round(1024 * SYMBOL_VIEW[3] / SYMBOL_VIEW[2])).save(OUT / 'symbol.png', optimize=True)
 render('wordmark', 2388, 256).save(OUT / 'wordmark.png', optimize=True)
 for size in (16, 32, 48, 180, 192, 512):
     name = 'apple-touch-icon.png' if size == 180 else f'favicon-{size}x{size}.png'
     render('symbol', size, size, icon=True).save(OUT / name, optimize=True)
 render('symbol', 512, 512, icon=True).save(OUT / 'favicon.ico', format='ICO', sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
+copyfile(OUT / 'favicon.ico', ROOT / 'web/favicon.ico')
+copyfile(OUT / 'apple-touch-icon.png', ROOT / 'web/apple-touch-icon.png')
 
 inventory = []
 for target in sorted(OUT.glob('*')):

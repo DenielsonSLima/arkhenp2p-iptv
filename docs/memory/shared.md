@@ -1,5 +1,13 @@
 # Infraestrutura compartilhada
 
+## MEM-SHARED-020 — Ícones do Safari
+
+Estado: correção local; inspeção estática, sem confirmação visual no Safari. Data: 18/10/2026.
+
+Os favicons existentes ficavam somente em `assets/brand/`. Foram adicionadas cópias na raiz para `/favicon.ico` e `/apple-touch-icon.png`, mantidas pelo gerador, além de máscara monocromática para abas fixadas. O documento declara os tamanhos PNG e ICO, SVG com `sizes="any"` e revisão de URL atualizada. A ausência dos endereços padrão e da máscara foi verificada no código; não foi isolada como causa exclusiva da ausência relatada pelo usuário. Não houve testes ou navegador nesta etapa.
+
+Fontes: `web/index.html`, `tools/build-brand-assets.py`, [arquivos da marca](../../web/assets/brand/README.md) e [contrato Apple](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/pinnedTabs/pinnedTabs.html).
+
 ## MEM-SHARED-019 — Perda de sessão e interface
 
 Estado: corrigido localmente; 55 testes internos. Data:17/10/2026.
