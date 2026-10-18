@@ -2,6 +2,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { createApp } from './lib/app-server.mjs';
 import { createRuntimeCloud } from './lib/runtime-cloud-config.mjs';
+import {RuntimeSessionStore} from './lib/runtime-session-store.mjs';
 export { createApp, parseRange } from './lib/app-server.mjs';
 // Ordinary imports remain disconnected; Vercel uses server-only environment
 // configuration and direct local execution retains the private local files.
@@ -10,7 +11,7 @@ const hosted=process.env.VERCEL==='1';
 const cloud=createRuntimeCloud({executable,onConfigurationError:event=>console.error('[cloud-configuration]',JSON.stringify(event))});
 const connection=executable&&!hosted?undefined:hosted&&process.env.IPTV_SERVER&&process.env.IPTV_USERNAME&&process.env.IPTV_PASSWORD?
   {server:process.env.IPTV_SERVER,username:process.env.IPTV_USERNAME,password:process.env.IPTV_PASSWORD}:{};
-export const server=createApp({cloud,connection,...(executable?{
+export const server=createApp({cloud,connection,sessionStore:hosted?new RuntimeSessionStore({cloud}):null,...(executable?{
   onPlaybackError:event=>console.error('[playback-error]',JSON.stringify(event)),
   onPlaybackTransport:event=>console.info('[tv-transport]',JSON.stringify(event))
 }:{})});

@@ -6,7 +6,11 @@ O rodapé mostra número configurado do canal, nome do programa e resolução me
 
 Dimensões são aceitas depois da prontidão da reprodução atual, com atualização em metadata/resize e limpeza durante troca/carregamento. Enquanto não há vídeo medido, o badge mostra `—`. Rótulos do nome, como HD ou FHD, não viram uma medição. A revisão rejeitou usar `channelQualityRank`, cujo ranking agrupa algumas alturas declaradas e não preserva a resolução literal.
 
-Um relógio `HH:mm` fica nos controles inferiores, à direita do espaço flexível. Usa hora local do aparelho, sem interferir no EPG do servidor. Um timeout acompanha a virada do minuto, suspende quando a página fica oculta e é removido ao fechar/destruir o player. Filmes e Séries não exibem o relógio de TV.
+Um relógio `Hora HH:mm:ss` fica nos controles inferiores, à direita do espaço flexível. Usa hora local do aparelho, sem interferir no EPG do servidor. Um timeout acompanha a virada do segundo, suspende quando a página fica oculta e é removido ao fechar/destruir o player. Filmes e Séries não exibem o relógio de TV.
+
+O canal selecionado permanece no centro do painel de programação, inclusive durante a prévia. Número, nome e programação recebem tons amarelos; a linha “Agora” tem amarelo mais claro, fundo discreto e filete lateral. Os canais anterior e seguinte conservam suas cores neutras. O destaque acompanha a seleção da navegação e não sintoniza a prévia sem confirmação.
+
+A navegação usa o mesmo mapa compartilhado aquecido quando o catálogo live fica disponível; a assinatura completa permanece estável durante o player. Cada seta reutiliza as janelas em RAM, mantendo ativo e prévia separados. [Causa, contrato e limites da antecipação](tv-guide-memory-cache-20261017.md#navegação-pronta-no-player--18102026).
 
 Três agentes participaram: implementação dos metadados, implementação do relógio e revisão estática. A integração foi revista pelo coordenador. Não houve reinício do servidor ou interação com a sessão do usuário.
 

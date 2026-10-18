@@ -47,8 +47,11 @@ export class CloudAppBridge {
     if(!this.#current(serial,generation)||this.retryTimer!==null||this.document?.hidden||this.cloud.getStatus?.().state==='restricted')return;
     // Backend bootstrap failures already have a 30s recovery floor. Polling
     // the same unavailable result at 5/10s only repeats diagnostics and work.
-    const minimum=this.getSession()?.cloudStatus?.state==='unavailable'?30000:5000;
-    this.retryTimer=this.schedule(()=>{this.retryTimer=null;if(!this.document?.hidden)void this.#connect(serial,generation,{refresh:true});},Math.min(300000,minimum*2**Math.min(this.retryAttempt++,6)));
+    const failure=this.cloud.getConnectionFailure?.(),transientAuth=String(failure?.stage||'').startsWith('auth_')&&!failure?.authRecoveryRequired;
+    const minimum=this.getSession()?.cloudStatus?.state==='unavailable'||transientAuth?30000:5000;
+    const retryAfter=Number.isFinite(failure?.retryAfterSeconds)?Math.max(0,failure.retryAfterSeconds)*1000:0;
+    this.retryTimer=this.schedule(()=>{this.retryTimer=null;if(!this.document?.hidden)void this.#connect(serial,generation,{refresh:true});},
+      Math.min(300000,Math.max(retryAfter,minimum*2**Math.min(this.retryAttempt++,6))));
   }
   #connect(serial,generation,{refresh=false}={}){
     if(!this.#current(serial,generation))return Promise.resolve(null);

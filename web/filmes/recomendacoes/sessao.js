@@ -16,7 +16,7 @@ export class MovieSuggestionSession{
   matchesScope(){return this.key===JSON.stringify([movieSuggestionScopeKey(this.getScope()),identity(this.state.item)]);}
   recover(){
     if(!this.state.error||!this.state.item||!this.recoveryScope||!canRetainMovieSuggestions(this.recoveryScope,movieSuggestionScope(this.getScope())))return false;
-    void this.select(this.state.item,{force:true,retain:true});return true;
+    void this.select(this.state.item,{force:true,retain:true,automatic:true});return true;
   }
   fromReply(item,result){
     if(result?.schemaVersion!==1||String(result.sourceId)!==identity(item)||!Array.isArray(result.items))return null;
@@ -24,7 +24,7 @@ export class MovieSuggestionSession{
     for(const candidate of result.items.slice(0,MOVIE_RECOMMENDATION_LIMIT))if(movieCanHaveSuggestions(candidate,this.allowed)&&!seen.has(identity(candidate))){seen.add(identity(candidate));items.push(candidate);}
     return {item,items,loading:false,error:null,failure:null,reason:result.reason||null,personalized:result.personalized===true};
   }
-  select(item,{force=false,retain=false}={}){
+  select(item,{force=false,retain=false,automatic=false}={}){
     if(!movieCanHaveSuggestions(item,this.allowed)){this.reset();return Promise.resolve();}
     const scope=movieSuggestionScopeKey(this.getScope()),key=JSON.stringify([scope,identity(item)]);
     if(!force&&this.key===key)return this.pending||Promise.resolve();
@@ -34,7 +34,7 @@ export class MovieSuggestionSession{
     const initial=same?this.state:this.fromReply(item,cached)||empty();
     this.state={...initial,item,loading:true,error:null,failure:null};this.onChange(this.state);
     const current=()=>epoch===this.epoch&&!controller.signal.aborted&&scope===movieSuggestionScopeKey(this.getScope())&&movieCanHaveSuggestions(item,this.allowed);
-    const pending=Promise.resolve().then(()=>this.lookup(item,{signal:controller.signal,limit:MOVIE_RECOMMENDATION_LIMIT,force})).then(result=>{
+    const pending=Promise.resolve().then(()=>this.lookup(item,{signal:controller.signal,limit:MOVIE_RECOMMENDATION_LIMIT,force:force&&!automatic})).then(result=>{
       if(!current())return;
       const next=this.fromReply(item,result);if(!next)throw Object.assign(new Error('MOVIE_SUGGESTIONS_INVALID'),{code:'MOVIE_SUGGESTIONS_INVALID',phase:'dto'});
       this.state=next;

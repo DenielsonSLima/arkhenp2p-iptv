@@ -176,6 +176,16 @@
 .immersive-stage .ip-live-information .ip-neighbor-program-current .ip-program-title { color: #d7e1ef; }
 .immersive-stage .ip-live-information .ip-neighbor-program-current .ip-program-label { color: #b5c3d6; }
 
+/* The center follows the selected channel, including a pending preview. */
+.immersive-stage .ip-live-information .ip-channel-current :is(.ip-channel-number, .ip-title) { color: #f5d46f; }
+.immersive-stage .ip-live-information .ip-channel-current .ip-kind { color: #e2c66f; }
+.immersive-stage .ip-live-information .ip-channel-current .ip-schedule { border-top-color: #f5d46f38; }
+.immersive-stage .ip-live-information .ip-channel-current .ip-program-title { color: #deca91; }
+.immersive-stage .ip-live-information .ip-channel-current :is(.ip-program-label, .ip-program-time) { color: #c5b683; }
+.immersive-stage .ip-live-information .ip-channel-current .ip-program-current { padding: 5px 8px; margin-inline: -8px; border-radius: 4px; background: linear-gradient(90deg, #e7c65a1c, #e7c65a05); box-shadow: inset 2px 0 #f5d46f; }
+.immersive-stage .ip-live-information .ip-channel-current .ip-program-current :is(.ip-program-title, .ip-program-label, .ip-program-time) { color: #ffe18a; }
+.immersive-stage .ip-live-information .ip-channel-current:focus-visible { outline-color: #f5d46f; }
+
 @media (max-width: 900px) and (min-width: 651px) {
   .immersive-stage .ip-information.ip-live-information { gap: 15px; --ip-channel-gutter: max(78px, calc(env(safe-area-inset-left) + 64px), calc(env(safe-area-inset-right) + 64px)); }
   .immersive-stage .ip-channel-neighbor { grid-template-columns: 14px minmax(0, 1fr); grid-template-areas: "arrow label" "arrow number" "arrow name" "schedule schedule"; gap: 5px 7px; padding-inline: 7px; }

@@ -138,8 +138,7 @@ export class EpisodeSkipController {
       if(event==='playing'){this.playing=true;if(this.context)this.playbackStarted=true;}
       if(['pause','waiting','stalled','seeking','ended','error'].includes(event))this.playing=false;
       if(event==='ended')this.ended=true;
-      // A completed seek can still be waiting for decoded frames. Only the
-      // subsequent playing event resumes automatic actions and their clock.
+      this.observeMediaProgress(event);
       this.update();
     });
     this.unsubscribePreferences=preferences?.subscribe?.(()=>this.update());
@@ -196,12 +195,13 @@ export class EpisodeSkipController {
     const context = {seriesId: item?.id, episodeId: episode?.id, sourceFingerprint,namespace:String(this.getNamespace()||'')};
     if (item?.kind !== 'series' || !this.store.identity(context)) return;
     this.context = context;this.episodeContext={item,episode,sourceFingerprint,...(editionId!=null?{editionId}:{})};this.metadataReady=this.video.readyState===undefined || this.video.readyState>=1;
-    this.playing=this.video.paused===false && (this.video.readyState===undefined || this.video.readyState>=2);this.update();
+    this.playing=this.video.paused===false && (this.video.readyState===undefined || this.video.readyState>=2);
+    this.observeMediaProgress('attach');this.update();
   }
   reset() {
     this.reference=null;this.playbackStarted=false;
     this.externalController?.abort();this.externalController=null;this.externalKey=null;this.externalResult=null;this.externalOutcome=null;this.externalSettled=false;this.referenceOpening=null;
-    this.generation++;this.stopCountdown();this.stopOpeningCountdown();this.metadataReady=false;this.playing=false;this.ended=false;
+    this.generation++;this.stopCountdown();this.stopOpeningCountdown();this.metadataReady=false;this.playing=false;this.ended=false;this.progressSample=null;
     this.openingSkipped=false;this.openingPending=false;this.openingCancelledStart=null;this.creditsSkipped=false;this.nextInvoked=false;this.cancelledThreshold=null;this.preferenceSignature='';
     this.context = null;this.episodeContext=null; this.panel.hidden = true; this.overlay.hidden = true;
     this.configureMarkersButton.hidden=true;this.catalogAvailability.hidden=true;
@@ -263,6 +263,21 @@ export class EpisodeSkipController {
     if(marks.creditsStart!==undefined||supplied?.blockEarlyNext===true)reference.credits=false;
     const blockEarlyNext=(supplied?.blockEarlyNext===true||Boolean(this.reference?.segments?.outro||this.reference?.segments?.post_credits))&&marks.creditsStart===undefined;
     return {duration,currentTime,ready,...manual,marks,reference,manualMarks:manual.marks,blockEarlyNext,markerSource:(Object.keys(external).length||blockEarlyNext)&&typeof supplied?.source==='string'?supplied.source:null};
+  }
+  observeMediaProgress(event){
+    const position=this.video.currentTime,at=this.now(),previous=this.progressSample;
+    // Safari can keep presenting buffered video after stalled/waiting without
+    // another playing event. A moving media clock is positive playback proof;
+    // readyState or seeked alone cannot resume an automatic action.
+    if(event==='timeupdate'&&previous&&this.playbackStarted&&!this.video.paused&&!this.video.seeking&&!this.video.ended&&!this.video.error&&this.video.readyState>=2){
+      const rate=Number.isFinite(this.video.playbackRate)&&this.video.playbackRate>0?this.video.playbackRate:1;
+      const advanced=position-previous.position,elapsed=Math.max(0,at-previous.at)/1000;
+      const continuousAdvance=Math.min(2*rate+.5,Math.max(.5,elapsed*rate+.25));
+      if(advanced>0&&advanced<=continuousAdvance)this.playing=true;
+    }
+    // Seeking/seeked and every stopped state establish a fresh baseline. A
+    // seek jump, an unchanged timeupdate or a backwards clock proves nothing.
+    this.progressSample=Number.isFinite(position)?{position,at}:null;
   }
   isPlaying(){return this.playing && this.video.paused===false && !this.video.seeking && this.video.readyState>=2;}
   update() {

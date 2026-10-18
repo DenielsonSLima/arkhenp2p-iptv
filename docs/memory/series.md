@@ -77,3 +77,11 @@ Player consulta `GET /api/series/episode-markers` somente após `playing`, com i
 Fontes: [implementação e evidências](../series-markers-on-demand-20261017.md), `lib/serie/marcadores/{rota,sob-demanda}.mjs`, `web/serie/marcadores/{sob-demanda,referencia}.js`, `tests/series-markers-on-demand.test.mjs`. Evidências: 101 testes, bundle, resposta HTTP real das APIs públicas e cache; Safari indisponível. Não certifica cobertura/precisão das edições ou deploy de produção.
 
 Correção posterior da interação em 17/10: `web/episode-skip.js` usa a contagem existente para referências, respeita preferências, suspensão em pausa/buffer/seek, cancelamento e pós-créditos, e impede reenvio de seek pendente. 82 testes automatizados da alteração aprovados e bundle válido; módulos conferidos por HTTP local sem reiniciar servidor. Fontes: `tests/episode-skip.test.mjs`, `tests/series-playback.test.mjs`, `tests/series-playback-preferences-view.test.mjs`. Sem reprodução audiovisual nesta etapa.
+
+## MEM-SERIES-008 — Retomada da contagem pelo avanço da mídia
+
+Estado: correção local por inspeção e sintaxe, sem prova funcional. Data: 18/10/2026.
+
+`EpisodeSkipController` mantinha `playing=false` após waiting/stalled/seeking até outro evento playing; timeupdate com avanço real não recuperava a contagem. Agora avanço contínuo positivo, limitado pelo tempo/taxa de reprodução, retoma o relógio somente após playing inicial, com vídeo não pausado, não seeking, readyState>=2 e sem erro/fim. Seeked/pausa/buffer renovam a linha de base; salto, recuo e tempo parado não comprovam retomada. Os cinco segundos restantes, cancelamento explícito e geração/conta continuam preservados. A captura do usuário mostra a contagem pausada; a sequência exata de eventos Safari permanece hipótese, sem navegador, testes ou mídia nesta etapa.
+
+Fontes: `web/episode-skip.js`, [evidências e limites](../series-markers-on-demand-20261017.md).

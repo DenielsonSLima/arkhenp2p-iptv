@@ -419,6 +419,11 @@ enabled = true
 verify_jwt = false
 entrypoint = "./functions/arkhen-backend/index.ts"
 
+[functions.arkhen-session]
+# Session RPCs accept only the server HMAC; no database key reaches the browser.
+verify_jwt = false
+entrypoint = "./functions/arkhen-session/index.ts"
+
 [functions.series-markers-sync]
 # A separate capability is verified in constant time before any sync access.
 verify_jwt = false

@@ -1,5 +1,11 @@
 # Infraestrutura compartilhada
 
+## MEM-SHARED-021 — Login aceito e sessão ausente na Vercel
+
+Estado: incidente remoto confirmado; correção de hospedagem pendente. Data:18/10/2026.
+
+Janela09:42–09:52BRT: logins200, parental200 e catálogos200/401; Map por processo não restaura cookie entre instâncias, distribuição exata não observada. Somente Vercel+Supabase autorizados: checkpoint privado AESGCM, lease/fence/revisão, geração/STOP/assets e revogação de corpos. Migration/Edge/env ativadas e RLS/grants conferidos; deploy em andamento. WPLAY preservada, sem VPS. Inspeção/sintaxe, sem testes/login/navegador. Fonte:[incidente e ativação](../vercel-session-incident-20261018.md).
+
 ## MEM-SHARED-020 — Ícones do Safari
 
 Estado: correção local; inspeção estática, sem confirmação visual no Safari. Data: 18/10/2026.
@@ -64,15 +70,13 @@ Fonte e limites: [rechecagem de CPU](../supabase-cpu-recheck-20261016.md), scrip
 
 ## MEM-SHARED-013 — Carga ociosa e redução de reconsultas
 
-Estado: implementação local e alterações remotas conferidas por definição; resultado operacional limitado à janela observada. Data: 16/10/2026, com readbacks em 17/10 UTC.
+Estado: implementação local e definições remotas conferidas; resultado limitado à janela observada. Data:16/10/2026, readbacks17/10UTC.
 
-As capturas de Logs Query representam bytes varridos por consultas de logs, não crescimento do banco. Estatísticas PostgreSQL localizaram manutenção recorrente sem espectadores: limpeza de gerações, projeção TV, métricas e agendadores. Limitar somente linhas excluídas não limita o trabalho para encontrar candidatas; deadlines externos impediram aceitar como concluídas duas primeiras versões que ainda expiravam.
+Logs Query mede bytes varridos, não crescimento do banco. Estatísticas localizaram manutenção recorrente ociosa. Limitar exclusões não limita busca; duas versões ainda expiravam. Limpeza conserva chave lógica, gira tabelas e processa TIDs bloqueados com rechecagem. Métricas usam deltas privados/publicação atômica; workers não continuam cadeias por padrão. Backfill Home sem pendências permanece pausado; trigger cobre metadados novos.
 
-Limpeza conserva uma chave lógica descoberta em chamada anterior, gira tabelas por minuto e consome pequenos arrays de TIDs bloqueados na mesma transação, rechecando as proteções na exclusão. Métricas usam deltas privados e publicação global atômica. Workers não iniciam cadeias de continuações por padrão. Backfill Home sem pendências permanece pausado; novos metadados continuam cobertos pelo trigger. Nenhuma recuperação de CPU decorre apenas da confirmação de schema ou estado administrativo.
+Cliente aplica progresso confirmado, adia revalidação oculta e agrupa catálogos por domínio/partição. Erro preserva snapshot e TTL; reload tem cooldown. Biblioteca, leases e gerações permanecem isolados. Código local exige publicação; confirmação de schema/cron não comprova redução de CPU.
 
-No código local, progresso/Realtime aplicam linhas confirmadas, foco saudável não refaz bootstrap e a aba oculta adia revalidações. Atualização de catálogo é agrupada por partição/domínio; enfileirar não apaga snapshots válidos. Falha não renova o TTL diário e reload compartilha cooldown. Biblioteca privada, leases, gerações e domínios permanecem isolados. A redução do cliente depende de carregar/publicar o código atualizado; não houve teste de aplicativo ou mídia nesta etapa.
-
-Fonte e limites: [relatório de otimização](../supabase-load-optimization-20261016.md), migrations e arquivos citados nele. Evidência: leitura de definições/cron e execuções naturais, revisão independente e sintaxe JavaScript. Sem benchmark, teste automatizado, restart de Supabase ou aumento de plano.
+Fonte: [relatório com etapas e limites](../supabase-load-optimization-20261016.md), migrations e arquivos citados nele. Leituras/execuções naturais, revisão e sintaxe; sem benchmark, teste de aplicação, restart ou aumento de plano.
 
 ## MEM-SHARED-012 — Conexão WPLAY por domínio
 
@@ -118,15 +122,11 @@ Fontes: [incidente e scripts](../supabase-incident-20261016.md), [auditoria de j
 
 ## MEM-SHARED-008 — Inicialização na Vercel
 
-Estado: correção publicada; abertura da tela de entrada verificada em produção. Data: 16/10/2026.
+Estado: histórico; tela de entrada publicada e verificada. Data:16/10/2026.
 
-O build concluía, mas a função falhava ao importar `server.mjs`: os logs de execução exigiam um export default de função ou servidor. A entrada agora exporta o mesmo `http.Server` por default; somente execução direta abre a porta local. A política de Host permite localhost e autoridades exatas da configuração, sem curinga e sem confiar em headers encaminhados. A guarda de mesma origem das APIs permanece ativa. O pacote inclui `web/**` e exclui configuração privada, arquivos de ambiente e APKs; a publicação usou staging sanitizado.
+A função falhava sem export default; `server.mjs` passou a exportar o servidor, abrindo porta somente na execução direta. Host aceita autoridades exatas; guardas de origem permanecem. O pacote inclui `web/**` e exclui dados privados. Cinco testes focados e Chrome confirmaram a entrada; Safari e o fluxo completo não foram certificados. Sessões continuam por processo; configuração cloud foi tratada em MEM-SHARED-011. Publicar a entrada não certifica login, catálogo ou reprodução.
 
-Evidência: cinco testes focados passaram (documento/estilos, hosts locais e hospedados, rejeição de origem externa e importação sem listener). Acesso remoto no Chrome confirmou o formulário, fundo e marca localmente, na prévia e no domínio de produção. A consulta dos logs da implantação corrigida não encontrou respostas 500 na janela observada. A captura do Safari não permitiu certificar toda a renderização; a comprovação visual foi feita no Chrome.
-
-Limite: abrir a entrada não comprova autenticação, catálogo, favoritos, recomendações ou reprodução. Sessões do provedor ainda são locais a cada processo; a configuração privada Supabase requer adaptação própria para hospedagem distribuída. Não copiar configuração local privada para o pacote como solução.
-
-Fontes: `server.mjs`, `lib/request-host-policy.mjs`, `lib/app-server.mjs`, `vercel.json`, `tests/vercel-hosting.test.mjs`, seção de hospedagem do [README](../../README.md). Diagnóstico remoto e validação de navegador realizados em 16/10/2026; logs brutos e credenciais não fazem parte da memória.
+Fontes: `server.mjs`, `lib/request-host-policy.mjs`, `lib/app-server.mjs`, `vercel.json`, `tests/vercel-hosting.test.mjs` e [hospedagem](../../README.md#publicação-e-hospedagem).
 
 ## MEM-SHARED-007 — Escolha explícita Atual/Shaka
 

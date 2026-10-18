@@ -14,6 +14,7 @@ const conflict={user_favorites:'user_id,provider,item_key',user_progress:'user_i
 // must neither be reused nor replaced on every transient library retry.
 const authClients=new WeakMap();
 const authIdentity=scope=>JSON.stringify([scope.url,scope.userId]);
+const connectionIdentity=scope=>JSON.stringify([authIdentity(scope),scope.publishableKey,scope.provider,scope.providerKey,scope.scopeHash,scope.libraryId]);
 const serializeAuth=(entry,operation)=>{
   const pending=entry.pending.catch(()=>{}).then(operation);entry.pending=pending.catch(()=>{});return pending;
 };
@@ -36,7 +37,7 @@ export class CloudLibrary {
     Object.assign(this,{loadSDK,onUpdate,onStatus,onSharedUpdate,onDiagnostic,now,schedule,cancel,fetch,pageTarget,document,canRemember,onHistoryBlocked});
     this.blockedProgressItems=new Set();
     this.epoch=0;this.connectRequest=0;this.client=null;this.authEntry=null;this.queryClient=null;this.scope=null;this.ready=false;this.listeners=new Set();this.rows=emptyRows();
-    this.offlineScope=null;this.outbox=new CloudOutbox({storage});this.cleanupPending=Promise.resolve();
+    this.offlineScope=null;this.outbox=new CloudOutbox({storage});this.cleanupPending=Promise.resolve();this.connectionRetry=null;
     this.outboxTimer=null;this.outboxAttempt=0;this.outboxFlush=null;this.realtimeRows=new Map();this.lastDiagnostic=null;
     this.channel=null;this.authSubscription=null;this.queryUnsubscribe=null;this.progressQueue=new Map();this.progressTimer=null;this.writeControllers=new Set();this.revisions=new Map();this.optimisticRows=new Map();this.lastStamp=0;
     this.pagehide=()=>{void this.flushProgress({keepalive:true}).catch(()=>{});};
@@ -106,8 +107,13 @@ export class CloudLibrary {
     return null;
   }
   async connect(value,{preferBootstrap=false}={}){
-    this.connectionFailure=null;
     const valid=cloudBootstrap(value);
+    const previousRetry=this.connectionRetry,cooling=valid&&previousRetry?.identity===connectionIdentity(valid)&&previousRetry.retryAt>this.now();
+    if(cooling&&!preferBootstrap){
+      this.connectionFailure={...this.connectionFailure,retryAfterSeconds:Math.ceil((this.connectionRetry.retryAt-this.now())/1000)};
+      return null;
+    }
+    this.connectionFailure=null;
     if(!preferBootstrap&&this.ready&&valid&&valid.url===this.scope?.url&&valid.publishableKey===this.scope?.publishableKey&&valid.userId===this.scope?.userId&&valid.provider===this.scope?.provider&&valid.providerKey===this.scope?.providerKey&&valid.scopeHash===this.scope?.scopeHash)return this.load({force:true});
     const request=++this.connectRequest,sameAuth=valid&&this.authEntry?.identity===authIdentity(valid);
     await this.logout({flush:false,cancelConnect:false,revoke:!sameAuth});if(request!==this.connectRequest)return null;
@@ -147,13 +153,23 @@ export class CloudLibrary {
         this.rows[table]=event.query.state.data;this.#publish();
       });
       stage='library';const snapshot=await this.load({force:true});if(!this.#current(epoch,client))return null;if(!snapshot)throw Object.assign(safeError(),{cloudAuthFailure:this.connectionFailure?.authRecoveryRequired,status:this.connectionFailure?.status});
-      this.#subscribeRealtime(epoch,client);await this.flushOutbox();if(!this.#current(epoch,client))return null;this.#libraryStatus();return this.snapshot();
+      this.#subscribeRealtime(epoch,client);await this.flushOutbox();if(!this.#current(epoch,client))return null;this.connectionRetry=null;this.#libraryStatus();return this.snapshot();
     }catch(error){
       // A temporary data/API outage must not revoke the still-valid Auth
       // bootstrap cached by the backend. Detach data/query state while keeping
       // the same Auth client and its possibly rotated session for recovery.
       const revoke=error?.cloudAccessDenied===true,authRecoveryRequired=!revoke&&authFailure(error,stage),status=Number(error?.status);
-      if(this.epoch===epoch&&request===this.connectRequest){this.connectionFailure={code:revoke?'CLOUD_ACCESS_DENIED':authRecoveryRequired?'CLOUD_AUTH_SESSION_REJECTED':'CLOUD_CONNECTION_FAILED',stage,authRecoveryRequired,...(Number.isInteger(status)&&status>=100&&status<=599?{status}:{})};this.#diagnostic(this.connectionFailure.code,stage,status);await this.logout({flush:false,preserveOffline:scope,revoke,cancelConnect:false});if(request===this.connectRequest)this.#status(revoke?'restricted':'offline','Não foi possível conectar à nuvem. Sua biblioteca local continua disponível.');}
+      if(this.epoch===epoch&&request===this.connectRequest){
+        const transient=!revoke&&!authRecoveryRequired&&(!Number.isFinite(status)||status===0||status===429||status>=500);
+        if(transient){
+          const identity=connectionIdentity(scope),attempts=previousRetry?.identity===identity?previousRetry.attempts+1:1;
+          this.connectionRetry={identity,attempts,retryAt:this.now()+Math.min(300000,30000*2**Math.min(attempts-1,4))};
+        }else this.connectionRetry=null;
+        this.connectionFailure={code:revoke?'CLOUD_ACCESS_DENIED':authRecoveryRequired?'CLOUD_AUTH_SESSION_REJECTED':'CLOUD_CONNECTION_FAILED',stage,authRecoveryRequired,
+          ...(Number.isInteger(status)&&status>=100&&status<=599?{status}:{}),
+          ...(transient?{retryAfterSeconds:Math.ceil((this.connectionRetry.retryAt-this.now())/1000)}:{})};
+        this.#diagnostic(this.connectionFailure.code,stage,status);await this.logout({flush:false,preserveOffline:scope,revoke,cancelConnect:false});if(request===this.connectRequest)this.#status(revoke?'restricted':'offline','Não foi possível conectar à nuvem. Sua biblioteca local continua disponível.');
+      }
       return null;
     }
   }
@@ -434,7 +450,7 @@ export class CloudLibrary {
     const request=this.connectRequest,startingEpoch=this.epoch,startingClient=this.client;
     if(flush){await this.flushProgress();await this.flushOutbox();}
     if(request!==this.connectRequest||startingEpoch!==this.epoch||startingClient!==this.client)return this.cleanupPending;
-    ++this.epoch;const entry=this.authEntry,client=this.client||entry?.client,offlineScope=preserveOffline||(!revoke?(this.scope||this.offlineScope):null);if(revoke&&entry){entry.revoked=true;this.authEntry=null;}this.ready=false;this.scope=null;this.client=null;this.accessToken=null;this.blockedProgressItems.clear();
+    ++this.epoch;if(revoke)this.connectionRetry=null;const entry=this.authEntry,client=this.client||entry?.client,offlineScope=preserveOffline||(!revoke?(this.scope||this.offlineScope):null);if(revoke&&entry){entry.revoked=true;this.authEntry=null;}this.ready=false;this.scope=null;this.client=null;this.accessToken=null;this.blockedProgressItems.clear();
     if(this.outboxTimer!==null)this.cancel(this.outboxTimer);this.outboxTimer=null;this.outboxAttempt=0;
     if(this.progressTimer!==null)this.cancel(this.progressTimer);this.progressTimer=null;this.progressQueue.clear();
     for(const controller of this.writeControllers)controller.abort();this.writeControllers.clear();

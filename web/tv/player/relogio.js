@@ -1,6 +1,6 @@
 import {element} from '../../player/dom.js';
 
-const MINUTE_MS = 60000;
+const SECOND_MS = 1000;
 
 // Display-only clock: it never selects EPG windows or changes playback state.
 export class TVPlayerClock {
@@ -9,7 +9,7 @@ export class TVPlayerClock {
     this.root.hidden = true;
     this.root.title = 'Hora local';
     this.document = this.root.ownerDocument;
-    this.formatter = new Intl.DateTimeFormat('pt-BR', {hour: '2-digit', minute: '2-digit', hourCycle: 'h23'});
+    this.formatter = new Intl.DateTimeFormat('pt-BR', {hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'});
     this.active = false;
     this.destroyed = false;
     this.timer = null;
@@ -33,11 +33,11 @@ export class TVPlayerClock {
     if (!this.active || this.destroyed || this.document.hidden) return;
     const now = new Date();
     const value = this.formatter.format(now);
-    this.root.textContent = value;
+    this.root.textContent = `Hora ${value}`;
     this.root.dateTime = now.toISOString();
     this.root.setAttribute('aria-label', `Hora atual: ${value}`);
-    // Align the next update with the minute boundary, including after tab resume.
-    this.timer = setTimeout(() => this.refresh(), MINUTE_MS - now.getTime() % MINUTE_MS + 20);
+    // Align the next update with the second boundary, including after tab resume.
+    this.timer = setTimeout(() => this.refresh(), SECOND_MS - now.getTime() % SECOND_MS + 20);
   }
 
   reset() { this.setActive(false); }
