@@ -4,7 +4,7 @@
 
 Estado: nova correção em validação; cloud recuperada. Data:18/10/2026.
 
-Checkpoint AESGCM/lease/fence preserva sessão entre instâncias; DTO parental mínimo evita excesso. Cloud recuperou, Safari confirmou catálogos após12:04BRT, mas15:19–15:23:30UTC mostrouBUSY em TV/capas: liberar lease ainda exigia adquiri-la antes. Nova RPCread service-only lê checkpoint semlease; epoch validado antes de resposta/stream. Somente segmentos registrados de duração positiva leem semwriter; manifestos/seleção/Auth/PIN continuam exclusivos. Falha de segmento mescla cooldown no DTO fresco, nunca no snapshot antigo. Reprodução online desta correção ainda pendente. Fonte:[incidente](../vercel-session-incident-20261018.md); [Auth transitório](../auth-movie-transient-failures-20261018.md).
+Checkpoint AESGCM/lease/fence preserva sessão; DTO parental mínimo evita excesso. Após cloud recuperar, filaBUSY em TV/capas exigiu RPCread service-only semlease e validação de epoch antes da resposta. Segmentos registrados leem semwriter; manifestos/seleção/Auth/PIN são exclusivos. Cooldown de falha mescla DTO fresco. Teste Safari posterior revelou409LIVE_SOURCE_CHANGED: IDweb dependia da URL temporária. Correção usa canal/item/variante/rótulo/qualidade; preserva IDs nativos/OTT e recusa fonte ausente. Renovar lista após deploy. Quadros online ainda pendentes. Fonte:[incidente](../vercel-session-incident-20261018.md); [Auth transitório](../auth-movie-transient-failures-20261018.md).
 
 ## MEM-SHARED-020 — Ícones do Safari
 
