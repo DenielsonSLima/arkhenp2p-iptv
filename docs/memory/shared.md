@@ -2,9 +2,9 @@
 
 ## MEM-SHARED-021 — Login aceito e sessão ausente na Vercel
 
-Estado: incidente remoto confirmado; compactação preparada. Data:18/10/2026.
+Estado: incidente remoto confirmado; contenção em correção. Data:18/10/2026.
 
-Map por processo não restaura cookie entre instâncias. Checkpoint AESGCM/lease/fence publicado com Supabase privado; READY não certifica fluxo. Janela11:21–11:24BRT confirmou TOO_LARGE em catálogo e BUSY nas esperas: DTO parental copiava metadados completos. Compactação conserva provas/PIN/episódios/capas, sem ampliar limites;19 testes sintéticos,20mil títulos≈1,23MB. Verificação online pendente. Fonte:[incidente](../vercel-session-incident-20261018.md). Auth transitório:[limites](../auth-movie-transient-failures-20261018.md).
+Map por processo não restaura cookie entre instâncias. Checkpoint AESGCM/lease/fence publicado com Supabase privado; READY não certifica fluxo. Janela11:21–11:24BRT confirmou TOO_LARGE em catálogo e BUSY nas esperas: DTO parental copiava metadados completos. Compactação conserva provas/PIN/episódios/capas, sem ampliar limites;19 testes sintéticos,20mil títulos≈1,23MB. 86ce2d2READY aindaBUSY: leituras cloud/capas passam a liberarlease comepochvalidadoantesflush, sempersistirpósrelease; açõesmutáveisexclusivas. Verificação online pendente. Fonte:[incidente](../vercel-session-incident-20261018.md). Auth transitório:[limites](../auth-movie-transient-failures-20261018.md).
 
 ## MEM-SHARED-020 — Ícones do Safari
 

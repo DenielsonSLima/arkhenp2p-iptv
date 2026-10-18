@@ -58,3 +58,23 @@ test('a provider revalidation exception remains distinct from an absent local se
   client.connect=connect;
   const recovered=await (await f.read('/api/session',account.cookie)).json();assert.equal(recovered.connected,true);assert.equal(recovered.code,undefined);
 });
+
+test('explicit provider denials retire only that browser authorization and cannot revive it through catalog reads',async t=>{
+  const f=await fixture(t);
+  for(const status of [401,403]){
+    const account=await f.login(),other=await f.login(),client=f.clients.at(-2),otherClient=f.clients.at(-1);
+    assert.ok(client.session?.connected);let connectCalls=0;
+    client.connect=async()=>{connectCalls++;throw Object.assign(new Error('Synthetic provider access denied'),{status});};
+    const session=await f.read('/api/session',account.cookie),result=await session.json();
+    assert.equal(session.status,200);assert.equal(result.connected,false);assert.equal(client.session,null);
+    assert.equal(connectCalls,1);const catalogCalls=client.catalogCalls;
+    for(const route of ['/api/catalog?type=live','/api/catalog?type=movies']){
+      const denied=await f.read(route,account.cookie);
+      assert.equal(denied.status,401);assert.equal((await denied.json()).code,'SESSION_REQUIRED');
+      assert.equal(client.session,null);assert.equal(client.catalogCalls,catalogCalls);assert.equal(connectCalls,1);
+    }
+    const active=await f.read('/api/session',other.cookie);assert.equal((await active.json()).connected,true);
+    assert.equal((await f.read('/api/catalog?type=live',other.cookie)).status,200);
+    assert.ok(otherClient.session?.connected);assert.equal(otherClient.catalogCalls,1);assert.equal(otherClient.logoutCalls,0);
+  }
+});
