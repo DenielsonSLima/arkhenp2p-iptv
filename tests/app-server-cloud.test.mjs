@@ -200,7 +200,7 @@ test('a permitted cold poster displays one lazy image while Storage warms in the
   f.cloud.request=async path=>{
     const query=new URLSearchParams(path.split('?')[1]);
     if(path.includes('/catalog_artwork_refs?'))return [{media_type:'movies',media_id:query.get('ref')==='eq.'+adultRef?'999':'120',field:'poster'}];
-    if(path.includes('/catalog_media?')){const adult=query.get('media_id')==='eq.999';return [{metadata:{id:adult?'999':'120',name:adult?'Conteudo 18+':'Safe film',kind:'movie',poster:'/api/shared-image/'+(adult?adultRef:ref)},is_adult:adult}];}
+    if(path.includes('/catalog_media?')){const adult=['eq.999','in.(999)'].includes(query.get('media_id')),id=adult?'999':'120';return [{media_type:'movies',media_id:id,metadata:{id,name:adult?'Conteudo 18+':'Safe film',kind:'movie',poster:'/api/shared-image/'+(adult?adultRef:ref)},is_adult:adult}];}
     return [];
   };
   f.cloud.artwork=async args=>{artworks.push(args);return args.source?location:null;};

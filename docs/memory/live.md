@@ -249,6 +249,6 @@ Fontes: [contrato](../../web/inicio/lista-canais/README.md), [backend](../tv-hom
 
 ## MEM-LIVE-029 — Latência e runtime da Vercel
 
-Estado: correções e testes; continuidade real posterior pendente. Data:18/10/2026.
+Estado: correções verificadas; continuidade audiovisual pendente. Data:18/10/2026.
 
-71717fd publicado; usuário relatou localhost rápido e Vercel ainda intermitente. Prazo HLS10/15s não vale para Safari nativo; fixtureXHR não prova recuperação completa. Lote posterior conserva epoch do cipher aceito, renova JWT cloud vencido sob writer e oferece cache privado de cipher só para segmentos (2s/8MiB/8entradas), com validação remota antes do uso e resposta.195 testes e bundles passaram; não certificam vídeo online. APK/conta/espelhamento não devem ser executados no modo atual. Fontes: [runtime e reunião](../vercel-media-runtime-recovery-20261018.md), [latência](../tv-playback-latency-20261018.md), [HLS](../tv-hls-upstream-pipeline-review-20261018.md).
+71717fd/e28a3df publicados; usuário ainda relatou regressões. Runtime mantém epoch durável, renovaçãoJWT sob writer e cachecipher2s validado. Rodada seguinte reproduziu RPC após segmento concluído, churn de timestamp em playlist igual e writer preso por corpo pingando bytes. Corrigidos com validação anterior/guard preservados, descritor estável/LRU e prazo absoluto10s só da rede live. Prova sintética difere de continuidade real; APK/conta/espelhamento seguem fora do modo autorizado. Fontes: [regressão](../vercel-streaming-regression-20261018.md), [runtime](../vercel-media-runtime-recovery-20261018.md), [HLS](../tv-hls-upstream-pipeline-review-20261018.md).

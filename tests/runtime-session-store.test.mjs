@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash,randomBytes} from 'node:crypto';
+import {Readable,Writable} from 'node:stream';
+import {pipeline} from 'node:stream/promises';
 import {RuntimeSessionStore} from '../lib/runtime-session-store.mjs';
 import {runtimeSessionContext} from '../lib/runtime-session-context.mjs';
 import {captureRuntimeSession,restoreRuntimeSession} from '../lib/runtime-session-state.mjs';
@@ -24,6 +26,19 @@ class FakeResponse{
   write(chunk){if(chunk!==undefined)this.body.push(Buffer.from(chunk));this.headersSent=true;return true;}
   end(chunk,encoding,callback){if(chunk!==undefined)this.body.push(Buffer.from(chunk));this.headersSent=true;this.ends++;if(typeof encoding==='function')encoding();else callback?.();return this;}
   json(){return JSON.parse(Buffer.concat(this.body).toString());}
+}
+
+// Exercise Node's real finish lifecycle without opening an HTTP socket. The
+// runtime must distinguish a completed pipeline from a merely opened response.
+class StreamingResponse extends Writable{
+  constructor(){super();this.statusCode=200;this.headers=new Map();this.headersSent=false;this.body=[];}
+  _write(chunk,encoding,callback){this.body.push(Buffer.from(chunk));callback();}
+  setHeader(name,value){this.headers.set(name.toLowerCase(),value);return this;}
+  getHeaders(){return Object.fromEntries(this.headers);}
+  getHeaderNames(){return [...this.headers.keys()];}
+  getHeader(name){return this.headers.get(name.toLowerCase());}
+  removeHeader(name){this.headers.delete(name.toLowerCase());}
+  writeHead(status,headers={}){this.statusCode=status;for(const[key,value]of Object.entries(headers))this.setHeader(key,value);this.headersSent=true;return this;}
 }
 
 class FakeCloud{
@@ -625,6 +640,62 @@ async function seedSegments(cloud,store=new RuntimeSessionStore({cloud})){
   await seed(cloud,state);await store.run(request(),new FakeResponse(),readOptions,()=>{});
   cloud.calls.length=0;return store;
 }
+
+test('completed segment pipelines validate before headers without another RPC after finish',async t=>{
+  for(const cached of [false,true])await t.test(cached?'cached checkpoint':'fresh checkpoint',async()=>{
+    const cloud=new FakeCloud(),store=await seedSegments(cloud),res=new StreamingResponse();
+    const rpc=cloud.runtimeSessionRPC.bind(cloud);let afterFinish=0;
+    cloud.runtimeSessionRPC=async(operation,args)=>{
+      const result=await rpc(operation,args);
+      if(operation==='media'&&res.writableFinished){
+        afterFinish++;
+        throw Object.assign(new Error('Synthetic post-finish timeout'),{code:'ETIMEDOUT'});
+      }
+      return result;
+    };
+    const expected=cached?2:1;
+    await store.run(segmentRequest(),res,{...segmentOptions(),segmentReadCache:cached},async()=>{
+      await runtimeSessionContext().beforeStreaming();
+      assert.equal(cloud.calls.filter(call=>call.operation==='media').length,expected);
+      assert.equal(res.headersSent,false);
+      res.writeHead(200,{'Content-Type':'video/mp2t'});
+      await pipeline(Readable.from([Buffer.from('synthetic-segment')]),res);
+      assert.equal(res.writableFinished,true);
+    });
+    assert.equal(cloud.calls.filter(call=>call.operation==='media').length,expected);
+    assert.equal(afterFinish,0);assert.equal(res.statusCode,200);
+    assert.equal(Buffer.concat(res.body).toString(),'synthetic-segment');
+    assert.equal(store.readers.size,0);
+  });
+});
+
+test('an unfinished streaming response still requires its final validation',async()=>{
+  const cloud=new FakeCloud(),store=await seedSegments(cloud),res=new StreamingResponse();
+  try{
+    await assert.rejects(store.run(segmentRequest(),res,{...segmentOptions(),segmentReadCache:false},async()=>{
+      await runtimeSessionContext().beforeStreaming();
+      res.writeHead(200);res.write('synthetic-open-body');
+      assert.equal(res.writableFinished,false);cloud.rejectMedia=true;
+    }),{status:503,code:'RUNTIME_SESSION_UNAVAILABLE'});
+    assert.equal(cloud.calls.filter(call=>call.operation==='media').length,2);
+    assert.equal(res.writableFinished,false);assert.equal(store.readers.size,0);
+  }finally{res.destroy();}
+});
+
+test('streaming authorization failures remain closed before headers or body bytes',async t=>{
+  for(const failure of ['transport','changed'])await t.test(failure,async()=>{
+    const cloud=new FakeCloud(),store=await seedSegments(cloud),res=new StreamingResponse();
+    try{
+      await assert.rejects(store.run(segmentRequest(),res,{...segmentOptions(),segmentReadCache:false},async()=>{
+        if(failure==='transport')cloud.rejectMedia=true;else cloud.row.mediaEpoch='b'.repeat(64);
+        await runtimeSessionContext().beforeStreaming();
+        assert.fail('Unvalidated headers or body could escape');
+      }),{status:503,code:failure==='transport'?'RUNTIME_SESSION_UNAVAILABLE':'RUNTIME_SESSION_SCOPE_CHANGED'});
+      assert.equal(res.headersSent,false);assert.equal(res.body.length,0);assert.equal(res.writableFinished,false);
+      assert.equal(store.readers.size,0);
+    }finally{res.destroy();}
+  });
+});
 
 test('segment cache opt-in skips full reads but restores fresh Maps, assets and controllers and still validates twice',async()=>{
   const cloud=new FakeCloud(),store=await seedSegments(cloud),states=[];
