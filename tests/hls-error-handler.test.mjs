@@ -54,13 +54,19 @@ test('VOD rate limiting is terminal, preserves its deadline and never enters cod
   assert.equal(calls[0],'record');assert.equal(calls[1].options.terminalService,true);
   assert.match(calls[1].message,/limitou/);
 });
-test('only initial live manifest gets the OTT startup budget; playlist/VOD/segment bounds stay unchanged',()=>{
+test('TV playlist latency budget is isolated from initial manifest, VOD and segment bounds',()=>{
   const live=fastLoadPolicies('live'),vod=fastLoadPolicies('movie');
   assert.equal(live.manifestLoadPolicy.default.maxTimeToFirstByteMs,55000);
   assert.equal(live.manifestLoadPolicy.default.maxLoadTimeMs,60000);
   assert.equal(live.manifestLoadPolicy.default.timeoutRetry.maxNumRetry,0);
   assert.equal(vod.manifestLoadPolicy.default.maxTimeToFirstByteMs,4000);
-  assert.deepEqual(live.playlistLoadPolicy,vod.playlistLoadPolicy);assert.deepEqual(live.fragLoadPolicy,vod.fragLoadPolicy);
+  assert.equal(live.playlistLoadPolicy.default.maxTimeToFirstByteMs,10000);
+  assert.equal(live.playlistLoadPolicy.default.maxLoadTimeMs,15000);
+  assert.deepEqual(live.playlistLoadPolicy.default.timeoutRetry,vod.playlistLoadPolicy.default.timeoutRetry);
+  assert.deepEqual(live.playlistLoadPolicy.default.errorRetry,vod.playlistLoadPolicy.default.errorRetry);
+  assert.equal(vod.playlistLoadPolicy.default.maxTimeToFirstByteMs,4000);
+  assert.equal(vod.playlistLoadPolicy.default.maxLoadTimeMs,8000);
+  assert.deepEqual(live.fragLoadPolicy,vod.fragLoadPolicy);
 });
 function recovery(t,{started=true,levels=[{}]}={}){
   t.mock.timers.enable({apis:['setTimeout','Date'],now:1000});

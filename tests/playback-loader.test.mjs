@@ -126,7 +126,7 @@ test('immersive integration waits for playing and permits manual play after brow
   const {video} = setup(t), transitions = [];
   const player = {video, current: {item: {kind: 'movie'}, loading: true}, error: {},
     listen: (target, event, callback) => { if (target === video) target.addEventListener(event, callback); },
-    setLoading: value => transitions.push(value), recordStart() { this.recorded = true; }, updateControls() {},
+    setLoading: value => transitions.push(value), recordStart() { this.recorded = true; }, updateControls() {}, updateLiveMetadata() {},
     waitForPlay: ImmersivePlayer.prototype.waitForPlay};
   ImmersivePlayer.prototype.bind.call(player);
   video.paused = true; video.readyState = 2; video.dispatchEvent(new Event('loadeddata'));

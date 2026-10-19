@@ -8,7 +8,10 @@ export function liveLoadPolicies(){
   const retry=()=>({maxNumRetry:1,retryDelayMs:500,maxRetryDelayMs:1000});
   return {
     manifestLoadPolicy:{default:{maxTimeToFirstByteMs:55000,maxLoadTimeMs:60000,timeoutRetry:{maxNumRetry:0,retryDelayMs:0,maxRetryDelayMs:0},errorRetry:{maxNumRetry:0,retryDelayMs:0,maxRetryDelayMs:0}}},
-    playlistLoadPolicy:{default:{maxTimeToFirstByteMs:4000,maxLoadTimeMs:8000,timeoutRetry:retry(),errorRetry:retry()}},
+    // TV playlist responses observed at 3–7s cross the former 4s header
+    // deadline. Allow that latency without changing the one-retry budget or
+    // letting headers restart the finite total request deadline.
+    playlistLoadPolicy:{default:{maxTimeToFirstByteMs:10000,maxLoadTimeMs:15000,timeoutRetry:retry(),errorRetry:retry()}},
     fragLoadPolicy:{default:{maxTimeToFirstByteMs:6000,maxLoadTimeMs:15000,timeoutRetry:retry(),errorRetry:retry()}},
     startFragPrefetch:true,initialLiveManifestSize:1
   };

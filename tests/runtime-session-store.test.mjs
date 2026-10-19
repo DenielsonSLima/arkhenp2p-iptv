@@ -3,6 +3,10 @@ import assert from 'node:assert/strict';
 import {createHash,randomBytes} from 'node:crypto';
 import {RuntimeSessionStore} from '../lib/runtime-session-store.mjs';
 import {runtimeSessionContext} from '../lib/runtime-session-context.mjs';
+import {captureRuntimeSession,restoreRuntimeSession} from '../lib/runtime-session-state.mjs';
+import {ParentalControl} from '../lib/parental-control.mjs';
+import {WplayPlaybackProviderClient} from '../lib/wplay/conexao/reproducao.mjs';
+import {WplayOTTProviderClient} from '../lib/wplay/ott/provedor.mjs';
 
 const cookie='A'.repeat(32),sessionHash=createHash('sha256').update(cookie).digest('hex');
 const deferred=()=>{let resolve;const promise=new Promise(done=>{resolve=done;});return {promise,resolve};};
@@ -114,6 +118,177 @@ const authenticatedState=()=>({counter:0,events:[],authGeneration:1,loggedOut:fa
   session:{connected:true,account:{status:'Active'}},playbackGeneration:0,playback:null
 }});
 const readOptions={...options,createState:authenticatedState};
+
+const createPlaybackState=()=>({client:null,authGeneration:3,loggedOut:false,seen:1700000000000,attempts:[],parental:new ParentalControl()});
+const playbackClient=config=>new WplayPlaybackProviderClient(config,{webPlayback:true,webPlaybackFactory:webConfig=>{
+  const client=new WplayOTTProviderClient(webConfig);
+  // A completed source must round-trip without rediscovery or STOP. No fixture
+  // is allowed to reach a real provider when this invariant regresses.
+  for(const method of ['connect','catalog','stopPlayback','upstreamRequest'])client[method]=()=>assert.fail('Unexpected provider I/O: '+method);
+  return client;
+}});
+const playbackOptions={createState:createPlaybackState,capture:captureRuntimeSession,
+  restore:dto=>restoreRuntimeSession(dto,{createState:createPlaybackState,createClient:async({config})=>playbackClient(config)})};
+async function seedCompletedPlayback(cloud){
+  const state=createPlaybackState(),client=playbackClient({username:'synthetic-user',password:'synthetic-password'});
+  client.libraryProvider='wplay';client.authenticatedAt=1700000000000;
+  client.session={connected:true,account:{status:'Active'}};
+  const dto=client.exportRuntimeState(),source='https://player.wplayott.com/fixture/bootstrap.m3u8?token=synthetic&sid=synthetic&gen=4';
+  const manifestURL='https://player.wplayott.com/fixture/resolved/index.m3u8?token=synthetic';
+  const sourceId='w_'+'a'.repeat(28),attempt='synthetic-opening';
+  dto.playback={key:'live:81',manifestURL};dto.playbackGeneration=4;
+  const ott=new WplayOTTProviderClient({username:'synthetic-user',password:'synthetic-password'}).exportRuntimeState();
+  ott.session={connected:true,account:{status:'Active'}};ott.ott.liveScreenSID='synthetic-screen';ott.ott.liveGeneration=4;
+  ott.ott.liveSource={key:'live:901',attempt:'',selector:'exact:901',url:source,generation:4};
+  Object.assign(dto.playbackRuntime,{selectionGeneration:8,pending:false,
+    selection:{key:'live:81',attempt,selector:sourceId,sourceId,generation:8,url:source,transport:'web',aborted:false},
+    web:{version:1,closed:false,client:ott,current:{opening:false,timedOut:false,sourceId,aborted:false},
+      active:true,pending:false,urls:new Set([source,manifestURL]),mappingDiagnostics:new Map()}});
+  client.restoreRuntimeState(dto);state.client=client;
+  state.playbackIntent={key:'live:81',attempt,sourceId,purpose:'playback',generation:4,authGeneration:3};
+  state.liveIntentScope=3;state.retiredLiveAttempts=new Set();
+  await seed(cloud,captureRuntimeSession(state));
+  return {source,manifestURL,attempt,sourceId};
+}
+
+test('restored completed web sources skip unchanged poll checkpoints but always release the writer lease',async()=>{
+  const cloud=new FakeCloud(),expected=await seedCompletedPlayback(cloud);
+  for(let poll=0;poll<3;poll++){
+    cloud.calls.length=0;const res=new FakeResponse();
+    await new RuntimeSessionStore({cloud}).run(request(),res,playbackOptions,async state=>{
+      const client=state.client,context=runtimeSessionContext();
+      const source=await client.playbackURL('live','81',null,{attempt:expected.attempt,sourceId:expected.sourceId});
+      assert.equal(source.href,expected.source);assert.equal(client.playback.manifestURL,expected.manifestURL);
+      assert.equal(client.playbackGeneration,4);assert.equal(client.exportRuntimeState().playbackRuntime.web.client.ott.liveGeneration,4);
+      await context.checkpoint();await context.checkpoint();
+      assert.equal(cloud.calls.filter(call=>call.operation==='commit').length,0,'unchanged descriptor committed before upstream');
+      assert.notEqual(cloud.row.owner,null,'preflight must retain its exclusive fence');
+      await context.beforeStreaming();
+      assert.deepEqual(cloud.calls.filter(call=>call.operation==='commit'),[{operation:'commit',hasCipher:false,release:true}]);
+      assert.equal(cloud.row.owner,null);res.writeHead(200).end('synthetic manifest');
+    });
+    assert.equal(res.statusCode,200);assert.equal(cloud.calls.filter(call=>call.operation==='commit').length,1);
+    assert.equal(cloud.row.revision,0);assert.match(cloud.row.mediaEpoch,/^[a-f0-9]{64}$/);
+  }
+});
+
+test('a changed source is durably committed before upstream I/O and release still commits unchanged state',async()=>{
+  const cloud=new FakeCloud();await seedCompletedPlayback(cloud);const store=new RuntimeSessionStore({cloud});
+  await store.run(request(),new FakeResponse(),playbackOptions,async state=>{
+    const context=runtimeSessionContext(),url='https://player.wplayott.com/fixture/new-resolved.m3u8';
+    state.client.playback.manifestURL=url;
+    await context.checkpoint();
+    assert.deepEqual(cloud.calls.filter(call=>call.operation==='commit'),[{operation:'commit',hasCipher:true,release:false}]);
+    const persisted=await playbackOptions.restore(await store.openCipher(cloud.row.cipher,sessionHash));
+    assert.equal(persisted.client.playback.manifestURL,url,'new source must exist in storage before its upstream can start');
+    await context.checkpoint();
+    assert.equal(cloud.calls.filter(call=>call.operation==='commit').length,1);
+    await context.beforeStreaming();
+    assert.deepEqual(cloud.calls.filter(call=>call.operation==='commit'),[
+      {operation:'commit',hasCipher:true,release:false},{operation:'commit',hasCipher:false,release:true}]);
+    assert.equal(cloud.row.owner,null);
+  });
+  assert.equal(cloud.row.revision,1);
+});
+
+test('unchanged checkpoints still reject an expired lease after draining pending work',async()=>{
+  const cloud=new FakeCloud();await seed(cloud,{counter:0,events:[]});let clock=Date.now(),expire=false;
+  const store=new RuntimeSessionStore({cloud,now:()=>clock});
+  await assert.rejects(store.run(request(),new FakeResponse(),{...options,drain:async()=>{if(expire)clock+=100000;}},async()=>{
+    await runtimeSessionContext().checkpoint();
+    assert.equal(cloud.calls.filter(call=>call.operation==='commit').length,0);
+    expire=true;await runtimeSessionContext().checkpoint();assert.fail('expired checkpoint continued');
+  }),{code:'RUNTIME_SESSION_LEASE_LOST',status:503});
+  assert.ok(cloud.calls.filter(call=>call.operation==='commit').every(call=>!call.hasCipher&&call.release===true));
+});
+
+test('unchanged preflight waits for an in-flight lease renewal before allowing upstream I/O',async t=>{
+  for(const accepted of [true,false])await t.test(accepted?'renewal accepted':'renewal denied',async t=>{
+    const cloud=new FakeCloud();await seed(cloud,{counter:0,events:[]});
+    const finishRenewal=deferred(),rpc=cloud.runtimeSessionRPC.bind(cloud);let renewalStarted=false,upstreamStarted=false;
+    cloud.runtimeSessionRPC=async(operation,args)=>{
+      if(operation==='renew'){
+        renewalStarted=true;await finishRenewal.promise;
+        if(!accepted)return {ok:false,conflict:true};
+      }
+      return rpc(operation,args);
+    };
+    t.mock.timers.enable({apis:['setInterval']});
+    try{
+      const run=new RuntimeSessionStore({cloud}).run(request(),new FakeResponse(),options,async()=>{
+        const context=runtimeSessionContext();t.mock.timers.tick(15000);assert.equal(renewalStarted,true);
+        const preflight=context.checkpoint();let settled=false;
+        preflight.then(()=>{settled=true;},()=>{settled=true;});
+        await new Promise(resolve=>setImmediate(resolve));
+        const waited=!settled;finishRenewal.resolve();
+        assert.equal(waited,true,'preflight escaped while its lease renewal was pending');
+        await preflight;upstreamStarted=true;
+        assert.equal(cloud.calls.filter(call=>call.operation==='commit').length,0);
+      });
+      if(accepted)await run;else await assert.rejects(run,{status:503,code:'RUNTIME_SESSION_LEASE_LOST'});
+      assert.equal(upstreamStarted,accepted);assert.equal(cloud.row.owner,null);
+    }finally{finishRenewal.resolve();t.mock.timers.reset();}
+  });
+});
+
+const parseRuntimeTiming=header=>Object.fromEntries(header.split(', ').map(fragment=>{
+  const match=/^(runtime_(?:acquire|wait|read|restore|serialize|codec|commit|validate));dur=(\d+\.\d);count=(\d+)$/.exec(fragment);
+  assert.ok(match,'Timing exposed a nonnumeric value or an unexpected name');
+  return [match[1],{duration:Number(match[2]),count:Number(match[3])}];
+}));
+
+test('runtime timing separates unchanged preflight, serialization, codec and commit and exposes only fixed numeric fields',async()=>{
+  const cloud=new FakeCloud();await seed(cloud,{counter:0,events:[],privateSource:'https://synthetic.invalid/media?token=private-fixture'});
+  const rpc=cloud.runtimeSessionRPC.bind(cloud);
+  cloud.runtimeSessionRPC=async(operation,args)=>{
+    if(operation==='acquire'||operation==='commit')await new Promise(resolve=>setTimeout(resolve,5));
+    return rpc(operation,args);
+  };
+  let context;
+  await new RuntimeSessionStore({cloud}).run(request(),new FakeResponse(),options,async state=>{
+    context=runtimeSessionContext();await context.checkpoint();
+    const initial=parseRuntimeTiming(context.timing());
+    assert.equal(initial.runtime_acquire.count,1);assert.ok(initial.runtime_acquire.duration>=1);
+    assert.equal(initial.runtime_restore.count,1);assert.equal(initial.runtime_serialize.count,2);
+    assert.equal(initial.runtime_codec.count,0);assert.equal(initial.runtime_commit.count,0);
+    state.counter++;await context.checkpoint();
+    const updated=parseRuntimeTiming(context.timing());
+    assert.equal(updated.runtime_serialize.count,3);assert.equal(updated.runtime_codec.count,1);
+    assert.equal(updated.runtime_commit.count,1);assert.ok(updated.runtime_commit.duration>=1);
+    await context.beforeStreaming();
+    const released=parseRuntimeTiming(context.timing());
+    assert.equal(released.runtime_serialize.count,4);assert.equal(released.runtime_codec.count,1);assert.equal(released.runtime_commit.count,2);
+    assert.ok(released.runtime_commit.duration>=updated.runtime_commit.duration);
+  });
+  const timing=parseRuntimeTiming(context.timing());
+  assert.deepEqual(Object.keys(timing),['runtime_acquire','runtime_wait','runtime_read','runtime_restore','runtime_serialize','runtime_codec','runtime_commit','runtime_validate']);
+  assert.equal(timing.runtime_wait.count,0);assert.equal(timing.runtime_read.count,0);assert.equal(timing.runtime_validate.count,0);
+});
+
+test('runtime timing measures BUSY sleeps separately from acquire RPC duration',async()=>{
+  const cloud=new FakeCloud();await seed(cloud,{counter:0,events:[]});
+  const rpc=cloud.runtimeSessionRPC.bind(cloud);let acquisitions=0,context;
+  cloud.runtimeSessionRPC=async(operation,args)=>{
+    if(operation==='acquire'&&++acquisitions===1)return {busy:true,retryAfterMs:250};
+    return rpc(operation,args);
+  };
+  await new RuntimeSessionStore({cloud}).run(request(),new FakeResponse(),options,async()=>{context=runtimeSessionContext();});
+  const timing=parseRuntimeTiming(context.timing());
+  assert.equal(timing.runtime_acquire.count,2);assert.equal(timing.runtime_wait.count,1);
+  assert.ok(timing.runtime_wait.duration>=200,'BUSY sleep was omitted from the timing');
+  assert.ok(timing.runtime_acquire.duration<timing.runtime_wait.duration,'RPC duration included the separate BUSY sleep');
+  assert.equal(cloud.row.owner,null);
+});
+
+test('readonly timing accounts for read and failed mandatory validation without attributing them to restore or commit',async()=>{
+  const cloud=new FakeCloud();await seedAuthenticated(cloud);let context;
+  await failedResponse(new RuntimeSessionStore({cloud}),request(),new FakeResponse(),{...readOptions,readOnly:true},async()=>{
+    context=runtimeSessionContext();cloud.rejectMedia=true;
+  });
+  const timing=parseRuntimeTiming(context.timing());
+  assert.equal(timing.runtime_read.count,1);assert.equal(timing.runtime_restore.count,1);assert.equal(timing.runtime_validate.count,1);
+  for(const phase of ['runtime_acquire','runtime_serialize','runtime_codec','runtime_commit'])assert.equal(timing[phase].count,0);
+});
 
 test('readonly requests without playback release before I/O, run concurrently and cannot overwrite a later writer',async()=>{
   const cloud=new FakeCloud();await seed(cloud,authenticatedState());

@@ -221,27 +221,23 @@ Com até24h, fit comprimia programas. Padrão agora Com rolagem:400px/h desktop,
 Fontes: web/minha-lista/grade-tv.js, grade-tv.css e [contrato](../tv-guide-global.md). Revisão/sintaxe/bundle, sem testes, navegador, mídia, rede, restart ou alteração backend.
 
 
-## MEM-LIVE-018 — Origem da troca e limite anterior de continuidade
+## MEM-LIVE-018 — Origem da troca
 
-Estado: histórico; limite de implementação superado por MEM-LIVE-020. Data: 16/10/2026.
+Estado: histórico, superado por020. Data:16/10/2026.
 
-Zap/número usam abertura padrão; somente prévia lateral confirmada usa preparação/barra discreta. Prévia sem confirmação não abre fonte. A análise anterior concluiu que transferMedia/clone/primeiro fragmento não certificam standby decodificado; a continuidade posterior usa dois elementos locais com migração explícita e buffer finito.
+Zap/número abrem normalmente; prévia lateral só prepara após confirmação. TransferMedia/primeiro fragmento não certificam vídeo. Fonte: [continuidade](../../web/player/troca-canal/continuidade/README.md).
 
-Fontes: `web/tv/player/navegacao.js`, `web/player/orquestrador.js`, `web/app.js`, [continuidade](../../web/player/troca-canal/continuidade/README.md). Sem prova audiovisual nesta análise.
+## MEM-LIVE-019 — Buffer de zapping
 
-## MEM-LIVE-019 — Armazenamento para zapping
+Estado: histórico, complementado por020. Data:16/10/2026.
 
-Estado: histórico de análise, complementado por MEM-LIVE-020. Data: 16/10/2026.
+Buffer finito local evita Storage; receber vizinhos ainda ocupa fontes. Fonte: [análise](../tv-player-continuity-options-20261016.md). Sem mídia real.
 
-Buffer local finito é preferível a Storage para poucos segundos. Storage não elimina captura, limite de fontes ou migração de vídeo; atualizar vizinhos exige recebê-los. Primeiro fragmento não prova quadro decodificado. Fonte: [análise de continuidade](../tv-player-continuity-options-20261016.md). Sem mídia real.
+## MEM-LIVE-020 — Continuidade com dois vídeos
 
-## MEM-LIVE-020 — Continuidade com dois vídeos locais
+Estado: implementação local estática. Data:16/10/2026.
 
-Estado: implementação local; evidência estática. Data: 16/10/2026.
-
-Confirmação lateral usa standby silencioso após STOP; adota elemento/HLS/attempt pronto, migra controles/áudio e preserva buffer antigo finito/último quadro. Cancelamento enfileira STOP. Uma fonte remota, sem EPG/ETA calculados, cache Supabase ou reinício. Substitui o limite de implementação de018/019.
-
-Fonte: [contrato](../../web/player/troca-canal/continuidade/README.md). Quatro agentes; sintaxe/bundle. Sem testes, navegador ou mídia. APIs gratuitas na [análise](../tv-player-continuity-options-20261016.md).
+Após STOP, confirmação lateral prepara standby silencioso e adota vídeo/HLS/attempt; migra áudio/controles e conserva buffer antigo finito. Cancelamento enfileira STOP. Uma fonte remota. Fonte: [contrato](../../web/player/troca-canal/continuidade/README.md). Sem prova audiovisual.
 
 ## MEM-LIVE-021 — Quatro canais privados da Home
 
@@ -250,3 +246,9 @@ Estado: implementação e readback históricos, sucedidos por026/027. Data: 16/1
 Módulo lista-canais e lib/tv/home-* usam RPC privada, JWT/socket existentes e revisão por proprietário sem transmitir histórico. Heartbeat exige playing real da intenção principal, nunca preview/adulto; backend mede com relógio próprio, lease/seq e crédito máximo20s. Prévia tem STOP confirmado antes da próxima fonte; estatística final é melhor esforço. RLS/ACL foram conferidos; isso não comprova mídia.
 
 Fontes: [contrato](../../web/inicio/lista-canais/README.md), [backend](../tv-home-backend-20261016.md), migration20261016054432.
+
+## MEM-LIVE-029 — Latência de playlist e checkpoint
+
+Estado: ajuste local e testes sintéticos; publicação/mídia pendentes. Data:18/10/2026.
+
+TV HLS.js cancelava headers válidos aos4s; prazo agora10s/total15s, uma tentativa adicional. Safari nativo não usa essa política. Checkpoint inalterado evita commit intermediário, espera renew e conserva fence; release continua obrigatório. Server-Timing separa espera/RPC/codec/rede sem dados privados.147 testes e bundles passaram. Somente web; não executar APK. Fonte: [evidência e limites](../tv-playback-latency-20261018.md).
