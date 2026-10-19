@@ -7,6 +7,7 @@ import {captureRuntimeSession,restoreRuntimeSession} from '../lib/runtime-sessio
 import {ParentalControl} from '../lib/parental-control.mjs';
 import {WplayPlaybackProviderClient} from '../lib/wplay/conexao/reproducao.mjs';
 import {WplayOTTProviderClient} from '../lib/wplay/ott/provedor.mjs';
+import {runtimeSessionReadPolicy} from '../lib/runtime-session-read-policy.mjs';
 
 const cookie='A'.repeat(32),sessionHash=createHash('sha256').update(cookie).digest('hex');
 const deferred=()=>{let resolve;const promise=new Promise(done=>{resolve=done;});return {promise,resolve};};
@@ -370,6 +371,84 @@ const seedAuthenticated=async cloud=>{
   cloud.calls.length=0;cloud.busyCount=0;
 };
 
+test('rejected oversized or malformed snapshots cannot pair a changed epoch with the previous cipher',async t=>{
+  for(const reason of ['too-large','format'])await t.test(reason,async()=>{
+    const cloud=new FakeCloud();await seedAuthenticated(cloud);
+    const previous=cloud.row.cipher,previousEpoch=cloud.row.mediaEpoch,res=new FakeResponse();let captures=0;
+    const error=await failedResponse(new RuntimeSessionStore({cloud}),request(),res,{...readOptions,capture:state=>{captures++;return state;}},async state=>{
+      state.parental.unlocked=true;state.authGeneration++;state.client.playbackGeneration++;
+      if(reason==='too-large')state.payload=randomBytes(3*1024*1024).toString('hex');
+      else state.unsupported=new (class UnsupportedCheckpoint {})();
+      reply(res,{uncommittedPrivateResult:true});
+    });
+    assert.equal(error.code,reason==='too-large'?'RUNTIME_SESSION_TOO_LARGE':'RUNTIME_SESSION_FORMAT');
+    assert.equal(captures,1);assert.equal(cloud.row.cipher,previous);assert.equal(cloud.row.mediaEpoch,previousEpoch);
+    assert.equal(cloud.row.owner,null);assert.equal(res.statusCode,503);
+    assert.deepEqual(cloud.calls.filter(call=>call.operation==='commit'),[{operation:'commit',hasCipher:false,release:true}]);
+    const next=new FakeResponse();cloud.calls.length=0;
+    await new RuntimeSessionStore({cloud}).run(request(),next,{...readOptions,readOnly:true},async state=>{
+      assert.equal(runtimeSessionContext().readOnly,true);assert.equal(state.parental.unlocked,false);
+      assert.equal(state.authGeneration,1);assert.equal(state.client.playbackGeneration,0);reply(next,{durable:true});
+    });
+    assert.deepEqual(next.json(),{durable:true});assert.equal(cloud.calls.some(call=>call.operation==='acquire'),false);
+  });
+});
+
+test('cleanup preserves the last accepted checkpoint epoch after a later snapshot is rejected',async()=>{
+  const cloud=new FakeCloud();await seedAuthenticated(cloud);
+  let durableCipher,durableEpoch;
+  await failedResponse(new RuntimeSessionStore({cloud}),request(),new FakeResponse(),readOptions,async state=>{
+    state.parental.unlocked=true;await runtimeSessionContext().checkpoint();
+    durableCipher=cloud.row.cipher;durableEpoch=cloud.row.mediaEpoch;
+    state.authGeneration++;state.unsupported=new (class UnsupportedCheckpoint {})();
+  });
+  assert.equal(cloud.row.cipher,durableCipher);assert.equal(cloud.row.mediaEpoch,durableEpoch);assert.equal(cloud.row.owner,null);
+  const next=new FakeResponse();
+  await new RuntimeSessionStore({cloud}).run(request(),next,{...readOptions,readOnly:true},async state=>{
+    assert.equal(state.parental.unlocked,true);assert.equal(state.authGeneration,1);reply(next,{durable:true});
+  });
+  assert.deepEqual(next.json(),{durable:true});
+});
+
+test('restore failure releases the unchanged cipher with its proven row epoch instead of inventing anonymous state',async t=>{
+  for(const epochSource of ['acquire','read','legacy-null'])await t.test(epochSource,async()=>{
+    const cloud=new FakeCloud();await seedAuthenticated(cloud);
+    if(epochSource==='legacy-null')cloud.row.mediaEpoch=null;
+    const previous=cloud.row.cipher,previousEpoch=cloud.row.mediaEpoch,rpc=cloud.runtimeSessionRPC.bind(cloud);
+    if(epochSource!=='read')cloud.runtimeSessionRPC=async(operation,args)=>{
+      const result=await rpc(operation,args);
+      return operation==='acquire'?{...result,mediaEpoch:cloud.row.mediaEpoch}:result;
+    };
+    const error=await failedResponse(new RuntimeSessionStore({cloud}),request(),new FakeResponse(),{
+      ...readOptions,restore:()=>{throw Object.assign(new Error('Synthetic restore failure'),{status:503,code:'RUNTIME_SESSION_INVALID'});}
+    },()=>assert.fail('Operation ran after restoration failed'));
+    assert.equal(error.code,'RUNTIME_SESSION_INVALID');assert.equal(cloud.row.cipher,previous);
+    assert.equal(cloud.row.mediaEpoch,previousEpoch);assert.equal(cloud.row.owner,null);
+    assert.equal(cloud.calls.filter(call=>call.operation==='read').length,epochSource==='read'?1:0);
+    assert.deepEqual(cloud.calls.filter(call=>call.operation==='commit'),[{operation:'commit',hasCipher:false,release:true}]);
+  });
+});
+
+test('restore failure cannot release an unknown epoch when its recovery read fails or returns another cipher',async t=>{
+  for(const reason of ['unavailable','mismatched-cipher'])await t.test(reason,async()=>{
+    const cloud=new FakeCloud();await seedAuthenticated(cloud);
+    const previous=cloud.row.cipher,previousEpoch=cloud.row.mediaEpoch,rpc=cloud.runtimeSessionRPC.bind(cloud);let recoveryReads=0;
+    cloud.runtimeSessionRPC=async(operation,args)=>{
+      if(operation==='read'){
+        recoveryReads++;
+        if(reason==='unavailable')throw new Error('Synthetic read unavailable');
+        return {cipher:'different-cipher',mediaEpoch:'b'.repeat(64)};
+      }
+      return rpc(operation,args);
+    };
+    await failedResponse(new RuntimeSessionStore({cloud}),request(),new FakeResponse(),{
+      ...readOptions,restore:()=>{throw Object.assign(new Error('Synthetic restore failure'),{status:503,code:'RUNTIME_SESSION_INVALID'});}
+    },()=>assert.fail('Operation ran after restoration failed'));
+    assert.equal(recoveryReads,1);assert.equal(cloud.row.cipher,previous);assert.equal(cloud.row.mediaEpoch,previousEpoch);
+    assert.notEqual(cloud.row.owner,null);assert.equal(cloud.calls.some(call=>call.operation==='commit'),false);
+  });
+});
+
 test('twenty direct readers bypass a held writer lease without acquiring or changing its durable state',async()=>{
   const cloud=new FakeCloud();await seedAuthenticated(cloud);
   const entered=deferred(),release=deferred(),writerResponse=new FakeResponse();
@@ -535,4 +614,177 @@ test('a direct streaming reader validates before headers and retains revocation 
   assert.equal(Buffer.concat(res.body).toString(),'authorized initial bytes');assert.equal(store.readers.size,0);
   assert.equal(cloud.busyCount,0);assert.equal(cloud.calls.filter(call=>call.operation==='read').length,1);
   assert.ok(cloud.calls.filter(call=>call.operation==='media').length>=2);
+});
+
+const segmentRequest=(id='segment',method='GET')=>({...request(),method,url:'/api/asset/'+id});
+const segmentOptions=(id='segment',method='GET')=>({...readOptions,segmentReadCache:true,
+  readOnly:runtimeSessionReadPolicy({method},new URL('/api/asset/'+id,'https://fixture.invalid'))});
+async function seedSegments(cloud,store=new RuntimeSessionStore({cloud})){
+  const state=authenticatedState();state.client.playback={key:'live:42',controller:new AbortController()};
+  state.client.assets=new Map([['segment',{key:'live:42',mediaDurationSeconds:6,url:new URL('https://fixture.invalid/first.ts')}]]);
+  await seed(cloud,state);await store.run(request(),new FakeResponse(),readOptions,()=>{});
+  cloud.calls.length=0;return store;
+}
+
+test('segment cache opt-in skips full reads but restores fresh Maps, assets and controllers and still validates twice',async()=>{
+  const cloud=new FakeCloud(),store=await seedSegments(cloud),states=[];
+  for(const method of ['GET','HEAD']){
+    const res=new FakeResponse();cloud.calls.length=0;
+    await store.run(segmentRequest('segment',method),res,segmentOptions('segment',method),async state=>{
+      states.push(state);assert.equal(runtimeSessionContext().readOnly,true);
+      assert.equal(state.counter,0);state.counter=99;
+      assert.equal(cloud.calls.filter(call=>call.operation==='media').length,1,'validate cached authorization before operation');
+      reply(res,{ok:true});
+    });
+    assert.deepEqual(res.json(),{ok:true});assert.equal(cloud.calls.filter(call=>call.operation==='read').length,0);
+    assert.equal(cloud.calls.filter(call=>call.operation==='media').length,2,'final validation stays mandatory');
+    assert.equal(cloud.calls.some(call=>['acquire','renew','commit'].includes(call.operation)),false);
+  }
+  assert.notEqual(states[0],states[1]);assert.notEqual(states[0].client.assets,states[1].client.assets);
+  assert.notEqual(states[0].client.assets.get('segment'),states[1].client.assets.get('segment'));
+  assert.notEqual(states[0].client.playback.controller,states[1].client.playback.controller);
+  cloud.calls.length=0;
+  await store.run(segmentRequest(),new FakeResponse(),{...segmentOptions(),segmentReadCache:false},()=>{});
+  assert.equal(cloud.calls.filter(call=>call.operation==='read').length,1,'ordinary read-only requests do not use this cache');
+});
+
+test('segment cache expires absolutely and a slow validation cannot use an expired URL snapshot',async()=>{
+  let clock=Date.now();const cloud=new FakeCloud(),store=await seedSegments(cloud,new RuntimeSessionStore({cloud,now:()=>clock}));
+  const first=store.snapshotCache.get(sessionHash),rpc=cloud.runtimeSessionRPC.bind(cloud);
+  clock+=1900;
+  await store.run(segmentRequest(),new FakeResponse(),segmentOptions(),()=>{});
+  assert.equal(store.snapshotCache.get(sessionHash),first);
+  cloud.calls.length=0;let advance=true;
+  cloud.runtimeSessionRPC=async(operation,args)=>{
+    const result=await rpc(operation,args);if(operation==='media'&&advance){advance=false;clock+=101;}return result;
+  };
+  await store.run(segmentRequest(),new FakeResponse(),segmentOptions(),()=>{});
+  assert.equal(cloud.calls.filter(call=>call.operation==='read').length,1,'expiry during RPC requires a fresh full checkpoint');
+  assert.notEqual(store.snapshotCache.get(sessionHash),first);
+});
+
+test('same-epoch rotated URLs are retained for at most the original TTL and newly registered assets force a fresh read',async()=>{
+  let clock=Date.now();const cloud=new FakeCloud(),store=await seedSegments(cloud,new RuntimeSessionStore({cloud,now:()=>clock}));
+  const remote=new RuntimeSessionStore({cloud});
+  await remote.run(request(),new FakeResponse(),readOptions,async state=>{
+    state.client.assets.get('segment').url=new URL('https://fixture.invalid/rotated.ts');
+    state.client.assets.set('new-segment',{key:'live:42',mediaDurationSeconds:6,url:new URL('https://fixture.invalid/new.ts')});
+  });
+  cloud.calls.length=0;clock+=1999;
+  await store.run(segmentRequest(),new FakeResponse(),segmentOptions(),async state=>{
+    assert.equal(state.client.assets.get('segment').url.pathname,'/first.ts');
+  });
+  assert.equal(cloud.calls.filter(call=>call.operation==='read').length,0);
+  clock++;
+  await store.run(segmentRequest(),new FakeResponse(),segmentOptions(),async state=>{
+    assert.equal(state.client.assets.get('segment').url.pathname,'/rotated.ts');
+  });
+  assert.equal(cloud.calls.filter(call=>call.operation==='read').length,1);
+  await remote.run(request(),new FakeResponse(),readOptions,async state=>{
+    state.client.assets.set('newest-segment',{key:'live:42',mediaDurationSeconds:6,url:new URL('https://fixture.invalid/newest.ts')});
+  });
+  cloud.calls.length=0;
+  await store.run(segmentRequest('newest-segment'),new FakeResponse(),segmentOptions('newest-segment'),async state=>{
+    assert.equal(runtimeSessionContext().readOnly,true);
+    assert.equal(state.client.assets.get('newest-segment').url.pathname,'/newest.ts');
+  });
+  assert.deepEqual(cloud.calls.map(call=>call.operation),['read','media']);
+});
+
+test('cached PIN, logout and STOP epochs are rejected and a fresh checkpoint is restored before operation',async t=>{
+  for(const change of ['pin','logout','stop'])await t.test(change,async()=>{
+    const cloud=new FakeCloud(),store=await seedSegments(cloud);
+    await new RuntimeSessionStore({cloud}).run(request(),new FakeResponse(),readOptions,async state=>{
+      if(change==='pin')state.parental.unlocked=true;
+      else if(change==='logout'){state.authGeneration++;state.loggedOut=true;state.client=null;}
+      else{state.client.playbackGeneration++;state.client.playback=null;}
+    });
+    cloud.calls.length=0;
+    await store.run(segmentRequest(),new FakeResponse(),segmentOptions(),async state=>{
+      assert.equal(cloud.calls.filter(call=>call.operation==='read').length,1);
+      if(change==='pin')assert.equal(state.parental.unlocked,true);
+      else if(change==='logout')assert.equal(state.client,null);
+      else assert.equal(state.client.playback,null);
+    });
+    assert.equal(cloud.calls[0].operation,'media');
+  });
+});
+
+test('segment-cache validation transport failure is a closed 503 without full read or operation',async()=>{
+  const cloud=new FakeCloud(),store=await seedSegments(cloud);cloud.rejectMedia=true;
+  const res=new FakeResponse();
+  const error=await failedResponse(store,segmentRequest(),res,segmentOptions(),()=>assert.fail('Unvalidated segment operation'));
+  assert.equal(error.code,'RUNTIME_SESSION_UNAVAILABLE');assert.equal(res.statusCode,503);
+  assert.deepEqual(cloud.calls.map(call=>call.operation),['media']);assert.equal(store.snapshotCache.size,0);
+});
+
+test('an unknown asset or false selector requires a fresh read before writer fallback; manifests never hit',async t=>{
+  for(const kind of ['unknown','predicate','manifest','wrong-owner','zero-duration'])await t.test(kind,async()=>{
+    const cloud=new FakeCloud(),store=await seedSegments(cloud);let id='segment';
+    if(kind==='unknown')id='new-segment';
+    if(['manifest','wrong-owner','zero-duration'].includes(kind)){
+      await store.run(request(),new FakeResponse(),readOptions,async state=>{
+        const asset=state.client.assets.get('segment');
+        if(kind==='manifest')asset.mediaDurationSeconds=null;
+        else if(kind==='wrong-owner')asset.key='live:99';else asset.mediaDurationSeconds=0;
+      });
+    }
+    cloud.calls.length=0;const settings=segmentOptions(id);
+    if(kind==='predicate')settings.readOnly=()=>false;
+    await store.run(segmentRequest(id),new FakeResponse(),settings,async()=>{
+      assert.equal(runtimeSessionContext().readOnly,false);
+      assert.deepEqual(cloud.calls.slice(0,2).map(call=>call.operation),['read','acquire']);
+    });
+  });
+});
+
+test('missing cache validation results fall back to a full read, never to the cached state',async()=>{
+  const cloud=new FakeCloud(),store=await seedSegments(cloud),rpc=cloud.runtimeSessionRPC.bind(cloud);let first=true;
+  cloud.runtimeSessionRPC=async(operation,args)=>{
+    const result=await rpc(operation,args);if(operation==='media'&&first){first=false;return {missing:true};}return result;
+  };
+  await store.run(segmentRequest(),new FakeResponse(),segmentOptions(),()=>{
+    assert.equal(cloud.calls.filter(call=>call.operation==='read').length,1);
+  });
+});
+
+test('a late full read cannot overwrite a newer same-epoch URL commit in the segment cache',async()=>{
+  const cloud=new FakeCloud(),store=await seedSegments(cloud),rpc=cloud.runtimeSessionRPC.bind(cloud),entered=deferred(),finish=deferred();
+  store.snapshotCache.invalidate(sessionHash);let hold=true;
+  cloud.runtimeSessionRPC=async(operation,args)=>{
+    const result=await rpc(operation,args);if(operation==='read'&&hold){hold=false;entered.resolve();await finish.promise;}return result;
+  };
+  const pending=store.run(segmentRequest(),new FakeResponse(),segmentOptions(),()=>{});
+  await entered.promise;
+  await store.run(request(),new FakeResponse(),readOptions,async state=>{
+    state.client.assets.get('segment').url=new URL('https://fixture.invalid/rotated.ts');
+  });
+  finish.resolve();await pending;cloud.calls.length=0;
+  await store.run(segmentRequest(),new FakeResponse(),segmentOptions(),async state=>{
+    assert.equal(state.client.assets.get('segment').url.pathname,'/rotated.ts');
+  });
+  assert.equal(cloud.calls.filter(call=>call.operation==='read').length,0);
+});
+
+test('segment-cache final validation still rejects a writer raced after its admission',async()=>{
+  const cloud=new FakeCloud(),store=await seedSegments(cloud),entered=deferred(),finish=deferred(),res=new FakeResponse();
+  const pending=failedResponse(store,segmentRequest(),res,segmentOptions(),async()=>{
+    reply(res,{staleSegment:true});entered.resolve();await finish.promise;
+  });
+  await entered.promise;
+  await new RuntimeSessionStore({cloud}).run(request(),new FakeResponse(),readOptions,async state=>{state.parental.unlocked=true;});
+  finish.resolve();const error=await pending;
+  assert.equal(error.code,'RUNTIME_SESSION_SCOPE_CHANGED');assert.equal(res.statusCode,503);
+  assert.deepEqual(res.json(),{code:'RUNTIME_SESSION_SCOPE_CHANGED'});
+});
+
+test('readonly failure updates invalidate same-epoch cached backoff state',async()=>{
+  const cloud=new FakeCloud(),store=await seedSegments(cloud);
+  await store.run(segmentRequest(),new FakeResponse(),segmentOptions(),async()=>{
+    await runtimeSessionContext().update(state=>{state.counter=45;});
+    assert.equal(store.snapshotCache.size,0);
+  });
+  cloud.calls.length=0;
+  await store.run(segmentRequest(),new FakeResponse(),segmentOptions(),async state=>{assert.equal(state.counter,45);});
+  assert.equal(cloud.calls.filter(call=>call.operation==='read').length,1);
 });

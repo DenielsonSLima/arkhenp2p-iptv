@@ -247,8 +247,8 @@ Módulo lista-canais e lib/tv/home-* usam RPC privada, JWT/socket existentes e r
 
 Fontes: [contrato](../../web/inicio/lista-canais/README.md), [backend](../tv-home-backend-20261016.md), migration20261016054432.
 
-## MEM-LIVE-029 — Latência de playlist e checkpoint
+## MEM-LIVE-029 — Latência e runtime da Vercel
 
-Estado: ajuste local e testes sintéticos; publicação/mídia pendentes. Data:18/10/2026.
+Estado: correções e testes; continuidade real posterior pendente. Data:18/10/2026.
 
-TV HLS.js cancelava headers válidos aos4s; prazo agora10s/total15s, uma tentativa adicional. Safari nativo não usa essa política. Checkpoint inalterado evita commit intermediário, espera renew e conserva fence; release continua obrigatório. Server-Timing separa espera/RPC/codec/rede sem dados privados.147 testes e bundles passaram. Somente web; não executar APK. Fonte: [evidência e limites](../tv-playback-latency-20261018.md).
+71717fd publicado; usuário relatou localhost rápido e Vercel ainda intermitente. Prazo HLS10/15s não vale para Safari nativo; fixtureXHR não prova recuperação completa. Lote posterior conserva epoch do cipher aceito, renova JWT cloud vencido sob writer e oferece cache privado de cipher só para segmentos (2s/8MiB/8entradas), com validação remota antes do uso e resposta.195 testes e bundles passaram; não certificam vídeo online. APK/conta/espelhamento não devem ser executados no modo atual. Fontes: [runtime e reunião](../vercel-media-runtime-recovery-20261018.md), [latência](../tv-playback-latency-20261018.md), [HLS](../tv-hls-upstream-pipeline-review-20261018.md).

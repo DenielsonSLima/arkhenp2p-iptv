@@ -26,7 +26,7 @@ O ajuste em `web/tv/buffer.js` altera somente a política de playlists da TV:
 | Segmento TV | 6 s | 15 s | 1 |
 | Playlist VOD | 4 s | 8 s | sem alteração |
 
-O orçamento de uma tentativa adicional por instância do loader continua válido para timeout ou erro. O atraso configurado entre tentativas continua 500 ms, limitado a 1.000 ms. Os 15 segundos incluem a espera pelos headers; receber headers não cria outros 15 segundos de orçamento. Sem resposta, o loader permanece limitado e pode terminar em erro. A recuperação da aplicação continua com seu orçamento próprio, sem reinício infinito por esta mudança.
+A política continua configurando uma tentativa adicional para timeout ou erro, com atraso de 500 ms limitado a 1.000 ms. No pipeline completo do HLS.js, Media Playlists usam o ErrorController/BasePlaylistController para decidir e agendar o retry; o PlaylistLoader desativa o retry interno do loader nesses pedidos. Os 15 segundos incluem a espera pelos headers; receber headers não cria outros 15 segundos de orçamento. A recuperação da aplicação continua com seu orçamento próprio. Essa configuração não limita o número de respostas HTTP200 válidas que repetem uma playlist sem avanço. Ver [revisão do pipeline completo](tv-hls-upstream-pipeline-review-20261018.md).
 
 O HLS.js 1.6.13 define `maxTimeToFirstByteMs` e `maxLoadTimeMs` separadamente; seu default de playlist é 10/20 segundos. A escolha local de 10/15 segundos concede margem ao intervalo observado e mantém um total inferior a esse default. Não altera seleção de fonte, qualidade, margem live, tamanho de buffer, posição inicial ou política de segmentos. [Documentação primária HLS.js 1.6.13](https://raw.githubusercontent.com/video-dev/hls.js/v1.6.13/docs/API.md).
 
@@ -58,7 +58,7 @@ Fontes: `lib/runtime-session-store.mjs`, `lib/app-server.mjs` e os novos casos d
 
 ## Verificação e limites
 
-Foram executados 32 testes focados de frontend: `tv-playlist-load-policy`, `hls-error-handler`, `tv-native-event-ownership` e `playback-loader`. Todos passaram após o ajuste. O caso de headers em 7 segundos falhou antes e passou depois. Outros casos exercitam falta de headers, corpo incompleto respeitando o prazo total, destruição durante espera e cancelamento de retry. São loaders/eventos reais com dependências sintéticas, sem mídia ou rede. Sintaxe de `web/tv/buffer.js` e `git diff --check` passaram.
+Foram executados 32 testes focados de frontend: `tv-playlist-load-policy`, `hls-error-handler`, `tv-native-event-ownership` e `playback-loader`. Todos passaram após o ajuste. O caso de headers em 7 segundos falhou antes e passou depois. Outros casos exercitam falta de headers, corpo incompleto respeitando o prazo total, destruição durante espera e cancelamento de retry. São loaders/eventos reais com dependências sintéticas, sem mídia ou rede. O teste direto do XHR não instancia o pipeline completo PlaylistLoader/LevelController/ErrorController e não certifica a recuperação integrada da engine. Sintaxe de `web/tv/buffer.js` e `git diff --check` passaram.
 
 Um mock antigo do loader precisou fornecer `updateLiveMetadata`, exigido pelo listener atual do rodapé. A correção ficou no teste; não mudou o comportamento de reprodução para acomodar a fixture.
 

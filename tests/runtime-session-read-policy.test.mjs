@@ -1,9 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {CloudRuntime} from '../lib/cloud-runtime.mjs';
+import {runtimeSessionContext,withRuntimeSession} from '../lib/runtime-session-context.mjs';
 import {runtimeSessionReadPolicy} from '../lib/runtime-session-read-policy.mjs';
 
 const hash='a'.repeat(64);
-function policy(method,path){return runtimeSessionReadPolicy({method},new URL(path,'https://fixture.invalid'));}
+const now=1700000000000;
+const freshCloud=()=>({cloud:{session:{access_token:'synthetic-fresh'}},cloudExpiresAt:now+3600000});
+function policy(method,path){return runtimeSessionReadPolicy({method},new URL(path,'https://fixture.invalid'),{now:()=>now});}
 function permits(method,path,state={}){
   const selected=policy(method,path);
   return typeof selected==='function'?selected(state):selected;
@@ -36,20 +40,69 @@ test('manifest and encryption-key assets require a writer even when registered f
     assert.equal(permits(method,'/api/asset/'+id,{client}),false);
 });
 
-test('selected shared metadata, artwork and Home reads require an attached cloud',()=>{
+test('selected shared metadata, artwork and Home reads require a fresh attached cloud',()=>{
   const paths=[`/api/shared-image/${hash}`,`/api/sports-image/${hash}`,
     '/api/catalog/read-model?type=movies','/api/catalog/revision?type=series',
     '/api/tv/guide?ids=42','/api/catalog?type=live','/api/catalog?type=movies&refresh=0'];
   for(const method of ['GET','HEAD'])for(const path of paths){
-    assert.equal(permits(method,path,{cloud:{}}),true,`${method} ${path}`);
+    assert.equal(permits(method,path,freshCloud()),true,`${method} ${path}`);
     assert.equal(permits(method,path,{}),false,`${method} ${path} without cloud`);
     assert.equal(permits(method,path,{cloud:null}),false,`${method} ${path} detached cloud`);
   }
   for(const path of ['/api/home/library','/api/tv/home']){
-    assert.equal(permits('POST',path,{cloud:{}}),true);
+    assert.equal(permits('POST',path,freshCloud()),true);
     assert.equal(permits('POST',path,{}),false);
     assert.equal(permits('POST',path,{cloud:null}),false);
   }
+});
+
+test('expired, nearly expired, legacy and malformed cloud attachments require a writer',()=>{
+  const requests=[['GET','/api/tv/guide'],['HEAD',`/api/shared-image/${hash}`],['GET',`/api/sports-image/${hash}`],
+    ['GET','/api/catalog'],['GET','/api/catalog/read-model'],['GET','/api/catalog/revision'],
+    ['POST','/api/home/library'],['POST','/api/tv/home']];
+  for(const [method,path]of requests){
+    for(const expiry of [undefined,null,0,now-1,now,now+59999,now+60000,NaN,Infinity,String(now+3600000)])
+      assert.equal(permits(method,path,{...freshCloud(),cloudExpiresAt:expiry}),false,`${path}: ${String(expiry)}`);
+    for(const cloud of [{},{session:{}},{session:{access_token:''}},{session:{access_token:42}}])
+      assert.equal(permits(method,path,{cloud,cloudExpiresAt:now+3600000}),false,path);
+    assert.equal(permits(method,path,{...freshCloud(),cloudExpiresAt:now+60001}),true,path);
+  }
+});
+
+test('cloud expiry cannot send authorized media segments or local artwork through cloud refresh',()=>{
+  const state={...freshCloud(),cloudExpiresAt:now-1,...assetState({key:'live:42',mediaDurationSeconds:6})};
+  for(const method of ['GET','HEAD'])for(const path of ['/api/asset/segment','/api/image?ref=local','/api/playback/status'])
+    assert.equal(permits(method,path,state),true,`${method} ${path}`);
+  state.client.playback.controller=new AbortController();state.client.playback.controller.abort();
+  assert.equal(permits('GET','/api/asset/segment',state),false,'cloud freshness never bypasses cancellation');
+});
+
+test('an expired cloud JWT selects a writer, refreshes via attachment and becomes eligible for readonly metadata',async()=>{
+  const client={libraryProvider:'wplay',authenticatedAt:now,session:{connected:true,account:{status:'Active',libraryId:hash}}};
+  const state={...freshCloud(),cloudExpiresAt:now-1,client,cloudClient:client,authGeneration:1};
+  state.cloud.libraryId=hash;
+  let bootstraps=0;
+  const cloud={ready:Promise.resolve(true),enabled:true,bootstrap:async()=>{
+    assert.equal(runtimeSessionContext().readOnly,false,'JWT renewal must own the writer context');
+    bootstraps++;return {providerKey:'b'.repeat(64),scopeHash:'c'.repeat(64),session:{access_token:'synthetic-renewed',expires_in:3600}};
+  }};
+  const runtime=new CloudRuntime({cloud,workerEnabled:false,now:()=>now});
+  try{
+    for(const [method,path]of [['GET','/api/tv/guide'],['GET',`/api/shared-image/${hash}`],
+      ['GET','/api/catalog'],['GET','/api/catalog/revision'],['POST','/api/home/library'],['POST','/api/tv/home']]){
+      state.cloudExpiresAt=now-1;
+      assert.equal(permits(method,path,state),false,path);
+      await withRuntimeSession({readOnly:permits(method,path,state)},()=>runtime.attach(state,client.session,client));
+      assert.equal(state.cloud.session.access_token,'synthetic-renewed');
+      assert.equal(state.cloudExpiresAt,now+3600000);
+      assert.equal(permits(method,path,state),true,path);
+      const previous=bootstraps;
+      await withRuntimeSession({readOnly:permits(method,path,state)},async()=>{
+        if(!runtimeSessionContext().readOnly)await runtime.attach(state,client.session,client);
+      });
+      assert.equal(bootstraps,previous,'fresh metadata must continue on the readonly path');
+    }
+  }finally{runtime.close();}
 });
 
 test('local artwork and playback status can read the committed state without cloud',()=>{
